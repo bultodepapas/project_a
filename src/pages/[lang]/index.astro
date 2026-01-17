@@ -73,9 +73,22 @@ function resolveProofHref(href: string, langValue: Lang) {
         </h1>
 
         <!-- Subheadline -->
-        <p class="text-xl md:text-2xl text-muted max-w-2xl mb-10 animate-fade-in-up" style="animation-delay: 100ms;">
+        <p class="text-xl md:text-2xl text-muted max-w-2xl mb-6 animate-fade-in-up" style="animation-delay: 100ms;">
           {t(typedLang, 'hero.subheadline')}
         </p>
+
+        <!-- Meta Line -->
+        <div class="flex flex-wrap items-center gap-4 text-sm text-muted mb-10 animate-fade-in-up" style="animation-delay: 150ms;">
+          <span>{siteData.location[typedLang]}</span>
+          <span class="text-border">|</span>
+          <a href={`mailto:${siteData.email}`} class="hover:text-accent transition-colors">
+            {siteData.email}
+          </a>
+          <span class="text-border">|</span>
+          <a href={siteData.linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">
+            LinkedIn
+          </a>
+        </div>
 
         <!-- CTAs -->
         <div class="flex flex-wrap gap-4 animate-fade-in-up" style="animation-delay: 200ms;">
@@ -108,9 +121,12 @@ function resolveProofHref(href: string, langValue: Lang) {
             href={resolveProofHref(item.href, typedLang)}
             class="group p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all"
           >
-            <p class="font-semibold text-foreground group-hover:text-accent transition-colors">
-              {item.title[typedLang]}
-            </p>
+            <div class="flex items-center justify-between mb-2">
+              <p class="font-semibold text-foreground group-hover:text-accent transition-colors">
+                {item.title[typedLang]}
+              </p>
+              <span class="text-xs text-muted group-hover:text-accent transition-colors">+</span>
+            </div>
             <p class="text-sm text-muted mt-1">
               {item.detail[typedLang]}
             </p>
