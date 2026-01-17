@@ -7,10 +7,14 @@
 import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import CaseHeader from '@/components/cases/CaseHeader.astro';
 import CaseSection from '@/components/cases/CaseSection.astro';
 import CaseNav from '@/components/cases/CaseNav.astro';
+
+export interface Props {
+  entry: CollectionEntry<'cases'>;
+}
 
 export async function getStaticPaths() {
   const entries = await getCollection('cases');
@@ -39,9 +43,9 @@ const casesForLang = caseOrder
       (caseEntry) => caseEntry.data.lang === typedLang && caseEntry.data.caseSlug === caseSlug
     )
   )
-  .filter(Boolean);
+  .filter((c): c is CollectionEntry<'cases'> => !!c);
 
-const currentIndex = casesForLang.findIndex((caseEntry) => caseEntry?.data.caseSlug === caseData.caseSlug);
+const currentIndex = casesForLang.findIndex((caseEntry) => caseEntry.data.caseSlug === caseData.caseSlug);
 const prevCaseEntry = currentIndex > 0 ? casesForLang[currentIndex - 1] : null;
 const nextCaseEntry = currentIndex < casesForLang.length - 1 ? casesForLang[currentIndex + 1] : null;
 

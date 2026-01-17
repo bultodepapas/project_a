@@ -7,7 +7,7 @@
 import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import CaseCard from '@/components/cases/CaseCard.astro';
 import CaseFilters from '@/components/cases/CaseFilters.astro';
 
@@ -38,8 +38,8 @@ const cases = allCases
   });
 
 // Extract unique filter options
-const themes = [...new Set(cases.map(c => c.data.theme))].sort();
-const regions = [...new Set(cases.flatMap(c => c.data.regions))].sort();
+const themes = [...new Set(cases.map((c) => c.data.theme))].sort();
+const regions = [...new Set(cases.flatMap((c) => c.data.regions))].sort();
 
 const pageTitle = t(typedLang, 'cases.index.title');
 const pageDescription = t(typedLang, 'cases.index.subtitle');
@@ -73,7 +73,7 @@ const pageDescription = t(typedLang, 'cases.index.subtitle');
 
       <!-- Case Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]">
-        {cases.map((caseEntry, index) => (
+        {cases.map((caseEntry: CollectionEntry<'cases'>, index: number) => (
           <div class="h-full animate-fade-in-up" style={`animation-delay: ${(index * 100) + 200}ms`}>
             <CaseCard 
               lang={typedLang} 
