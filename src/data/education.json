@@ -1,0 +1,35 @@
+{
+  "items": [
+    {
+      "id": "msc-analytics",
+      "degree": {
+        "en": "Master's in Business Analytics",
+        "es": "Maestria en Analitica de Negocios"
+      },
+      "org": "Aston University",
+      "location": "Birmingham, UK",
+      "year": "2026",
+      "status": "inProgress"
+    },
+    {
+      "id": "msc-global",
+      "degree": {
+        "en": "Master's in Global Business Management",
+        "es": "Maestria en Gestion de Negocios Globales"
+      },
+      "org": "Rennes School of Business",
+      "location": "Rennes, France",
+      "year": "2016"
+    },
+    {
+      "id": "ba-international",
+      "degree": {
+        "en": "BA in International Business",
+        "es": "Licenciatura en Negocios Internacionales"
+      },
+      "org": "Universidad de La Salle",
+      "location": "Bogota, Colombia",
+      "year": "2016"
+    }
+  ]
+}

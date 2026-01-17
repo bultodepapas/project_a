@@ -1,0 +1,74 @@
+{
+  "hero": {
+    "chips": [
+      {
+        "en": "Bogota - Remote EU",
+        "es": "Bogota - Remote EU"
+      },
+      {
+        "en": "8+ years M&E",
+        "es": "8+ anos M&E"
+      },
+      {
+        "en": "SDG 8 - 9 - 13",
+        "es": "SDG 8 - 9 - 13"
+      }
+    ]
+  },
+  "hiredFor": {
+    "items": [
+      {
+        "key": "evidence",
+        "caseSlug": "audience-framework"
+      },
+      {
+        "key": "narrative",
+        "caseSlug": "narrative-tracking"
+      },
+      {
+        "key": "standardize",
+        "caseSlug": "benchmark-system"
+      }
+    ]
+  },
+  "systems": {
+    "cards": [
+      {
+        "slug": "audience-framework",
+        "eyebrow": "Audience",
+        "title": {
+          "en": "Audience Intelligence Framework",
+          "es": "Framework de Inteligencia de Audiencias"
+        },
+        "description": {
+          "en": "Multi-country methodology for behavioral change and policy awareness measurement",
+          "es": "Metodologia multi-pais para medir cambio conductual y conciencia politica"
+        }
+      },
+      {
+        "slug": "benchmark-system",
+        "eyebrow": "Benchmark",
+        "title": {
+          "en": "Performance Benchmark System",
+          "es": "Sistema de Benchmark de Desempeno"
+        },
+        "description": {
+          "en": "Standardized metrics to compare efficiency across regions",
+          "es": "Metricas estandarizadas para comparar eficiencia entre regiones"
+        }
+      },
+      {
+        "slug": "narrative-tracking",
+        "eyebrow": "Narrative",
+        "title": {
+          "en": "Narrative Tracking System",
+          "es": "Sistema de Seguimiento Narrativo"
+        },
+        "description": {
+          "en": "Monitoring trends and sentiment in environmental discourse",
+          "es": "Monitoreo de tendencias y sentimiento en discurso ambiental"
+        }
+      }
+    ]
+  }
+}

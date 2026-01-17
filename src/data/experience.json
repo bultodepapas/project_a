@@ -1,0 +1,71 @@
+{
+  "roles": [
+    {
+      "id": "ecf",
+      "org": "European Climate Foundation",
+      "title": {
+        "en": "Data & Audience Insights Strategist",
+        "es": "Data & Audience Insights Strategist"
+      },
+      "period": "2021 - Present",
+      "location": "Remote",
+      "bullets": {
+        "en": [
+          "Led analytical design for international climate programmes",
+          "Designed 3 impact assessment frameworks",
+          "Collaborated with EU partners and philanthropic consortia"
+        ],
+        "es": [
+          "Lidero diseno analitico para programas climaticos internacionales",
+          "Diseno 3 frameworks de evaluacion de impacto",
+          "Colaboro con socios UE y consorcios filantropicos"
+        ]
+      },
+      "tags": ["Climate", "M&E", "International"]
+    },
+    {
+      "id": "fidelizador",
+      "org": "Fidelizador",
+      "title": {
+        "en": "Marketing & Communications Manager",
+        "es": "Marketing & Communications Manager"
+      },
+      "period": "2018 - 2021",
+      "location": "Santiago, Chile",
+      "bullets": {
+        "en": [
+          "Established Marketing Department from scratch",
+          "Designed monitoring tools for campaign outcomes",
+          "Coordinated multidisciplinary team"
+        ],
+        "es": [
+          "Establecio el Departamento de Marketing desde cero",
+          "Diseno herramientas de monitoreo para resultados de campanas",
+          "Coordino equipo multidisciplinario"
+        ]
+      },
+      "tags": ["Marketing", "Operations"]
+    },
+    {
+      "id": "eadbox",
+      "org": "Eadbox",
+      "title": {
+        "en": "Digital Education and Marketing Specialist",
+        "es": "Digital Education and Marketing Specialist"
+      },
+      "period": "2017 - 2018",
+      "location": "Sao Paulo, Brazil",
+      "bullets": {
+        "en": [
+          "Supported digital learning programmes",
+          "Data analysis on learner participation"
+        ],
+        "es": [
+          "Apoyo a programas de aprendizaje digital",
+          "Analisis de datos sobre participacion de estudiantes"
+        ]
+      },
+      "tags": ["Education", "Data"]
+    }
+  ]
+}

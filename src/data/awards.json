@@ -1,0 +1,33 @@
+{
+  "items": [
+    {
+      "id": "ecf-frameworks",
+      "year": "2023",
+      "title": {
+        "en": "Data Frameworks Recognition",
+        "es": "Reconocimiento por Frameworks de Datos"
+      },
+      "org": "European Climate Foundation",
+      "description": {
+        "en": "Recognized for designing data frameworks enhancing cross-regional M&E",
+        "es": "Reconocida por disenar frameworks de datos que mejoran el M&E inter-regional"
+      }
+    },
+    {
+      "id": "impact-reference",
+      "year": "2024",
+      "title": {
+        "en": "Multi-Country Impact Reference",
+        "es": "Referencia de Impacto Multi-Pais"
+      },
+      "org": {
+        "en": "International Assessments",
+        "es": "Evaluaciones Internacionales"
+      },
+      "description": {
+        "en": "Performance systems referenced in multi-country impact assessments",
+        "es": "Sistemas de desempeno referenciados en evaluaciones de impacto multi-pais"
+      }
+    }
+  ]
+}

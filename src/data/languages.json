@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "id": "english",
+      "name": "English",
+      "level": "fluent",
+      "usedFor": {
+        "en": "Research, reporting, stakeholder comms",
+        "es": "Investigacion, reportes, comunicacion con stakeholders"
+      }
+    },
+    {
+      "id": "spanish",
+      "name": "Spanish",
+      "level": "native",
+      "usedFor": {
+        "en": "Regional coordination, LATAM programmes",
+        "es": "Coordinacion regional, programas LATAM"
+      }
+    },
+    {
+      "id": "portuguese",
+      "name": "Portuguese",
+      "level": "advanced",
+      "usedFor": {
+        "en": "Brazil operations, partner comms",
+        "es": "Operaciones Brasil, comunicacion con socios"
+      }
+    },
+    {
+      "id": "french",
+      "name": "French",
+      "level": "working",
+      "usedFor": {
+        "en": "EU partner communications",
+        "es": "Comunicacion con socios UE"
+      }
+    }
+  ]
+}

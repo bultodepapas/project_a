@@ -1,0 +1,64 @@
+{
+  "items": [
+    {
+      "id": "frameworks",
+      "title": {
+        "en": "3 impact frameworks built",
+        "es": "3 frameworks de impacto creados"
+      },
+      "detail": {
+        "en": "Audience, Benchmark, Narrative",
+        "es": "Audiencias, Benchmark, Narrativas"
+      },
+      "href": "/case-studies/audience-framework"
+    },
+    {
+      "id": "scope",
+      "title": {
+        "en": "Cross-regional scope",
+        "es": "Alcance multi-regional"
+      },
+      "detail": {
+        "en": "LATAM, US/Canada, Europe",
+        "es": "LATAM, US/Canada, Europa"
+      },
+      "href": "#systems"
+    },
+    {
+      "id": "experience",
+      "title": {
+        "en": "8+ years in M&E",
+        "es": "8+ anos en M&E"
+      },
+      "detail": {
+        "en": "Monitoring, evaluation, analysis",
+        "es": "Monitoreo, evaluacion, analisis"
+      },
+      "href": "#timeline"
+    },
+    {
+      "id": "recognition",
+      "title": {
+        "en": "Recognized at ECF",
+        "es": "Reconocida en ECF"
+      },
+      "detail": {
+        "en": "Data frameworks (2023)",
+        "es": "Frameworks de datos (2023)"
+      },
+      "href": "#awards"
+    },
+    {
+      "id": "reference",
+      "title": {
+        "en": "Multi-country reference",
+        "es": "Referencia multi-pais"
+      },
+      "detail": {
+        "en": "Impact assessments (2024)",
+        "es": "Evaluaciones de impacto (2024)"
+      },
+      "href": "#awards"
+    }
+  ]
+}
