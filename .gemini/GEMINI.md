@@ -206,12 +206,4 @@ When you deliver a change, state which of these should pass.
 - If needed, explicitly include it in the prompt: `@GEMINI.md`
 - Keep this file concise; prefer additional module-level GEMINI.md files over bloating this one.
 
----
 
-## 12) Recommended layering (optional but encouraged)
-- Global: `~/.gemini/GEMINI.md` → your personal workflow preferences
-- Repo root: `/GEMINI.md` → rules in this file
-- Module-specific:
-  - `src/components/home/GEMINI.md` (motion + ChapterDeck constraints)
-  - `src/components/resume/GEMINI.md` (ATS-only constraints)
-  - `src/content/cases/GEMINI.md` (case schema + writing contract)
