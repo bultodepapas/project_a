@@ -7,6 +7,13 @@
 import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
+import homeData from '@/data/home.json';
+import proofData from '@/data/proof.json';
+import experienceData from '@/data/experience.json';
+import educationData from '@/data/education.json';
+import languagesData from '@/data/languages.json';
+import awardsData from '@/data/awards.json';
+import siteData from '@/data/site.json';
 
 // Generate static paths for each language
 export function getStaticPaths() {
@@ -23,6 +30,22 @@ if (!isValidLang(lang)) {
 }
 
 const typedLang = lang as Lang;
+
+const proofItems = proofData.items;
+const roles = experienceData.roles;
+const educationItems = educationData.items;
+const languageItems = languagesData.items;
+const awards = awardsData.items;
+
+function resolveProofHref(href: string, langValue: Lang) {
+  if (href.startsWith('#')) {
+    return href;
+  }
+  if (href.startsWith('/')) {
+    return `/${langValue}${href}`;
+  }
+  return href;
+}
 ---
 
 <Page
@@ -37,15 +60,11 @@ const typedLang = lang as Lang;
       <div class="max-w-4xl">
         <!-- Chips -->
         <div class="flex flex-wrap gap-2 mb-6 stagger-children">
-          <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/5 text-primary">
-            Bogota - Remote EU
-          </span>
-          <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/5 text-primary">
-            8+ years M&E
-          </span>
-          <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/5 text-primary">
-            SDG 8 - 9 - 13
-          </span>
+          {homeData.hero.chips.map((chip) => (
+            <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/5 text-primary">
+              {chip[typedLang]}
+            </span>
+          ))}
         </div>
 
         <!-- Headline -->
@@ -84,55 +103,19 @@ const typedLang = lang as Lang;
         {t(typedLang, 'proof.title')}
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <!-- Proof Card 1 -->
-        <a href="#systems" class="group p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all">
-          <p class="font-semibold text-foreground group-hover:text-accent transition-colors">
-            {typedLang === 'es' ? '3 frameworks de impacto creados' : '3 impact frameworks built'}
-          </p>
-          <p class="text-sm text-muted mt-1">
-            {typedLang === 'es' ? 'Audiencias, Benchmark, Narrativas' : 'Audience, Benchmark, Narrative'}
-          </p>
-        </a>
-
-        <!-- Proof Card 2 -->
-        <a href="#systems" class="group p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all">
-          <p class="font-semibold text-foreground group-hover:text-accent transition-colors">
-            {typedLang === 'es' ? 'Alcance multi-regional' : 'Cross-regional scope'}
-          </p>
-          <p class="text-sm text-muted mt-1">
-            {typedLang === 'es' ? 'LATAM, US/Canada, Europa' : 'LATAM, US/Canada, Europe'}
-          </p>
-        </a>
-
-        <!-- Proof Card 3 -->
-        <a href="#timeline" class="group p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all">
-          <p class="font-semibold text-foreground group-hover:text-accent transition-colors">
-            {typedLang === 'es' ? '8+ anos en M&E' : '8+ years in M&E'}
-          </p>
-          <p class="text-sm text-muted mt-1">
-            {typedLang === 'es' ? 'Monitoreo, evaluacion, analisis' : 'Monitoring, evaluation, analysis'}
-          </p>
-        </a>
-
-        <!-- Proof Card 4 -->
-        <a href="#awards" class="group p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all">
-          <p class="font-semibold text-foreground group-hover:text-accent transition-colors">
-            {typedLang === 'es' ? 'Reconocida en ECF' : 'Recognized at ECF'}
-          </p>
-          <p class="text-sm text-muted mt-1">
-            {typedLang === 'es' ? 'Frameworks de datos (2023)' : 'Data frameworks (2023)'}
-          </p>
-        </a>
-
-        <!-- Proof Card 5 -->
-        <a href="#awards" class="group p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all">
-          <p class="font-semibold text-foreground group-hover:text-accent transition-colors">
-            {typedLang === 'es' ? 'Referencia multi-pais' : 'Multi-country reference'}
-          </p>
-          <p class="text-sm text-muted mt-1">
-            {typedLang === 'es' ? 'Evaluaciones de impacto (2024)' : 'Impact assessments (2024)'}
-          </p>
-        </a>
+        {proofItems.map((item) => (
+          <a
+            href={resolveProofHref(item.href, typedLang)}
+            class="group p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all"
+          >
+            <p class="font-semibold text-foreground group-hover:text-accent transition-colors">
+              {item.title[typedLang]}
+            </p>
+            <p class="text-sm text-muted mt-1">
+              {item.detail[typedLang]}
+            </p>
+          </a>
+        ))}
       </div>
     </div>
   </section>
@@ -144,24 +127,16 @@ const typedLang = lang as Lang;
         {t(typedLang, 'hiredFor.title')}
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <a href={`/${typedLang}/case-studies/audience-framework`} class="group">
-          <span class="text-5xl font-bold text-accent/20 group-hover:text-accent/40 transition-colors">01</span>
-          <p class="text-lg font-medium text-foreground mt-2 group-hover:text-accent transition-colors">
-            {t(typedLang, 'hiredFor.bullets.evidence')}
-          </p>
-        </a>
-        <a href={`/${typedLang}/case-studies/narrative-tracking`} class="group">
-          <span class="text-5xl font-bold text-accent/20 group-hover:text-accent/40 transition-colors">02</span>
-          <p class="text-lg font-medium text-foreground mt-2 group-hover:text-accent transition-colors">
-            {t(typedLang, 'hiredFor.bullets.narrative')}
-          </p>
-        </a>
-        <a href={`/${typedLang}/case-studies/benchmark-system`} class="group">
-          <span class="text-5xl font-bold text-accent/20 group-hover:text-accent/40 transition-colors">03</span>
-          <p class="text-lg font-medium text-foreground mt-2 group-hover:text-accent transition-colors">
-            {t(typedLang, 'hiredFor.bullets.standardize')}
-          </p>
-        </a>
+        {homeData.hiredFor.items.map((item, index) => (
+          <a href={`/${typedLang}/case-studies/${item.caseSlug}`} class="group">
+            <span class="text-5xl font-bold text-accent/20 group-hover:text-accent/40 transition-colors">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <p class="text-lg font-medium text-foreground mt-2 group-hover:text-accent transition-colors">
+              {t(typedLang, `hiredFor.bullets.${item.key}`)}
+            </p>
+          </a>
+        ))}
       </div>
     </div>
   </section>
@@ -178,44 +153,20 @@ const typedLang = lang as Lang;
 
       <!-- Chapter Cards (Will be replaced by ChapterDeck component) -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Audience Framework -->
-        <a href={`/${typedLang}/case-studies/audience-framework`} class="group p-6 rounded-xl bg-surface border border-border hover:border-accent hover:shadow-lg transition-all">
-          <span class="text-xs font-semibold uppercase tracking-wider text-accent">Audience</span>
-          <h3 class="text-xl font-semibold text-foreground mt-2 group-hover:text-accent transition-colors">
-            {typedLang === 'es' ? 'Framework de Inteligencia de Audiencias' : 'Audience Intelligence Framework'}
-          </h3>
-          <p class="text-sm text-muted mt-2">
-            {typedLang === 'es'
-              ? 'Metodologia multi-pais para medir cambio conductual y conciencia politica'
-              : 'Multi-country methodology for behavioral change and policy awareness measurement'}
-          </p>
-        </a>
-
-        <!-- Benchmark System -->
-        <a href={`/${typedLang}/case-studies/benchmark-system`} class="group p-6 rounded-xl bg-surface border border-border hover:border-accent hover:shadow-lg transition-all">
-          <span class="text-xs font-semibold uppercase tracking-wider text-accent">Benchmark</span>
-          <h3 class="text-xl font-semibold text-foreground mt-2 group-hover:text-accent transition-colors">
-            {typedLang === 'es' ? 'Sistema de Benchmark de Desempeno' : 'Performance Benchmark System'}
-          </h3>
-          <p class="text-sm text-muted mt-2">
-            {typedLang === 'es'
-              ? 'Metricas estandarizadas para comparar eficiencia entre regiones'
-              : 'Standardized metrics to compare efficiency across regions'}
-          </p>
-        </a>
-
-        <!-- Narrative Tracking -->
-        <a href={`/${typedLang}/case-studies/narrative-tracking`} class="group p-6 rounded-xl bg-surface border border-border hover:border-accent hover:shadow-lg transition-all">
-          <span class="text-xs font-semibold uppercase tracking-wider text-accent">Narrative</span>
-          <h3 class="text-xl font-semibold text-foreground mt-2 group-hover:text-accent transition-colors">
-            {typedLang === 'es' ? 'Sistema de Seguimiento Narrativo' : 'Narrative Tracking System'}
-          </h3>
-          <p class="text-sm text-muted mt-2">
-            {typedLang === 'es'
-              ? 'Monitoreo de tendencias y sentimiento en discurso ambiental'
-              : 'Monitoring trends and sentiment in environmental discourse'}
-          </p>
-        </a>
+        {homeData.systems.cards.map((card) => (
+          <a
+            href={`/${typedLang}/case-studies/${card.slug}`}
+            class="group p-6 rounded-xl bg-surface border border-border hover:border-accent hover:shadow-lg transition-all"
+          >
+            <span class="text-xs font-semibold uppercase tracking-wider text-accent">{card.eyebrow}</span>
+            <h3 class="text-xl font-semibold text-foreground mt-2 group-hover:text-accent transition-colors">
+              {card.title[typedLang]}
+            </h3>
+            <p class="text-sm text-muted mt-2">
+              {card.description[typedLang]}
+            </p>
+          </a>
+        ))}
       </div>
     </div>
   </section>
@@ -228,49 +179,27 @@ const typedLang = lang as Lang;
       </h2>
 
       <div class="space-y-12">
-        <!-- ECF -->
-        <div class="relative pl-8 border-l-2 border-border">
-          <div class="absolute -left-2 top-0 w-4 h-4 rounded-full bg-accent"></div>
-          <div class="mb-2">
-            <span class="text-sm font-medium text-accent">2021 - {t(typedLang, 'timeline.present')}</span>
+        {roles.map((role, index) => (
+          <div class="relative pl-8 border-l-2 border-border">
+            <div class:list={[
+              'absolute -left-2 top-0 w-4 h-4 rounded-full',
+              index === 0 ? 'bg-accent' : 'bg-border',
+            ]}>
+            </div>
+            <div class="mb-2">
+              <span class:list={['text-sm font-medium', index === 0 ? 'text-accent' : 'text-muted']}>
+                {role.period.replace('Present', t(typedLang, 'timeline.present'))}
+              </span>
+            </div>
+            <h3 class="text-xl font-semibold text-foreground">{role.title[typedLang]}</h3>
+            <p class="text-muted">{role.org} - {role.location}</p>
+            <ul class="mt-4 space-y-2 text-sm text-muted">
+              {role.bullets[typedLang].map((bullet) => (
+                <li>- {bullet}</li>
+              ))}
+            </ul>
           </div>
-          <h3 class="text-xl font-semibold text-foreground">Data & Audience Insights Strategist</h3>
-          <p class="text-muted">European Climate Foundation - Remote</p>
-          <ul class="mt-4 space-y-2 text-sm text-muted">
-            <li>- {typedLang === 'es' ? 'Liderazgo en diseno analitico para programas climaticos internacionales' : 'Lead analytical design for international climate programmes'}</li>
-            <li>- {typedLang === 'es' ? 'Diseno de 3 frameworks de evaluacion de impacto' : 'Designed 3 impact assessment frameworks'}</li>
-            <li>- {typedLang === 'es' ? 'Colaboracion con socios UE y consorcios filantropicos' : 'Collaboration with EU partners and philanthropic consortia'}</li>
-          </ul>
-        </div>
-
-        <!-- Fidelizador -->
-        <div class="relative pl-8 border-l-2 border-border">
-          <div class="absolute -left-2 top-0 w-4 h-4 rounded-full bg-border"></div>
-          <div class="mb-2">
-            <span class="text-sm font-medium text-muted">2018 - 2021</span>
-          </div>
-          <h3 class="text-xl font-semibold text-foreground">Marketing & Communications Manager</h3>
-          <p class="text-muted">Fidelizador - Santiago, Chile</p>
-          <ul class="mt-4 space-y-2 text-sm text-muted">
-            <li>- {typedLang === 'es' ? 'Establecimiento del Departamento de Marketing desde cero' : 'Established Marketing Department from scratch'}</li>
-            <li>- {typedLang === 'es' ? 'Diseno de herramientas de monitoreo para resultados de campanas' : 'Designed monitoring tools for campaign outcomes'}</li>
-            <li>- {typedLang === 'es' ? 'Coordinacion de equipo multidisciplinario' : 'Coordinated multidisciplinary team'}</li>
-          </ul>
-        </div>
-
-        <!-- Eadbox -->
-        <div class="relative pl-8 border-l-2 border-border">
-          <div class="absolute -left-2 top-0 w-4 h-4 rounded-full bg-border"></div>
-          <div class="mb-2">
-            <span class="text-sm font-medium text-muted">2017 - 2018</span>
-          </div>
-          <h3 class="text-xl font-semibold text-foreground">Digital Education and Marketing Specialist</h3>
-          <p class="text-muted">Eadbox - Sao Paulo, Brazil</p>
-          <ul class="mt-4 space-y-2 text-sm text-muted">
-            <li>- {typedLang === 'es' ? 'Apoyo a programas de aprendizaje digital' : 'Supported digital learning programmes'}</li>
-            <li>- {typedLang === 'es' ? 'Analisis de datos sobre participacion de estudiantes' : 'Data analysis on learner participation'}</li>
-          </ul>
-        </div>
+        ))}
       </div>
     </div>
   </section>
@@ -283,35 +212,20 @@ const typedLang = lang as Lang;
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- MSc Business Analytics -->
-        <div class="p-6 rounded-xl bg-surface border border-border">
-          <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-accent/10 text-accent mb-3">
-            {t(typedLang, 'education.inProgress')}
-          </span>
-          <h3 class="text-lg font-semibold text-foreground">
-            {typedLang === 'es' ? 'Maestria en Analitica de Negocios' : "Master's in Business Analytics"}
-          </h3>
-          <p class="text-muted mt-1">Aston University</p>
-          <p class="text-sm text-muted">Birmingham, UK - 2026</p>
-        </div>
-
-        <!-- MSc Global Business -->
-        <div class="p-6 rounded-xl bg-surface border border-border">
-          <h3 class="text-lg font-semibold text-foreground">
-            {typedLang === 'es' ? 'Maestria en Gestion de Negocios Globales' : "Master's in Global Business Management"}
-          </h3>
-          <p class="text-muted mt-1">Rennes School of Business</p>
-          <p class="text-sm text-muted">Rennes, France - 2016</p>
-        </div>
-
-        <!-- BA International Business -->
-        <div class="p-6 rounded-xl bg-surface border border-border">
-          <h3 class="text-lg font-semibold text-foreground">
-            {typedLang === 'es' ? 'Licenciatura en Negocios Internacionales' : "BA in International Business"}
-          </h3>
-          <p class="text-muted mt-1">Universidad de La Salle</p>
-          <p class="text-sm text-muted">Bogota, Colombia - 2016</p>
-        </div>
+        {educationItems.map((item) => (
+          <div class="p-6 rounded-xl bg-surface border border-border">
+            {item.status === 'inProgress' && (
+              <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-accent/10 text-accent mb-3">
+                {t(typedLang, 'education.inProgress')}
+              </span>
+            )}
+            <h3 class="text-lg font-semibold text-foreground">
+              {item.degree[typedLang]}
+            </h3>
+            <p class="text-muted mt-1">{item.org}</p>
+            <p class="text-sm text-muted">{item.location} - {item.year}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -324,26 +238,13 @@ const typedLang = lang as Lang;
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-4 rounded-lg bg-surface border border-border">
-          <p class="font-semibold text-foreground">English</p>
-          <p class="text-sm text-accent">{t(typedLang, 'languages.levels.fluent')}</p>
-          <p class="text-xs text-muted mt-2">{t(typedLang, 'languages.usedFor')} Research, reporting, stakeholder comms</p>
-        </div>
-        <div class="p-4 rounded-lg bg-surface border border-border">
-          <p class="font-semibold text-foreground">Spanish</p>
-          <p class="text-sm text-accent">{t(typedLang, 'languages.levels.native')}</p>
-          <p class="text-xs text-muted mt-2">{t(typedLang, 'languages.usedFor')} Regional coordination, LATAM programmes</p>
-        </div>
-        <div class="p-4 rounded-lg bg-surface border border-border">
-          <p class="font-semibold text-foreground">Portuguese</p>
-          <p class="text-sm text-accent">{t(typedLang, 'languages.levels.advanced')}</p>
-          <p class="text-xs text-muted mt-2">{t(typedLang, 'languages.usedFor')} Brazil operations, partner comms</p>
-        </div>
-        <div class="p-4 rounded-lg bg-surface border border-border">
-          <p class="font-semibold text-foreground">French</p>
-          <p class="text-sm text-accent">{t(typedLang, 'languages.levels.working')}</p>
-          <p class="text-xs text-muted mt-2">{t(typedLang, 'languages.usedFor')} EU partner communications</p>
-        </div>
+        {languageItems.map((item) => (
+          <div class="p-4 rounded-lg bg-surface border border-border">
+            <p class="font-semibold text-foreground">{item.name}</p>
+            <p class="text-sm text-accent">{t(typedLang, `languages.levels.${item.level}`)}</p>
+            <p class="text-xs text-muted mt-2">{t(typedLang, 'languages.usedFor')} {item.usedFor[typedLang]}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -356,31 +257,20 @@ const typedLang = lang as Lang;
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="p-6 rounded-xl bg-surface border border-border">
-          <span class="text-sm font-medium text-accent">2023</span>
-          <h3 class="text-lg font-semibold text-foreground mt-2">
-            {typedLang === 'es' ? 'Reconocimiento por Frameworks de Datos' : 'Data Frameworks Recognition'}
-          </h3>
-          <p class="text-muted">European Climate Foundation</p>
-          <p class="text-sm text-muted mt-2">
-            {typedLang === 'es'
-              ? 'Reconocida por disenar frameworks de datos que mejoran el M&E inter-regional'
-              : 'Recognized for designing data frameworks enhancing cross-regional M&E'}
-          </p>
-        </div>
-
-        <div class="p-6 rounded-xl bg-surface border border-border">
-          <span class="text-sm font-medium text-accent">2024</span>
-          <h3 class="text-lg font-semibold text-foreground mt-2">
-            {typedLang === 'es' ? 'Referencia de Impacto Multi-Pais' : 'Multi-Country Impact Reference'}
-          </h3>
-          <p class="text-muted">{typedLang === 'es' ? 'Evaluaciones Internacionales' : 'International Assessments'}</p>
-          <p class="text-sm text-muted mt-2">
-            {typedLang === 'es'
-              ? 'Sistemas de desempeno referenciados en evaluaciones de impacto multi-pais'
-              : 'Performance systems referenced in multi-country impact assessments'}
-          </p>
-        </div>
+        {awards.map((award) => (
+          <div class="p-6 rounded-xl bg-surface border border-border">
+            <span class="text-sm font-medium text-accent">{award.year}</span>
+            <h3 class="text-lg font-semibold text-foreground mt-2">
+              {award.title[typedLang]}
+            </h3>
+            <p class="text-muted">
+              {typeof award.org === 'string' ? award.org : award.org[typedLang]}
+            </p>
+            <p class="text-sm text-muted mt-2">
+              {award.description[typedLang]}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -398,13 +288,13 @@ const typedLang = lang as Lang;
 
         <div class="flex flex-wrap justify-center gap-4">
           <a
-            href="mailto:angelae.parras@gmail.com"
+            href={`mailto:${siteData.email}`}
             class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition-colors"
           >
             {t(typedLang, 'contact.email')}
           </a>
           <a
-            href="https://www.linkedin.com/in/angela-parra-sanchez-89548165"
+            href={siteData.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background-alt transition-colors"
