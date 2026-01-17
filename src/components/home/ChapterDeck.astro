@@ -16,9 +16,17 @@ const { lang, chapters } = Astro.props;
 
 // Helper to get localized string
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
+// Color palette for chapters
+const colors = [
+  '#1a1a2e', // Default Navy
+  '#23383b', // Deep Teal
+  '#1e2022', // Dark Charcoal
+  '#2d2d44', // Lighter Navy
+];
+
 ---
 
-<section id="chapter-deck" class="relative z-10 bg-background-alt py-12 md:py-24 overflow-hidden">
+<section id="chapter-deck" class="relative z-10 bg-background-alt py-12 md:py-24 overflow-hidden transition-colors duration-700">
   <!-- Pinned Container -->
   <div class="chapter-pin-wrapper relative h-screen flex items-center">
     <div class="container relative h-full flex flex-col justify-center">
@@ -48,6 +56,7 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
           <div 
             class="chapter-card absolute inset-0 w-full h-full bg-surface border border-border rounded-xl shadow-lg p-8 flex flex-col justify-center opacity-0 translate-y-8"
             data-index={index}
+            data-color={colors[index % colors.length]}
           >
             <div class="flex items-center justify-between text-sm uppercase tracking-wider text-accent mb-6">
               <span class="font-semibold">{chapter.eyebrow}</span>
