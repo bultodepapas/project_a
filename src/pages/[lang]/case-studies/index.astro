@@ -30,7 +30,7 @@ const cases = allCases
   .filter((entry) => entry.data.lang === typedLang)
   .sort((a, b) => {
     if (a.data.featured === b.data.featured) {
-      return a.data.slug.localeCompare(b.data.slug);
+      return a.data.caseSlug.localeCompare(b.data.caseSlug);
     }
     return a.data.featured ? -1 : 1;
   });
@@ -76,7 +76,7 @@ const pageDescription = t(typedLang, 'cases.index.subtitle');
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {cases.map((caseEntry) => (
           <a
-            href={`/${typedLang}/case-studies/${caseEntry.data.slug}`}
+            href={`/${typedLang}/case-studies/${caseEntry.data.caseSlug}`}
             class="group p-6 rounded-xl bg-surface border border-border hover:border-accent hover:shadow-lg transition-all"
           >
             {caseEntry.data.featured && (

@@ -4,7 +4,7 @@ const cases = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    slug: z.string(),
+    caseSlug: z.string(),
     lang: z.enum(['en', 'es']),
     theme: z.enum(['audience', 'benchmark', 'narrative', 'capacity']),
     role: z.string(),

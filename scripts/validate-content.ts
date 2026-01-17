@@ -42,7 +42,7 @@ const RULES = {
   },
   caseStudy: {
     minDecisionImpacts: 3,
-    requiredFields: ['title', 'problem', 'approach', 'decisionImpact', 'adoption', 'governance'],
+    requiredFields: ['caseSlug', 'title', 'problem', 'approach', 'decisionImpact', 'adoption', 'governance'],
   },
 };
 

@@ -12,7 +12,7 @@ import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
   const entries = await getCollection('cases');
   return entries.map((entry) => ({
-    params: { lang: entry.data.lang, slug: entry.data.slug },
+    params: { lang: entry.data.lang, slug: entry.data.caseSlug },
     props: { entry },
   }));
 }
@@ -33,12 +33,12 @@ const allCases = await getCollection('cases');
 const casesForLang = caseOrder
   .map((caseSlug) =>
     allCases.find(
-      (caseEntry) => caseEntry.data.lang === typedLang && caseEntry.data.slug === caseSlug
+      (caseEntry) => caseEntry.data.lang === typedLang && caseEntry.data.caseSlug === caseSlug
     )
   )
   .filter(Boolean);
 
-const currentIndex = casesForLang.findIndex((caseEntry) => caseEntry?.data.slug === caseData.slug);
+const currentIndex = casesForLang.findIndex((caseEntry) => caseEntry?.data.caseSlug === caseData.caseSlug);
 const prevCase = currentIndex > 0 ? casesForLang[currentIndex - 1] : null;
 const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIndex + 1] : null;
 ---
@@ -181,13 +181,13 @@ const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIn
       <!-- Navigation -->
       <nav class="flex items-center justify-between pt-8 border-t border-border">
         {prevCase ? (
-          <a href={`/${typedLang}/case-studies/${prevCase.data.slug}`} class="text-sm text-muted hover:text-accent transition-colors">
+          <a href={`/${typedLang}/case-studies/${prevCase.data.caseSlug}`} class="text-sm text-muted hover:text-accent transition-colors">
             &larr; {t(typedLang, 'cases.detail.prevCase')}
           </a>
         ) : <span />}
 
         {nextCase ? (
-          <a href={`/${typedLang}/case-studies/${nextCase.data.slug}`} class="text-sm text-muted hover:text-accent transition-colors">
+          <a href={`/${typedLang}/case-studies/${nextCase.data.caseSlug}`} class="text-sm text-muted hover:text-accent transition-colors">
             {t(typedLang, 'cases.detail.nextCase')} &rarr;
           </a>
         ) : <span />}
