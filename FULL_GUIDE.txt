@@ -1,0 +1,1105 @@
+Dirección creativa: “CV cinematográfico” (narrativa + prueba + elegancia)
+La idea no es “poner todo el CV en una página”. Es convertirlo en una experiencia: una historia interactiva de impacto, con pruebas (métricas, casos, credenciales) y un “modo rápido” para quien solo quiere evaluar en 30–60 segundos.
+Inspiración de enfoque: portfolios premiados, sitios con scroll fuerte, transiciones y storytelling visual.  
+
+Stack y herramientas (lo que usaría para el “wow” sin perder velocidad)
+Core
+Astro 5 (base ultra rápida + islas interactivas puntuales).
+Tailwind (diseño consistente, escalable).
+GSAP + ScrollTrigger para scroll storytelling, “pinned sections”, reveals coreografiados y transiciones de escena.  
+View Transitions para navegación “cinematográfica” entre vistas/secciones (continuidad visual).  
+Extras (selectivos)
+Three.js (solo 1–2 momentos: hero o transición de casos, muy contenido) para el factor “¿cómo hizo eso?”  
+i18n nativo de Astro (ruteo por idioma + fallback + detección de preferencia) para ES/EN/FR/PT.  
+Accesibilidad / performance (esto también impresiona)
+Respeto estricto a prefers-reduced-motion (modo “sin animaciones” elegante).  
+Animaciones optimizadas (transform/opacity, batch, evitar propiedades caras).  
+
+Arquitectura de la página (sitemap + flujo)
+La web tendrá dos rutas principales para maximizar utilidad y “wow”:
+1) Ruta “Cinematic” (WOW) — 
+/[lang]/
+Una experiencia tipo “capítulo” para dejar huella.
+Secciones (orden y propósito):
+Cold Open (Hero)
+Titular fuerte (“Digital Marketing Strategist — growth + analytics + storytelling”)
+1 interacción memorable: scroll-to-reveal donde el “claim” se prueba visualmente (p. ej., números apareciendo como “data stream”).
+CTA dual: Ver casos / Modo Recruiter.
+Proof Strip (prueba inmediata)
+4–6 “chips” con logros cuantificables: ROAS, CPA, CAC, uplift, crecimiento, awareness, leads, etc.
+Badges: industrias, regiones, budgets, plataformas (Meta/Google/TikTok/LinkedIn, etc.).
+Signature Narrative (storytelling corto)
+“Cómo pienso”: un framework visual tipo Strategy → Experiment → Measure → Learn → Scale
+Microanimaciones sutiles (no circo).
+Case Studies (núcleo del portafolio)
+Cada caso como “mini-documental”:
+Challenge → Strategy → Execution → Results → Learnings (este formato es el que más diferencia portfolios de marketing).  
+“Artifacts”: creatives, dashboards, research snippets, audience insights, testing plan.
+Un gráfico simple (ligero) + tabla de métricas esenciales (sin saturar).
+Capabilities (skills con evidencia)
+No una lista larga. Un sistema tipo “capabilities grid”:
+Paid Media / Analytics / SEO / CRM / Social Listening / Creative Strategy / Experimentation
+Cada capability con: herramientas + ejemplo real + “qué impacto produce”.
+Education & Credentials (maestrías/especialidades)
+Presentación estilo “gallery” minimalista + filtros (por tema).
+Verificación rápida: instituciones, fechas, áreas.
+Languages (multilingüe como habilidad premium)
+No solo banderitas: “qué hago en cada idioma” (p. ej., campañas, research, reporting, stakeholder comms).
+Toggle de idioma real del sitio (i18n de Astro).  
+About (humano pero pro)
+6–10 líneas máximas + 3 valores de trabajo.
+Foto/visual sobrio (premium).
+Contact (cerrar fuerte)
+Botón para agendar / email / LinkedIn
+“One-pager” descargable (PDF) + “Press kit” (resumen).
+
+2) Ruta “Recruiter Mode” (ultra útil) — 
+/[lang]/resume
+Una página rápida, escaneable, cero distracciones:
+Resumen + highlights
+Skills por bloques
+Experiencia en bullets con resultados
+Educación
+Idiomas
+Links a 3 casos top
+PDF exportable
+Esto es clave: wow + utilidad sin que el reclutador se pierda.
+
+“Wow factors” concretos (lo que hará que la recuerden)
+Transiciones cinematográficas entre casos y secciones (View Transitions)  
+Scroll storytelling con 1–2 capítulos “pinned” (GSAP ScrollTrigger)  
+Prueba visual inmediata (no “About” primero): números, resultados, credenciales.
+Case studies como historia completa (challenge→strategy→execution→results→learnings).  
+Bilingüe/multilingüe real con ruteo por idioma + fallback (no traducción superficial).  
+Modo motion-lite automático para dispositivos lentos y para prefers-reduced-motion (se siente “pro de verdad”).  
+
+Modelo de contenido (para que mantenerlo sea fácil)
+Case studies en MDX (cada caso = 1 archivo, con frontmatter: industria, canal, objetivos, métricas, tools, idioma).
+Skills matrix en JSON/YAML (para renderizar skills y “evidencias” automáticamente).
+Timeline (experiencia) como data estructurada (para filtrar por año/rol/industria).
+
+Self-hosting (en tu Proxmox, limpio y profesional)
+Deploy con Docker:
+web (Astro SSR Node o static)
+caddy/nginx reverse proxy + TLS
+Si luego quieres edición sin Git: agregar Strapi/Directus (opcional).
+
+Cuando me pases la hoja de vida, yo haría 3 cosas inmediatamente:
+Seleccionar 3–5 casos “estrella” (los que sostienen el wow).
+Convertir habilidades en capabilities con evidencia (nada de listas vacías).
+Definir el claim del hero + los números que van en “Proof Strip”.
+Pásame el CV cuando quieras (PDF, texto o bullets) y lo aterrizamos a una estructura final con copy, jerarquía visual y lista de assets.
+
+
+
+1) Opciones de arquitectura UX (varias) y selección
+Opción 1 — 
+One-page “full cinematic”
+ (todo en una sola página)
+Cómo se ve: Home larguísima con todos los capítulos, casos embebidos, timeline, etc.
+Pros
+Experiencia continua, muy “wow”
+Ideal para storytelling
+Contras (importantes)
+Riesgo de performance (mucho DOM + animaciones)
+Menos “escaneable” para headhunters
+SEO y compartir casos es peor (no hay URLs dedicadas por caso)
+Mantenerlo se vuelve más difícil
+Veredicto: NO la recomiendo como principal para “quiero que me contraten senior”.
+
+Opción 2 — 
+Hybrid: Home cinematic + Case Studies por páginas + Resume modo ATS
+Cómo se ve:
+Home cinematográfica (te engancha)
+/case-studies (índice filtrable)
+/case-studies/slug (detalle por caso con artifacts)
+/resume (modo rápido, ATS, PDF)
+Pros
+WOW donde importa (home + aperturas de casos)
+Headhunter-friendly (resume + casos con URL)
+Mejor SEO, mejor compartir (“mira este case”)
+Mejor performance (divides carga)
+Mantención profesional (contenido modular)
+Contras
+Requiere trabajo más disciplinado de IA/arquitectura
+Veredicto: ✅ Mejor opción global. Esta es la que escogería.
+
+Opción 3 — 
+App-like (dashboard visual)
+Cómo se ve: Home + un “insights dashboard” (KPIs, charts, paneles) como si fuera producto.
+Pros
+“Data leader vibe” muy fuerte
+Diferenciación brutal si se hace bien
+Contras
+Fácil pasarse a “demo vacía” si no hay data publicable
+Más tiempo de build, más riesgo de que se vea “gimmick”
+Veredicto: Útil como micro-sección dentro de un case, no como arquitectura completa.
+
+Selección final
+👉 Nos vamos con Opción 2 (Hybrid):
+Home cinematic (wow) + Case pages (evidencia + SEO) + Resume (conversión).
+
+2) Opciones de “Motion Strategy” (intensidad) y selección
+Motion Tier A — Minimal premium (seguro)
+Reveal de texto/diagrama
+Transiciones suaves
+0 pinned scroll largo
+Pros: performance garantizada.
+Contras: puede no llegar al “GUAAU”.
+Motion Tier B — Balanced cinematic (recomendado)
+Hero con micro-animación
+1 sección “pinned” (ScrollTrigger) en Home
+Apertura de capítulos con coreografía
+View transitions entre páginas
+Pros: wow real + control de performance.
+Contras: exige implementación fina.
+Motion Tier C — Awwwards heavy
+2–3 pinned sections + parallax + canvas + más “scene”
+Mucha sincronía con scroll
+Pros: espectáculo.
+Contras: riesgo alto de jank, mantenimiento y accesibilidad.
+✅ Selección: Tier B (Balanced cinematic).
+
+3) Plan de ejecución (Phases) para equipo dev/design
+Fase 0 — Discovery editorial (1–2 días de trabajo real)
+Objetivo: cerrar posicionamiento y datos pendientes (sin eso, el wow se queda vacío).
+Entregables
+“Positioning pack” (headline, proof strip, 3 bullets “hired for”)
+Lista de datos faltantes (ver sección 9)
+Selección de 3–4 case studies “estrella”
+Política de confidencialidad (qué se puede publicar)
+
+Fase 1 — Foundations (repo + design system)
+Dev
+Astro 5 + Tailwind
+i18n routing
+Content model (MDX + JSON)
+Base layout, header/footer, routing
+Design
+Tokens: tipografía, spacing, colores, radii, sombras
+Component library (Figma o equivalente)
+Definition of Done
+Home skeleton sin motion pesada
+Resume skeleton
+Case index + case detail skeleton
+Lighthouse base aceptable sin optimización extrema
+
+Fase 2 — Content engine (lo que evita “hardcode hell”)
+MDX para cases + frontmatter completo
+JSON para skills/education/experience
+Render components listos para data-driven
+DoD
+Añadir/editar un case sin tocar componentes
+Fallback de idioma funcionando
+
+Fase 3 — Motion Tier B (la magia controlada)
+GSAP/ScrollTrigger solo en:
+Hero micro
+1 sección pinned (Systems Portfolio)
+Chapter open animation
+View transitions entre páginas
+Reduced-motion mode completo
+DoD
+prefers-reduced-motion desactiva pinned/ScrollTrigger
+FPS estable en navegación normal
+No animar layout properties caras
+
+Fase 4 — Artifacts & trust signals
+Artefactos anonimizados por case:
+1 diagrama (SVG)
+1 scorecard template (PDF/PNG)
+1 screenshot anonimiz. (opcional)
+“Standards & governance” micro-sección
+DoD
+Cada claim en Proof Strip enlaza a evidencia interna
+
+Fase 5 — Recruiter conversion
+PDF export (recomiendo pre-generado versionado)
+Buttons: download, email, LinkedIn, resume
+Analytics eventos mínimos (privacy-friendly)
+DoD
+Resume es escaneable en 45s
+PDF listo con formato “UN/ITC style” si se desea
+
+Fase 6 — Perf/SEO/QA hardening
+Image optimization (AVIF/WebP, sizes)
+Preload crítico, lazy-load no crítico
+SEO + Schema Person/ProfilePage
+i18n hreflang + canonical
+Testing: link integrity, a11y, lighthouse budgets
+
+4) Estructura final (Handoff) — páginas y secciones exactas
+4.1 Home Cinematic 
+/{lang}/
+(A) Header
+Logo/Name: Ángela Parra
+Nav: Systems · Case Studies · Resume · Contact
+Language switch
+CTA: Resume
+(B) Hero (Cold Open)
+Headline + Subheadline
+Chips: Bogotá · Remote EU overlap · 8+ years · SDG 8/9/13
+CTA1: View Systems
+CTA2: Recruiter Mode
+Micro-motion: text reveal + subtle “data stream”
+(C) Proof Strip (5 cards max)
+3 frameworks built
+Cross-regional scope
+Stack highlights
+Recognition 2023
+Referenced 2024
+Cada card → link a caso o sección.
+(D) “What I’m hired for” (3 bullets)
+Directivo, portable US/EU. Cada bullet link.
+(E) Systems Portfolio (capítulos) — sección pinned (1 sola)
+Chapter 1: Audience Framework
+Chapter 2: Benchmark System
+Chapter 3: Narrative Tracking System
+Chapter 4 (opcional): Department building (Fidelizador)
+Interacción:
+Scroll: cambia capítulo (GSAP)
+Click: “Open case detail”
+(F) Operating Model
+Diagrama: inputs → processing → outputs → decisions → learning loop
+cadencia + consumidores + governance
+(G) Capabilities (6 bloques)
+Cada bloque: tools + evidencia + link
+(H) Timeline Experience
+3 roles, outcomes-first
+(I) Education
+3 cards
+(J) Languages
+“used for” + i18n real
+(K) Contact CTA
+Email copy · LinkedIn · Download PDF · (Calendly opcional)
+
+4.2 Case Studies Index 
+/{lang}/case-studies
+Filtros:
+Theme (Impact / Benchmark / Narratives / Audience)
+Region
+Tools
+Cards: Title + 1-liner + tags + outcome teaser
+Sort: Featured first
+
+4.3 Case Study Detail 
+/{lang}/case-studies/{slug}
+Estructura “board/donor-grade”:
+Header: title + org + timeframe + regions
+Problem (3–5 líneas)
+Approach (bullets)
+System design (bullets + diagrama SVG)
+Data sources & tooling
+Outputs (dashboards, scorecards, memos, trainings)
+Decision impact (3 bullets obligatorios)
+Adoption & cadence
+Governance & stakeholders
+Artifacts (descargas/imagenes anonimizadas)
+Next case / back to index
+
+4.4 Recruiter Mode 
+/{lang}/resume
+Header compacto + links
+Summary 3–4 líneas
+Key strengths (5 bullets)
+Experience (2–3 bullets/rol, outcomes)
+Education
+Skills compactas
+Languages
+Awards
+Top 3 cases
+Download PDF
+Regla: casi cero motion, todo “snappy”.
+
+5) Componentes (lista para devs) + responsabilidades
+Layout/Core
+AppShell (header/footer/nav)
+LanguageSwitch
+SEOHead (title/desc/OG/schema/hreflang)
+CTAButton (variants)
+Chip / Tag
+Home
+HeroBlock
+ProofStrip
+HiredFor
+ChapterDeck (GSAP)
+OperatingModelDiagram (SVG)
+CapabilityGrid
+Timeline
+EducationCards
+ContactCTA
+Case Studies
+CaseCard
+CaseFilters
+CaseHeader
+CaseSection (generic)
+ArtifactsGallery
+NextPrevCase
+Resume
+ResumeHeader
+ResumeSection
+ResumeBullets
+PDFDownload
+
+6) Definición de “WOW” (cómo lo medimos sin subjetividad)
+WOW no es solo animación. Es: claridad + dirección de arte + ritmo + proof.
+Checklist “wow + hire”:
+En 10s: headline + proof strip + 3 bullets “hired for”
+En 60s: recruiter mode muestra seniority sin esfuerzo
+En 2–4 min: un case study demuestra governance + adoption + decision impact
+Motion: 1 pinned section impecable (no 3 mediocres)
+Reduced-motion: sigue viéndose premium sin animación
+
+7) Self-hosting y despliegue (opciones) y selección
+Opción A — Static (recomendado si PDF pre-generado)
+Build → servir estático (Caddy/Nginx)
+Súper rápido, súper simple
+Opción B — SSR Node (si PDF dinámico o features avanzados)
+Node container + reverse proxy
+Más complejo, más mantenimiento
+✅ Selección: Static + PDF pre-generado versionado, salvo que haya razón fuerte para SSR.
+
+8) Riesgos y mitigaciones (lo que un senior anticipa)
+Riesgo 1: “Se ve bonito pero no dice nada”
+Mitigación: proof strip + decision impact obligatorio por case.
+Riesgo 2: animación jank en móvil
+Mitigación: Tier B, 1 pinned, budgets, reduced motion, lazy-load.
+Riesgo 3: confidencialidad
+Mitigación: artifacts anonimizados + “confidentiality notes”.
+Riesgo 4: traducciones incompletas
+Mitigación: EN + ES completos; PT/FR con fallback en cases.
+
+9) Lista de datos pendientes (marcados como “TODO” para Ángela)
+Estos los dejamos en el plan como campos requeridos:
+Decision impact por framework (3 bullets reales cada uno)
+Adoption: quién consumía outputs (roles/equipos) + cadencia (weekly/monthly)
+Escala: #países / #equipos / #programas (aunque sean rangos)
+Qué artifacts se pueden publicar (capturas/plantillas/diagramas)
+¿Calendly o disponibilidad de contacto?
+Certificaciones/especialidades adicionales (si las hay)
+
+10) Mi “mejor versión” final (la elegida)
+✅ Hybrid UX + Motion Tier B + Static hosting + PDF versionado
+Es lo que maximiza:
+Memorabilidad (wow real)
+Credibilidad directiva
+Conversión (recruiter mode + cases compartibles)
+Performance y mantenimiento
+
+
+
+0) Decisiones base del proyecto
+0.1 Stack (definitivo)
+Astro 5 (SSR o Static; recomendado: SSR si habrá export PDF dinámica o analytics avanzados; Static si todo es contenido y PDF pre-generado)
+Tailwind (design system y consistencia)
+GSAP + ScrollTrigger (animación “capítulos” y 1–2 momentos premium)
+Astro View Transitions (transiciones entre páginas)
+MDX para Case Studies y contenido largo
+i18n por rutas: /en, /es, /pt, /fr
+3D opcional (Three.js) solo si el equipo confirma tiempo/performance; por defecto no obligatorio
+0.2 Principios no negociables
+WOW no puede degradar performance: la web debe “sentirse cara” y rápida.
+Dos modos:
+Cinematic (impacto)
+Recruiter (ATS-friendly, escaneable)
+Accesibilidad:
+prefers-reduced-motion (desactivar coreografías pesadas)
+navegación teclado, contraste, foco visible
+Evidencia sobre claims: cada gran afirmación debe apuntar a caso, artefacto o referencia interna.
+
+1) Objetivo de comunicación (para que el diseño tenga norte)
+1.1 Mensaje en 5–8 segundos
+“Ángela construye sistemas de medición e inteligencia de audiencias que convierten narrativa y datos en decisiones para portafolios climáticos internacionales”.
+1.2 Cómo se traduce en UI
+Primero prueba (frameworks, alcance, reconocimiento)
+Después método
+Luego cases (sistemas)
+“About” al final (humano pero no dominante)
+Recruiter mode visible desde el hero
+
+2) Mapa del sitio (Sitemap) y rutas
+2.1 Rutas por idioma
+/{lang}/ → Cinematic Home (capítulos)
+/{lang}/resume → Recruiter Mode (ATS)
+/{lang}/case-studies → índice filtrable
+/{lang}/case-studies/{slug} → detalle de caso
+/{lang}/about → sobre Ángela (breve)
+/{lang}/contact → contacto (opcional; puede vivir como sección)
+/{lang}/downloads → descargas (PDF, one-pager, artifacts) (opcional)
+Langs: en, es, pt, fr
+Default: en (recomendado por mercado EU/US) con selector visible.
+
+3) Arquitectura de experiencia (UX flows)
+3.1 Flow A: Headhunter / Recruiter (45–90s)
+llega a /{lang}/ o directo a /{lang}/resume
+escanea headline + proof strip
+abre 1–2 cases top
+descarga PDF / contacta LinkedIn
+KPIs internos: clicks a resume, click download, click contact, time-to-first-case.
+3.2 Flow B: Hiring manager (3–6 min)
+Cinematic: hero → proof → “What I’m hired for”
+se engancha con capítulo 1 (pinned)
+abre case detail
+revisa operating model + artifacts
+vuelve a index y compara otros casos
+3.3 Flow C: Donor/partner (2–4 min)
+busca credibilidad: standards, governance, cross-region
+revisa “Operating Model” y “Decision impact”
+valora capability building
+
+4) Contenido: modelo y estructura (para que sea mantenible)
+4.1 Estructura de contenido (source of truth)
+/content/profile.{lang}.md → summary, headline, proof points
+/content/case-studies/{slug}.{lang}.mdx → casos por idioma (o fallback + traducciones parciales)
+/content/resume.{lang}.md → versión ATS
+/content/data/skills.json → capabilities + evidencia
+/content/data/metrics.json → proof strip + cifras (si aplica)
+/content/data/education.json
+/content/data/experience.json
+/content/data/languages.json
+/content/data/awards.json
+4.2 Campos “obligatorios” por case study (frontmatter)
+title
+role (Lead / Designer / Strategist)
+org (ECF, Fidelizador, etc.)
+regions (LATAM, US/Canada, multi-country)
+timeframe
+problem_statement
+approach (bullet list)
+system_design (bullets)
+data_sources (Brandwatch, BigQuery…)
+outputs (dashboards, memos, scorecards, training)
+decision_impact (3 bullets: decisiones/cambios)
+adoption (quién lo usó, cadencia)
+governance (stakeholders, partners, donors)
+tools (list)
+confidentiality_note (si aplica)
+artifacts (links internos a imágenes/plantillas anonimizadas)
+
+5) Cinematic Home: estructura de secciones (detallada)
+5.1 Sección 1 — Hero (Cold Open)
+Objetivo: posicionamiento + CTA dual.
+Componentes:
+Headline (1 línea)
+Subheadline (1–2 líneas)
+Chips: location, remote overlap, years, SDGs
+CTA primary: “View Systems”
+CTA secondary: “Recruiter Mode”
+Quick links: LinkedIn, Email
+Selector de idioma
+Animación (ligera):
+text reveal + parallax mínimo
+micro “data stream” en background (CSS + canvas opcional)
+Pendiente / dato faltante:
+Titular definitivo (se define con Ángela)
+3–5 “proof points” cuantitativos publicables
+
+5.2 Sección 2 — Proof Strip (instant credibility)
+Objetivo: que en 10 segundos parezca “senior hire”.
+Formato: 5 tarjetas compactas (no más).
+Ejemplos (ajustables):
+“3 impact assessment frameworks built”
+“Cross-regional: LATAM + US/Canada”
+“Narrative intelligence stack (listening + quant + qual)”
+“Recognized at ECF (2023)”
+“Referenced in multi-country assessments (2024)”
+Interacción: hover/focus abre microdetalle y link al caso.
+Pendiente / dato faltante:
+Si se pueden incluir rangos (budgets, size of portfolio, #countries) sin confidencialidad
+
+5.3 Sección 3 — “What I’m hired for” (3 bullets duros)
+Objetivo: vender “director-level outcomes”.
+Tres bullets, cada uno enlaza a caso:
+Build evidence systems that survive turnover
+Translate narratives into measurable strategy
+Standardize performance across teams/regions
+Animación: stagger reveal al entrar en viewport.
+
+5.4 Sección 4 — Systems Portfolio (Capítulos)
+Objetivo: el “wow” principal + prueba real.
+Se implementa como 3–4 “chapters” tipo storytelling:
+Chapter A: Audience Framework
+Problem → Design → Indicators → Adoption → Decision Impact
+Mini-diagrama de framework
+Chapter B: Benchmark System
+Standardization → comparability → performance loops
+Chapter C: Narrative Tracking System
+Data sources → taxonomy → sentiment/trend → outputs → actions
+Chapter D (opcional): Building Marketing & Comms Dept (Fidelizador)
+from 0 to 1 → processes → measurement
+UI:
+Cada capítulo es una card grande con un “open” a panel
+Alternativa premium: capítulo “pinned” con ScrollTrigger (solo 1 capítulo pinned, no todos)
+Animación (GSAP ScrollTrigger):
+pinned section (máx 1 o 2) para no sobrecargar
+reveal de diagrama y bullets sincronizados con scroll
+Pendiente / dato faltante:
+“Decision impact” específico por capítulo (3 bullets reales)
+“Artifacts” anonimizables (ver sección 9)
+
+5.5 Sección 5 — Operating Model (visual + senior signal)
+Objetivo: sonar a “systems leader”.
+Diagrama claro:
+Inputs → Processing → Outputs → Decisions → Learning loop
+Incluye:
+Cadencia (weekly/monthly)
+Consumers (regional teams, partners, donors)
+Governance (owners, QA)
+Animación: diagrama se construye al scroll (SVG line-draw).
+Pendiente / dato faltante:
+Cadencia real usada en ECF y quién consume outputs (roles genéricos si es sensible)
+
+5.6 Sección 6 — Capabilities (evidence-backed)
+Objetivo: skills sin parecer junior.
+6 bloques máximo:
+Impact Measurement & Evaluation
+Audience & Behavioral Insights
+Social Listening Systems
+Visualization & Reporting
+Results-based Management
+Consortium Coordination & Capacity Building
+Cada bloque:
+4–6 herramientas
+1 evidencia (“Used in: Audience Framework”)
+Link a caso
+
+5.7 Sección 7 — Experience Timeline
+Objetivo: continuidad + progresión.
+Timeline vertical:
+ECF (2021–present)
+Fidelizador (2018–2021)
+Eadbox (2017–2018)
+Cada rol:
+2–3 bullets (máximo)
+Tags: regions, stakeholders, outcomes
+
+5.8 Sección 8 — Education & Credentials
+Cards minimalistas con:
+MSc Business Analytics (in progress, 2026)
+MSc Global Business Management
+BA International Business and Relations
+Pendiente / dato faltante:
+especialidades adicionales / certificaciones (si existen)
+
+5.9 Sección 9 — Languages (diferenciador real)
+Nivel + “used for” (workshops/reporting/stakeholders)
+Selector de idioma del sitio (persistente)
+
+5.10 Sección 10 — Contact (conversión)
+Email (copy-to-clipboard)
+LinkedIn
+Download PDF
+Calendly opcional (si lo usa)
+Pendiente / dato faltante:
+Si usará calendario / disponibilidad
+
+6) Recruiter Mode 
+/resume
+ (especificación)
+6.1 Layout
+Header con nombre, location, remote overlap, links
+Summary (3–4 líneas)
+Key strengths (5 bullets)
+Experience (bullets con outcomes)
+Education
+Tools (compacto, en 2 columnas)
+Languages
+Awards
+Selected case studies (3 links)
+6.2 Reglas de redacción (ATS + senior)
+Cada bullet debe comenzar con verbo fuerte + outcome
+Evitar listas gigantes de herramientas
+Priorizar: systems built, governance, adoption, decision impact
+6.3 Export PDF
+Dos opciones:
+Opción A (recomendada): PDF pre-generado y versionado (más estable)
+Opción B: generar PDF desde la página (más complejo; requiere SSR y librería de render)
+
+7) i18n (multilingüe) — reglas claras para el equipo
+7.1 Estrategia
+Default EN.
+ES completo (por origen y credibilidad).
+PT/FR: pueden iniciar como “core pages” traducidas (home + resume) y casos en EN con fallback.
+7.2 Fallback
+Si /{lang}/case-studies/{slug} no existe en ese idioma → mostrar EN con banner: “This case is available in English.”
+7.3 SEO i18n
+hreflang por idioma
+canonical correcto por ruta
+
+8) Animación “WOW” sin romper el sitio (plan técnico)
+8.1 Zonas permitidas para animación pesada
+Hero (ligero)
+1–2 capítulos en Systems Portfolio (GSAP)
+Transiciones entre páginas (View Transitions)
+8.2 Zonas prohibidas
+Recruiter Mode (casi sin animación)
+Timeline (solo reveal simple)
+8.3 Modo reduced motion
+Detectar prefers-reduced-motion
+Desactivar ScrollTrigger y reemplazar por animaciones simples (fade/slide)
+8.4 Performance budget
+LCP < 2.5s en móvil razonable
+JS: islas solo donde se necesiten
+Imágenes: avif/webp, lazy-load, tamaños definidos
+Evitar 3D salvo que sea crítico para “wow”
+
+9) Evidencias / “Artifacts” (lo que sube salario percibido)
+9.1 Qué son (para el equipo)
+Elementos que demuestran el sistema:
+Diagrama del framework (SVG)
+Scorecard template (PDF/PNG)
+Screenshot anonimizado (sin datos sensibles)
+“Decision memo” redactado (sin nombres)
+9.2 Política de confidencialidad
+Checklist de anonymization
+“Confidentiality note” por case
+Pendiente / dato faltante:
+Qué se puede publicar y qué no (definir con Ángela)
+
+10) SEO, Analytics y credenciales (para contratación)
+10.1 SEO base
+Title/description por ruta
+Open Graph (imagen share premium)
+Schema.org:
+Person
+ProfilePage
+BreadcrumbList
+Article para case studies
+10.2 Analytics (mínimo, privacy-friendly)
+Evento: click Resume, click Download, click LinkedIn, click Email
+Scroll depth en cinematic
+Tiempo en case study
+10.3 “Trust signals”
+Awards
+“Referenced in multi-country assessments”
+SDGs
+Standards (OECD-DAC / CLA) como microsección (no académica, sino práctica)
+
+11) Self-hosting (handoff a DevOps)
+11.1 Infra recomendada (Proxmox)
+VM o LXC con Docker
+Reverse proxy (Caddy o Nginx)
+Contenedor web (Astro SSR o static)
+TLS automático
+Logs + healthcheck
+11.2 Entornos
+dev local
+staging (preview)
+prod
+11.3 Deploy
+Build pipeline (GitHub Actions o similar)
+SemVer + release notes
+Rollback simple (tag anterior)
+
+12) Backlog de datos pendientes (para Ángela / stakeholder)
+Dejar estos campos marcados en la UI como “Pending” internamente (no visibles al público):
+Métricas publicables (aunque sean rangos)
+Ej: # países, # equipos, frecuencia reporting, adoption indicators
+Decision impacts concretos por framework (3 bullets cada uno)
+Lista de especialidades/certificaciones (si existen)
+Artifacts permitidos (qué se puede publicar anonimizando)
+¿Calendly/agenda? (sí/no)
+Foto profesional o estilo visual (con/sin foto)
+
+13) Entregables para el equipo de desarrollo (lo que deben producir)
+13.1 Diseño
+Wireframes de:
+Cinematic home
+Case index
+Case detail
+Resume mode
+Design tokens (typography scale, spacing, radii, shadows, colors)
+Motion guidelines (duraciones, easing, límites)
+Component library (cards, chips, buttons, timeline, chapter panels)
+13.2 Desarrollo
+Repo Astro con estructura de contenido + i18n
+Sistema de MDX para cases
+Componentes:
+Hero
+ProofStrip
+ThreeBullets
+ChapterDeck + ChapterPanel
+OperatingModelDiagram (SVG)
+CapabilityGrid
+Timeline
+EducationCards
+LanguageSwitch
+ContactCTA
+Integración GSAP solo donde aplica
+View transitions
+Resume mode sin JS pesado
+Export PDF (A o B)
+13.3 QA
+Lighthouse budgets (mobile/desktop)
+Reduced motion test
+i18n fallback test
+Link integrity test
+SEO meta validation
+
+14) “Qué agregamos / qué quitamos” (decisión editorial final)
+Agregamos
+Operating Model (sello senior)
+Decision impact por caso (sello director)
+Recruiter Mode + PDF (conversión)
+Artifacts anonimizados (credibilidad)
+Standars mini (OECD-DAC/CLA) en lenguaje simple
+Quitamos / minimizamos
+Listas largas de tools sin evidencia
+About largo
+Animación excesiva en todo (solo donde importa)
+Páginas “bonitas” sin función (todo debe llevar a case/resume/contact)
+
+Si quieres, el siguiente paso lo hago en formato “documento para devs” listo para copiar en un README técnico, con:
+estructura de carpetas sugerida,
+naming conventions,
+definición exacta de componentes y props,
+y el checklist de aceptación por página (Definition of Done).
+
+
+16) Convenciones (para evitar caos en equipo)
+16.1 Naming
+Componentes: PascalCase
+Rutas: kebab-case
+Case studies slugs: kebab-case (ej. narrative-tracking-system)
+Data keys: camelCase
+16.2 Regla editorial “senior”
+Todo bullet debe responder: ¿qué cambió?
+Prohibido: “Responsible for…”
+Obligatorio: verbo + sistema/acción + outcome.
+16.3 Regla de contenido
+“Proof Strip” máximo 5 cards
+“Capabilities” máximo 6 bloques
+“Experiencia por rol”: máximo 3 bullets
+“Decision impact por case”: 3 bullets obligatorios (TODO si faltan)
+
+17) Contratos de componentes (props) — para devs
+HeroBlock
+Props:
+headline: string
+subheadline: string
+chips: string[] (máx 5)
+primaryCta: { label, href }
+secondaryCta: { label, href }
+links: { type: 'linkedin'|'email', href }[]
+Aceptación:
+LCP-friendly (sin JS pesado)
+Background effect opcional y liviano
+ProofStrip
+Props:
+items: { title, detail, href, icon? }[] (máx 5)
+Aceptación:
+Cada item linkea a evidencia (case/section)
+A11y: foco visible + lectura screen reader
+ChapterDeck
+ (Isla con GSAP)
+Props:
+chapters: { title, subtitle, keyPoints[], href, themeTag }[]
+pinned: boolean
+reducedMotion: boolean
+Aceptación:
+Si reducedMotion: se vuelve un accordion normal sin ScrollTrigger
+1 sola sección pinned por sitio (enforced por config)
+OperatingModelDiagram
+Props:
+nodes: { id, label, description? }[]
+edges: { from, to }[]
+metadata: { cadence, consumers, governance }
+Aceptación:
+Render SVG (no canvas) para performance
+Animación line-draw solo si no reducedMotion
+CaseLayout
+Renderiza secciones en orden fijo y exige campos mínimos.
+Si faltan campos obligatorios, validate-content falla build en CI.
+
+18) Motion Spec (Tier B) — preciso, sin “inventar”
+18.1 Motion budget (reglas)
+Máximo 1 pinned section (Systems Portfolio)
+Máximo 2 “hero-level effects” (uno visual + texto reveal)
+Nada de animar width/height/top/left (solo transform/opacity)
+Evitar blur pesado en scroll (caro)
+prefers-reduced-motion: desactiva pinned + timelines y deja fades suaves
+18.2 Easing y tiempos (consistentes)
+Microinteracciones: 120–180ms
+Transiciones de secciones: 280–420ms
+Scroll-chapters: sincronizados 1:1 con scroll (sin “floaty lag”)
+Easing base: cubic-bezier(0.2, 0.8, 0.2, 1) (o equivalente)
+18.3 View Transitions (páginas)
+Home → Case detail: animar continuidad de card → header
+Case detail → index: reverse
+Resume: transición mínima (no marear)
+
+19) Definition of Done (DoD) por página
+19.1 Home 
+/{lang}/
+✅ Contenido
+Headline, subheadline, chips correctos
+Proof strip con links válidos
+3 bullets “What I’m hired for”
+3–4 chapters con teaser y link a case
+Operating model completo
+Capabilities (6 máx)
+Timeline con 3 roles
+Education
+Languages
+Contact CTA
+✅ Motion
+Hero reveal OK
+1 sección pinned (o fallback reduced-motion)
+No hay “jank” al hacer scroll
+✅ A11y/Perf
+Navegación teclado completa
+prefers-reduced-motion aplicado
+LCP: hero visible sin bloquear por JS
+
+19.2 Case Index 
+/{lang}/case-studies
+✅ Contenido
+Cards con title, 1-liner, tags, outcome teaser
+Featured arriba
+Filtros (theme/region/tools) operativos
+✅ UX
+Estado vacío si filtro no devuelve resultados
+Deep-link opcional a filtros vía query string (nice-to-have)
+✅ Perf
+Sin animaciones pesadas
+
+19.3 Case Detail 
+/{lang}/case-studies/{slug}
+✅ Obligatorio en cada caso
+Problem
+Approach
+System design (incluye diagrama o bullet architecture)
+Outputs
+Decision impact (3 bullets)
+Adoption & cadence
+Governance & stakeholders
+Tools
+Confidentiality note si aplica
+Artifacts (si existen)
+✅ UX
+Next/Prev case
+Back to index
+“This case is available in English” si fallback
+✅ Perf/A11y
+Imágenes optimizadas
+Accesibilidad en gallery
+
+19.4 Resume 
+/{lang}/resume
+✅ Contenido
+Summary 3–4 líneas
+Strengths 5 bullets
+Experience bullets outcomes-first
+Education + Languages + Awards
+Links a top 3 cases
+Download PDF
+✅ UX
+Cero fricción: visible y limpio
+Casi sin motion
+
+20) Validación automática de contenido (para que el sitio no se rompa)
+Script 
+scripts/validate-content.mjs
+ debe chequear:
+Cada case tiene campos obligatorios
+Proof strip items tienen href válido
+Skills tienen al menos 1 evidencia
+No hay más de 6 capability blocks
+No hay más de 5 proof cards
+Slugs únicos
+Fallback language config consistente
+Resultado: si falta algo, el CI falla con errores claros.
+
+21) Performance & QA plan (serio)
+21.1 Budgets
+JS total inicial bajo (ideal < 150KB gzip) excepto GSAP cargado solo en home
+Imágenes hero con sizes correctos
+Lazy-load artifacts gallery
+No 3D por defecto
+21.2 Lighthouse targets (objetivo práctico)
+Performance > 90 (desktop) / > 75 (mobile realista)
+Accessibility > 95
+Best practices > 95
+SEO > 95
+21.3 QA checklist
+Safari iOS: scroll + pinned se comporta
+Chrome Android: sin saltos
+Reduced motion: todo usable
+Multi-language: selector + fallback correcto
+Links: email/linkedin/pdf OK
+
+22) Plan de trabajo (tickets por sprint)
+Sprint 1 — Foundation + contenido base
+Repo + Astro + Tailwind + tokens
+i18n routing
+Layouts + Header/Nav/Footer
+Home skeleton sin motion pesada
+Resume skeleton
+Case index + detail skeleton
+Content validation script (mínimo)
+Sprint 2 — Content engine + cases
+MDX pipeline
+3 case studies en EN completos (estructura final)
+Proof strip + hired-for + operating model
+Skills grid data-driven
+Resume copy EN/ES
+Sprint 3 — Motion Tier B + view transitions
+GSAP pinned chapters (1 sección)
+Chapter open transitions
+View transitions
+Reduced-motion fallback
+Perf pass 1
+Sprint 4 — Artifacts + PDF + SEO
+Artifacts gallery
+PDF versionado (EN + ES mínimo)
+OG images
+Schema Person/ProfilePage
+hreflang/canonicals
+Perf pass 2 + QA final
+
+23) Datos pendientes (marcados como TODO) — y cómo los representamos sin bloquear
+Como dijiste: faltan datos, pero seguimos. Estrategia:
+23.1 En contenido (interno)
+En metrics.json y en cada case:
+todo: true + todoNote: "Need exact cadence and adoption roles"
+23.2 En UI (público)
+Nunca mostrar “TODO”. En público:
+Si falta número: usar lenguaje honesto pero fuerte:
+“Multi-country methodology adopted across regional teams”
+Si falta cifra exacta: usar rangos o cualitativos, solo si Ángela aprueba.
+
+24) Copy framework (para que TODO suene senior sin inflar)
+Modelo de frases permitidas:
+“Designed and implemented” + “standardized system” + “used across regions”
+“Built a methodology integrating qualitative + quantitative indicators”
+“Operationalized listening + analytics into decision loops”
+“Enabled teams through training + playbooks”
+Frases a evitar:
+“Helped with…”
+“Assisted…”
+“Responsible for…”
+
+25) La “mejor” versión final (resumen ejecutivo para pasar a devs)
+Implementar Opción Hybrid + Tier B motion con:
+Home cinematic enfocada en frameworks
+Case Studies con URLs y evidencia
+Resume ATS + PDF descargable
+i18n EN/ES completo, PT/FR parcial con fallback
+Data-driven content + validación CI
+
+Siguiente entregable que puedo producir ya (sin pedirte más)
+Puedo convertir todo esto en un documento único de handoff tipo:
+SPEC_AngelaParra_PortfolioSite_v1.md
+con:
+sitemap,
+componentes/props,
+DoD,
+motion spec,
+repo tree,
+y lista de TODOs.
+15) Estructura de repositorio (propuesta exacta)
+Opción elegida: Astro + Static output + MDX + i18n
+Estructura sugerida:
+/
+  README.md
+  package.json
+  astro.config.mjs
+  tailwind.config.mjs
+  src/
+    pages/
+      [lang]/
+        index.astro
+        resume.astro
+        case-studies/
+          index.astro
+          [slug].astro
+        about.astro
+        contact.astro   (opcional; si no, sección en home)
+    layouts/
+      BaseLayout.astro
+      PageLayout.astro
+      CaseLayout.astro
+      ResumeLayout.astro
+    components/
+      core/
+        Header.astro
+        Footer.astro
+        Nav.astro
+        LanguageSwitch.astro
+        SEOHead.astro
+        Button.astro
+        Chip.astro
+        Tag.astro
+        Icon.astro
+      home/
+        HeroBlock.astro
+        ProofStrip.astro
+        HiredFor.astro
+        ChapterDeck.tsx (isla React/Svelte si GSAP lo requiere)
+        OperatingModelDiagram.astro
+        CapabilityGrid.astro
+        Timeline.astro
+        EducationCards.astro
+        LanguagesBlock.astro
+        ContactCTA.astro
+      cases/
+        CaseCard.astro
+        CaseFilters.astro
+        CaseHeader.astro
+        CaseSection.astro
+        ArtifactsGallery.astro
+        NextPrevCase.astro
+      resume/
+        ResumeHeader.astro
+        ResumeSection.astro
+        ResumeBullets.astro
+        DownloadPDF.astro
+    content/
+      en/
+        profile.md
+        resume.md
+        case-studies/
+          audience-framework.mdx
+          benchmark-system.mdx
+          narrative-tracking.mdx
+          dept-building-fidelizador.mdx (opcional)
+      es/
+        profile.md
+        resume.md
+        case-studies/
+          ... (puede iniciar parcial)
+      pt/
+        profile.md
+        resume.md
+      fr/
+        profile.md
+        resume.md
+    data/
+      metrics.json
+      skills.json
+      experience.json
+      education.json
+      awards.json
+      languages.json
+      navigation.json
+    lib/
+      i18n.ts
+      content.ts
+      seo.ts
+      motion.ts
+      analytics.ts (opcional)
+    styles/
+      globals.css
+      tokens.css (CSS variables)
+    assets/
+      images/
+      artifacts/
+      og/
+  public/
+    pdf/
+      angela-parra_resume_en_v1.pdf
+      angela-parra_resume_es_v1.pdf
+  scripts/
+    validate-content.mjs
+    build-pdf.mjs (opcional)
+
