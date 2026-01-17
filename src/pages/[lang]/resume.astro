@@ -52,6 +52,9 @@ const awards = awardsData.items;
       <header class="mb-12 pb-8 border-b border-border">
         <h1 class="text-3xl md:text-4xl font-bold text-foreground">{siteData.name}</h1>
         <p class="text-xl text-accent mt-2">{siteData.jobTitle[typedLang]}</p>
+        <p class="text-sm text-muted mt-2 max-w-2xl">
+          {siteData.tagline[typedLang]}
+        </p>
 
         <div class="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted">
           <span>{siteData.location[typedLang]}</span>

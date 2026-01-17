@@ -90,6 +90,9 @@ const pageDescription = t(typedLang, 'cases.index.subtitle');
             <h2 class="text-xl font-semibold text-foreground mt-2 group-hover:text-accent transition-colors">
               {caseEntry.data.title}
             </h2>
+            <p class="text-xs text-muted mt-2">
+              {caseEntry.data.role} · {caseEntry.data.org}
+            </p>
             <p class="text-sm text-muted mt-2">
               {caseEntry.data.problem}
             </p>
