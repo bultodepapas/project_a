@@ -9,24 +9,26 @@
     "preview": "astro preview",
     "check": "astro check && tsc --noEmit",
     "validate": "tsx scripts/validate-content.ts",
+    "gen:pdf": "tsx scripts/generate-pdf.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "astro": "^5.0.0",
     "@astrojs/mdx": "^4.0.0",
+    "astro": "^5.0.0",
     "gsap": "^3.12.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.0",
     "@tailwindcss/vite": "^4.0.0",
     "@types/node": "^22.0.0",
+    "gray-matter": "^4.0.3",
     "prettier": "^3.4.0",
     "prettier-plugin-astro": "^0.14.0",
+    "puppeteer": "^24.35.0",
     "tailwindcss": "^4.0.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.7.0",
-    "gray-matter": "^4.0.3"
+    "typescript": "^5.7.0"
   },
   "engines": {
     "node": ">=20.0.0"
