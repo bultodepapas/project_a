@@ -1,270 +1,66 @@
-/*
- * Global Styles
- * Base styles, resets, and global utilities
- * Tailwind CSS v4
- */
-
-/* Import Tailwind */
-@import 'tailwindcss';
-
-/* Import design tokens */
-@import './tokens.css';
-
-/* ============================================
- * THEME CONFIGURATION (Tailwind v4)
- * ============================================ */
+@import "tailwindcss";
 
 @theme {
-  /* Colors */
   --color-primary: var(--color-primary);
   --color-primary-light: var(--color-primary-light);
   --color-accent: var(--color-accent);
   --color-accent-light: var(--color-accent-light);
-
+  
   --color-background: var(--color-bg);
   --color-background-alt: var(--color-bg-alt);
   --color-surface: var(--color-surface);
+  
   --color-foreground: var(--color-text);
   --color-muted: var(--color-text-muted);
   --color-border: var(--color-border);
-  --color-border-strong: var(--color-border-strong);
 
-  /* Font families */
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
-
-  /* Container */
-  --width-container: var(--container-max);
-
-  /* Shadows */
-  --shadow-sm: var(--shadow-sm);
-  --shadow-md: var(--shadow-md);
-  --shadow-lg: var(--shadow-lg);
-  --shadow-xl: var(--shadow-xl);
-
-  /* Transitions */
-  --duration-fast: var(--duration-fast);
-  --duration-normal: var(--duration-normal);
-  --duration-slow: var(--duration-slow);
-
-  /* Animations */
-  --animate-fade-in: fadeIn var(--duration-normal) var(--ease-out);
-  --animate-slide-up: slideUp var(--duration-normal) var(--ease-out);
-  --animate-fade-in-up: fadeInUp var(--duration-slow) var(--ease-out);
 }
-
-/* ============================================
- * BASE STYLES
- * ============================================ */
 
 @layer base {
-  /* Smooth scrolling (respects reduced motion via tokens) */
+  /* Film Grain Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
   html {
-    scroll-behavior: smooth;
+    @apply scroll-smooth;
   }
 
-  /* Base body styles */
   body {
-    background-color: var(--color-bg);
-    color: var(--color-text);
-    font-family: var(--font-sans);
-    line-height: var(--leading-normal);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @apply bg-background text-foreground font-sans antialiased;
   }
-
-  /* Focus visible for accessibility */
-  :focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-
-  /* Remove default focus for mouse users */
-  :focus:not(:focus-visible) {
-    outline: none;
-  }
-
-  /* Headings */
+  
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
-    font-weight: var(--font-semibold);
-    color: var(--color-text);
-    line-height: var(--leading-tight);
-  }
-
-  /* Links base */
-  a {
-    color: var(--color-accent);
-    transition: color var(--duration-fast) var(--ease-out);
-  }
-
-  a:hover {
-    color: var(--color-accent-light);
-  }
-
-  /* Images */
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* Selection */
-  ::selection {
-    background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
-    color: var(--color-text);
+    @apply font-display tracking-tight;
   }
 }
-
-/* ============================================
- * COMPONENT LAYER
- * Reusable component classes
- * ============================================ */
 
 @layer components {
-  /* Container */
   .container {
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-    max-width: var(--container-max);
-    padding-left: var(--container-padding);
-    padding-right: var(--container-padding);
+    @apply mx-auto px-6 max-w-7xl;
   }
-
-  @media (max-width: 768px) {
-    .container {
-      padding-left: var(--container-padding-mobile);
-      padding-right: var(--container-padding-mobile);
-    }
-  }
-
-  /* Section spacing */
+  
   .section {
-    padding-top: var(--section-gap-mobile);
-    padding-bottom: var(--section-gap-mobile);
+    @apply py-24 md:py-32;
   }
 
-  @media (min-width: 768px) {
-    .section {
-      padding-top: var(--section-gap);
-      padding-bottom: var(--section-gap);
-    }
-  }
-
-  /* Skip to content link (accessibility) */
-  .skip-to-content {
-    position: absolute;
-    left: 1rem;
-    top: 1rem;
-    z-index: 50;
-    background-color: var(--color-primary);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    transform: translateY(-100%);
-    opacity: 0;
-    transition: all var(--duration-fast) var(--ease-out);
-  }
-
-  .skip-to-content:focus {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  /* Prose (for MDX content) */
-  .prose {
-    max-width: none;
-  }
-
-  .prose p {
-    margin-bottom: 1rem;
-    line-height: var(--leading-relaxed);
-  }
-
-  .prose ul,
-  .prose ol {
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
-  }
-
-  .prose li {
-    margin-bottom: 0.5rem;
-  }
-
-  .prose ul li {
-    list-style-type: disc;
-  }
-
-  .prose ol li {
-    list-style-type: decimal;
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-6 py-3 font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2;
   }
 }
 
-/* ============================================
- * UTILITY LAYER
- * Custom utilities
- * ============================================ */
-
-@layer utilities {
-  /* Text balance for headings */
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  /* Hide visually but keep accessible */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-
-  /* Animation utilities */
-  .animate-fade-in {
-    animation: fadeIn var(--duration-normal) var(--ease-out);
-  }
-
-  .animate-slide-up {
-    animation: slideUp var(--duration-normal) var(--ease-out);
-  }
-
-  .animate-fade-in-up {
-    animation: fadeInUp var(--duration-slow) var(--ease-out);
-  }
-
-  /* Stagger children animations */
-  .stagger-children > * {
-    opacity: 0;
-    animation: fadeInUp var(--duration-slow) var(--ease-out) forwards;
-  }
-
-  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger-children > *:nth-child(2) { animation-delay: 80ms; }
-  .stagger-children > *:nth-child(3) { animation-delay: 160ms; }
-  .stagger-children > *:nth-child(4) { animation-delay: 240ms; }
-  .stagger-children > *:nth-child(5) { animation-delay: 320ms; }
-  .stagger-children > *:nth-child(6) { animation-delay: 400ms; }
-}
-
-/* ============================================
- * KEYFRAMES
- * ============================================ */
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(10px); }
-  to { transform: translateY(0); }
-}
-
+/* Custom Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -274,4 +70,41 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Stagger Utilities */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+
+/* Operating Model Data Flow */
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.animate-flow {
+  stroke-dasharray: 5 5;
+  animation: flowDash 1s linear infinite;
+}
+
+@keyframes pulseNode {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.animate-pulse-node {
+  animation: pulseNode 3s ease-in-out infinite;
+  transform-origin: center;
 }

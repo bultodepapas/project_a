@@ -35,14 +35,18 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
       </div>
 
       <!-- Headline -->
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 animate-fade-in-up opacity-0 fill-mode-forwards" style="animation-delay: 300ms;">
-        {t(lang, 'hero.headline')}
-      </h1>
+      <div class="overflow-hidden mb-6">
+        <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground transform translate-y-full animate-reveal-text font-display tracking-tight leading-[1.1]">
+          {t(lang, 'hero.headline')}
+        </h1>
+      </div>
 
       <!-- Subheadline -->
-      <p class="text-xl md:text-2xl text-muted max-w-2xl mb-6 animate-fade-in-up opacity-0 fill-mode-forwards" style="animation-delay: 400ms;">
-        {t(lang, 'hero.subheadline')}
-      </p>
+      <div class="overflow-hidden mb-8">
+        <p class="text-xl md:text-2xl text-muted max-w-2xl transform translate-y-full animate-reveal-text" style="animation-delay: 200ms;">
+          {t(lang, 'hero.subheadline')}
+        </p>
+      </div>
 
       <!-- Meta Line -->
       <div class="flex flex-wrap items-center gap-4 text-sm text-muted mb-10 animate-fade-in-up opacity-0 fill-mode-forwards" style="animation-delay: 500ms;">
@@ -79,5 +83,18 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 <style>
   .fill-mode-forwards {
     animation-fill-mode: forwards;
+  }
+  
+  @keyframes revealText {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-reveal-text {
+    animation: revealText 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 </style>

@@ -38,9 +38,9 @@
    * TYPOGRAPHY
    * ============================================ */
 
-  /* Font families */
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display: var(--font-sans);
+  /* === FONT FAMILIES === */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Syne', 'Inter', system-ui, sans-serif;  /* Cinematic header font */
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Font weights */

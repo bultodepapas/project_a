@@ -92,7 +92,7 @@ const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.n
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@400;700;800&display=swap"
       rel="stylesheet"
     />
 
@@ -100,7 +100,7 @@ const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.n
     <ClientRouter />
 
     <!-- Schema.org JSON-LD -->
-    {schema && <script type="application/ld+json" set:html={schema} />}
+    {schema && <script is:inline type="application/ld+json" set:html={schema} />}
 
     <!-- Slot for additional head content -->
     <slot name="head" />
@@ -116,5 +116,10 @@ const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.n
 
     <!-- Slot for scripts at end of body -->
     <slot name="scripts" />
+
+    <script>
+      import { cleanupMotion } from '@/lib/motion';
+      document.addEventListener('astro:before-swap', cleanupMotion);
+    </script>
   </body>
 </html>
