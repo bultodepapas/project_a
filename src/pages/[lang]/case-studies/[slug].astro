@@ -48,7 +48,7 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
       <!-- Breadcrumb -->
       <nav class="mb-8">
         <a href={`/${typedLang}/case-studies`} class="text-sm text-muted hover:text-accent transition-colors">
-          <- {t(typedLang, 'cases.detail.backToIndex')}
+          &larr; {t(typedLang, 'cases.detail.backToIndex')}
         </a>
       </nav>
 
@@ -136,7 +136,7 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
         <ul class="space-y-3">
           {caseData.decisionImpact.map((item) => (
             <li class="flex gap-3 text-foreground">
-              <span class="text-accent font-bold">-></span>
+              <span class="text-accent font-bold">&rarr;</span>
               <span>{item}</span>
             </li>
           ))}
@@ -171,13 +171,13 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
       <nav class="flex items-center justify-between pt-8 border-t border-border">
         {prevCase ? (
           <a href={`/${typedLang}/case-studies/${prevCase}`} class="text-sm text-muted hover:text-accent transition-colors">
-            <- {t(typedLang, 'cases.detail.prevCase')}
+            &larr; {t(typedLang, 'cases.detail.prevCase')}
           </a>
         ) : <span />}
 
         {nextCase ? (
           <a href={`/${typedLang}/case-studies/${nextCase}`} class="text-sm text-muted hover:text-accent transition-colors">
-            {t(typedLang, 'cases.detail.nextCase')} ->
+            {t(typedLang, 'cases.detail.nextCase')} &rarr;
           </a>
         ) : <span />}
       </nav>

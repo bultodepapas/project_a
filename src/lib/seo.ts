@@ -128,10 +128,10 @@ export function generateBreadcrumbSchema(
  * Site-wide SEO defaults
  */
 export const siteConfig = {
-  name: 'Angela Parra Sánchez',
+  name: 'Angela Parra Sanchez',
   url: 'https://angelaparra.com',
   email: 'angelae.parras@gmail.com',
-  linkedin: 'https://www.linkedin.com/in/angela-parra-sánchez-89548165',
+  linkedin: 'https://www.linkedin.com/in/angela-parra-sanchez-89548165',
   jobTitle: 'Data & Impact Assessment Specialist',
   knowsAbout: [
     'Impact Assessment',
