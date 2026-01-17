@@ -1,0 +1,20 @@
+---
+interface Props {
+  title: string;
+  className?: string;
+  variant?: 'default' | 'highlight' | 'boxed';
+}
+
+const { title, className = '', variant = 'default' } = Astro.props;
+
+const variants = {
+  default: '',
+  highlight: 'p-6 rounded-xl bg-accent/5 border border-accent/20',
+  boxed: 'p-6 rounded-xl bg-background-alt border border-border',
+};
+---
+
+<section class={`mb-10 ${variants[variant]} ${className}`}>
+  <h2 class="text-xl font-semibold text-foreground mb-4">{title}</h2>
+  <slot />
+</section>

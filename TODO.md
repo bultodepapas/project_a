@@ -1,4 +1,4 @@
-# Project A - Remaining Tasks (Sprint 0-1)
+# Project A - Remaining Tasks (Sprint 0-3)
 
 ## Sprint 0: Setup & Validation (Completed)
 - [x] Project init
@@ -8,17 +8,17 @@
 - [x] Content validation script
 - [x] CI pipeline (local check)
 
-## Sprint 1: Content Engine & Skeletons (In Progress)
+## Sprint 1: Content Engine & Skeletons (Completed)
 - [x] Content collections config
 - [x] Data schemas
-- [x] Home skeleton (Refactored into components)
-- [x] Resume skeleton (Basic implementation done)
+- [x] Home skeleton
+- [x] Resume skeleton
 - [x] Case index skeleton
 - [x] Case detail skeleton
-- [x] LangSwitch (Need to verify)
+- [x] LangSwitch
 - [x] SEO component
 
-## Sprint 2: Home Components (Mostly Done)
+## Sprint 2: Home Components (Completed)
 - [x] Hero
 - [x] ProofStrip
 - [x] HiredFor
@@ -29,9 +29,22 @@
 - [x] Education
 - [x] Contact
 
-## Immediate Next Steps (Sprint 3 Focus)
-- [ ] Refine Case Study detail page (fix type errors, improve styling)
-- [ ] Refine Case Index page (filters implementation)
-- [ ] Polish Resume page styling
-- [ ] Verify LangSwitch functionality
-- [ ] Add more "Cinematic" polish to ChapterDeck (fine-tune GSAP)
+## Sprint 3: Case Studies & Resume (Completed)
+- [x] CaseCard component
+- [x] CaseFilters component (Client-side filtering)
+- [x] Case Index Page refactor
+- [x] CaseHeader component
+- [x] CaseSection component
+- [x] CaseNav component
+- [x] Case Detail Page refactor
+- [x] ResumeHeader component
+- [x] ResumeSection component
+- [x] Resume Page refactor
+- [x] View Transitions implementation
+
+## Sprint 4: Motion & Polish (Next Steps)
+- [ ] Fine-tune GSAP ChapterDeck animations (smoothness check)
+- [ ] Verify responsive behavior on actual devices (if possible)
+- [ ] Add explicit "Reduced Motion" toggle (optional, strictly respecting system pref now)
+- [ ] Final Lighthouse audit (Performance/A11y)
+- [ ] Add more mock data/real content to verify edge cases

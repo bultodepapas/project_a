@@ -8,6 +8,9 @@ import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
 import { getCollection } from 'astro:content';
+import CaseHeader from '@/components/cases/CaseHeader.astro';
+import CaseSection from '@/components/cases/CaseSection.astro';
+import CaseNav from '@/components/cases/CaseNav.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('cases');
@@ -39,8 +42,11 @@ const casesForLang = caseOrder
   .filter(Boolean);
 
 const currentIndex = casesForLang.findIndex((caseEntry) => caseEntry?.data.caseSlug === caseData.caseSlug);
-const prevCase = currentIndex > 0 ? casesForLang[currentIndex - 1] : null;
-const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIndex + 1] : null;
+const prevCaseEntry = currentIndex > 0 ? casesForLang[currentIndex - 1] : null;
+const nextCaseEntry = currentIndex < casesForLang.length - 1 ? casesForLang[currentIndex + 1] : null;
+
+const prevCase = prevCaseEntry ? { slug: prevCaseEntry.data.caseSlug, title: prevCaseEntry.data.title } : undefined;
+const nextCase = nextCaseEntry ? { slug: nextCaseEntry.data.caseSlug, title: nextCaseEntry.data.title } : undefined;
 ---
 
 <Page
@@ -58,143 +64,110 @@ const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIn
         </a>
       </nav>
 
-      <!-- Header -->
-      <header class="mb-12 pb-8 border-b border-border">
-        <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-4">{caseData.title}</h1>
-
-        <div class="flex flex-wrap items-center gap-3 text-sm text-muted">
-          <span class="inline-flex items-center px-2 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium">
-            {caseData.theme}
-          </span>
-          <span class="text-foreground font-medium">{caseData.role}</span>
-          <span class="text-border">|</span>
-          <span>{caseData.org}</span>
-          <span class="text-border">|</span>
-          <span>{caseData.timeframe}</span>
-        </div>
-
-        <div class="flex flex-wrap gap-2 mt-4">
-          {caseData.regions.map((region) => (
-            <span class="px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent">
-              {region}
-            </span>
-          ))}
-        </div>
-      </header>
+      <CaseHeader 
+        title={caseData.title}
+        theme={caseData.theme}
+        role={caseData.role}
+        org={caseData.org}
+        timeframe={caseData.timeframe}
+        regions={caseData.regions}
+      />
 
       <!-- Problem -->
-      <section class="mb-10 p-6 rounded-xl bg-background-alt border border-border">
-        <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.problem')}</h2>
+      <CaseSection title={t(typedLang, 'cases.detail.problem')} variant="boxed">
         <p class="text-muted leading-relaxed">{caseData.problem}</p>
-      </section>
+      </CaseSection>
 
       <!-- Approach -->
-      <section class="mb-10">
-        <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.approach')}</h2>
+      <CaseSection title={t(typedLang, 'cases.detail.approach')}>
         <ul class="space-y-2">
-          {caseData.approach.map((item) => (
+          {caseData.approach.map((item: string) => (
             <li class="flex gap-3 text-muted">
               <span class="text-accent">+</span>
               <span>{item}</span>
             </li>
           ))}
         </ul>
-      </section>
+      </CaseSection>
 
       <!-- System Design -->
-      <section class="mb-10">
-        <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.systemDesign')}</h2>
+      <CaseSection title={t(typedLang, 'cases.detail.systemDesign')}>
         <ul class="space-y-2">
-          {caseData.systemDesign.map((item) => (
+          {caseData.systemDesign.map((item: string) => (
             <li class="flex gap-3 text-muted">
               <span class="text-accent">+</span>
               <span>{item}</span>
             </li>
           ))}
         </ul>
-      </section>
+      </CaseSection>
 
       <!-- Data Sources -->
-      <section class="mb-10">
-        <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.dataSources')}</h2>
+      <CaseSection title={t(typedLang, 'cases.detail.dataSources')}>
         <div class="flex flex-wrap gap-2">
-          {caseData.dataSources.map((source) => (
-            <span class="px-3 py-1 text-sm rounded-full bg-background-alt text-muted">
+          {caseData.dataSources.map((source: string) => (
+            <span class="px-3 py-1 text-sm rounded-full bg-background-alt text-muted border border-border">
               {source}
             </span>
           ))}
         </div>
-      </section>
+      </CaseSection>
 
       <!-- Outputs -->
-      <section class="mb-10">
-        <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.outputs')}</h2>
+      <CaseSection title={t(typedLang, 'cases.detail.outputs')}>
         <ul class="space-y-2">
-          {caseData.outputs.map((item) => (
+          {caseData.outputs.map((item: string) => (
             <li class="flex gap-3 text-muted">
               <span class="text-accent">+</span>
               <span>{item}</span>
             </li>
           ))}
         </ul>
-      </section>
+      </CaseSection>
 
-      <!-- Decision Impact -->
-      <section class="mb-10 p-6 rounded-xl bg-accent/5 border border-accent/20">
-        <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.decisionImpact')}</h2>
+      <!-- Decision Impact (Highlighted) -->
+      <CaseSection title={t(typedLang, 'cases.detail.decisionImpact')} variant="highlight">
         <ul class="space-y-3">
-          {caseData.decisionImpact.map((item) => (
+          {caseData.decisionImpact.map((item: string) => (
             <li class="flex gap-3 text-foreground">
               <span class="text-accent font-bold">&rarr;</span>
               <span>{item}</span>
             </li>
           ))}
         </ul>
-      </section>
+      </CaseSection>
 
       <!-- Adoption -->
-      <section class="mb-10">
-        <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.adoption')}</h2>
+      <CaseSection title={t(typedLang, 'cases.detail.adoption')}>
         <p class="text-muted leading-relaxed">{caseData.adoption}</p>
-      </section>
+      </CaseSection>
 
       <!-- Governance -->
-      <section class="mb-10">
-        <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.governance')}</h2>
+      <CaseSection title={t(typedLang, 'cases.detail.governance')}>
         <p class="text-muted leading-relaxed">{caseData.governance}</p>
-      </section>
+      </CaseSection>
 
       <!-- Tools -->
-      <section class="mb-12">
-        <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.tools')}</h2>
+      <CaseSection title={t(typedLang, 'cases.detail.tools')}>
         <div class="flex flex-wrap gap-2">
-          {caseData.tools.map((tool) => (
+          {caseData.tools.map((tool: string) => (
             <span class="px-3 py-1 text-sm rounded-full bg-primary/5 text-primary">
               {tool}
             </span>
           ))}
         </div>
-      </section>
+      </CaseSection>
 
       <!-- MDX Content -->
-      <section class="mb-12 prose">
+      <div class="mb-12 prose prose-neutral dark:prose-invert max-w-none">
         <Content />
-      </section>
+      </div>
 
-      <!-- Navigation -->
-      <nav class="flex items-center justify-between pt-8 border-t border-border">
-        {prevCase ? (
-          <a href={`/${typedLang}/case-studies/${prevCase.data.caseSlug}`} class="text-sm text-muted hover:text-accent transition-colors">
-            &larr; {t(typedLang, 'cases.detail.prevCase')}
-          </a>
-        ) : <span />}
-
-        {nextCase ? (
-          <a href={`/${typedLang}/case-studies/${nextCase.data.caseSlug}`} class="text-sm text-muted hover:text-accent transition-colors">
-            {t(typedLang, 'cases.detail.nextCase')} &rarr;
-          </a>
-        ) : <span />}
-      </nav>
+      <CaseNav 
+        lang={typedLang}
+        prevCase={prevCase}
+        nextCase={nextCase}
+      />
     </div>
   </article>
 </Page>

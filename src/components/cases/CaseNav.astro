@@ -1,0 +1,28 @@
+---
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+  prevCase?: { slug: string; title: string };
+  nextCase?: { slug: string; title: string };
+}
+
+const { lang, prevCase, nextCase } = Astro.props;
+---
+
+<nav class="flex items-center justify-between pt-8 border-t border-border mt-16">
+  {prevCase ? (
+    <a href={`/${lang}/case-studies/${prevCase.slug}`} class="group flex flex-col items-start gap-1 text-sm">
+      <span class="text-muted group-hover:text-accent transition-colors">&larr; {t(lang, 'cases.detail.prevCase')}</span>
+      <span class="font-medium text-foreground hidden md:block">{prevCase.title}</span>
+    </a>
+  ) : <span />}
+
+  {nextCase ? (
+    <a href={`/${lang}/case-studies/${nextCase.slug}`} class="group flex flex-col items-end gap-1 text-sm text-right">
+      <span class="text-muted group-hover:text-accent transition-colors">{t(lang, 'cases.detail.nextCase')} &rarr;</span>
+      <span class="font-medium text-foreground hidden md:block">{nextCase.title}</span>
+    </a>
+  ) : <span />}
+</nav>
