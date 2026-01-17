@@ -38,7 +38,7 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
 ---
 
 <Page
-  title={`${caseData.title} | Angela Parra Sánchez`}
+  title={`${caseData.title} | Angela Parra Sanchez`}
   description={caseData.problem.slice(0, 160)}
   lang={typedLang}
   ogType="article"
@@ -48,7 +48,7 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
       <!-- Breadcrumb -->
       <nav class="mb-8">
         <a href={`/${typedLang}/case-studies`} class="text-sm text-muted hover:text-accent transition-colors">
-          ← {t(typedLang, 'cases.detail.backToIndex')}
+          <- {t(typedLang, 'cases.detail.backToIndex')}
         </a>
       </nav>
 
@@ -58,9 +58,9 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
 
         <div class="flex flex-wrap gap-4 text-sm text-muted">
           <span><strong class="text-foreground">{caseData.role}</strong></span>
-          <span>·</span>
+          <span>-</span>
           <span>{caseData.org}</span>
-          <span>·</span>
+          <span>-</span>
           <span>{caseData.timeframe}</span>
         </div>
 
@@ -85,7 +85,7 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
         <ul class="space-y-2">
           {caseData.approach.map((item) => (
             <li class="flex gap-3 text-muted">
-              <span class="text-accent">•</span>
+              <span class="text-accent">-</span>
               <span>{item}</span>
             </li>
           ))}
@@ -98,7 +98,7 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
         <ul class="space-y-2">
           {caseData.systemDesign.map((item) => (
             <li class="flex gap-3 text-muted">
-              <span class="text-accent">•</span>
+              <span class="text-accent">-</span>
               <span>{item}</span>
             </li>
           ))}
@@ -123,7 +123,7 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
         <ul class="space-y-2">
           {caseData.outputs.map((item) => (
             <li class="flex gap-3 text-muted">
-              <span class="text-accent">•</span>
+              <span class="text-accent">-</span>
               <span>{item}</span>
             </li>
           ))}
@@ -136,7 +136,7 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
         <ul class="space-y-3">
           {caseData.decisionImpact.map((item) => (
             <li class="flex gap-3 text-foreground">
-              <span class="text-accent font-bold">→</span>
+              <span class="text-accent font-bold">-></span>
               <span>{item}</span>
             </li>
           ))}
@@ -171,13 +171,13 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
       <nav class="flex items-center justify-between pt-8 border-t border-border">
         {prevCase ? (
           <a href={`/${typedLang}/case-studies/${prevCase}`} class="text-sm text-muted hover:text-accent transition-colors">
-            ← {t(typedLang, 'cases.detail.prevCase')}
+            <- {t(typedLang, 'cases.detail.prevCase')}
           </a>
         ) : <span />}
 
         {nextCase ? (
           <a href={`/${typedLang}/case-studies/${nextCase}`} class="text-sm text-muted hover:text-accent transition-colors">
-            {t(typedLang, 'cases.detail.nextCase')} →
+            {t(typedLang, 'cases.detail.nextCase')} ->
           </a>
         ) : <span />}
       </nav>
