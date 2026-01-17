@@ -7,6 +7,7 @@
 import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
+import { getCollection } from 'astro:content';
 
 // Generate static paths for each language
 export function getStaticPaths() {
@@ -24,39 +25,15 @@ if (!isValidLang(lang)) {
 
 const typedLang = lang as Lang;
 
-// Case studies data (will be moved to content collections in Sprint 1)
-const cases = [
-  {
-    slug: 'audience-framework',
-    title: typedLang === 'es' ? 'Framework de Inteligencia de Audiencias' : 'Audience Intelligence Framework',
-    description: typedLang === 'es'
-      ? 'Metodologia multi-pais para medir cambio conductual y conciencia politica'
-      : 'Multi-country methodology for behavioral change and policy awareness measurement',
-    theme: 'audience',
-    regions: ['LATAM', 'US/Canada', 'Europe'],
-    featured: true,
-  },
-  {
-    slug: 'benchmark-system',
-    title: typedLang === 'es' ? 'Sistema de Benchmark de Desempeno' : 'Performance Benchmark System',
-    description: typedLang === 'es'
-      ? 'Metricas estandarizadas para comparar eficiencia de campanas entre regiones'
-      : 'Standardized metrics to compare campaign efficiency across regions',
-    theme: 'benchmark',
-    regions: ['LATAM', 'US/Canada', 'Europe'],
-    featured: true,
-  },
-  {
-    slug: 'narrative-tracking',
-    title: typedLang === 'es' ? 'Sistema de Seguimiento Narrativo' : 'Narrative Tracking System',
-    description: typedLang === 'es'
-      ? 'Monitoreo de tendencias y sentimiento en discurso ambiental'
-      : 'Monitoring trends and sentiment in environmental discourse',
-    theme: 'narrative',
-    regions: ['Global'],
-    featured: true,
-  },
-];
+const allCases = await getCollection('cases');
+const cases = allCases
+  .filter((entry) => entry.data.lang === typedLang)
+  .sort((a, b) => {
+    if (a.data.featured === b.data.featured) {
+      return a.data.slug.localeCompare(b.data.slug);
+    }
+    return a.data.featured ? -1 : 1;
+  });
 
 const pageTitle = t(typedLang, 'cases.index.title');
 const pageDescription = t(typedLang, 'cases.index.subtitle');
@@ -97,27 +74,27 @@ const pageDescription = t(typedLang, 'cases.index.subtitle');
 
       <!-- Case Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cases.map((caseItem) => (
+        {cases.map((caseEntry) => (
           <a
-            href={`/${typedLang}/case-studies/${caseItem.slug}`}
+            href={`/${typedLang}/case-studies/${caseEntry.data.slug}`}
             class="group p-6 rounded-xl bg-surface border border-border hover:border-accent hover:shadow-lg transition-all"
           >
-            {caseItem.featured && (
+            {caseEntry.data.featured && (
               <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-accent/10 text-accent mb-3">
                 Featured
               </span>
             )}
             <span class="text-xs font-semibold uppercase tracking-wider text-accent">
-              {caseItem.theme}
+              {caseEntry.data.theme}
             </span>
             <h2 class="text-xl font-semibold text-foreground mt-2 group-hover:text-accent transition-colors">
-              {caseItem.title}
+              {caseEntry.data.title}
             </h2>
             <p class="text-sm text-muted mt-2">
-              {caseItem.description}
+              {caseEntry.data.problem}
             </p>
             <div class="flex flex-wrap gap-2 mt-4">
-              {caseItem.regions.map((region) => (
+              {caseEntry.data.regions.map((region) => (
                 <span class="text-xs text-muted px-2 py-1 rounded bg-background-alt">
                   {region}
                 </span>
