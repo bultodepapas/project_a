@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "Angela Parra Sánchez",
+    "title": "Angela Parra Sanchez",
     "description": "Data & Impact Assessment Specialist. Building measurement systems and audience intelligence for international climate and sustainability programmes."
   },
   "nav": {
@@ -116,7 +116,7 @@
     "viewCase": "View case study"
   },
   "footer": {
-    "copyright": "© {year} Angela Parra Sánchez. All rights reserved.",
+    "copyright": "(c) {year} Angela Parra Sanchez. All rights reserved.",
     "builtWith": "Built with Astro"
   },
   "a11y": {
@@ -130,6 +130,6 @@
     "currentPage": "Current page"
   },
   "meta": {
-    "ogImageAlt": "Angela Parra Sánchez - Data & Impact Assessment Specialist"
+    "ogImageAlt": "Angela Parra Sanchez - Data & Impact Assessment Specialist"
   }
 }

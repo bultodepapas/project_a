@@ -1,17 +1,17 @@
 {
   "site": {
-    "title": "Angela Parra Sánchez",
-    "description": "Especialista en Datos y Evaluación de Impacto. Construyendo sistemas de medición e inteligencia de audiencias para programas internacionales de clima y sostenibilidad."
+    "title": "Angela Parra Sanchez",
+    "description": "Especialista en Datos y Evaluacion de Impacto. Construyendo sistemas de medicion e inteligencia de audiencias para programas internacionales de clima y sostenibilidad."
   },
   "nav": {
     "systems": "Sistemas",
     "caseStudies": "Casos de Estudio",
-    "resume": "Currículum",
+    "resume": "Curriculum",
     "contact": "Contacto"
   },
   "hero": {
-    "headline": "Especialista en Datos y Evaluación de Impacto",
-    "subheadline": "Construyendo sistemas de medición e inteligencia de audiencias para programas internacionales de clima y sostenibilidad",
+    "headline": "Especialista en Datos y Evaluacion de Impacto",
+    "subheadline": "Construyendo sistemas de medicion e inteligencia de audiencias para programas internacionales de clima y sostenibilidad",
     "cta": {
       "viewSystems": "Ver Sistemas",
       "recruiterMode": "Modo Recruiter"
@@ -21,20 +21,20 @@
     "title": "Impacto Comprobado"
   },
   "hiredFor": {
-    "title": "Para qué me contratan",
+    "title": "Para que me contratan",
     "bullets": {
-      "evidence": "Construir sistemas de evidencia que sobrevivan la rotación",
+      "evidence": "Construir sistemas de evidencia que sobrevivan la rotacion",
       "narrative": "Traducir narrativas en estrategia medible",
-      "standardize": "Estandarizar desempeño entre equipos y regiones"
+      "standardize": "Estandarizar desempeno entre equipos y regiones"
     }
   },
   "systems": {
     "title": "Portafolio de Sistemas",
-    "subtitle": "Frameworks diseñados para aprendizaje institucional y toma de decisiones"
+    "subtitle": "Frameworks disenados para aprendizaje institucional y toma de decisiones"
   },
   "operatingModel": {
     "title": "Modelo Operativo",
-    "subtitle": "Cómo fluyen los datos desde la recolección hasta la decisión"
+    "subtitle": "Como fluyen los datos desde la recoleccion hasta la decision"
   },
   "capabilities": {
     "title": "Capacidades",
@@ -45,7 +45,7 @@
     "present": "Presente"
   },
   "education": {
-    "title": "Educación",
+    "title": "Educacion",
     "inProgress": "En Progreso"
   },
   "languages": {
@@ -63,32 +63,32 @@
   },
   "contact": {
     "title": "Conectemos",
-    "subtitle": "Abierta a oportunidades en medición de impacto, estrategia de datos y M&E",
+    "subtitle": "Abierta a oportunidades en medicion de impacto, estrategia de datos y M&E",
     "email": "Correo",
     "linkedin": "LinkedIn",
-    "downloadPdf": "Descargar Currículum",
+    "downloadPdf": "Descargar Curriculum",
     "copyEmail": "Copiar correo",
-    "emailCopied": "¡Correo copiado!"
+    "emailCopied": "Correo copiado!"
   },
   "cases": {
     "index": {
       "title": "Casos de Estudio",
-      "subtitle": "Sistemas diseñados para aprendizaje institucional y medición de impacto",
+      "subtitle": "Sistemas disenados para aprendizaje institucional y medicion de impacto",
       "filters": {
         "all": "Todos",
         "theme": "Tema",
-        "region": "Región"
+        "region": "Region"
       },
       "noResults": "No hay casos que coincidan con los filtros actuales."
     },
     "detail": {
-      "problem": "El Desafío",
+      "problem": "El Desafio",
       "approach": "Enfoque",
-      "systemDesign": "Diseño del Sistema",
+      "systemDesign": "Diseno del Sistema",
       "dataSources": "Fuentes de Datos",
       "outputs": "Productos",
       "decisionImpact": "Impacto en Decisiones",
-      "adoption": "Adopción y Cadencia",
+      "adoption": "Adopcion y Cadencia",
       "governance": "Gobernanza",
       "tools": "Herramientas Utilizadas",
       "artifacts": "Artefactos",
@@ -97,18 +97,18 @@
       "prevCase": "Caso Anterior"
     },
     "fallback": {
-      "banner": "Este caso de estudio está disponible en inglés.",
-      "viewInEnglish": "Ver en inglés"
+      "banner": "Este caso de estudio esta disponible en ingles.",
+      "viewInEnglish": "Ver en ingles"
     }
   },
   "resume": {
-    "title": "Currículum",
-    "subtitle": "Especialista en Datos y Evaluación de Impacto",
+    "title": "Curriculum",
+    "subtitle": "Especialista en Datos y Evaluacion de Impacto",
     "summary": "Resumen",
     "strengths": "Fortalezas Clave",
     "experience": "Experiencia",
-    "education": "Educación",
-    "skills": "Habilidades Técnicas",
+    "education": "Educacion",
+    "skills": "Habilidades Tecnicas",
     "languages": "Idiomas",
     "awards": "Reconocimientos",
     "topCases": "Trabajo Destacado",
@@ -116,20 +116,20 @@
     "viewCase": "Ver caso de estudio"
   },
   "footer": {
-    "copyright": "© {year} Angela Parra Sánchez. Todos los derechos reservados.",
+    "copyright": "(c) {year} Angela Parra Sanchez. Todos los derechos reservados.",
     "builtWith": "Construido con Astro"
   },
   "a11y": {
     "skipToContent": "Saltar al contenido",
-    "menuToggle": "Alternar menú",
-    "menuOpen": "Abrir menú",
-    "menuClose": "Cerrar menú",
+    "menuToggle": "Alternar menu",
+    "menuOpen": "Abrir menu",
+    "menuClose": "Cerrar menu",
     "languageSwitch": "Cambiar idioma",
     "closeModal": "Cerrar",
-    "externalLink": "Abre en nueva pestaña",
-    "currentPage": "Página actual"
+    "externalLink": "Abre en nueva pestana",
+    "currentPage": "Pagina actual"
   },
   "meta": {
-    "ogImageAlt": "Angela Parra Sánchez - Especialista en Datos y Evaluación de Impacto"
+    "ogImageAlt": "Angela Parra Sanchez - Especialista en Datos y Evaluacion de Impacto"
   }
 }

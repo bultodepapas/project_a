@@ -10,7 +10,7 @@ export type Lang = (typeof supportedLangs)[number];
 
 export const langNames: Record<Lang, string> = {
   en: 'English',
-  es: 'Español',
+  es: 'Espanol',
 };
 
 export const langNamesShort: Record<Lang, string> = {
