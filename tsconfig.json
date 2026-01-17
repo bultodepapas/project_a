@@ -14,6 +14,6 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react"
   },
-  "include": ["src/**/*", "scripts/**/*"],
+  "include": [".astro/types.d.ts", "src/**/*", "scripts/**/*"],
   "exclude": ["node_modules", "dist"]
 }

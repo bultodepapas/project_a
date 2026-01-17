@@ -92,7 +92,10 @@ function resolveProofHref(href: string, langValue: Lang) {
   />
 
   <!-- Operating Model Section -->
-  <OperatingModel lang={typedLang} />
+  <OperatingModel 
+    lang={typedLang} 
+    model={homeData.operatingModel} 
+  />
 
   <!-- Timeline Section -->
   <Timeline 

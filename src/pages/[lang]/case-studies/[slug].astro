@@ -17,7 +17,7 @@ export interface Props {
 }
 
 export async function getStaticPaths() {
-  const entries = await getCollection('cases');
+  const entries: CollectionEntry<'cases'>[] = await getCollection('cases');
   return entries.map((entry) => ({
     params: { lang: entry.data.lang, slug: entry.data.caseSlug },
     props: { entry },
@@ -40,7 +40,7 @@ const allCases = await getCollection('cases');
 const casesForLang = caseOrder
   .map((caseSlug) =>
     allCases.find(
-      (caseEntry) => caseEntry.data.lang === typedLang && caseEntry.data.caseSlug === caseSlug
+      (caseEntry: CollectionEntry<'cases'>) => caseEntry.data.lang === typedLang && caseEntry.data.caseSlug === caseSlug
     )
   )
   .filter((c): c is CollectionEntry<'cases'> => !!c);

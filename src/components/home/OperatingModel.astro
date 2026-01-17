@@ -2,28 +2,33 @@
 import { t } from '@/i18n';
 import type { Lang } from '@/i18n/config';
 
-interface Props {
-  lang: Lang;
+interface Node {
+  id: string;
+  label: { [key: string]: string } | string;
+  x: number;
+  y: number;
+  color: string;
 }
 
-const { lang } = Astro.props;
+interface Edge {
+  from: string;
+  to: string;
+  curve?: boolean;
+}
 
-// Diagram Data
-const nodes = [
-  { id: 'inputs', label: 'Inputs', x: 50, y: 50, color: 'stroke-muted' },
-  { id: 'processing', label: 'Processing', x: 250, y: 50, color: 'stroke-accent' },
-  { id: 'outputs', label: 'Outputs', x: 450, y: 50, color: 'stroke-muted' },
-  { id: 'decisions', label: 'Decisions', x: 650, y: 50, color: 'stroke-primary' },
-  { id: 'learning', label: 'Learning Loop', x: 350, y: 150, color: 'stroke-accent' }
-];
+interface Props {
+  lang: Lang;
+  model: {
+    nodes: Node[];
+    edges: Edge[];
+  };
+}
 
-const edges = [
-  { from: 'inputs', to: 'processing' },
-  { from: 'processing', to: 'outputs' },
-  { from: 'outputs', to: 'decisions' },
-  { from: 'decisions', to: 'learning', curve: true },
-  { from: 'learning', to: 'inputs', curve: true }
-];
+const { lang, model } = Astro.props;
+const { nodes, edges } = model;
+
+// Helper to get localized string
+const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 ---
 
 <section class="section" id="operating-model">
@@ -79,11 +84,11 @@ const edges = [
           <g class="group cursor-pointer">
             <circle cx={node.x} cy={node.y} r="40" class={`fill-background stroke-2 ${node.color} transition-all duration-300 group-hover:scale-110 group-hover:fill-background-alt`} />
             <text x={node.x} y={node.y} dy="5" text-anchor="middle" class="text-xs font-medium fill-foreground pointer-events-none select-none">
-              {node.label}
+              {getStr(node.label)}
             </text>
             
             <!-- Tooltip (SVG only) -->
-            <title>{node.label} Stage</title>
+            <title>{getStr(node.label)} Stage</title>
           </g>
         ))}
       </svg>

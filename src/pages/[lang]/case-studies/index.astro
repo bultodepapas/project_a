@@ -27,10 +27,10 @@ if (!isValidLang(lang)) {
 
 const typedLang = lang as Lang;
 
-const allCases = await getCollection('cases');
+const allCases: CollectionEntry<'cases'>[] = await getCollection('cases');
 const cases = allCases
-  .filter((entry) => entry.data.lang === typedLang)
-  .sort((a, b) => {
+  .filter((entry: CollectionEntry<'cases'>) => entry.data.lang === typedLang)
+  .sort((a: CollectionEntry<'cases'>, b: CollectionEntry<'cases'>) => {
     if (a.data.featured === b.data.featured) {
       return a.data.caseSlug.localeCompare(b.data.caseSlug);
     }
@@ -38,8 +38,8 @@ const cases = allCases
   });
 
 // Extract unique filter options
-const themes = [...new Set(cases.map((c) => c.data.theme))].sort();
-const regions = [...new Set(cases.flatMap((c) => c.data.regions))].sort();
+const themes = [...new Set(cases.map((c: CollectionEntry<'cases'>) => c.data.theme))].sort();
+const regions = [...new Set(cases.flatMap((c: CollectionEntry<'cases'>) => c.data.regions))].sort();
 
 const pageTitle = t(typedLang, 'cases.index.title');
 const pageDescription = t(typedLang, 'cases.index.subtitle');
