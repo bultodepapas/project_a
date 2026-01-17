@@ -7,6 +7,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import matter from 'gray-matter';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,6 +26,8 @@ interface ValidationResult {
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT_DIR, 'src', 'data');
 const I18N_DIR = path.join(ROOT_DIR, 'src', 'i18n');
+const CONTENT_DIR = path.join(ROOT_DIR, 'src', 'content');
+const CASES_DIR = path.join(CONTENT_DIR, 'cases');
 
 // Validation rules
 const RULES = {
@@ -145,7 +148,7 @@ function validateDataFiles(): ValidationError[] {
   // Validate proof.json if exists
   const proofPath = path.join(DATA_DIR, 'proof.json');
   if (fs.existsSync(proofPath)) {
-    const proof = validateFile(proofPath) as { items?: unknown[] } | null;
+    const proof = validateFile(proofPath) as { items?: Array<{ href?: string }> } | null;
     if (proof?.items) {
       if (proof.items.length > RULES.proofStrip.maxItems) {
         errors.push({
@@ -154,13 +157,22 @@ function validateDataFiles(): ValidationError[] {
           message: `Proof strip has ${proof.items.length} items, max is ${RULES.proofStrip.maxItems}`,
         });
       }
+      proof.items.forEach((item, index) => {
+        if (!item.href) {
+          errors.push({
+            type: 'error',
+            location: `data/proof.json#${index + 1}`,
+            message: 'Proof item is missing href',
+          });
+        }
+      });
     }
   }
 
   // Validate skills.json if exists
   const skillsPath = path.join(DATA_DIR, 'skills.json');
   if (fs.existsSync(skillsPath)) {
-    const skills = validateFile(skillsPath) as { capabilities?: unknown[] } | null;
+    const skills = validateFile(skillsPath) as { capabilities?: Array<{ caseLink?: string }> } | null;
     if (skills?.capabilities) {
       if (skills.capabilities.length > RULES.capabilities.maxBlocks) {
         errors.push({
@@ -169,8 +181,96 @@ function validateDataFiles(): ValidationError[] {
           message: `Capabilities has ${skills.capabilities.length} items, max is ${RULES.capabilities.maxBlocks}`,
         });
       }
+      skills.capabilities.forEach((capability, index) => {
+        if (!capability.caseLink) {
+          errors.push({
+            type: 'warning',
+            location: `data/skills.json#${index + 1}`,
+            message: 'Capability missing caseLink',
+          });
+        }
+      });
     }
   }
+
+  // Validate experience.json if exists
+  const experiencePath = path.join(DATA_DIR, 'experience.json');
+  if (fs.existsSync(experiencePath)) {
+    const experience = validateFile(experiencePath) as
+      | { roles?: Array<{ bullets?: { en?: string[]; es?: string[] } }> }
+      | null;
+    if (experience?.roles) {
+      experience.roles.forEach((role, index) => {
+        const enBullets = role.bullets?.en || [];
+        const esBullets = role.bullets?.es || [];
+        if (enBullets.length > RULES.experience.maxBulletsPerRole) {
+          errors.push({
+            type: 'warning',
+            location: `data/experience.json#${index + 1}`,
+            message: `Role has ${enBullets.length} EN bullets, max is ${RULES.experience.maxBulletsPerRole}`,
+          });
+        }
+        if (esBullets.length > RULES.experience.maxBulletsPerRole) {
+          errors.push({
+            type: 'warning',
+            location: `data/experience.json#${index + 1}`,
+            message: `Role has ${esBullets.length} ES bullets, max is ${RULES.experience.maxBulletsPerRole}`,
+          });
+        }
+      });
+    }
+  }
+
+  return errors;
+}
+
+function validateCasesContent(): ValidationError[] {
+  const errors: ValidationError[] = [];
+
+  if (!fs.existsSync(CASES_DIR)) {
+    errors.push({
+      type: 'warning',
+      location: 'src/content/cases',
+      message: 'Cases content directory is missing',
+    });
+    return errors;
+  }
+
+  const caseFiles = fs.readdirSync(CASES_DIR).filter((file) => file.endsWith('.mdx'));
+  if (caseFiles.length === 0) {
+    errors.push({
+      type: 'warning',
+      location: 'src/content/cases',
+      message: 'No case study MDX files found',
+    });
+    return errors;
+  }
+
+  caseFiles.forEach((fileName) => {
+    const fullPath = path.join(CASES_DIR, fileName);
+    const raw = fs.readFileSync(fullPath, 'utf-8');
+    const parsed = matter(raw);
+    const data = parsed.data as Record<string, unknown>;
+
+    RULES.caseStudy.requiredFields.forEach((field) => {
+      if (!(field in data)) {
+        errors.push({
+          type: 'error',
+          location: `content/cases/${fileName}`,
+          message: `Case missing required field: ${field}`,
+        });
+      }
+    });
+
+    const decisionImpact = data.decisionImpact as unknown[] | undefined;
+    if (Array.isArray(decisionImpact) && decisionImpact.length < RULES.caseStudy.minDecisionImpacts) {
+      errors.push({
+        type: 'error',
+        location: `content/cases/${fileName}`,
+        message: `Decision impact has ${decisionImpact.length} items, min is ${RULES.caseStudy.minDecisionImpacts}`,
+      });
+    }
+  });
 
   return errors;
 }
@@ -189,6 +289,7 @@ function validateProjectStructure(): ValidationError[] {
     'src/styles/tokens.css',
     'src/i18n/index.ts',
     'src/i18n/en.json',
+    'src/content/config.ts',
   ];
 
   for (const file of requiredFiles) {
@@ -206,7 +307,7 @@ function validateProjectStructure(): ValidationError[] {
 }
 
 async function main() {
-  console.log('\n📋 Content Validation Report\n');
+  console.log('\nContent Validation Report\n');
   console.log('='.repeat(50));
 
   const result: ValidationResult = {
@@ -218,8 +319,9 @@ async function main() {
   const structureErrors = validateProjectStructure();
   const i18nErrors = validateI18n();
   const dataErrors = validateDataFiles();
+  const caseErrors = validateCasesContent();
 
-  const allErrors = [...structureErrors, ...i18nErrors, ...dataErrors];
+  const allErrors = [...structureErrors, ...i18nErrors, ...dataErrors, ...caseErrors];
 
   // Categorize
   for (const error of allErrors) {
@@ -232,7 +334,7 @@ async function main() {
 
   // Report errors
   if (result.errors.length > 0) {
-    console.log('\n❌ ERRORS:\n');
+    console.log('\nERRORS:\n');
     for (const error of result.errors) {
       console.log(`  [${error.location}]`);
       console.log(`    ${error.message}\n`);
@@ -241,7 +343,7 @@ async function main() {
 
   // Report warnings
   if (result.warnings.length > 0) {
-    console.log('\n⚠️  WARNINGS:\n');
+    console.log('\nWARNINGS:\n');
     for (const warning of result.warnings) {
       console.log(`  [${warning.location}]`);
       console.log(`    ${warning.message}\n`);
@@ -250,13 +352,13 @@ async function main() {
 
   // Summary
   console.log('='.repeat(50));
-  console.log(`\n📊 Summary: ${result.errors.length} errors, ${result.warnings.length} warnings\n`);
+  console.log(`\nSummary: ${result.errors.length} errors, ${result.warnings.length} warnings\n`);
 
   if (result.errors.length === 0) {
-    console.log('✅ Validation passed!\n');
+    console.log('Validation passed.\n');
     process.exit(0);
   } else {
-    console.log('❌ Validation failed. Please fix errors before building.\n');
+    console.log('Validation failed. Please fix errors before building.\n');
     process.exit(1);
   }
 }
