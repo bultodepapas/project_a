@@ -1,0 +1,135 @@
+{
+  "site": {
+    "title": "Angela Parra Sánchez",
+    "description": "Especialista en Datos y Evaluación de Impacto. Construyendo sistemas de medición e inteligencia de audiencias para programas internacionales de clima y sostenibilidad."
+  },
+  "nav": {
+    "systems": "Sistemas",
+    "caseStudies": "Casos de Estudio",
+    "resume": "Currículum",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "headline": "Especialista en Datos y Evaluación de Impacto",
+    "subheadline": "Construyendo sistemas de medición e inteligencia de audiencias para programas internacionales de clima y sostenibilidad",
+    "cta": {
+      "viewSystems": "Ver Sistemas",
+      "recruiterMode": "Modo Recruiter"
+    }
+  },
+  "proof": {
+    "title": "Impacto Comprobado"
+  },
+  "hiredFor": {
+    "title": "Para qué me contratan",
+    "bullets": {
+      "evidence": "Construir sistemas de evidencia que sobrevivan la rotación",
+      "narrative": "Traducir narrativas en estrategia medible",
+      "standardize": "Estandarizar desempeño entre equipos y regiones"
+    }
+  },
+  "systems": {
+    "title": "Portafolio de Sistemas",
+    "subtitle": "Frameworks diseñados para aprendizaje institucional y toma de decisiones"
+  },
+  "operatingModel": {
+    "title": "Modelo Operativo",
+    "subtitle": "Cómo fluyen los datos desde la recolección hasta la decisión"
+  },
+  "capabilities": {
+    "title": "Capacidades",
+    "evidencePrefix": "Usado en:"
+  },
+  "timeline": {
+    "title": "Experiencia",
+    "present": "Presente"
+  },
+  "education": {
+    "title": "Educación",
+    "inProgress": "En Progreso"
+  },
+  "languages": {
+    "title": "Idiomas",
+    "usedFor": "Usado para:",
+    "levels": {
+      "native": "Nativo",
+      "fluent": "Fluido",
+      "advanced": "Avanzado",
+      "working": "Competencia Laboral"
+    }
+  },
+  "awards": {
+    "title": "Reconocimientos"
+  },
+  "contact": {
+    "title": "Conectemos",
+    "subtitle": "Abierta a oportunidades en medición de impacto, estrategia de datos y M&E",
+    "email": "Correo",
+    "linkedin": "LinkedIn",
+    "downloadPdf": "Descargar Currículum",
+    "copyEmail": "Copiar correo",
+    "emailCopied": "¡Correo copiado!"
+  },
+  "cases": {
+    "index": {
+      "title": "Casos de Estudio",
+      "subtitle": "Sistemas diseñados para aprendizaje institucional y medición de impacto",
+      "filters": {
+        "all": "Todos",
+        "theme": "Tema",
+        "region": "Región"
+      },
+      "noResults": "No hay casos que coincidan con los filtros actuales."
+    },
+    "detail": {
+      "problem": "El Desafío",
+      "approach": "Enfoque",
+      "systemDesign": "Diseño del Sistema",
+      "dataSources": "Fuentes de Datos",
+      "outputs": "Productos",
+      "decisionImpact": "Impacto en Decisiones",
+      "adoption": "Adopción y Cadencia",
+      "governance": "Gobernanza",
+      "tools": "Herramientas Utilizadas",
+      "artifacts": "Artefactos",
+      "backToIndex": "Todos los Casos",
+      "nextCase": "Siguiente Caso",
+      "prevCase": "Caso Anterior"
+    },
+    "fallback": {
+      "banner": "Este caso de estudio está disponible en inglés.",
+      "viewInEnglish": "Ver en inglés"
+    }
+  },
+  "resume": {
+    "title": "Currículum",
+    "subtitle": "Especialista en Datos y Evaluación de Impacto",
+    "summary": "Resumen",
+    "strengths": "Fortalezas Clave",
+    "experience": "Experiencia",
+    "education": "Educación",
+    "skills": "Habilidades Técnicas",
+    "languages": "Idiomas",
+    "awards": "Reconocimientos",
+    "topCases": "Trabajo Destacado",
+    "downloadPdf": "Descargar PDF",
+    "viewCase": "Ver caso de estudio"
+  },
+  "footer": {
+    "copyright": "© {year} Angela Parra Sánchez. Todos los derechos reservados.",
+    "builtWith": "Construido con Astro"
+  },
+  "a11y": {
+    "skipToContent": "Saltar al contenido",
+    "menuToggle": "Alternar menú",
+    "menuOpen": "Abrir menú",
+    "menuClose": "Cerrar menú",
+    "languageSwitch": "Cambiar idioma",
+    "closeModal": "Cerrar",
+    "externalLink": "Abre en nueva pestaña",
+    "currentPage": "Página actual"
+  },
+  "meta": {
+    "ogImageAlt": "Angela Parra Sánchez - Especialista en Datos y Evaluación de Impacto"
+  }
+}
