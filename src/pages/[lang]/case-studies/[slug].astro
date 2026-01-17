@@ -62,11 +62,14 @@ const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIn
       <header class="mb-12 pb-8 border-b border-border">
         <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-4">{caseData.title}</h1>
 
-        <div class="flex flex-wrap gap-4 text-sm text-muted">
-          <span><strong class="text-foreground">{caseData.role}</strong></span>
-          <span>-</span>
+        <div class="flex flex-wrap items-center gap-3 text-sm text-muted">
+          <span class="inline-flex items-center px-2 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium">
+            {caseData.theme}
+          </span>
+          <span class="text-foreground font-medium">{caseData.role}</span>
+          <span class="text-border">|</span>
           <span>{caseData.org}</span>
-          <span>-</span>
+          <span class="text-border">|</span>
           <span>{caseData.timeframe}</span>
         </div>
 
@@ -80,7 +83,7 @@ const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIn
       </header>
 
       <!-- Problem -->
-      <section class="mb-10">
+      <section class="mb-10 p-6 rounded-xl bg-background-alt border border-border">
         <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.problem')}</h2>
         <p class="text-muted leading-relaxed">{caseData.problem}</p>
       </section>
@@ -91,7 +94,7 @@ const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIn
         <ul class="space-y-2">
           {caseData.approach.map((item) => (
             <li class="flex gap-3 text-muted">
-              <span class="text-accent">-</span>
+              <span class="text-accent">+</span>
               <span>{item}</span>
             </li>
           ))}
@@ -104,7 +107,7 @@ const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIn
         <ul class="space-y-2">
           {caseData.systemDesign.map((item) => (
             <li class="flex gap-3 text-muted">
-              <span class="text-accent">-</span>
+              <span class="text-accent">+</span>
               <span>{item}</span>
             </li>
           ))}
@@ -116,7 +119,7 @@ const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIn
         <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.dataSources')}</h2>
         <div class="flex flex-wrap gap-2">
           {caseData.dataSources.map((source) => (
-            <span class="px-3 py-1 text-sm rounded-lg bg-background-alt text-muted">
+            <span class="px-3 py-1 text-sm rounded-full bg-background-alt text-muted">
               {source}
             </span>
           ))}
@@ -129,7 +132,7 @@ const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIn
         <ul class="space-y-2">
           {caseData.outputs.map((item) => (
             <li class="flex gap-3 text-muted">
-              <span class="text-accent">-</span>
+              <span class="text-accent">+</span>
               <span>{item}</span>
             </li>
           ))}
@@ -166,7 +169,7 @@ const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIn
         <h2 class="text-xl font-semibold text-foreground mb-4">{t(typedLang, 'cases.detail.tools')}</h2>
         <div class="flex flex-wrap gap-2">
           {caseData.tools.map((tool) => (
-            <span class="px-3 py-1 text-sm rounded-lg bg-primary/5 text-primary">
+            <span class="px-3 py-1 text-sm rounded-full bg-primary/5 text-primary">
               {tool}
             </span>
           ))}

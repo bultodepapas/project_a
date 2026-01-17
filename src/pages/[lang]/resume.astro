@@ -98,9 +98,12 @@ const awards = awardsData.items;
         <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
           {t(typedLang, 'resume.strengths')}
         </h2>
-        <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-muted">
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 text-muted">
           {capabilities.slice(0, 5).map((capability) => (
-            <li>- {capability.name[typedLang]}</li>
+            <li class="flex items-start gap-2">
+              <span class="text-accent">+</span>
+              <span>{capability.name[typedLang]}</span>
+            </li>
           ))}
         </ul>
       </section>
@@ -113,7 +116,7 @@ const awards = awardsData.items;
 
         <div class="space-y-8">
           {roles.map((role) => (
-            <div>
+            <div class="rounded-xl border border-border p-6">
               <div class="flex flex-wrap justify-between items-start gap-2">
                 <div>
                   <h3 class="font-semibold text-foreground">{role.title[typedLang]}</h3>
@@ -163,7 +166,7 @@ const awards = awardsData.items;
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           {capabilities.map((capability) => (
-            <div>
+            <div class="p-4 rounded-lg border border-border bg-background-alt">
               <p class="font-medium text-foreground mb-2">{capability.name[typedLang]}</p>
               <p class="text-muted">{capability.tools.join(', ')}</p>
             </div>
