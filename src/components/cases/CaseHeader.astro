@@ -1,0 +1,35 @@
+---
+interface Props {
+  title: string;
+  theme: string;
+  role: string;
+  org: string;
+  timeframe: string;
+  regions: string[];
+}
+
+const { title, theme, role, org, timeframe, regions } = Astro.props;
+---
+
+<header class="mb-12 pb-8 border-b border-border">
+  <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-4">{title}</h1>
+
+  <div class="flex flex-wrap items-center gap-3 text-sm text-muted">
+    <span class="inline-flex items-center px-2 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium uppercase tracking-wide">
+      {theme}
+    </span>
+    <span class="text-foreground font-medium">{role}</span>
+    <span class="text-border">|</span>
+    <span>{org}</span>
+    <span class="text-border">|</span>
+    <span>{timeframe}</span>
+  </div>
+
+  <div class="flex flex-wrap gap-2 mt-4">
+    {regions.map((region) => (
+      <span class="px-3 py-1 text-xs font-medium rounded-full bg-background-alt text-muted border border-border">
+        {region}
+      </span>
+    ))}
+  </div>
+</header>

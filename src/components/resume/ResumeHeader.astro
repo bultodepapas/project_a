@@ -1,0 +1,55 @@
+---
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+  name: string;
+  jobTitle: string;
+  tagline: string;
+  location: string;
+  email: string;
+  linkedin: string;
+  pdfUrl: string;
+}
+
+const { lang, name, jobTitle, tagline, location, email, linkedin, pdfUrl } = Astro.props;
+---
+
+<header class="mb-12 pb-8 border-b border-border">
+  <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+    <div>
+      <h1 class="text-3xl md:text-4xl font-bold text-foreground">{name}</h1>
+      <p class="text-xl text-accent mt-2">{jobTitle}</p>
+      <p class="text-sm text-muted mt-2 max-w-2xl">
+        {tagline}
+      </p>
+
+      <div class="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted">
+        <span>{location}</span>
+        <a href={`mailto:${email}`} class="hover:text-accent transition-colors">{email}</a>
+        <a
+          href={linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-accent transition-colors"
+        >
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+    <div class="flex-shrink-0">
+      <a
+        href={pdfUrl}
+        download
+        class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md bg-primary text-white hover:bg-primary-light transition-colors shadow-sm"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        {t(lang, 'resume.downloadPdf')}
+      </a>
+    </div>
+  </div>
+</header>

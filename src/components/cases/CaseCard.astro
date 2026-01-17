@@ -1,0 +1,54 @@
+---
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+  caseEntry: any; // Type this properly if possible, or use 'any' for now given previous TS issues
+}
+
+const { lang, caseEntry } = Astro.props;
+const data = caseEntry.data;
+---
+
+<a
+  href={`/${lang}/case-studies/${data.caseSlug}`}
+  class="case-card group p-6 rounded-xl bg-surface border border-border hover:border-accent hover:shadow-lg transition-all flex flex-col h-full reveal-element opacity-0 translate-y-4"
+  data-theme={data.theme}
+  data-regions={data.regions.join(',')}
+>
+  <div class="mb-auto">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-semibold uppercase tracking-wider text-accent">
+        {data.theme}
+      </span>
+      {data.featured && (
+        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded bg-accent/10 text-accent">
+          Featured
+        </span>
+      )}
+    </div>
+    
+    <h3 class="text-xl font-semibold text-foreground mb-2 group-hover:text-accent transition-colors line-clamp-2">
+      {data.title}
+    </h3>
+    
+    <p class="text-xs text-muted mb-3">
+      {data.role} <span class="mx-1">·</span> {data.org}
+    </p>
+    
+    <p class="text-sm text-muted mb-4 line-clamp-3">
+      {data.problem}
+    </p>
+  </div>
+
+  <div class="pt-4 border-t border-border/50 mt-4">
+    <div class="flex flex-wrap gap-2">
+      {data.regions.map((region: string) => (
+        <span class="text-[10px] text-muted px-2 py-1 rounded bg-background-alt uppercase tracking-wide">
+          {region}
+        </span>
+      ))}
+    </div>
+  </div>
+</a>

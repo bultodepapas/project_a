@@ -1,0 +1,83 @@
+---
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+  chips: Array<{ [key: string]: string }>;
+  location: string;
+  email: string;
+  linkedin: string;
+}
+
+const { lang, chips, location, email, linkedin } = Astro.props;
+
+// Helper to get localized string
+const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
+---
+
+<section class="section min-h-[90vh] flex items-center relative overflow-hidden">
+  <!-- Optional: Subtle background element -->
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-background-alt/30 pointer-events-none"></div>
+
+  <div class="container relative z-10">
+    <div class="max-w-4xl">
+      <!-- Chips -->
+      <div class="flex flex-wrap gap-2 mb-6 stagger-children">
+        {chips.map((chip, index) => (
+          <span 
+            class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20 animate-fade-in-up opacity-0 fill-mode-forwards"
+            style={`animation-delay: ${index * 100}ms;`}
+          >
+            {getStr(chip)}
+          </span>
+        ))}
+      </div>
+
+      <!-- Headline -->
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 animate-fade-in-up opacity-0 fill-mode-forwards" style="animation-delay: 300ms;">
+        {t(lang, 'hero.headline')}
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-xl md:text-2xl text-muted max-w-2xl mb-6 animate-fade-in-up opacity-0 fill-mode-forwards" style="animation-delay: 400ms;">
+        {t(lang, 'hero.subheadline')}
+      </p>
+
+      <!-- Meta Line -->
+      <div class="flex flex-wrap items-center gap-4 text-sm text-muted mb-10 animate-fade-in-up opacity-0 fill-mode-forwards" style="animation-delay: 500ms;">
+        <span>{location}</span>
+        <span class="text-border">|</span>
+        <a href={`mailto:${email}`} class="hover:text-accent transition-colors">
+          {email}
+        </a>
+        <span class="text-border">|</span>
+        <a href={linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">
+          LinkedIn
+        </a>
+      </div>
+
+      <!-- CTAs -->
+      <div class="flex flex-wrap gap-4 animate-fade-in-up opacity-0 fill-mode-forwards" style="animation-delay: 600ms;">
+        <a
+          href="#systems"
+          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200"
+        >
+          {t(lang, 'hero.cta.viewSystems')}
+        </a>
+        <a
+          href={`/${lang}/resume`}
+          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background-alt transition-colors hover:border-accent"
+        >
+          {t(lang, 'hero.cta.recruiterMode')}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fill-mode-forwards {
+    animation-fill-mode: forwards;
+  }
+</style>

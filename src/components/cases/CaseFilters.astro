@@ -1,0 +1,105 @@
+---
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+  themes: string[];
+  regions: string[];
+}
+
+const { lang, themes, regions } = Astro.props;
+---
+
+<div class="case-filters mb-8">
+  <div class="flex flex-col gap-4">
+    <!-- Theme Filters -->
+    <div class="filter-group">
+      <span class="text-xs font-semibold text-muted uppercase tracking-wider mb-2 block">
+        {t(lang, 'cases.index.filters.theme')}
+      </span>
+      <div class="flex flex-wrap gap-2" id="theme-filters">
+        <button
+          class="filter-btn px-4 py-2 text-sm font-medium rounded-full border border-primary bg-primary text-white transition-all hover:opacity-90 active"
+          data-filter="all"
+          data-group="theme"
+        >
+          {t(lang, 'cases.index.filters.all')}
+        </button>
+        {themes.map((theme) => (
+          <button
+            class="filter-btn px-4 py-2 text-sm font-medium rounded-full border border-border text-muted hover:border-accent hover:text-accent transition-all"
+            data-filter={theme}
+            data-group="theme"
+          >
+            {theme}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Region Filters (Optional, can be added if needed, kept simple for now) -->
+    <!-- Logic supports multiple groups, but UI starts with just Theme as primary filter -->
+  </div>
+</div>
+
+<script>
+  function initFilters() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.case-card');
+    const noResultsMsg = document.getElementById('no-results-message');
+
+    let activeTheme = 'all';
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Update active state
+        const group = btn.getAttribute('data-group');
+        const filter = btn.getAttribute('data-filter') || 'all';
+
+        // Update UI
+        document.querySelectorAll(`.filter-btn[data-group="${group}"]`).forEach(b => {
+          b.classList.remove('bg-primary', 'text-white', 'border-primary');
+          b.classList.add('bg-transparent', 'text-muted', 'border-border');
+        });
+        btn.classList.remove('bg-transparent', 'text-muted', 'border-border');
+        btn.classList.add('bg-primary', 'text-white', 'border-primary');
+
+        // Apply filter
+        activeTheme = filter;
+        filterCards();
+      });
+    });
+
+    function filterCards() {
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cardTheme = card.getAttribute('data-theme');
+        const isVisible = activeTheme === 'all' || cardTheme === activeTheme;
+
+        if (isVisible) {
+          (card as HTMLElement).style.display = 'flex';
+          // Trigger animation
+          setTimeout(() => {
+             card.classList.remove('opacity-0', 'translate-y-4');
+             card.classList.add('opacity-100', 'translate-y-0');
+          }, 50);
+          visibleCount++;
+        } else {
+          (card as HTMLElement).style.display = 'none';
+          card.classList.add('opacity-0', 'translate-y-4');
+          card.classList.remove('opacity-100', 'translate-y-0');
+        }
+      });
+
+      if (noResultsMsg) {
+        noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+  }
+
+  // Initialize
+  initFilters();
+  document.addEventListener('astro:page-load', initFilters);
+</script>

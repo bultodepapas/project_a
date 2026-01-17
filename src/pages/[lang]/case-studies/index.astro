@@ -8,6 +8,8 @@ import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
 import { getCollection } from 'astro:content';
+import CaseCard from '@/components/cases/CaseCard.astro';
+import CaseFilters from '@/components/cases/CaseFilters.astro';
 
 // Generate static paths for each language
 export function getStaticPaths() {
@@ -35,6 +37,10 @@ const cases = allCases
     return a.data.featured ? -1 : 1;
   });
 
+// Extract unique filter options
+const themes = [...new Set(cases.map(c => c.data.theme))].sort();
+const regions = [...new Set(cases.flatMap(c => c.data.regions))].sort();
+
 const pageTitle = t(typedLang, 'cases.index.title');
 const pageDescription = t(typedLang, 'cases.index.subtitle');
 ---
@@ -44,10 +50,10 @@ const pageDescription = t(typedLang, 'cases.index.subtitle');
   description={pageDescription}
   lang={typedLang}
 >
-  <div class="section">
+  <div class="section min-h-screen">
     <div class="container">
       <!-- Header -->
-      <header class="mb-12">
+      <header class="mb-12 animate-fade-in-up">
         <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
           {t(typedLang, 'cases.index.title')}
         </h1>
@@ -56,56 +62,59 @@ const pageDescription = t(typedLang, 'cases.index.subtitle');
         </p>
       </header>
 
-      <!-- Filters (placeholder - will be enhanced in Sprint 3) -->
-      <div class="flex flex-wrap gap-2 mb-8">
-        <button class="px-4 py-2 text-sm font-medium rounded-full bg-primary text-white">
-          {t(typedLang, 'cases.index.filters.all')}
-        </button>
-        <button class="px-4 py-2 text-sm font-medium rounded-full border border-border text-muted hover:border-accent hover:text-accent transition-colors">
-          Audience
-        </button>
-        <button class="px-4 py-2 text-sm font-medium rounded-full border border-border text-muted hover:border-accent hover:text-accent transition-colors">
-          Benchmark
-        </button>
-        <button class="px-4 py-2 text-sm font-medium rounded-full border border-border text-muted hover:border-accent hover:text-accent transition-colors">
-          Narrative
-        </button>
+      <!-- Filters -->
+      <div class="animate-fade-in-up" style="animation-delay: 100ms">
+        <CaseFilters 
+          lang={typedLang} 
+          themes={themes} 
+          regions={regions} 
+        />
       </div>
 
       <!-- Case Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cases.map((caseEntry) => (
-          <a
-            href={`/${typedLang}/case-studies/${caseEntry.data.caseSlug}`}
-            class="group p-6 rounded-xl bg-surface border border-border hover:border-accent hover:shadow-lg transition-all"
-          >
-            {caseEntry.data.featured && (
-              <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-accent/10 text-accent mb-3">
-                Featured
-              </span>
-            )}
-            <span class="text-xs font-semibold uppercase tracking-wider text-accent">
-              {caseEntry.data.theme}
-            </span>
-            <h2 class="text-xl font-semibold text-foreground mt-2 group-hover:text-accent transition-colors">
-              {caseEntry.data.title}
-            </h2>
-            <p class="text-xs text-muted mt-2">
-              {caseEntry.data.role} · {caseEntry.data.org}
-            </p>
-            <p class="text-sm text-muted mt-2">
-              {caseEntry.data.problem}
-            </p>
-            <div class="flex flex-wrap gap-2 mt-4">
-              {caseEntry.data.regions.map((region) => (
-                <span class="text-xs text-muted px-2 py-1 rounded bg-background-alt">
-                  {region}
-                </span>
-              ))}
-            </div>
-          </a>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]">
+        {cases.map((caseEntry, index) => (
+          <div class="h-full animate-fade-in-up" style={`animation-delay: ${(index * 100) + 200}ms`}>
+            <CaseCard 
+              lang={typedLang} 
+              caseEntry={caseEntry} 
+            />
+          </div>
         ))}
+      </div>
+
+      <!-- No Results Message -->
+      <div id="no-results-message" class="hidden py-12 text-center text-muted">
+        <p class="text-lg">{t(typedLang, 'cases.index.noResults')}</p>
+        <button 
+          class="mt-4 text-accent hover:underline filter-btn" 
+          data-filter="all" 
+          data-group="theme"
+          onclick="document.querySelector('.filter-btn[data-filter=\'all\']').click()"
+        >
+          {t(typedLang, 'cases.index.filters.all')}
+        </button>
       </div>
     </div>
   </div>
 </Page>
+
+<script>
+  // Simple reveal animation observer
+  function initReveal() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('opacity-0', 'translate-y-4');
+          entry.target.classList.add('opacity-100', 'translate-y-0');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal-element').forEach(el => observer.observe(el));
+  }
+  
+  initReveal();
+  document.addEventListener('astro:page-load', initReveal);
+</script>

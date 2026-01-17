@@ -1,0 +1,26 @@
+---
+import { type Lang, getLocalizedPath, langNamesShort } from '@/i18n/config';
+import { t } from '@/i18n';
+
+interface Props {
+  currentLang: Lang;
+  currentPath: string;
+}
+
+const { currentLang, currentPath } = Astro.props;
+
+const otherLang = currentLang === 'en' ? 'es' : 'en';
+const switchUrl = getLocalizedPath(currentPath, otherLang);
+---
+
+<div class="flex items-center gap-1 text-sm">
+  <span class="font-medium text-foreground">{langNamesShort[currentLang]}</span>
+  <span class="text-muted">/</span>
+  <a
+    href={switchUrl}
+    class="text-muted hover:text-foreground transition-colors"
+    aria-label={t(currentLang, 'a11y.languageSwitch')}
+  >
+    {langNamesShort[otherLang]}
+  </a>
+</div>

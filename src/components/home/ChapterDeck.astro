@@ -1,0 +1,198 @@
+---
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+  chapters: Array<{
+    slug: string;
+    eyebrow: string;
+    title: { [key: string]: string } | string;
+    description: { [key: string]: string } | string;
+  }>;
+}
+
+const { lang, chapters } = Astro.props;
+
+// Helper to get localized string
+const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
+---
+
+<section id="chapter-deck" class="relative z-10 bg-background-alt py-12 md:py-24 overflow-hidden">
+  <!-- Pinned Container -->
+  <div class="chapter-pin-wrapper relative h-screen flex items-center">
+    <div class="container relative h-full flex flex-col justify-center">
+      
+      <!-- Static Header (remains visible) -->
+      <div class="mb-12 md:mb-0 md:absolute md:top-24 md:left-6 md:z-20 max-w-sm">
+        <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          {t(lang, 'systems.title')}
+        </h2>
+        <p class="text-lg text-muted">
+          {t(lang, 'systems.subtitle')}
+        </p>
+        <!-- Progress Indicator -->
+        <div class="hidden md:flex gap-2 mt-8">
+          {chapters.map((_, i) => (
+            <div 
+              class="chapter-dot w-2 h-2 rounded-full bg-border transition-colors duration-300" 
+              data-index={i}
+            ></div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Chapters Stack -->
+      <div class="chapters-stack relative w-full max-w-4xl mx-auto h-[60vh] md:h-[500px]">
+        {chapters.map((chapter, index) => (
+          <div 
+            class="chapter-card absolute inset-0 w-full h-full bg-surface border border-border rounded-xl shadow-lg p-8 flex flex-col justify-center opacity-0 translate-y-8"
+            data-index={index}
+          >
+            <div class="flex items-center justify-between text-sm uppercase tracking-wider text-accent mb-6">
+              <span class="font-semibold">{chapter.eyebrow}</span>
+              <span class="text-muted">0{index + 1}</span>
+            </div>
+            <h3 class="text-3xl md:text-5xl font-bold text-foreground mb-6">
+              {getStr(chapter.title)}
+            </h3>
+            <p class="text-xl text-muted mb-8 max-w-2xl">
+              {getStr(chapter.description)}
+            </p>
+            <div>
+              <a 
+                href={`/${lang}/case-studies/${chapter.slug}`}
+                class="inline-flex items-center text-accent hover:text-accent-light font-medium transition-colors group"
+              >
+                View Case Study 
+                <span class="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Fallback / Reduced Motion (Accordion style) -->
+  <div class="chapter-accordion hidden flex-col gap-6 container pb-12">
+    {chapters.map((chapter, index) => (
+      <div class="bg-surface border border-border rounded-xl p-6">
+        <div class="flex items-center justify-between text-xs uppercase tracking-wider text-accent mb-2">
+          <span class="font-semibold">{chapter.eyebrow}</span>
+          <span class="text-muted">0{index + 1}</span>
+        </div>
+        <h3 class="text-xl font-bold text-foreground mb-2">
+          {getStr(chapter.title)}
+        </h3>
+        <p class="text-muted mb-4">
+          {getStr(chapter.description)}
+        </p>
+        <a 
+          href={`/${lang}/case-studies/${chapter.slug}`}
+          class="text-sm font-medium text-accent hover:underline"
+        >
+          View Case Study →
+        </a>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initChapterDeck() {
+    const section = document.getElementById('chapter-deck');
+    const pinWrapper = section?.querySelector('.chapter-pin-wrapper') as HTMLElement;
+    const cards = section?.querySelectorAll('.chapter-card');
+    const dots = section?.querySelectorAll('.chapter-dot');
+    const accordion = section?.querySelector('.chapter-accordion') as HTMLElement;
+    
+    if (!section || !pinWrapper || !cards || cards.length === 0) return;
+
+    // Check for reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth < 768; // Simple mobile check
+
+    if (prefersReducedMotion || isMobile) {
+      // Show accordion, hide pinned wrapper
+      pinWrapper.style.display = 'none';
+      if (accordion) {
+        accordion.classList.remove('hidden');
+        accordion.classList.add('flex');
+      }
+      return;
+    }
+
+    // GSAP Timeline
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: `+=${cards.length * 100}%`, // Scroll distance based on number of cards
+        pin: true,
+        scrub: 0.5,
+        anticipatePin: 1,
+      }
+    });
+
+    // Animate cards
+    cards.forEach((card, i) => {
+      // 1. Fade in & Slide up current card
+      tl.to(card, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power2.out',
+        onStart: () => updateDots(i),
+        onReverseComplete: () => updateDots(i - 1)
+      });
+      
+      // 2. Hold for a bit (reading time)
+      tl.to(card, { duration: 0.5 }); // pause
+
+      // 3. Fade out & Slide up (exit) - except for the last card
+      if (i < cards.length - 1) {
+        tl.to(card, {
+          opacity: 0,
+          y: -50,
+          duration: 1,
+          ease: 'power2.in'
+        });
+      }
+    });
+
+    function updateDots(activeParam: number) {
+      // Ensure index is within bounds (handle onReverseComplete -1)
+      const activeIndex = Math.max(0, Math.min(activeParam, dots?.length ? dots.length - 1 : 0));
+      
+      dots?.forEach((dot, i) => {
+        if (i === activeIndex) {
+          dot.classList.add('bg-accent');
+          dot.classList.remove('bg-border');
+        } else {
+          dot.classList.remove('bg-accent');
+          dot.classList.add('bg-border');
+        }
+      });
+    }
+  }
+
+  // Initialize on load
+  initChapterDeck();
+
+  // Re-initialize on view transitions (Astro)
+  document.addEventListener('astro:page-load', initChapterDeck);
+</script>
+
+<style>
+  /* Ensure clean stacking context */
+  .chapter-card {
+    transform-origin: center center;
+    will-change: transform, opacity;
+  }
+</style>

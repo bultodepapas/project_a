@@ -7,6 +7,16 @@
 import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
+import Hero from '@/components/home/Hero.astro';
+import ProofStrip from '@/components/home/ProofStrip.astro';
+import HiredFor from '@/components/home/HiredFor.astro';
+import ChapterDeck from '@/components/home/ChapterDeck.astro';
+import OperatingModel from '@/components/home/OperatingModel.astro';
+import Timeline from '@/components/home/Timeline.astro';
+import Education from '@/components/home/Education.astro';
+import Languages from '@/components/home/Languages.astro';
+import Awards from '@/components/home/Awards.astro';
+import Contact from '@/components/home/Contact.astro';
 import homeData from '@/data/home.json';
 import proofData from '@/data/proof.json';
 import experienceData from '@/data/experience.json';
@@ -55,286 +65,64 @@ function resolveProofHref(href: string, langValue: Lang) {
   ogType="profile"
 >
   <!-- Hero Section -->
-  <section class="section min-h-[90vh] flex items-center">
-    <div class="container">
-      <div class="max-w-4xl">
-        <!-- Chips -->
-        <div class="flex flex-wrap gap-2 mb-6 stagger-children">
-          {homeData.hero.chips.map((chip) => (
-            <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20">
-              {chip[typedLang]}
-            </span>
-          ))}
-        </div>
-
-        <!-- Headline -->
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 animate-fade-in-up">
-          {t(typedLang, 'hero.headline')}
-        </h1>
-
-        <!-- Subheadline -->
-        <p class="text-xl md:text-2xl text-muted max-w-2xl mb-6 animate-fade-in-up" style="animation-delay: 100ms;">
-          {t(typedLang, 'hero.subheadline')}
-        </p>
-
-        <!-- Meta Line -->
-        <div class="flex flex-wrap items-center gap-4 text-sm text-muted mb-10 animate-fade-in-up" style="animation-delay: 150ms;">
-          <span>{siteData.location[typedLang]}</span>
-          <span class="text-border">|</span>
-          <a href={`mailto:${siteData.email}`} class="hover:text-accent transition-colors">
-            {siteData.email}
-          </a>
-          <span class="text-border">|</span>
-          <a href={siteData.linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">
-            LinkedIn
-          </a>
-        </div>
-
-        <!-- CTAs -->
-        <div class="flex flex-wrap gap-4 animate-fade-in-up" style="animation-delay: 200ms;">
-          <a
-            href="#systems"
-            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition-colors"
-          >
-            {t(typedLang, 'hero.cta.viewSystems')}
-          </a>
-          <a
-            href={`/${typedLang}/resume`}
-            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background-alt transition-colors"
-          >
-            {t(typedLang, 'hero.cta.recruiterMode')}
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <Hero 
+    lang={typedLang} 
+    chips={homeData.hero.chips}
+    location={siteData.location[typedLang]}
+    email={siteData.email}
+    linkedin={siteData.linkedin}
+  />
 
   <!-- Proof Strip Section -->
-  <section class="section bg-background-alt" id="proof">
-    <div class="container">
-      <h2 class="text-xs font-semibold text-muted uppercase tracking-wider mb-6">
-        {t(typedLang, 'proof.title')}
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {proofItems.map((item) => (
-          <a
-            href={resolveProofHref(item.href, typedLang)}
-            class="group p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all"
-          >
-            <div class="flex items-center justify-between mb-2">
-              <p class="font-semibold text-foreground group-hover:text-accent transition-colors">
-                {item.title[typedLang]}
-              </p>
-              <span class="text-xs text-muted group-hover:text-accent transition-colors">+</span>
-            </div>
-            <p class="text-xs text-muted mt-1 leading-relaxed">
-              {item.detail[typedLang]}
-            </p>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
+  <ProofStrip 
+    lang={typedLang} 
+    items={proofItems} 
+  />
 
   <!-- What I'm Hired For Section -->
-  <section class="section" id="hired-for">
-    <div class="container">
-      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-12">
-        {t(typedLang, 'hiredFor.title')}
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {homeData.hiredFor.items.map((item, index) => (
-          <a
-            href={`/${typedLang}/case-studies/${item.caseSlug}`}
-            class="group block p-4 rounded-lg border border-transparent hover:border-accent hover:bg-background-alt transition-all"
-          >
-            <span class="text-5xl font-bold text-accent/20 group-hover:text-accent/40 transition-colors">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-            <p class="text-lg font-medium text-foreground mt-2 group-hover:text-accent transition-colors">
-              {t(typedLang, `hiredFor.bullets.${item.key}`)}
-            </p>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
+  <HiredFor 
+    lang={typedLang} 
+    items={homeData.hiredFor.items} 
+  />
 
-  <!-- Systems Portfolio Section (Placeholder for ChapterDeck) -->
-  <section class="section bg-background-alt" id="systems">
-    <div class="container">
-      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
-        {t(typedLang, 'systems.title')}
-      </h2>
-      <p class="text-lg text-muted mb-12 max-w-2xl">
-        {t(typedLang, 'systems.subtitle')}
-      </p>
+  <!-- Systems Portfolio Section (ChapterDeck) -->
+  <ChapterDeck 
+    lang={typedLang} 
+    chapters={homeData.systems.cards} 
+  />
 
-      <!-- Chapter Cards (Will be replaced by ChapterDeck component) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {homeData.systems.cards.map((card, index) => (
-          <a
-            href={`/${typedLang}/case-studies/${card.slug}`}
-            class="group p-6 rounded-xl bg-surface border border-border hover:border-accent hover:shadow-lg transition-all hover:-translate-y-1"
-          >
-            <div class="flex items-center justify-between text-xs uppercase tracking-wider text-accent">
-              <span class="font-semibold">{card.eyebrow}</span>
-              <span class="text-muted">{String(index + 1).padStart(2, '0')}</span>
-            </div>
-            <h3 class="text-xl font-semibold text-foreground mt-2 group-hover:text-accent transition-colors">
-              {card.title[typedLang]}
-            </h3>
-            <p class="text-sm text-muted mt-2">
-              {card.description[typedLang]}
-            </p>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
+  <!-- Operating Model Section -->
+  <OperatingModel lang={typedLang} />
 
   <!-- Timeline Section -->
-  <section class="section" id="timeline">
-    <div class="container">
-      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-12">
-        {t(typedLang, 'timeline.title')}
-      </h2>
-
-      <div class="space-y-12">
-        {roles.map((role, index) => (
-          <div class="relative pl-8 border-l-2 border-border">
-            <div class:list={[
-              'absolute -left-2 top-0 w-4 h-4 rounded-full',
-              index === 0 ? 'bg-accent' : 'bg-border',
-            ]}>
-            </div>
-            <div class="mb-2">
-              <span class:list={['text-sm font-medium', index === 0 ? 'text-accent' : 'text-muted']}>
-                {role.period.replace('Present', t(typedLang, 'timeline.present'))}
-              </span>
-            </div>
-            <h3 class="text-xl font-semibold text-foreground">{role.title[typedLang]}</h3>
-            <p class="text-muted">{role.org} · {role.location}</p>
-            <ul class="mt-4 space-y-2 text-sm text-muted">
-              {role.bullets[typedLang].map((bullet) => (
-                <li>- {bullet}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <Timeline 
+    lang={typedLang} 
+    roles={roles} 
+  />
 
   <!-- Education Section -->
-  <section class="section bg-background-alt" id="education">
-    <div class="container">
-      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-12">
-        {t(typedLang, 'education.title')}
-      </h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {educationItems.map((item) => (
-          <div class="p-6 rounded-xl bg-surface border border-border hover:border-accent/50 transition-colors">
-            {item.status === 'inProgress' && (
-              <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-accent/10 text-accent mb-3">
-                {t(typedLang, 'education.inProgress')}
-              </span>
-            )}
-            <h3 class="text-lg font-semibold text-foreground">
-              {item.degree[typedLang]}
-            </h3>
-            <p class="text-muted mt-1">{item.org}</p>
-            <p class="text-sm text-muted">{item.location} - {item.year}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <Education 
+    lang={typedLang} 
+    items={educationItems} 
+  />
 
   <!-- Languages Section -->
-  <section class="section" id="languages">
-    <div class="container">
-      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-12">
-        {t(typedLang, 'languages.title')}
-      </h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {languageItems.map((item) => (
-          <div class="p-4 rounded-lg bg-surface border border-border">
-            <p class="font-semibold text-foreground">{item.name}</p>
-            <p class="text-sm text-accent">{t(typedLang, `languages.levels.${item.level}`)}</p>
-            <p class="text-xs text-muted mt-2">{t(typedLang, 'languages.usedFor')} {item.usedFor[typedLang]}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <Languages 
+    lang={typedLang} 
+    items={languageItems} 
+  />
 
   <!-- Awards Section -->
-  <section class="section bg-background-alt" id="awards">
-    <div class="container">
-      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-12">
-        {t(typedLang, 'awards.title')}
-      </h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {awards.map((award) => (
-          <div class="p-6 rounded-xl bg-surface border border-border">
-            <span class="text-sm font-medium text-accent">{award.year}</span>
-            <h3 class="text-lg font-semibold text-foreground mt-2">
-              {award.title[typedLang]}
-            </h3>
-            <p class="text-muted">
-              {typeof award.org === 'string' ? award.org : award.org[typedLang]}
-            </p>
-            <p class="text-sm text-muted mt-2">
-              {award.description[typedLang]}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <Awards 
+    lang={typedLang} 
+    items={awards} 
+  />
 
   <!-- Contact Section -->
-  <section class="section" id="contact">
-    <div class="container">
-      <div class="max-w-3xl mx-auto text-center border border-border rounded-2xl bg-background-alt p-8 md:p-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          {t(typedLang, 'contact.title')}
-        </h2>
-        <p class="text-lg text-muted mb-8">
-          {t(typedLang, 'contact.subtitle')}
-        </p>
-
-        <div class="flex flex-wrap justify-center gap-4">
-          <a
-            href={`mailto:${siteData.email}`}
-            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition-colors"
-          >
-            {t(typedLang, 'contact.email')}
-          </a>
-          <a
-            href={`/${typedLang}/resume`}
-            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
-          >
-            {t(typedLang, 'contact.downloadPdf')}
-          </a>
-          <a
-            href={siteData.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
-          >
-            {t(typedLang, 'contact.linkedin')}
-          </a>
-        </div>
-
-        <div class="mt-6 text-sm text-muted">
-          {siteData.email} · {siteData.location[typedLang]}
-        </div>
-      </div>
-    </div>
-  </section>
+  <Contact 
+    lang={typedLang} 
+    email={siteData.email}
+    location={siteData.location[typedLang]}
+    linkedin={siteData.linkedin}
+  />
 </Page>

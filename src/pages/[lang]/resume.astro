@@ -7,6 +7,8 @@
 import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
+import ResumeHeader from '@/components/resume/ResumeHeader.astro';
+import ResumeSection from '@/components/resume/ResumeSection.astro';
 import siteData from '@/data/site.json';
 import experienceData from '@/data/experience.json';
 import educationData from '@/data/education.json';
@@ -48,188 +50,143 @@ const awards = awardsData.items;
 >
   <div class="section">
     <div class="container max-w-4xl">
-      <!-- Header -->
-      <header class="mb-12 pb-8 border-b border-border">
-        <h1 class="text-3xl md:text-4xl font-bold text-foreground">{siteData.name}</h1>
-        <p class="text-xl text-accent mt-2">{siteData.jobTitle[typedLang]}</p>
-        <p class="text-sm text-muted mt-2 max-w-2xl">
-          {siteData.tagline[typedLang]}
-        </p>
-
-        <div class="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted">
-          <span>{siteData.location[typedLang]}</span>
-          <a href={`mailto:${siteData.email}`} class="hover:text-accent">{siteData.email}</a>
-          <a
-            href={siteData.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="hover:text-accent"
-          >
-            LinkedIn
-          </a>
-        </div>
-
-        <!-- Download PDF -->
-        <div class="mt-6">
-          <a
-            href={siteData.pdf[typedLang]}
-            download
-            class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md bg-primary text-white hover:bg-primary-light transition-colors"
-          >
-            {t(typedLang, 'resume.downloadPdf')}
-          </a>
-        </div>
-      </header>
+      <ResumeHeader 
+        lang={typedLang}
+        name={siteData.name}
+        jobTitle={siteData.jobTitle[typedLang]}
+        tagline={siteData.tagline[typedLang]}
+        location={siteData.location[typedLang]}
+        email={siteData.email}
+        linkedin={siteData.linkedin}
+        pdfUrl={siteData.pdf[typedLang]}
+      />
 
       <!-- Summary -->
-      <section class="mb-10">
-        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
-          {t(typedLang, 'resume.summary')}
-        </h2>
+      <ResumeSection title={t(typedLang, 'resume.summary')}>
         <p class="text-muted leading-relaxed">
           {typedLang === 'es'
             ? 'Especialista en datos y evaluacion de impacto con 8+ anos en monitoreo, evaluacion y analisis de datos para programas internacionales de sostenibilidad y clima. Experta en diseno de frameworks para medicion de impacto, gestion basada en resultados y reportes basados en evidencia. Experiencia en entornos multiculturales y multi-regionales apoyando los ODS 8, 9 y 13.'
             : 'Data and impact assessment specialist with 8+ years in monitoring, evaluation, and data analysis for international sustainability and climate programmes. Expert in designing frameworks for impact measurement, results-based management, and evidence-based reporting. Experienced in multicultural, cross-regional environments supporting UN SDGs 8, 9, and 13.'}
         </p>
-      </section>
+      </ResumeSection>
 
       <!-- Key Strengths -->
-      <section class="mb-10">
-        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
-          {t(typedLang, 'resume.strengths')}
-        </h2>
+      <ResumeSection title={t(typedLang, 'resume.strengths')}>
         <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 text-muted">
           {capabilities.slice(0, 5).map((capability) => (
             <li class="flex items-start gap-2">
-              <span class="text-accent">+</span>
+              <span class="text-accent mt-1.5 w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0"></span>
               <span>{capability.name[typedLang]}</span>
             </li>
           ))}
         </ul>
-      </section>
+      </ResumeSection>
 
       <!-- Experience -->
-      <section class="mb-10">
-        <h2 class="text-lg font-semibold text-foreground mb-6 uppercase tracking-wider">
-          {t(typedLang, 'resume.experience')}
-        </h2>
-
+      <ResumeSection title={t(typedLang, 'resume.experience')}>
         <div class="space-y-8">
           {roles.map((role) => (
-            <div class="rounded-xl border border-border p-6">
-              <div class="flex flex-wrap justify-between items-start gap-2">
+            <div class="rounded-xl border border-border p-6 bg-surface/50 hover:bg-surface transition-colors">
+              <div class="flex flex-wrap justify-between items-start gap-2 mb-3">
                 <div>
-                  <h3 class="font-semibold text-foreground">{role.title[typedLang]}</h3>
-                  <p class="text-accent">{role.org}</p>
+                  <h3 class="font-semibold text-foreground text-lg">{role.title[typedLang]}</h3>
+                  <p class="text-accent font-medium">{role.org}</p>
                 </div>
-                <span class="text-sm text-muted">
+                <span class="text-sm text-muted bg-background-alt px-3 py-1 rounded-full border border-border">
                   {role.period.replace('Present', t(typedLang, 'timeline.present'))}
                 </span>
               </div>
-              <ul class="mt-3 space-y-1 text-sm text-muted">
+              <ul class="space-y-2 text-sm text-muted">
                 {role.bullets[typedLang].map((bullet) => (
-                  <li>- {bullet}</li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-muted mt-1.5 w-1 h-1 rounded-full bg-muted flex-shrink-0"></span>
+                    <span>{bullet}</span>
+                  </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-      </section>
+      </ResumeSection>
 
       <!-- Education -->
-      <section class="mb-10">
-        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
-          {t(typedLang, 'resume.education')}
-        </h2>
-
+      <ResumeSection title={t(typedLang, 'resume.education')}>
         <div class="space-y-4">
           {educationItems.map((item) => (
-            <div class="flex flex-wrap justify-between items-start gap-2">
+            <div class="flex flex-wrap justify-between items-start gap-2 p-4 rounded-lg border border-border bg-background-alt/30">
               <div>
-                <p class="font-medium text-foreground">{item.degree[typedLang]}</p>
+                <p class="font-semibold text-foreground">{item.degree[typedLang]}</p>
                 <p class="text-sm text-muted">{item.org}, {item.location}</p>
               </div>
-              <span class:list={['text-sm', item.status === 'inProgress' ? 'text-accent' : 'text-muted']}>
+              <span class:list={['text-sm px-2 py-1 rounded', item.status === 'inProgress' ? 'bg-accent/10 text-accent font-medium' : 'text-muted']}>
                 {item.status === 'inProgress' ? t(typedLang, 'education.inProgress') : item.year}
                 {item.status === 'inProgress' ? ` - ${item.year}` : ''}
               </span>
             </div>
           ))}
         </div>
-      </section>
+      </ResumeSection>
 
       <!-- Skills -->
-      <section class="mb-10">
-        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
-          {t(typedLang, 'resume.skills')}
-        </h2>
-
+      <ResumeSection title={t(typedLang, 'resume.skills')}>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           {capabilities.map((capability) => (
-            <div class="p-4 rounded-lg border border-border bg-background-alt">
+            <div class="p-4 rounded-lg border border-border bg-background-alt/50">
               <p class="font-medium text-foreground mb-2">{capability.name[typedLang]}</p>
-              <p class="text-muted">{capability.tools.join(', ')}</p>
+              <p class="text-muted text-xs leading-relaxed">{capability.tools.join(', ')}</p>
             </div>
           ))}
         </div>
-      </section>
+      </ResumeSection>
 
       <!-- Languages -->
-      <section class="mb-10">
-        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
-          {t(typedLang, 'resume.languages')}
-        </h2>
-
-        <div class="flex flex-wrap gap-6 text-sm">
+      <ResumeSection title={t(typedLang, 'resume.languages')}>
+        <div class="flex flex-wrap gap-4 text-sm">
           {languageItems.map((item) => (
-            <div>
+            <div class="px-4 py-2 rounded-full border border-border bg-background-alt/50">
               <span class="font-medium text-foreground">{item.name}</span>
-              <span class="text-muted"> - {t(typedLang, `languages.levels.${item.level}`)}</span>
+              <span class="text-muted mx-1">-</span>
+              <span class="text-muted">{t(typedLang, `languages.levels.${item.level}`)}</span>
             </div>
           ))}
         </div>
-      </section>
+      </ResumeSection>
 
       <!-- Recognition -->
-      <section class="mb-10">
-        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
-          {t(typedLang, 'resume.awards')}
-        </h2>
-
-        <ul class="space-y-2 text-sm text-muted">
+      <ResumeSection title={t(typedLang, 'resume.awards')}>
+        <ul class="space-y-3 text-sm text-muted">
           {awards.map((award) => (
-            <li>- {award.description[typedLang]} ({award.year})</li>
+            <li class="flex items-start gap-2">
+              <span class="text-accent font-medium min-w-[4ch]">{award.year}</span>
+              <span>{award.description[typedLang]}</span>
+            </li>
           ))}
         </ul>
-      </section>
+      </ResumeSection>
 
       <!-- Featured Work -->
-      <section>
-        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
-          {t(typedLang, 'resume.topCases')}
-        </h2>
-
+      <ResumeSection title={t(typedLang, 'resume.topCases')}>
         <div class="space-y-3">
-          <a href={`/${typedLang}/case-studies/audience-framework`} class="flex items-center justify-between p-3 rounded-lg border border-border hover:border-accent transition-colors group">
+          <a href={`/${typedLang}/case-studies/audience-framework`} class="flex items-center justify-between p-4 rounded-lg border border-border hover:border-accent hover:bg-surface transition-all group">
             <span class="font-medium text-foreground group-hover:text-accent transition-colors">
               {typedLang === 'es' ? 'Framework de Inteligencia de Audiencias' : 'Audience Intelligence Framework'}
             </span>
-            <span class="text-sm text-accent">{t(typedLang, 'resume.viewCase')} -></span>
+            <span class="text-sm text-accent group-hover:translate-x-1 transition-transform">-></span>
           </a>
-          <a href={`/${typedLang}/case-studies/benchmark-system`} class="flex items-center justify-between p-3 rounded-lg border border-border hover:border-accent transition-colors group">
+          <a href={`/${typedLang}/case-studies/benchmark-system`} class="flex items-center justify-between p-4 rounded-lg border border-border hover:border-accent hover:bg-surface transition-all group">
             <span class="font-medium text-foreground group-hover:text-accent transition-colors">
               {typedLang === 'es' ? 'Sistema de Benchmark de Desempeno' : 'Performance Benchmark System'}
             </span>
-            <span class="text-sm text-accent">{t(typedLang, 'resume.viewCase')} -></span>
+            <span class="text-sm text-accent group-hover:translate-x-1 transition-transform">-></span>
           </a>
-          <a href={`/${typedLang}/case-studies/narrative-tracking`} class="flex items-center justify-between p-3 rounded-lg border border-border hover:border-accent transition-colors group">
+          <a href={`/${typedLang}/case-studies/narrative-tracking`} class="flex items-center justify-between p-4 rounded-lg border border-border hover:border-accent hover:bg-surface transition-all group">
             <span class="font-medium text-foreground group-hover:text-accent transition-colors">
               {typedLang === 'es' ? 'Sistema de Seguimiento Narrativo' : 'Narrative Tracking System'}
             </span>
-            <span class="text-sm text-accent">{t(typedLang, 'resume.viewCase')} -></span>
+            <span class="text-sm text-accent group-hover:translate-x-1 transition-transform">-></span>
           </a>
         </div>
-      </section>
+      </ResumeSection>
     </div>
   </div>
 </Page>

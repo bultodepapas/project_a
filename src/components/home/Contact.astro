@@ -1,0 +1,80 @@
+---
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+  email: string;
+  location: string;
+  linkedin: string;
+}
+
+const { lang, email, location, linkedin } = Astro.props;
+---
+
+<section class="section" id="contact">
+  <div class="container">
+    <div class="max-w-3xl mx-auto text-center border border-border rounded-2xl bg-background-alt p-8 md:p-12 reveal-element opacity-0 scale-95 transition-all duration-500">
+      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        {t(lang, 'contact.title')}
+      </h2>
+      <p class="text-lg text-muted mb-8">
+        {t(lang, 'contact.subtitle')}
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href={`mailto:${email}`}
+          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition-colors"
+        >
+          {t(lang, 'contact.email')}
+        </a>
+        <a
+          href={`/${lang}/resume`}
+          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
+        >
+          {t(lang, 'contact.downloadPdf')}
+        </a>
+        <a
+          href={linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
+        >
+          {t(lang, 'contact.linkedin')}
+        </a>
+      </div>
+
+      <div class="mt-6 text-sm text-muted">
+        {email} · {location}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initContact() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('opacity-0', 'scale-95');
+          entry.target.classList.add('opacity-100', 'scale-100');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.2,
+      rootMargin: '50px'
+    });
+
+    document.querySelectorAll('#contact .reveal-element').forEach((el) => {
+      observer.observe(el);
+    });
+  }
+
+  // Initialize on load
+  initContact();
+
+  // Re-initialize on view transitions
+  document.addEventListener('astro:page-load', initContact);
+</script>

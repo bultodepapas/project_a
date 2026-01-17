@@ -8,6 +8,7 @@
 import '@/styles/global.css';
 import { type Lang, defaultLang, supportedLangs } from '@/i18n/config';
 import { getHrefLangUrls, siteConfig } from '@/lib/seo';
+import { ClientRouter } from 'astro:transitions';
 
 export interface Props {
   title: string;
@@ -94,6 +95,9 @@ const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.n
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- View Transitions -->
+    <ClientRouter />
 
     <!-- Schema.org JSON-LD -->
     {schema && <script type="application/ld+json" set:html={schema} />}

@@ -4,8 +4,9 @@
  * Main navigation with language switch
  */
 
-import { type Lang, getLocalizedPath, langNamesShort } from '@/i18n/config';
+import { type Lang, getLocalizedPath } from '@/i18n/config';
 import { t } from '@/i18n';
+import LangSwitch from '@/components/core/LangSwitch.astro';
 
 export interface Props {
   lang: Lang;
@@ -21,10 +22,6 @@ const navItems = [
   { key: 'resume', href: `/${lang}/resume` },
   { key: 'contact', href: '#contact' },
 ];
-
-// Language switch
-const otherLang = lang === 'en' ? 'es' : 'en';
-const switchUrl = getLocalizedPath(currentPath, otherLang);
 ---
 
 <header
@@ -54,17 +51,7 @@ const switchUrl = getLocalizedPath(currentPath, otherLang);
         }
 
         <!-- Language Switch -->
-        <div class="flex items-center gap-1 text-sm">
-          <span class="font-medium text-foreground">{langNamesShort[lang]}</span>
-          <span class="text-muted">/</span>
-          <a
-            href={switchUrl}
-            class="text-muted hover:text-foreground transition-colors"
-            aria-label={t(lang, 'a11y.languageSwitch')}
-          >
-            {langNamesShort[otherLang]}
-          </a>
-        </div>
+        <LangSwitch currentLang={lang} currentPath={currentPath} />
 
         <!-- Resume CTA -->
         <a
@@ -117,14 +104,11 @@ const switchUrl = getLocalizedPath(currentPath, otherLang);
       }
 
       <!-- Language Switch Mobile -->
-      <div class="flex items-center gap-2 py-2 border-t border-border">
-        <span class="text-sm text-muted">{t(lang, 'a11y.languageSwitch')}:</span>
-        <a
-          href={switchUrl}
-          class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
-        >
-          {langNamesShort[otherLang]}
-        </a>
+      <div class="py-2 border-t border-border">
+         <div class="flex items-center gap-2">
+            <span class="text-sm text-muted">{t(lang, 'a11y.languageSwitch')}:</span>
+            <LangSwitch currentLang={lang} currentPath={currentPath} />
+         </div>
       </div>
     </div>
   </div>

@@ -1,0 +1,83 @@
+---
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+  roles: Array<{
+    title: { [key: string]: string } | string;
+    period: string;
+    org: string;
+    location: string;
+    bullets: { [key: string]: string[] } | string[];
+  }>;
+}
+
+const { lang, roles } = Astro.props;
+
+// Helper to get localized string/array
+const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
+const getArr = (obj: any) => (Array.isArray(obj) ? obj : obj[lang]);
+---
+
+<section class="section" id="timeline">
+  <div class="container">
+    <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-12 reveal-element opacity-0 translate-y-4 transition-all">
+      {t(lang, 'timeline.title')}
+    </h2>
+
+    <div class="space-y-12">
+      {roles.map((role, index) => (
+        <div 
+          class="relative pl-8 border-l-2 border-border reveal-element opacity-0 translate-y-4 transition-all"
+          style={`transition-delay: ${index * 100}ms`}
+        >
+          <div class:list={[
+            'absolute -left-[9px] top-0 w-4 h-4 rounded-full border-2 border-background',
+            index === 0 ? 'bg-accent' : 'bg-border',
+          ]}>
+          </div>
+          <div class="mb-2">
+            <span class:list={['text-sm font-medium', index === 0 ? 'text-accent' : 'text-muted']}>
+              {role.period.replace('Present', t(lang, 'timeline.present'))}
+            </span>
+          </div>
+          <h3 class="text-xl font-semibold text-foreground">{getStr(role.title)}</h3>
+          <p class="text-muted">{role.org} · {role.location}</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            {getArr(role.bullets).map((bullet: string) => (
+              <li>- {bullet}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  function initTimeline() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('opacity-0', 'translate-y-4');
+          entry.target.classList.add('opacity-100', 'translate-y-0');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '50px'
+    });
+
+    document.querySelectorAll('#timeline .reveal-element').forEach((el) => {
+      observer.observe(el);
+    });
+  }
+
+  // Initialize on load
+  initTimeline();
+
+  // Re-initialize on view transitions
+  document.addEventListener('astro:page-load', initTimeline);
+</script>
