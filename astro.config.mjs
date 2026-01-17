@@ -1,15 +1,16 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
+import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 
 export default defineConfig({
   site: 'https://angelaparra.com',
-  integrations: [
-    tailwind({
-      applyBaseStyles: false,
-    }),
-    mdx(),
-  ],
+  integrations: [mdx()],
+  vite: {
+    plugins: [tailwindcss()],
+    build: {
+      cssMinify: true,
+    },
+  },
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'es'],
@@ -20,11 +21,6 @@ export default defineConfig({
   markdown: {
     shikiConfig: {
       theme: 'github-dark',
-    },
-  },
-  vite: {
-    build: {
-      cssMinify: true,
     },
   },
 });
