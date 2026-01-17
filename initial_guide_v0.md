@@ -1,5 +1,6 @@
 # Dirección creativa: “CV cinematográfico” (narrativa + prueba + elegancia)
 
+PRIMERA VERSION V 0.1 
 La idea no es “poner todo el CV en una página”. Es convertirlo en una experiencia: una historia interactiva de impacto, con pruebas (métricas, casos, credenciales) y un “modo rápido” para quien solo quiere evaluar en 30–60 segundos.
 
 **Inspiración de enfoque**: portfolios premiados, sitios con scroll fuerte, transiciones y storytelling visual.
