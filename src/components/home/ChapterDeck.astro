@@ -100,93 +100,20 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 </section>
 
 <script>
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { initChapterDeck } from '@/lib/motion';
 
-  gsap.registerPlugin(ScrollTrigger);
-
-  function initChapterDeck() {
+  function setup() {
     const section = document.getElementById('chapter-deck');
-    const pinWrapper = section?.querySelector('.chapter-pin-wrapper') as HTMLElement;
-    const cards = section?.querySelectorAll('.chapter-card');
-    const dots = section?.querySelectorAll('.chapter-dot');
-    const accordion = section?.querySelector('.chapter-accordion') as HTMLElement;
-    
-    if (!section || !pinWrapper || !cards || cards.length === 0) return;
-
-    // Check for reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isMobile = window.innerWidth < 768; // Simple mobile check
-
-    if (prefersReducedMotion || isMobile) {
-      // Show accordion, hide pinned wrapper
-      pinWrapper.style.display = 'none';
-      if (accordion) {
-        accordion.classList.remove('hidden');
-        accordion.classList.add('flex');
-      }
-      return;
-    }
-
-    // GSAP Timeline
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: `+=${cards.length * 100}%`, // Scroll distance based on number of cards
-        pin: true,
-        scrub: 0.5,
-        anticipatePin: 1,
-      }
-    });
-
-    // Animate cards
-    cards.forEach((card, i) => {
-      // 1. Fade in & Slide up current card
-      tl.to(card, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power2.out',
-        onStart: () => updateDots(i),
-        onReverseComplete: () => updateDots(i - 1)
-      });
-      
-      // 2. Hold for a bit (reading time)
-      tl.to(card, { duration: 0.5 }); // pause
-
-      // 3. Fade out & Slide up (exit) - except for the last card
-      if (i < cards.length - 1) {
-        tl.to(card, {
-          opacity: 0,
-          y: -50,
-          duration: 1,
-          ease: 'power2.in'
-        });
-      }
-    });
-
-    function updateDots(activeParam: number) {
-      // Ensure index is within bounds (handle onReverseComplete -1)
-      const activeIndex = Math.max(0, Math.min(activeParam, dots?.length ? dots.length - 1 : 0));
-      
-      dots?.forEach((dot, i) => {
-        if (i === activeIndex) {
-          dot.classList.add('bg-accent');
-          dot.classList.remove('bg-border');
-        } else {
-          dot.classList.remove('bg-accent');
-          dot.classList.add('bg-border');
-        }
-      });
+    if (section) {
+      initChapterDeck(section);
     }
   }
 
   // Initialize on load
-  initChapterDeck();
+  setup();
 
-  // Re-initialize on view transitions (Astro)
-  document.addEventListener('astro:page-load', initChapterDeck);
+  // Re-initialize on view transitions
+  document.addEventListener('astro:page-load', setup);
 </script>
 
 <style>
