@@ -7,239 +7,13 @@
 import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
-
-// Case studies data (will be moved to content collections in Sprint 1)
-const casesData: Record<string, Record<Lang, {
-  title: string;
-  role: string;
-  org: string;
-  timeframe: string;
-  regions: string[];
-  problem: string;
-  approach: string[];
-  systemDesign: string[];
-  dataSources: string[];
-  outputs: string[];
-  decisionImpact: string[];
-  adoption: string;
-  governance: string;
-  tools: string[];
-}>> = {
-  'audience-framework': {
-    en: {
-      title: 'Audience Intelligence Framework',
-      role: 'Lead Designer & Strategist',
-      org: 'European Climate Foundation',
-      timeframe: '2021 - Present',
-      regions: ['LATAM', 'US/Canada', 'Europe'],
-      problem: 'Regional teams lacked a standardized methodology to understand and segment audiences across different climate narratives. Each team used different approaches, making cross-regional learning impossible and strategic decisions inconsistent.',
-      approach: [
-        'Conducted landscape analysis of existing audience research across regions',
-        'Designed unified segmentation integrating qualitative and quantitative indicators',
-        'Built indicator framework tracking awareness, attitudes, and behavioral intent',
-        'Created standardized reporting templates for regional teams',
-      ],
-      systemDesign: [
-        'Multi-country methodology for behavioral change measurement',
-        'Policy awareness indicators integrated with campaign metrics',
-        'Qualitative + quantitative data integration pipeline',
-      ],
-      dataSources: ['Brandwatch', 'BuzzSumo', 'Audiense', 'Google BigQuery', 'Custom surveys'],
-      outputs: [
-        'Quarterly audience intelligence reports',
-        'Regional performance scorecards',
-        'Strategic recommendation memos',
-        'Training workshops for regional teams',
-      ],
-      decisionImpact: [
-        'Informed results-based management across LATAM, Canada, and US teams',
-        'Enabled evidence-based reporting to donors and EU-aligned partners',
-        'Standardized evaluation methodologies across philanthropic consortia',
-      ],
-      adoption: 'Used by regional teams in Latin America, Canada, and United States for strategic planning and donor reporting',
-      governance: 'Collaboration with EU-aligned partners and philanthropic consortia on performance monitoring systems',
-      tools: ['Brandwatch', 'BuzzSumo', 'Audiense', 'Google BigQuery', 'Power BI', 'Excel'],
-    },
-    es: {
-      title: 'Framework de Inteligencia de Audiencias',
-      role: 'Diseñadora Líder y Estratega',
-      org: 'European Climate Foundation',
-      timeframe: '2021 - Presente',
-      regions: ['LATAM', 'US/Canadá', 'Europa'],
-      problem: 'Los equipos regionales carecían de una metodología estandarizada para entender y segmentar audiencias en diferentes narrativas climáticas. Cada equipo usaba enfoques distintos, haciendo imposible el aprendizaje inter-regional y las decisiones estratégicas inconsistentes.',
-      approach: [
-        'Análisis del panorama de investigación de audiencias existente',
-        'Diseño de segmentación unificada integrando indicadores cualitativos y cuantitativos',
-        'Framework de indicadores de conciencia, actitudes e intención conductual',
-        'Plantillas de reportes estandarizadas para equipos regionales',
-      ],
-      systemDesign: [
-        'Metodología multi-país para medición de cambio conductual',
-        'Indicadores de conciencia política integrados con métricas de campaña',
-        'Pipeline de integración de datos cualitativos + cuantitativos',
-      ],
-      dataSources: ['Brandwatch', 'BuzzSumo', 'Audiense', 'Google BigQuery', 'Encuestas personalizadas'],
-      outputs: [
-        'Reportes trimestrales de inteligencia de audiencias',
-        'Scorecards de desempeño regional',
-        'Memos de recomendaciones estratégicas',
-        'Talleres de capacitación para equipos regionales',
-      ],
-      decisionImpact: [
-        'Informó la gestión basada en resultados en equipos de LATAM, Canadá y US',
-        'Habilitó reportes basados en evidencia para donantes y socios UE',
-        'Estandarizó metodologías de evaluación entre consorcios filantrópicos',
-      ],
-      adoption: 'Usado por equipos regionales en LATAM, Canadá y Estados Unidos para planificación estratégica y reportes a donantes',
-      governance: 'Colaboración con socios alineados con UE y consorcios filantrópicos en sistemas de monitoreo de desempeño',
-      tools: ['Brandwatch', 'BuzzSumo', 'Audiense', 'Google BigQuery', 'Power BI', 'Excel'],
-    },
-  },
-  'benchmark-system': {
-    en: {
-      title: 'Performance Benchmark System',
-      role: 'Lead Analyst',
-      org: 'European Climate Foundation',
-      timeframe: '2021 - Present',
-      regions: ['LATAM', 'US/Canada', 'Europe'],
-      problem: 'Campaign efficiency varied significantly across regional teams with no standardized way to compare performance or identify improvement areas. Strategic decisions were made without comparable baseline data.',
-      approach: [
-        'Defined standardized performance metrics applicable across regions',
-        'Created baseline measurement protocols for campaign efficiency',
-        'Designed comparative dashboards for regional leadership',
-        'Established improvement tracking and learning loops',
-      ],
-      systemDesign: [
-        'KPI framework aligned across all regional programmes',
-        'Automated data collection from multiple campaign platforms',
-        'Comparative scoring methodology',
-      ],
-      dataSources: ['Google Analytics', 'Campaign platforms', 'Partner reporting data', 'Event Registry'],
-      outputs: [
-        'Regional benchmark reports',
-        'Performance improvement recommendations',
-        'Quarterly comparative dashboards',
-      ],
-      decisionImpact: [
-        'Identified strategic improvement areas across regional teams',
-        'Enabled data-driven resource allocation decisions',
-        'Strengthened institutional learning through comparable metrics',
-      ],
-      adoption: 'Integrated into quarterly strategic planning sessions across all regional programmes',
-      governance: 'Owned by data team, consumed by Regional Directors and Programme Managers',
-      tools: ['Tableau', 'Google BigQuery', 'Looker Studio', 'Excel'],
-    },
-    es: {
-      title: 'Sistema de Benchmark de Desempeño',
-      role: 'Analista Líder',
-      org: 'European Climate Foundation',
-      timeframe: '2021 - Presente',
-      regions: ['LATAM', 'US/Canadá', 'Europa'],
-      problem: 'La eficiencia de campañas variaba significativamente entre equipos regionales sin forma estandarizada de comparar desempeño o identificar áreas de mejora. Las decisiones estratégicas se tomaban sin datos base comparables.',
-      approach: [
-        'Definición de métricas de desempeño estandarizadas aplicables entre regiones',
-        'Protocolos de medición base para eficiencia de campañas',
-        'Dashboards comparativos para liderazgo regional',
-        'Tracking de mejoras y ciclos de aprendizaje',
-      ],
-      systemDesign: [
-        'Framework de KPIs alineado entre todos los programas regionales',
-        'Recolección automatizada de datos de múltiples plataformas',
-        'Metodología de scoring comparativo',
-      ],
-      dataSources: ['Google Analytics', 'Plataformas de campaña', 'Datos de reportes de socios', 'Event Registry'],
-      outputs: [
-        'Reportes de benchmark regional',
-        'Recomendaciones de mejora de desempeño',
-        'Dashboards comparativos trimestrales',
-      ],
-      decisionImpact: [
-        'Identificó áreas de mejora estratégica entre equipos regionales',
-        'Habilitó decisiones de asignación de recursos basadas en datos',
-        'Fortaleció el aprendizaje institucional mediante métricas comparables',
-      ],
-      adoption: 'Integrado en sesiones de planificación estratégica trimestral en todos los programas regionales',
-      governance: 'Propiedad del equipo de datos, consumido por Directores Regionales y Gerentes de Programa',
-      tools: ['Tableau', 'Google BigQuery', 'Looker Studio', 'Excel'],
-    },
-  },
-  'narrative-tracking': {
-    en: {
-      title: 'Narrative Tracking System',
-      role: 'System Designer',
-      org: 'European Climate Foundation',
-      timeframe: '2021 - Present',
-      regions: ['Global'],
-      problem: 'Environmental discourse trends and sentiment shifts were not being systematically monitored, making it difficult to assess communication impact or adapt messaging strategy in real-time.',
-      approach: [
-        'Integrated multiple data sources for comprehensive narrative monitoring',
-        'Designed taxonomy for environmental discourse classification',
-        'Built sentiment and trend analysis pipelines',
-        'Created actionable insight delivery system',
-      ],
-      systemDesign: [
-        'Multi-platform data aggregation (social, news, policy)',
-        'Automated trend detection and alerting',
-        'Sentiment classification using mixed methods',
-      ],
-      dataSources: ['Brandwatch', 'BuzzSumo', 'Event Registry', 'Talkwalker', 'Google BigQuery'],
-      outputs: [
-        'Real-time narrative dashboards',
-        'Trend alert reports',
-        'Strategic messaging recommendations',
-        'Monthly discourse analysis briefs',
-      ],
-      decisionImpact: [
-        'Enabled real-time adaptation of communication strategies',
-        'Informed messaging priorities based on discourse trends',
-        'Provided evidence base for partner communications guidance',
-      ],
-      adoption: 'Monitored by communications team, insights consumed by programme leads and partners',
-      governance: 'Data pipeline owned by analytics team, strategic recommendations reviewed by Communications Director',
-      tools: ['Brandwatch', 'BuzzSumo', 'Event Registry', 'Talkwalker', 'NVivo', 'ATLAS.ti'],
-    },
-    es: {
-      title: 'Sistema de Seguimiento Narrativo',
-      role: 'Diseñadora de Sistema',
-      org: 'European Climate Foundation',
-      timeframe: '2021 - Presente',
-      regions: ['Global'],
-      problem: 'Las tendencias del discurso ambiental y los cambios de sentimiento no se monitoreaban sistemáticamente, dificultando evaluar el impacto comunicacional o adaptar la estrategia de mensajes en tiempo real.',
-      approach: [
-        'Integración de múltiples fuentes de datos para monitoreo narrativo integral',
-        'Diseño de taxonomía para clasificación del discurso ambiental',
-        'Pipelines de análisis de sentimiento y tendencias',
-        'Sistema de entrega de insights accionables',
-      ],
-      systemDesign: [
-        'Agregación de datos multi-plataforma (social, noticias, política)',
-        'Detección automatizada de tendencias y alertas',
-        'Clasificación de sentimiento usando métodos mixtos',
-      ],
-      dataSources: ['Brandwatch', 'BuzzSumo', 'Event Registry', 'Talkwalker', 'Google BigQuery'],
-      outputs: [
-        'Dashboards de narrativa en tiempo real',
-        'Reportes de alertas de tendencias',
-        'Recomendaciones estratégicas de mensajes',
-        'Briefs mensuales de análisis de discurso',
-      ],
-      decisionImpact: [
-        'Habilitó adaptación en tiempo real de estrategias de comunicación',
-        'Informó prioridades de mensajes basadas en tendencias de discurso',
-        'Proveyó base de evidencia para guía de comunicaciones a socios',
-      ],
-      adoption: 'Monitoreado por equipo de comunicaciones, insights consumidos por líderes de programa y socios',
-      governance: 'Pipeline de datos propiedad del equipo de analítica, recomendaciones revisadas por Director de Comunicaciones',
-      tools: ['Brandwatch', 'BuzzSumo', 'Event Registry', 'Talkwalker', 'NVivo', 'ATLAS.ti'],
-    },
-  },
-};
+import { casesData, caseSlugs, type CaseSlug } from '@/data/cases';
 
 // Generate static paths
 export function getStaticPaths() {
   const paths = [];
   for (const lang of supportedLangs) {
-    for (const slug of Object.keys(casesData)) {
+    for (const slug of caseSlugs) {
       paths.push({ params: { lang, slug } });
     }
   }
@@ -249,16 +23,16 @@ export function getStaticPaths() {
 const { lang, slug } = Astro.params;
 
 // Validate
-if (!isValidLang(lang) || !slug || !casesData[slug]) {
+if (!isValidLang(lang!) || !slug || !(slug in casesData)) {
   return Astro.redirect(`/${lang || 'en'}/case-studies`);
 }
 
 const typedLang = lang as Lang;
-const caseData = casesData[slug][typedLang];
+const typedSlug = slug as CaseSlug;
+const caseData = casesData[typedSlug][typedLang];
 
 // Navigation
-const caseSlugs = Object.keys(casesData);
-const currentIndex = caseSlugs.indexOf(slug);
+const currentIndex = caseSlugs.indexOf(typedSlug);
 const prevCase = currentIndex > 0 ? caseSlugs[currentIndex - 1] : null;
 const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 1] : null;
 ---
