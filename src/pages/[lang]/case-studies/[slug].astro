@@ -7,34 +7,40 @@
 import Page from '@/layouts/Page.astro';
 import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
-import { casesData, caseSlugs, type CaseSlug } from '@/data/cases';
+import { getCollection } from 'astro:content';
 
-// Generate static paths
-export function getStaticPaths() {
-  const paths = [];
-  for (const lang of supportedLangs) {
-    for (const slug of caseSlugs) {
-      paths.push({ params: { lang, slug } });
-    }
-  }
-  return paths;
+export async function getStaticPaths() {
+  const entries = await getCollection('cases');
+  return entries.map((entry) => ({
+    params: { lang: entry.data.lang, slug: entry.data.slug },
+    props: { entry },
+  }));
 }
 
+const { entry } = Astro.props;
 const { lang, slug } = Astro.params;
 
-// Validate
-if (!isValidLang(lang!) || !slug || !(slug in casesData)) {
+if (!isValidLang(lang!) || !slug) {
   return Astro.redirect(`/${lang || 'en'}/case-studies`);
 }
 
 const typedLang = lang as Lang;
-const typedSlug = slug as CaseSlug;
-const caseData = casesData[typedSlug][typedLang];
+const caseData = entry.data;
+const { Content } = await entry.render();
 
-// Navigation
-const currentIndex = caseSlugs.indexOf(typedSlug);
-const prevCase = currentIndex > 0 ? caseSlugs[currentIndex - 1] : null;
-const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 1] : null;
+const caseOrder = ['audience-framework', 'benchmark-system', 'narrative-tracking'];
+const allCases = await getCollection('cases');
+const casesForLang = caseOrder
+  .map((caseSlug) =>
+    allCases.find(
+      (caseEntry) => caseEntry.data.lang === typedLang && caseEntry.data.slug === caseSlug
+    )
+  )
+  .filter(Boolean);
+
+const currentIndex = casesForLang.findIndex((caseEntry) => caseEntry?.data.slug === caseData.slug);
+const prevCase = currentIndex > 0 ? casesForLang[currentIndex - 1] : null;
+const nextCase = currentIndex < casesForLang.length - 1 ? casesForLang[currentIndex + 1] : null;
 ---
 
 <Page
@@ -167,16 +173,21 @@ const nextCase = currentIndex < caseSlugs.length - 1 ? caseSlugs[currentIndex + 
         </div>
       </section>
 
+      <!-- MDX Content -->
+      <section class="mb-12 prose">
+        <Content />
+      </section>
+
       <!-- Navigation -->
       <nav class="flex items-center justify-between pt-8 border-t border-border">
         {prevCase ? (
-          <a href={`/${typedLang}/case-studies/${prevCase}`} class="text-sm text-muted hover:text-accent transition-colors">
+          <a href={`/${typedLang}/case-studies/${prevCase.data.slug}`} class="text-sm text-muted hover:text-accent transition-colors">
             &larr; {t(typedLang, 'cases.detail.prevCase')}
           </a>
         ) : <span />}
 
         {nextCase ? (
-          <a href={`/${typedLang}/case-studies/${nextCase}`} class="text-sm text-muted hover:text-accent transition-colors">
+          <a href={`/${typedLang}/case-studies/${nextCase.data.slug}`} class="text-sm text-muted hover:text-accent transition-colors">
             {t(typedLang, 'cases.detail.nextCase')} &rarr;
           </a>
         ) : <span />}
