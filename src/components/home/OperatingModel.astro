@@ -29,6 +29,18 @@ const { nodes, edges } = model;
 
 // Helper to get localized string
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
+
+// Helper to calculate point on circle circumference
+function getPerimeterPoint(from: {x: number, y: number}, to: {x: number, y: number}, radius: number = 40, offset: number = 5) {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const angle = Math.atan2(dy, dx);
+  
+  return {
+    x: to.x - (radius + offset) * Math.cos(angle),
+    y: to.y - (radius + offset) * Math.sin(angle)
+  };
+}
 ---
 
 <section class="section" id="operating-model">
@@ -57,15 +69,32 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 
         <!-- Edges -->
         {edges.map((edge) => {
-          const start = nodes.find(n => n.id === edge.from)!;
-          const end = nodes.find(n => n.id === edge.to)!;
+          const startNode = nodes.find(n => n.id === edge.from)!;
+          const endNode = nodes.find(n => n.id === edge.to)!;
           
+          // Calculate trimming
+          const start = { x: startNode.x, y: startNode.y }; // Line starts from center (hidden behind circle)
+          // Actually, start should also be on perimeter if we want to see the full dash array
+          const end = getPerimeterPoint(startNode, endNode, 40, 5); // 40 radius + 5 padding
+
           if (edge.curve) {
-             const midX = (start.x + end.x) / 2;
-             const midY = (start.y + end.y) / 2 + 20;
+             // Improve Feedback Loop Curve
+             // If going back to inputs (Learning -> Inputs), curve DOWN/Left
+             const isFeedback = startNode.y > 100 || endNode.y > 100;
+             
+             // Control point logic for nice swoop
+             let cx, cy;
+             if (isFeedback) {
+                cx = (start.x + end.x) / 2;
+                cy = Math.max(start.y, end.y) + 40; // Curve below
+             } else {
+                cx = (start.x + end.x) / 2;
+                cy = (start.y + end.y) / 2 - 40; // Curve above
+             }
+
              return (
                <path 
-                 d={`M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`}
+                 d={`M ${start.x} ${start.y} Q ${cx} ${cy} ${end.x} ${end.y}`}
                  class="fill-none stroke-accent/50 stroke-2 animate-flow"
                  marker-end="url(#arrowhead)"
                />

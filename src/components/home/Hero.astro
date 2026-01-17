@@ -35,14 +35,14 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
       </div>
 
       <!-- Headline -->
-      <div class="overflow-hidden mb-6">
-        <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground transform translate-y-full animate-reveal-text font-display tracking-tight leading-[1.1]">
+      <div class="overflow-hidden mb-6 pb-2">
+        <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground transform translate-y-full animate-reveal-text font-display leading-tight">
           {t(lang, 'hero.headline')}
         </h1>
       </div>
 
       <!-- Subheadline -->
-      <div class="overflow-hidden mb-8">
+      <div class="overflow-hidden mb-8 pb-1">
         <p class="text-xl md:text-2xl text-muted max-w-2xl transform translate-y-full animate-reveal-text" style="animation-delay: 200ms;">
           {t(lang, 'hero.subheadline')}
         </p>
