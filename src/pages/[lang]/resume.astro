@@ -1,0 +1,277 @@
+---
+/**
+ * Resume Page (Recruiter Mode)
+ * ATS-friendly, scannable resume view
+ */
+
+import Page from '@/layouts/Page.astro';
+import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
+import { t } from '@/i18n';
+
+// Generate static paths for each language
+export function getStaticPaths() {
+  return supportedLangs.map((lang) => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params;
+
+// Validate language
+if (!isValidLang(lang)) {
+  return Astro.redirect('/en/resume');
+}
+
+const typedLang = lang as Lang;
+
+const pageTitle = `${t(typedLang, 'resume.title')} | Angela Parra Sánchez`;
+const pageDescription = t(typedLang, 'site.description');
+---
+
+<Page
+  title={pageTitle}
+  description={pageDescription}
+  lang={typedLang}
+  ogType="profile"
+>
+  <div class="section">
+    <div class="container max-w-4xl">
+      <!-- Header -->
+      <header class="mb-12 pb-8 border-b border-border">
+        <h1 class="text-3xl md:text-4xl font-bold text-foreground">Angela Parra Sánchez</h1>
+        <p class="text-xl text-accent mt-2">{t(typedLang, 'resume.subtitle')}</p>
+
+        <div class="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted">
+          <span>📍 Bogotá, Colombia · Remote EU</span>
+          <a href="mailto:angelae.parras@gmail.com" class="hover:text-accent">angelae.parras@gmail.com</a>
+          <a
+            href="https://www.linkedin.com/in/angela-parra-sánchez-89548165"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-accent"
+          >
+            LinkedIn
+          </a>
+        </div>
+
+        <!-- Download PDF -->
+        <div class="mt-6">
+          <a
+            href="/pdf/angela-parra-resume-en.pdf"
+            download
+            class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md bg-primary text-white hover:bg-primary-light transition-colors"
+          >
+            {t(typedLang, 'resume.downloadPdf')}
+          </a>
+        </div>
+      </header>
+
+      <!-- Summary -->
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
+          {t(typedLang, 'resume.summary')}
+        </h2>
+        <p class="text-muted leading-relaxed">
+          {typedLang === 'es'
+            ? 'Especialista en datos y evaluación de impacto con 8+ años en monitoreo, evaluación y análisis de datos para programas internacionales de sostenibilidad y clima. Experta en diseño de frameworks para medición de impacto, gestión basada en resultados y reportes basados en evidencia. Experiencia en entornos multiculturales y multi-regionales apoyando los ODS 8, 9 y 13.'
+            : 'Data and impact assessment specialist with 8+ years in monitoring, evaluation, and data analysis for international sustainability and climate programmes. Expert in designing frameworks for impact measurement, results-based management, and evidence-based reporting. Experienced in multicultural, cross-regional environments supporting UN SDGs 8, 9, and 13.'}
+        </p>
+      </section>
+
+      <!-- Key Strengths -->
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
+          {t(typedLang, 'resume.strengths')}
+        </h2>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-muted">
+          <li>• {typedLang === 'es' ? 'Diseño e implementación de frameworks de evaluación de impacto' : 'Design and implementation of impact assessment frameworks'}</li>
+          <li>• {typedLang === 'es' ? 'Análisis de datos multi-regional y monitoreo de desempeño' : 'Cross-regional data analysis and performance monitoring'}</li>
+          <li>• {typedLang === 'es' ? 'Sistemas de escucha social y seguimiento narrativo' : 'Social listening and narrative tracking systems'}</li>
+          <li>• {typedLang === 'es' ? 'Gestión basada en resultados y reportes basados en evidencia' : 'Results-based management and evidence-based reporting'}</li>
+          <li>• {typedLang === 'es' ? 'Desarrollo de capacidades y capacitación en datos' : 'Capacity building and data literacy training'}</li>
+        </ul>
+      </section>
+
+      <!-- Experience -->
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold text-foreground mb-6 uppercase tracking-wider">
+          {t(typedLang, 'resume.experience')}
+        </h2>
+
+        <div class="space-y-8">
+          <!-- ECF -->
+          <div>
+            <div class="flex flex-wrap justify-between items-start gap-2">
+              <div>
+                <h3 class="font-semibold text-foreground">Data & Audience Insights Strategist</h3>
+                <p class="text-accent">European Climate Foundation</p>
+              </div>
+              <span class="text-sm text-muted">2021 – {t(typedLang, 'timeline.present')}</span>
+            </div>
+            <ul class="mt-3 space-y-1 text-sm text-muted">
+              <li>• {typedLang === 'es' ? 'Lideré diseño analítico, monitoreo y evaluación para programas climáticos internacionales' : 'Led analytical design, monitoring, and evaluation for international climate programmes'}</li>
+              <li>• {typedLang === 'es' ? 'Diseñé e implementé 3 frameworks de evaluación de impacto: Audiencias, Benchmark, Seguimiento Narrativo' : 'Designed and implemented 3 impact assessment frameworks: Audience, Benchmark, Narrative Tracking'}</li>
+              <li>• {typedLang === 'es' ? 'Colaboré con socios UE y consorcios filantrópicos en metodologías de evaluación' : 'Collaborated with EU partners and philanthropic consortia on evaluation methodologies'}</li>
+            </ul>
+          </div>
+
+          <!-- Fidelizador -->
+          <div>
+            <div class="flex flex-wrap justify-between items-start gap-2">
+              <div>
+                <h3 class="font-semibold text-foreground">Marketing & Communications Manager</h3>
+                <p class="text-accent">Fidelizador</p>
+              </div>
+              <span class="text-sm text-muted">2018 – 2021</span>
+            </div>
+            <ul class="mt-3 space-y-1 text-sm text-muted">
+              <li>• {typedLang === 'es' ? 'Establecí el Departamento de Marketing y Comunicaciones desde cero' : 'Established Marketing and Communications Department from scratch'}</li>
+              <li>• {typedLang === 'es' ? 'Diseñé herramientas de monitoreo mejorando métricas de clientes mediante visualización de datos' : 'Designed monitoring tools improving client metrics through data visualization'}</li>
+              <li>• {typedLang === 'es' ? 'Coordiné equipo multidisciplinario alineando comunicación con objetivos medibles' : 'Coordinated multidisciplinary team aligning communications with measurable objectives'}</li>
+            </ul>
+          </div>
+
+          <!-- Eadbox -->
+          <div>
+            <div class="flex flex-wrap justify-between items-start gap-2">
+              <div>
+                <h3 class="font-semibold text-foreground">Digital Education and Marketing Specialist</h3>
+                <p class="text-accent">Eadbox</p>
+              </div>
+              <span class="text-sm text-muted">2017 – 2018</span>
+            </div>
+            <ul class="mt-3 space-y-1 text-sm text-muted">
+              <li>• {typedLang === 'es' ? 'Apoyé programas de aprendizaje digital promoviendo acceso inclusivo a educación' : 'Supported digital learning programmes promoting inclusive access to education'}</li>
+              <li>• {typedLang === 'es' ? 'Conduje análisis de datos sobre participación de estudiantes y adopción institucional' : 'Conducted data analysis on learner participation and institutional adoption'}</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Education -->
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
+          {t(typedLang, 'resume.education')}
+        </h2>
+
+        <div class="space-y-4">
+          <div class="flex flex-wrap justify-between items-start gap-2">
+            <div>
+              <p class="font-medium text-foreground">{typedLang === 'es' ? 'Maestría en Analítica de Negocios' : "Master's in Business Analytics"}</p>
+              <p class="text-sm text-muted">Aston University, Birmingham, UK</p>
+            </div>
+            <span class="text-sm text-accent">{t(typedLang, 'education.inProgress')} · 2026</span>
+          </div>
+
+          <div class="flex flex-wrap justify-between items-start gap-2">
+            <div>
+              <p class="font-medium text-foreground">{typedLang === 'es' ? 'Maestría en Gestión de Negocios Globales' : "Master's in Global Business Management"}</p>
+              <p class="text-sm text-muted">Rennes School of Business, France</p>
+            </div>
+            <span class="text-sm text-muted">2016</span>
+          </div>
+
+          <div class="flex flex-wrap justify-between items-start gap-2">
+            <div>
+              <p class="font-medium text-foreground">{typedLang === 'es' ? 'Licenciatura en Negocios Internacionales' : "BA in International Business"}</p>
+              <p class="text-sm text-muted">Universidad de La Salle, Bogotá</p>
+            </div>
+            <span class="text-sm text-muted">2016</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Skills -->
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
+          {t(typedLang, 'resume.skills')}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <p class="font-medium text-foreground mb-2">{typedLang === 'es' ? 'Datos y Evaluación' : 'Data & Evaluation'}</p>
+            <p class="text-muted">Excel, Power BI, Tableau, BigQuery, ATLAS.ti, NVivo</p>
+          </div>
+          <div>
+            <p class="font-medium text-foreground mb-2">{typedLang === 'es' ? 'Escucha Social' : 'Social Listening'}</p>
+            <p class="text-muted">Brandwatch, BuzzSumo, Audiense, Talkwalker</p>
+          </div>
+          <div>
+            <p class="font-medium text-foreground mb-2">{typedLang === 'es' ? 'Visualización' : 'Visualization'}</p>
+            <p class="text-muted">Looker Studio, Canva, Google Analytics</p>
+          </div>
+          <div>
+            <p class="font-medium text-foreground mb-2">{typedLang === 'es' ? 'Metodologías' : 'Methodologies'}</p>
+            <p class="text-muted">KPI frameworks, mixed-methods, qualitative coding</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Languages -->
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
+          {t(typedLang, 'resume.languages')}
+        </h2>
+
+        <div class="flex flex-wrap gap-6 text-sm">
+          <div>
+            <span class="font-medium text-foreground">English</span>
+            <span class="text-muted"> – {t(typedLang, 'languages.levels.fluent')}</span>
+          </div>
+          <div>
+            <span class="font-medium text-foreground">Spanish</span>
+            <span class="text-muted"> – {t(typedLang, 'languages.levels.native')}</span>
+          </div>
+          <div>
+            <span class="font-medium text-foreground">Portuguese</span>
+            <span class="text-muted"> – {t(typedLang, 'languages.levels.advanced')}</span>
+          </div>
+          <div>
+            <span class="font-medium text-foreground">French</span>
+            <span class="text-muted"> – {t(typedLang, 'languages.levels.working')}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recognition -->
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
+          {t(typedLang, 'resume.awards')}
+        </h2>
+
+        <ul class="space-y-2 text-sm text-muted">
+          <li>• {typedLang === 'es' ? 'Reconocida en ECF por diseñar frameworks de datos para M&E inter-regional (2023)' : 'Recognized at ECF for designing data frameworks enhancing cross-regional M&E (2023)'}</li>
+          <li>• {typedLang === 'es' ? 'Sistemas de desempeño referenciados en evaluaciones de impacto multi-país (2024)' : 'Performance systems referenced in multi-country impact assessments (2024)'}</li>
+        </ul>
+      </section>
+
+      <!-- Featured Work -->
+      <section>
+        <h2 class="text-lg font-semibold text-foreground mb-4 uppercase tracking-wider">
+          {t(typedLang, 'resume.topCases')}
+        </h2>
+
+        <div class="space-y-3">
+          <a href={`/${typedLang}/case-studies/audience-framework`} class="flex items-center justify-between p-3 rounded-lg border border-border hover:border-accent transition-colors group">
+            <span class="font-medium text-foreground group-hover:text-accent transition-colors">
+              {typedLang === 'es' ? 'Framework de Inteligencia de Audiencias' : 'Audience Intelligence Framework'}
+            </span>
+            <span class="text-sm text-accent">{t(typedLang, 'resume.viewCase')} →</span>
+          </a>
+          <a href={`/${typedLang}/case-studies/benchmark-system`} class="flex items-center justify-between p-3 rounded-lg border border-border hover:border-accent transition-colors group">
+            <span class="font-medium text-foreground group-hover:text-accent transition-colors">
+              {typedLang === 'es' ? 'Sistema de Benchmark de Desempeño' : 'Performance Benchmark System'}
+            </span>
+            <span class="text-sm text-accent">{t(typedLang, 'resume.viewCase')} →</span>
+          </a>
+          <a href={`/${typedLang}/case-studies/narrative-tracking`} class="flex items-center justify-between p-3 rounded-lg border border-border hover:border-accent transition-colors group">
+            <span class="font-medium text-foreground group-hover:text-accent transition-colors">
+              {typedLang === 'es' ? 'Sistema de Seguimiento Narrativo' : 'Narrative Tracking System'}
+            </span>
+            <span class="text-sm text-accent">{t(typedLang, 'resume.viewCase')} →</span>
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</Page>

@@ -1,0 +1,10 @@
+---
+/**
+ * Root Index
+ * Redirects to default language
+ */
+
+import { defaultLang } from '@/i18n/config';
+
+return Astro.redirect(`/${defaultLang}`);
+---

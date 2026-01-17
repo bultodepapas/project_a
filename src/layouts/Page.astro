@@ -1,0 +1,81 @@
+---
+/**
+ * Page Layout
+ * Standard page layout with Header and Footer
+ * Wraps Base layout and adds navigation
+ */
+
+import Base from './Base.astro';
+import Header from '@/components/core/Header.astro';
+import Footer from '@/components/core/Footer.astro';
+import { type Lang, defaultLang } from '@/i18n/config';
+import { generatePersonSchema, siteConfig } from '@/lib/seo';
+
+export interface Props {
+  title: string;
+  description: string;
+  lang?: Lang;
+  canonicalUrl?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'profile';
+  noIndex?: boolean;
+  schema?: string;
+  /** Add padding-top for fixed header */
+  withHeaderOffset?: boolean;
+}
+
+const {
+  title,
+  description,
+  lang = defaultLang,
+  canonicalUrl,
+  ogImage,
+  ogType,
+  noIndex,
+  schema,
+  withHeaderOffset = true,
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+
+// Generate person schema if no custom schema provided
+const defaultSchema = generatePersonSchema({
+  name: siteConfig.name,
+  jobTitle: siteConfig.jobTitle,
+  url: siteConfig.url,
+  email: siteConfig.email,
+  sameAs: [siteConfig.linkedin],
+  knowsAbout: siteConfig.knowsAbout,
+});
+
+const resolvedSchema = schema || defaultSchema;
+---
+
+<Base
+  title={title}
+  description={description}
+  lang={lang}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImage}
+  ogType={ogType}
+  noIndex={noIndex}
+  schema={resolvedSchema}
+>
+  <slot name="head" slot="head" />
+
+  <Header lang={lang} currentPath={currentPath} />
+
+  <main
+    id="main-content"
+    class:list={[
+      'flex-1',
+      { 'pt-16 md:pt-20': withHeaderOffset },
+    ]}
+  >
+    <slot />
+  </main>
+
+  <Footer lang={lang} />
+
+  <slot name="scripts" slot="scripts" />
+</Base>

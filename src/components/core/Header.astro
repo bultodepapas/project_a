@@ -1,0 +1,148 @@
+---
+/**
+ * Header Component
+ * Main navigation with language switch
+ */
+
+import { type Lang, getLocalizedPath, langNamesShort } from '@/i18n/config';
+import { t } from '@/i18n';
+
+export interface Props {
+  lang: Lang;
+  currentPath: string;
+}
+
+const { lang, currentPath } = Astro.props;
+
+// Navigation items
+const navItems = [
+  { key: 'systems', href: '#systems' },
+  { key: 'caseStudies', href: `/${lang}/case-studies` },
+  { key: 'resume', href: `/${lang}/resume` },
+  { key: 'contact', href: '#contact' },
+];
+
+// Language switch
+const otherLang = lang === 'en' ? 'es' : 'en';
+const switchUrl = getLocalizedPath(currentPath, otherLang);
+---
+
+<header
+  class="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border"
+>
+  <div class="container">
+    <nav class="flex items-center justify-between h-16 md:h-20">
+      <!-- Logo / Name -->
+      <a
+        href={`/${lang}`}
+        class="font-display font-semibold text-lg text-foreground hover:text-accent transition-colors"
+      >
+        Angela Parra
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-8">
+        {
+          navItems.map((item) => (
+            <a
+              href={item.href}
+              class="text-sm font-medium text-muted hover:text-foreground transition-colors"
+            >
+              {t(lang, `nav.${item.key}`)}
+            </a>
+          ))
+        }
+
+        <!-- Language Switch -->
+        <div class="flex items-center gap-1 text-sm">
+          <span class="font-medium text-foreground">{langNamesShort[lang]}</span>
+          <span class="text-muted">/</span>
+          <a
+            href={switchUrl}
+            class="text-muted hover:text-foreground transition-colors"
+            aria-label={t(lang, 'a11y.languageSwitch')}
+          >
+            {langNamesShort[otherLang]}
+          </a>
+        </div>
+
+        <!-- Resume CTA -->
+        <a
+          href={`/${lang}/resume`}
+          class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-accent text-accent hover:bg-accent hover:text-white transition-colors"
+        >
+          {t(lang, 'nav.resume')}
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        type="button"
+        class="md:hidden p-2 text-muted hover:text-foreground transition-colors"
+        aria-label={t(lang, 'a11y.menuToggle')}
+        data-menu-toggle
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    class="md:hidden hidden border-t border-border bg-background"
+    data-mobile-menu
+  >
+    <div class="container py-4 space-y-4">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            class="block py-2 text-base font-medium text-muted hover:text-foreground transition-colors"
+          >
+            {t(lang, `nav.${item.key}`)}
+          </a>
+        ))
+      }
+
+      <!-- Language Switch Mobile -->
+      <div class="flex items-center gap-2 py-2 border-t border-border">
+        <span class="text-sm text-muted">{t(lang, 'a11y.languageSwitch')}:</span>
+        <a
+          href={switchUrl}
+          class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
+        >
+          {langNamesShort[otherLang]}
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.querySelector('[data-menu-toggle]');
+  const mobileMenu = document.querySelector('[data-mobile-menu]');
+
+  menuToggle?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+
+  // Close menu when clicking on a link
+  mobileMenu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      mobileMenu?.classList.add('hidden');
+    });
+  });
+</script>

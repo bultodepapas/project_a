@@ -1,0 +1,116 @@
+---
+/**
+ * Base Layout
+ * HTML shell with head, meta tags, and scripts
+ * This is the foundation for all pages
+ */
+
+import '@/styles/global.css';
+import { type Lang, defaultLang, supportedLangs } from '@/i18n/config';
+import { getHrefLangUrls, siteConfig } from '@/lib/seo';
+
+export interface Props {
+  title: string;
+  description: string;
+  lang?: Lang;
+  canonicalUrl?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'profile';
+  noIndex?: boolean;
+  schema?: string;
+}
+
+const {
+  title,
+  description,
+  lang = defaultLang,
+  canonicalUrl,
+  ogImage = '/og/default.png',
+  ogType = 'website',
+  noIndex = false,
+  schema,
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const resolvedCanonical = canonicalUrl || `${siteConfig.url}${currentPath}`;
+const resolvedOgImage = ogImage.startsWith('http') ? ogImage : `${siteConfig.url}${ogImage}`;
+const hrefLangUrls = getHrefLangUrls(currentPath);
+
+// Full title with site name
+const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <!-- Essential Meta -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Title & Description -->
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+
+    <!-- Robots -->
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Canonical & Alternates -->
+    <link rel="canonical" href={resolvedCanonical} />
+    {
+      hrefLangUrls.map(({ lang: hrefLang, url }) => (
+        <link rel="alternate" hreflang={hrefLang} href={url} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={`${siteConfig.url}/en`} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={resolvedCanonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={resolvedOgImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={resolvedOgImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Fonts - Inter from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Schema.org JSON-LD -->
+    {schema && <script type="application/ld+json" set:html={schema} />}
+
+    <!-- Slot for additional head content -->
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen bg-background text-foreground antialiased">
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-to-content">
+      {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
+    </a>
+
+    <!-- Main content slot -->
+    <slot />
+
+    <!-- Slot for scripts at end of body -->
+    <slot name="scripts" />
+  </body>
+</html>

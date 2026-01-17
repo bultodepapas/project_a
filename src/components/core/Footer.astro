@@ -1,0 +1,48 @@
+---
+/**
+ * Footer Component
+ * Site footer with links and copyright
+ */
+
+import { type Lang } from '@/i18n/config';
+import { tWithParams } from '@/i18n';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const currentYear = new Date().getFullYear();
+const copyrightText = tWithParams(lang, 'footer.copyright', { year: String(currentYear) });
+---
+
+<footer class="border-t border-border bg-background">
+  <div class="container py-8 md:py-12">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <!-- Copyright -->
+      <p class="text-sm text-muted">
+        {copyrightText}
+      </p>
+
+      <!-- Links -->
+      <div class="flex items-center gap-6">
+        <a
+          href="https://www.linkedin.com/in/angela-parra-sánchez-89548165"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm text-muted hover:text-foreground transition-colors"
+          aria-label="LinkedIn"
+        >
+          LinkedIn
+        </a>
+        <a
+          href="mailto:angelae.parras@gmail.com"
+          class="text-sm text-muted hover:text-foreground transition-colors"
+        >
+          Email
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
