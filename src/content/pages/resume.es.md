@@ -1,5 +1,5 @@
 ---
-slug: "resume"
+pageSlug: "resume"
 lang: "es"
 title: "Curriculum"
 description: "Resume ATS-friendly para Angela Parra Sanchez."

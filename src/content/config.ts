@@ -37,7 +37,7 @@ const cases = defineCollection({
 const pages = defineCollection({
   type: 'content',
   schema: z.object({
-    slug: z.enum(['home', 'resume']),
+    pageSlug: z.enum(['home', 'resume']),
     lang: z.enum(['en', 'es']),
     title: z.string(),
     description: z.string(),
