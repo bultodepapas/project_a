@@ -44,7 +44,24 @@ const pages = defineCollection({
   }),
 });
 
+const articles = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    articleSlug: z.string(),
+    lang: z.enum(['en', 'es', 'fr', 'pt']),
+    publishDate: z.string(),
+    category: z.enum(['ai-marketing', 'strategy', 'industry-trends', 'personal-growth']),
+    excerpt: z.string(),
+    readTime: z.string(),
+    featured: z.boolean().default(false),
+    tags: z.array(z.string()).optional(),
+    originalUrl: z.string().optional(),
+  }),
+});
+
 export const collections = {
   cases,
   pages,
+  articles,
 };
