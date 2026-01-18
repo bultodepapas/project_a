@@ -16,7 +16,7 @@ const { lang, chips, location, email, linkedin } = Astro.props;
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 ---
 
-<section class="section min-h-[62vh] flex items-start pt-10 md:pt-14 relative overflow-hidden">
+<section class="hero-section section min-h-[62vh] flex items-start pt-10 md:pt-14 relative overflow-hidden">
   <!-- Subtle hero framing -->
   <div class="absolute inset-0 bg-gradient-to-b from-transparent to-background-alt/20 pointer-events-none"></div>
   <div class="absolute left-0 top-20 bottom-20 w-px bg-border/60 pointer-events-none"></div>
@@ -108,3 +108,42 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
     }
   }
 </style>
+
+<script>
+  // Magnetic button effect for CTAs
+  function initMagneticButtons() {
+    // Check if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const buttons = document.querySelectorAll('.hero-section a[href="#systems"], .hero-section a[href*="/resume"]');
+
+    buttons.forEach(button => {
+      const el = button as HTMLElement;
+
+      el.addEventListener('mouseenter', () => {
+        el.style.transition = 'transform 0.1s ease-out';
+      });
+
+      el.addEventListener('mousemove', (e: MouseEvent) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+
+        el.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+      });
+
+      el.addEventListener('mouseleave', () => {
+        el.style.transition = 'transform 0.3s ease-out';
+        el.style.transform = 'translate(0, 0)';
+      });
+    });
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMagneticButtons);
+  } else {
+    initMagneticButtons();
+  }
+</script>
