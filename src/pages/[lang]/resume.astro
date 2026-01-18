@@ -15,6 +15,7 @@ import educationData from '@/data/education.json';
 import skillsData from '@/data/skills.json';
 import languagesData from '@/data/languages.json';
 import awardsData from '@/data/awards.json';
+import homeData from '@/data/home.json';
 
 // Generate static paths for each language
 export function getStaticPaths() {
@@ -40,6 +41,12 @@ const educationItems = educationData.items;
 const capabilities = skillsData.capabilities;
 const languageItems = languagesData.items;
 const awards = awardsData.items;
+
+// Helper to get case title
+const getCaseTitle = (slug: string) => {
+  const card = homeData.systems.cards.find((c) => c.slug === slug);
+  return card ? card.title[typedLang] : slug;
+};
 ---
 
 <Page
@@ -64,9 +71,7 @@ const awards = awardsData.items;
       <!-- Summary -->
       <ResumeSection title={t(typedLang, 'resume.summary')}>
         <p class="text-muted leading-relaxed">
-          {typedLang === 'es'
-            ? 'Especialista en datos y evaluacion de impacto con 8+ anos en monitoreo, evaluacion y analisis de datos para programas internacionales de sostenibilidad y clima. Experta en diseno de frameworks para medicion de impacto, gestion basada en resultados y reportes basados en evidencia. Experiencia en entornos multiculturales y multi-regionales apoyando los ODS 8, 9 y 13.'
-            : 'Data and impact assessment specialist with 8+ years in monitoring, evaluation, and data analysis for international sustainability and climate programmes. Expert in designing frameworks for impact measurement, results-based management, and evidence-based reporting. Experienced in multicultural, cross-regional environments supporting UN SDGs 8, 9, and 13.'}
+          {t(typedLang, 'resume.summaryText')}
         </p>
       </ResumeSection>
 
@@ -169,19 +174,19 @@ const awards = awardsData.items;
         <div class="space-y-3">
           <a href={`/${typedLang}/case-studies/audience-framework`} class="flex items-center justify-between p-4 rounded-lg border border-border hover:border-accent hover:bg-surface transition-all group">
             <span class="font-medium text-foreground group-hover:text-accent transition-colors">
-              {typedLang === 'es' ? 'Framework de Inteligencia de Audiencias' : 'Audience Intelligence Framework'}
+              {getCaseTitle('audience-framework')}
             </span>
             <span class="text-sm text-accent group-hover:translate-x-1 transition-transform">-></span>
           </a>
           <a href={`/${typedLang}/case-studies/benchmark-system`} class="flex items-center justify-between p-4 rounded-lg border border-border hover:border-accent hover:bg-surface transition-all group">
             <span class="font-medium text-foreground group-hover:text-accent transition-colors">
-              {typedLang === 'es' ? 'Sistema de Benchmark de Desempeno' : 'Performance Benchmark System'}
+              {getCaseTitle('benchmark-system')}
             </span>
             <span class="text-sm text-accent group-hover:translate-x-1 transition-transform">-></span>
           </a>
           <a href={`/${typedLang}/case-studies/narrative-tracking`} class="flex items-center justify-between p-4 rounded-lg border border-border hover:border-accent hover:bg-surface transition-all group">
             <span class="font-medium text-foreground group-hover:text-accent transition-colors">
-              {typedLang === 'es' ? 'Sistema de Seguimiento Narrativo' : 'Narrative Tracking System'}
+              {getCaseTitle('narrative-tracking')}
             </span>
             <span class="text-sm text-accent group-hover:translate-x-1 transition-transform">-></span>
           </a>

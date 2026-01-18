@@ -10,13 +10,41 @@ interface Props {
 }
 
 const { lang, email, location, linkedin } = Astro.props;
-const wormSegments = Array.from({ length: 11 }).map((_, i) => ({
-  id: `seg-${i}`,
-  size: 2.8 - i * 0.12,
-  delay: `${i * 0.6}s`,
-  pulseDelay: `${i * 0.18}s`,
-  dur: '11.5s'
-}));
+const wormPreset = {
+  segments: 15,
+  loopDur: 10.8,
+  waveDur: 2.2,
+  spacing: 0.22,
+  wiggleAmp: 0.28
+};
+
+const motionKeyPoints = '0;0.23;0.27;0.5;0.73;0.77;1';
+const motionKeyTimes = '0;0.2;0.32;0.55;0.76;0.88;1';
+const motionKeySplines = '0.18 0.05 0.55 1;0.3 0 0.7 1;0.18 0.05 0.55 1;0.3 0 0.7 1;0.18 0.05 0.55 1;0.3 0 0.7 1';
+
+const wormSegments = Array.from({ length: wormPreset.segments }).map((_, i) => {
+  const t = i / (wormPreset.segments - 1);
+  const size = 3.2 - t * 1.1;
+  const baseOpacity = 0.4 + (1 - t) * 0.5;
+  const motionDelay = (i * wormPreset.spacing).toFixed(2);
+  const waveDelay = (i * 0.12).toFixed(2);
+  const wiggleDelay = (i * 0.14).toFixed(2);
+  const wiggleDur = (1.6 + (i % 4) * 0.2).toFixed(2);
+  const wiggleX = (i % 2 === 0 ? wormPreset.wiggleAmp : -wormPreset.wiggleAmp).toFixed(2);
+  const wiggleY = (i % 3 === 0 ? wormPreset.wiggleAmp * 0.55 : -wormPreset.wiggleAmp * 0.45).toFixed(2);
+
+  return {
+    id: `seg-${i}`,
+    size,
+    baseOpacity,
+    motionDelay: `${motionDelay}s`,
+    waveDelay: `${waveDelay}s`,
+    wiggleDelay: `${wiggleDelay}s`,
+    wiggleDur: `${wiggleDur}s`,
+    wiggleX,
+    wiggleY
+  };
+});
 ---
 
 <section class="section" id="contact">
@@ -49,30 +77,45 @@ const wormSegments = Array.from({ length: 11 }).map((_, i) => ({
                 fill={i === 0 ? 'url(#worm-head-gradient)' : 'url(#worm-gradient)'}
               >
                 <animateMotion
-                  dur={seg.dur}
+                  dur={`${wormPreset.loopDur}s`}
                   repeatCount="indefinite"
-                  begin={seg.delay}
+                  begin={seg.motionDelay}
                   calcMode="spline"
-                  keyTimes="0;0.2;0.5;0.8;1"
-                  keySplines="0.15 0.1 0.4 1;0.3 0 0.7 1;0.2 0 0.6 1;0.2 0.1 0.3 1"
+                  keyPoints={motionKeyPoints}
+                  keyTimes={motionKeyTimes}
+                  keySplines={motionKeySplines}
                 >
                   <mpath href="#worm-path" />
                 </animateMotion>
-                <animate
-                  attributeName="r"
-                  values={`${seg.size};${seg.size + 0.8};${seg.size - 0.4};${seg.size + 0.6};${seg.size}`}
-                  keyTimes="0;0.25;0.5;0.75;1"
-                  dur="2.8s"
-                  begin={seg.pulseDelay}
+                <animateTransform
+                  attributeName="transform"
+                  type="translate"
+                  additive="sum"
+                  values={`0 0; ${seg.wiggleX} ${seg.wiggleY}; ${-seg.wiggleX} ${-seg.wiggleY}; 0 0`}
+                  keyTimes="0;0.35;0.7;1"
+                  dur={seg.wiggleDur}
+                  begin={seg.wiggleDelay}
                   repeatCount="indefinite"
                 />
                 <animate
-                  attributeName="opacity"
-                  values="0.55;0.9;0.6;0.85;0.55"
+                  attributeName="r"
+                  values={`${seg.size};${seg.size + 0.65};${seg.size - 0.25};${seg.size + 0.55};${seg.size}`}
                   keyTimes="0;0.25;0.5;0.75;1"
-                  dur="2.8s"
-                  begin={seg.pulseDelay}
+                  keySplines="0.2 0 0.6 1;0.2 0 0.6 1;0.2 0 0.6 1;0.2 0 0.6 1"
+                  dur={`${wormPreset.waveDur}s`}
+                  begin={seg.waveDelay}
                   repeatCount="indefinite"
+                  calcMode="spline"
+                />
+                <animate
+                  attributeName="opacity"
+                  values={`${(seg.baseOpacity * 0.6).toFixed(2)};${(seg.baseOpacity * 1.12).toFixed(2)};${(seg.baseOpacity * 0.55).toFixed(2)};${(seg.baseOpacity * 1.05).toFixed(2)};${(seg.baseOpacity * 0.6).toFixed(2)}`}
+                  keyTimes="0;0.25;0.5;0.75;1"
+                  keySplines="0.2 0 0.6 1;0.2 0 0.6 1;0.2 0 0.6 1;0.2 0 0.6 1"
+                  dur={`${wormPreset.waveDur}s`}
+                  begin={seg.waveDelay}
+                  repeatCount="indefinite"
+                  calcMode="spline"
                 />
               </circle>
             ))}
@@ -152,7 +195,7 @@ const wormSegments = Array.from({ length: 11 }).map((_, i) => ({
 
   .worm-border {
     position: absolute;
-    inset: -8px;
+    inset: -10px;
     pointer-events: none;
     z-index: 0;
   }
