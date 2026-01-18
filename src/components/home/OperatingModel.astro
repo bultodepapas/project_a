@@ -116,9 +116,9 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
           <marker id="arrowhead" markerWidth="14" markerHeight="12" refX="13" refY="6" orient="auto" markerUnits="strokeWidth">
             <polygon points="0 0, 14 6, 0 12" fill="var(--color-accent)" />
           </marker>
-          <!-- Loop arrow - reversed polygon for correct direction on U-turn curves -->
-          <marker id="arrowhead-loop" markerWidth="12" markerHeight="10" refX="1" refY="5" orient="auto" markerUnits="strokeWidth">
-            <polygon points="12 0, 0 5, 12 10" fill="var(--color-accent)" opacity="0.6" />
+          <!-- Loop arrow -->
+          <marker id="arrowhead-loop" markerWidth="14" markerHeight="12" refX="13" refY="6" orient="auto" markerUnits="strokeWidth">
+            <polygon points="0 0, 14 6, 0 12" fill="var(--color-accent)" opacity="0.55" />
           </marker>
 
           <!-- Glow filter for primary node -->
@@ -150,21 +150,19 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
           const particleRadius = 3;
 
           if (edge.curve) {
-             // Enhanced curve logic for elegant flow
-             const isFeedback = startNode.y > 100 || endNode.y > 100;
-
-             // Control point logic for smooth, elegant curves
-             let cx, cy;
-             if (isFeedback) {
-                cx = (start.x + end.x) / 2 - 40;
-                cy = Math.max(start.y, end.y) + 70; // Deeper curve below
-             } else {
-                cx = (start.x + end.x) / 2;
-                cy = (start.y + end.y) / 2 - 50; // Higher curve above
-             }
-
-             // Path goes from start to end, using reversed arrowhead polygon
-             const pathD = `M ${start.x} ${start.y} Q ${cx} ${cy} ${end.x} ${end.y}`;
+             const dx = end.x - start.x;
+             const absDx = Math.abs(dx);
+             const direction = Math.sign(dx) || 1;
+             const learningNode = nodes.find((node) => node.id === 'learning');
+             const loopTargetY = learningNode ? learningNode.y - 6 : Math.max(start.y, end.y) + 110;
+             const loopY = Math.min(260, Math.max(start.y + 60, loopTargetY));
+             const handleX = Math.min(160, absDx * 0.22);
+             const midHandleX = Math.min(120, absDx * 0.18);
+             const midX = (start.x + end.x) / 2;
+             const c1 = { x: start.x + direction * handleX, y: start.y };
+             const c2 = { x: midX - direction * midHandleX, y: loopY };
+             const c3 = { x: end.x - direction * handleX, y: end.y };
+             const pathD = `M ${start.x} ${start.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${midX} ${loopY} S ${c3.x} ${c3.y} ${end.x} ${end.y}`;
              const pathId = `edge-path-${edgeIndex}`;
 
              return (
@@ -175,7 +173,9 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
                    class="edge-loop fill-none"
                    stroke="url(#loop-gradient)"
                    stroke-width={strokeWidth}
-                   stroke-dasharray="6 4"
+                   stroke-dasharray="7 6"
+                   stroke-linecap="round"
+                   stroke-linejoin="round"
                    marker-end="url(#arrowhead-loop)"
                  />
 
@@ -257,6 +257,7 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
           const isPrimary = node.id === 'decisions';
           const isSecondary = node.id === 'processing' || node.id === 'outputs';
           const isTertiary = node.id === 'inputs' || node.id === 'learning';
+          const isLearning = node.id === 'learning';
 
           // Typography hierarchy
           const textSize = isPrimary ? 'text-base' : isSecondary ? 'text-sm' : 'text-sm';
@@ -275,26 +276,28 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
             )}
 
             {/* Main node circle */}
-            <circle
-              cx={node.x}
-              cy={node.y}
-              r={nodeRadius}
-              class={isPrimary
-                ? 'fill-accent stroke-accent-dark stroke-2 node-primary'
-                : isSecondary
-                  ? 'fill-surface stroke-accent stroke-2 node-secondary'
-                  : 'fill-background stroke-border stroke-2 node-tertiary'
-              }
-              style={isPrimary ? 'filter: url(#glow);' : ''}
-            />
+            {!isLearning && (
+              <circle
+                cx={node.x}
+                cy={node.y}
+                r={nodeRadius}
+                class={isPrimary
+                  ? 'fill-accent stroke-accent-dark stroke-2 node-primary'
+                  : isSecondary
+                    ? 'fill-surface stroke-accent stroke-2 node-secondary'
+                    : 'fill-background stroke-border stroke-2 node-tertiary'
+                }
+                style={isPrimary ? 'filter: url(#glow);' : ''}
+              />
+            )}
 
             {/* Node label with hierarchy */}
             <text
               x={node.x}
               y={node.y}
-              dy="5"
+              dy={isLearning ? '-4' : '5'}
               text-anchor="middle"
-              class={`${textSize} ${textWeight} pointer-events-none select-none ${isPrimary ? 'fill-background' : 'fill-foreground'}`}
+              class={`${textSize} ${textWeight} pointer-events-none select-none ${isPrimary ? 'fill-background' : 'fill-foreground'}${isLearning ? ' opacity-80' : ''}`}
             >
               {getStr(node.label)}
             </text>

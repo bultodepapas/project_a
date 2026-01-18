@@ -105,7 +105,7 @@
         "id": "learning",
         "label": { "en": "Learning Loop", "es": "Aprendizaje" },
         "x": 460,
-        "y": 220,
+        "y": 210,
         "color": "stroke-accent"
       }
     ],
@@ -113,8 +113,7 @@
       { "from": "inputs", "to": "processing" },
       { "from": "processing", "to": "outputs" },
       { "from": "outputs", "to": "decisions" },
-      { "from": "decisions", "to": "learning", "curve": true },
-      { "from": "learning", "to": "inputs", "curve": true }
+      { "from": "decisions", "to": "processing", "curve": true }
     ]
   }
 }
