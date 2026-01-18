@@ -119,4 +119,12 @@
     transform: none !important;
     transition: none !important;
   }
+
+  .animate-fade-in-up,
+  .stagger-children > *,
+  .animate-reveal-text {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }

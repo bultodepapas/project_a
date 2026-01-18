@@ -16,7 +16,7 @@ const { lang, chips, location, email, linkedin } = Astro.props;
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 ---
 
-<section class="section min-h-[80vh] flex items-center relative overflow-hidden">
+<section class="section min-h-[70vh] flex items-start pt-12 md:pt-16 relative overflow-hidden">
   <!-- Optional: Subtle background element -->
   <div class="absolute inset-0 bg-gradient-to-b from-transparent to-background-alt/30 pointer-events-none"></div>
 
@@ -36,14 +36,14 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 
       <!-- Headline -->
       <div class="overflow-hidden mb-6 pb-2">
-        <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground transform translate-y-full animate-reveal-text font-display leading-tight">
+        <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground animate-reveal-text font-display leading-tight">
           {t(lang, 'hero.headline')}
         </h1>
       </div>
 
       <!-- Subheadline -->
       <div class="overflow-hidden mb-8 pb-1">
-        <p class="text-xl md:text-2xl text-foreground opacity-80 max-w-2xl transform translate-y-full animate-reveal-text" style="animation-delay: 200ms;">
+        <p class="text-xl md:text-2xl text-foreground opacity-80 max-w-2xl animate-reveal-text" style="animation-delay: 200ms;">
           {t(lang, 'hero.subheadline')}
         </p>
       </div>
@@ -95,6 +95,14 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
   }
   
   .animate-reveal-text {
+    transform: translateY(100%);
     animation: revealText 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-reveal-text {
+      transform: none;
+      animation: none;
+    }
   }
 </style>
