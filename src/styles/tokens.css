@@ -118,6 +118,32 @@
   --z-tooltip: 1070;
 }
 
+:root[class="dark"] {
+  /* ============================================
+   * DARK MODE COLORS (Deep Midnight)
+   * ============================================ */
+
+  /* Brand - Inverted luminosity */
+  --color-primary: #f1f5f9; /* Slate 100 (High contrast text) */
+  --color-primary-light: #cbd5e1; /* Slate 300 */
+  --color-accent: #2dd4bf; /* Teal 400 (Neon Teal) */
+  --color-accent-light: #5eead4; /* Teal 300 */
+
+  /* Surfaces - Deep Navy/Slate */
+  --color-bg: #0f172a; /* Slate 900 */
+  --color-bg-alt: #1e293b; /* Slate 800 */
+  --color-surface: #1e293b; /* Slate 800 */
+
+  /* Borders */
+  --color-border: #334155; /* Slate 700 */
+  --color-border-strong: #475569; /* Slate 600 */
+
+  /* Text */
+  --color-text: #f1f5f9; /* Slate 100 */
+  --color-text-muted: #94a3b8; /* Slate 400 */
+  --color-text-inverse: #0f172a; /* Slate 900 */
+}
+
 /* ============================================
  * REDUCED MOTION
  * Respect user preferences

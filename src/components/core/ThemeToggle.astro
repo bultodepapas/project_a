@@ -1,0 +1,123 @@
+---
+/**
+ * ThemeToggle Component
+ * Button to toggle between Light and Dark mode
+ */
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<button
+  type="button"
+  class="theme-toggle-btn inline-flex items-center justify-center p-2 rounded-lg text-muted hover:bg-background-alt hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+  aria-label={t(lang, 'a11y.toggleTheme')}
+>
+  <!-- Sun Icon (Light Mode) -->
+  <svg
+    class="theme-toggle-light-icon w-5 h-5 hidden"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+    ></path>
+  </svg>
+
+  <!-- Moon Icon (Dark Mode) -->
+  <svg
+    class="theme-toggle-dark-icon w-5 h-5 hidden"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+    ></path>
+  </svg>
+</button>
+
+<script>
+  function initThemeToggle() {
+    const toggleBtns = document.querySelectorAll('.theme-toggle-btn');
+    if (toggleBtns.length === 0) return;
+
+    // 1. Initialize UI state based on current theme
+    const isDark = document.documentElement.classList.contains('dark') || 
+                   localStorage.getItem('theme') === 'dark' ||
+                   (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    // Ensure DOM matches state (in case of FOUC script mismatch)
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // Helper to update all buttons
+    const updateUI = (dark) => {
+      toggleBtns.forEach(btn => {
+        const lightIcon = btn.querySelector('.theme-toggle-light-icon');
+        const darkIcon = btn.querySelector('.theme-toggle-dark-icon');
+        
+        if (dark) {
+          lightIcon?.classList.remove('hidden');
+          darkIcon?.classList.add('hidden');
+        } else {
+          lightIcon?.classList.add('hidden');
+          darkIcon?.classList.remove('hidden');
+        }
+      });
+    };
+
+    // Set initial icon state
+    updateUI(isDark);
+
+    // 2. Attach Click Listeners
+    toggleBtns.forEach(btn => {
+      // Clone to remove existing listeners (if any) to be safe during transitions
+      const newBtn = btn.cloneNode(true);
+      if (btn.parentNode) {
+        btn.parentNode.replaceChild(newBtn, btn);
+      }
+    });
+
+    // Re-select fresh buttons
+    const freshBtns = document.querySelectorAll('.theme-toggle-btn');
+    freshBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const isDarkNow = document.documentElement.classList.contains('dark');
+        const nextIsDark = !isDarkNow;
+
+        // Update Theme
+        if (nextIsDark) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        }
+
+        // Update UI for ALL buttons
+        updateUI(nextIsDark);
+      });
+    });
+  }
+
+  // Initialize on view transitions (fires on initial load too)
+  document.addEventListener('astro:page-load', initThemeToggle);
+</script>

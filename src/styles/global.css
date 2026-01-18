@@ -34,12 +34,18 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
 
+  /* Adjust noise for dark mode */
+  :root[class="dark"] body::before {
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+  }
+
   html {
     @apply scroll-smooth;
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased transition-colors duration-300;
   }
 
   section[id] {
@@ -48,6 +54,10 @@
 
   body.section-systems header {
     background-color: rgba(250, 250, 250, 0.82);
+  }
+
+  :root[class="dark"] body.section-systems header {
+    background-color: rgba(15, 23, 42, 0.85);
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -95,11 +105,18 @@
     filter: drop-shadow(0 6px 16px rgba(74, 144, 164, 0.25));
   }
 
+  /* Operating Model Card */
   .operating-model-card {
     background: linear-gradient(140deg, rgba(255, 255, 255, 0.9) 0%, rgba(251, 251, 251, 0.85) 45%, rgba(247, 247, 247, 0.8) 100%);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     box-shadow: var(--shadow-lg);
+  }
+
+  :root[class="dark"] .operating-model-card {
+    background: linear-gradient(140deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.85) 45%, rgba(15, 23, 42, 0.8) 100%);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   /* Glassmorphism effect on cards */
@@ -113,6 +130,14 @@
       inset 0 1px 1px rgba(255, 255, 255, 0.5);
   }
 
+  :root[class="dark"] .chapter-card {
+    background: rgba(30, 41, 59, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 8px 32px 0 rgba(0, 0, 0, 0.3),
+      inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  }
+
   /* Glassmorphism for accordion cards on mobile */
   .chapter-accordion > div {
     background: rgba(255, 255, 255, 0.85);
@@ -122,6 +147,14 @@
     box-shadow:
       0 4px 16px 0 rgba(31, 38, 135, 0.1),
       inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  }
+
+  :root[class="dark"] .chapter-accordion > div {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 4px 16px 0 rgba(0, 0, 0, 0.3),
+      inset 0 1px 1px rgba(255, 255, 255, 0.05);
   }
 
   /* Glassmorphism for proof strip cards */
@@ -134,11 +167,26 @@
       inset 0 1px 1px rgba(255, 255, 255, 0.4);
   }
 
+  :root[class="dark"] .proof-card {
+    background: rgba(30, 41, 59, 0.6) !important;
+    box-shadow:
+      0 4px 20px 0 rgba(0, 0, 0, 0.3),
+      inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
   .proof-card:hover {
     background: rgba(255, 255, 255, 0.85) !important;
     box-shadow:
       0 8px 28px 0 rgba(31, 38, 135, 0.15),
       inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  }
+
+  :root[class="dark"] .proof-card:hover {
+    background: rgba(30, 41, 59, 0.85) !important;
+    box-shadow:
+      0 8px 28px 0 rgba(0, 0, 0, 0.4),
+      inset 0 1px 1px rgba(255, 255, 255, 0.08);
   }
 }
 

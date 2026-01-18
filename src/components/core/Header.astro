@@ -7,6 +7,7 @@
 import { type Lang, getLocalizedPath } from '@/i18n/config';
 import { t } from '@/i18n';
 import LangSwitch from '@/components/core/LangSwitch.astro';
+import ThemeToggle from '@/components/core/ThemeToggle.astro';
 
 export interface Props {
   lang: Lang;
@@ -37,7 +38,7 @@ const navItems = [
       </a>
 
       <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center gap-8">
+      <div class="hidden md:flex items-center gap-6 lg:gap-8">
         {
           navItems.map((item) => (
             <a
@@ -51,12 +52,15 @@ const navItems = [
         }
 
         <!-- Language Switch -->
-        <LangSwitch currentLang={lang} currentPath={currentPath} />
+        <div class="flex items-center gap-2 border-l border-border pl-4">
+           <ThemeToggle lang={lang} />
+           <LangSwitch currentLang={lang} currentPath={currentPath} />
+        </div>
 
         <!-- Resume CTA -->
         <a
           href={`/${lang}/resume`}
-          class="header-cta magnet-target inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-accent text-accent hover:bg-accent hover:text-white transition-colors"
+          class="header-cta magnet-target inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-accent text-accent hover:bg-accent hover:text-white transition-colors ml-2"
           data-magnet
         >
           {t(lang, 'nav.resume')}
@@ -64,26 +68,29 @@ const navItems = [
       </div>
 
       <!-- Mobile Menu Button -->
-      <button
-        type="button"
-        class="md:hidden p-2 text-muted hover:text-foreground transition-colors"
-        aria-label={t(lang, 'a11y.menuToggle')}
-        data-menu-toggle
-      >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
+      <div class="flex items-center gap-2 md:hidden">
+        <ThemeToggle lang={lang} />
+        <button
+          type="button"
+          class="p-2 text-muted hover:text-foreground transition-colors"
+          aria-label={t(lang, 'a11y.menuToggle')}
+          data-menu-toggle
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
     </nav>
   </div>
 
