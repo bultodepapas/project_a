@@ -7,7 +7,7 @@ Goal: produce correct, minimal, evidence-backed changes aligned with the project
 
 ## 0) Priority order (resolve conflicts like this)
 1) This GEMINI.md
-2) SPEC.md (source of truth for requirements)
+2) SPEC.md (source of truth for requirements) SPEK.MD is king
 3) Existing repo conventions (folders, naming, patterns)
 4) Your general best practices
 

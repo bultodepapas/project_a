@@ -52,7 +52,7 @@
   }
   
   .section {
-    @apply py-24 md:py-32;
+    @apply py-20 md:py-28;
   }
 
   .btn {
@@ -107,4 +107,12 @@
 .animate-pulse-node {
   animation: pulseNode 3s ease-in-out infinite;
   transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-element {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
