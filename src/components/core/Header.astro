@@ -16,11 +16,18 @@ export interface Props {
 
 const { lang, currentPath } = Astro.props;
 
+const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1
+  ? currentPath.slice(0, -1)
+  : currentPath;
+const homePath = `/${lang}`;
+const isHome = normalizedPath === homePath;
+const homeAnchor = (hash: string) => (isHome ? `#${hash}` : `${homePath}#${hash}`);
+
 // Navigation items
 const navItems = [
-  { key: 'systems', href: '#systems' },
+  { key: 'systems', href: homeAnchor('systems') },
   { key: 'caseStudies', href: `/${lang}/case-studies` },
-  { key: 'contact', href: '#contact' },
+  { key: 'contact', href: homeAnchor('contact') },
 ];
 ---
 

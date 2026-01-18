@@ -103,3 +103,15 @@ const { lang, themes, regions } = Astro.props;
   initFilters();
   document.addEventListener('astro:page-load', initFilters);
 </script>
+
+<style>
+  :root.dark .case-filters .filter-btn.bg-primary {
+    background: transparent;
+    color: var(--color-accent-light);
+    border-color: var(--color-accent);
+  }
+
+  :root.dark .case-filters .filter-btn.bg-primary:hover {
+    background: rgba(45, 212, 191, 0.12);
+  }
+</style>

@@ -138,7 +138,7 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
         </a>
         <a
           href={`/${lang}/resume`}
-          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground bg-background-alt/60 hover:bg-background-alt transition-colors hover:border-accent"
+          class="hero-secondary inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground bg-background-alt/60 hover:bg-background-alt transition-colors hover:border-accent"
         >
           {t(lang, 'hero.cta.recruiterMode')}
         </a>
@@ -185,6 +185,17 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 
   :root.dark .hero-primary:hover {
     background: linear-gradient(135deg, var(--color-accent-light), var(--color-accent));
+  }
+
+  :root.dark .hero-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-foreground);
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  :root.dark .hero-secondary:hover {
+    background: rgba(45, 212, 191, 0.14);
+    border-color: rgba(45, 212, 191, 0.4);
   }
 
   @media (prefers-reduced-motion: reduce) {
