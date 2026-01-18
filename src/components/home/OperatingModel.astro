@@ -623,10 +623,10 @@ const shootingStars = [
   }
   .heartbeat-node {
     transform-origin: center;
-    animation: heartbeat 1.2s infinite;
+    animation: heartbeat 1.8s infinite;
   }
   .pulse-ring {
-    animation: heartbeat-ring 1.2s infinite;
+    animation: heartbeat-ring 1.8s infinite;
     filter: url(#pulse-glow);
   }
   .gear-rotate {
@@ -715,20 +715,20 @@ const shootingStars = [
 
   @keyframes heartbeat {
     0% { transform: scale(1); }
-    12% { transform: scale(1.04); }
-    20% { transform: scale(1); }
-    30% { transform: scale(1.02); }
-    40% { transform: scale(1); }
+    16% { transform: scale(1.02); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.01); }
+    55% { transform: scale(1); }
     100% { transform: scale(1); }
   }
 
   @keyframes heartbeat-ring {
-    0% { opacity: 0.22; transform: scale(1); }
-    12% { opacity: 0.45; transform: scale(1.05); }
-    20% { opacity: 0.18; transform: scale(1.01); }
-    30% { opacity: 0.35; transform: scale(1.03); }
-    40% { opacity: 0.18; transform: scale(1); }
-    100% { opacity: 0.22; transform: scale(1); }
+    0% { opacity: 0.18; transform: scale(1); }
+    16% { opacity: 0.3; transform: scale(1.03); }
+    28% { opacity: 0.16; transform: scale(1.005); }
+    42% { opacity: 0.26; transform: scale(1.02); }
+    55% { opacity: 0.16; transform: scale(1); }
+    100% { opacity: 0.18; transform: scale(1); }
   }
   @keyframes gear-rotate {
     to { transform: rotate(360deg); }
