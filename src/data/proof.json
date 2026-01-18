@@ -19,16 +19,16 @@
     {
       "id": "scope",
       "title": {
-        "en": "Cross-regional scope",
-        "es": "Alcance multi-regional",
-        "fr": "Portée interrégionale",
-        "pt": "Escopo inter-regional"
+        "en": "20+ countries covered",
+        "es": "20+ paises cubiertos",
+        "fr": "20+ pays couverts",
+        "pt": "20+ países cobertos"
       },
       "detail": {
-        "en": "LATAM, US/Canada, Europe",
-        "es": "LATAM, US/Canada, Europa",
-        "fr": "LATAM, US/Canada, Europe",
-        "pt": "LATAM, EUA/Canadá, Europa"
+        "en": "All LATAM, US & Canada",
+        "es": "Todo LATAM, US y Canada",
+        "fr": "Toute l'LATAM, US et Canada",
+        "pt": "Todo LATAM, EUA e Canadá"
       },
       "href": "#systems"
     },
@@ -51,34 +51,34 @@
     {
       "id": "recognition",
       "title": {
-        "en": "Recognized at ECF",
-        "es": "Reconocida en ECF",
-        "fr": "Reconnue à l'ECF",
-        "pt": "Reconhecida na ECF"
+        "en": "Executive recognition",
+        "es": "Reconocimiento ejecutivo",
+        "fr": "Reconnaissance exécutive",
+        "pt": "Reconhecimento executivo"
       },
       "detail": {
-        "en": "Data frameworks (2023)",
-        "es": "Frameworks de datos (2023)",
-        "fr": "Cadres de données (2023)",
-        "pt": "Frameworks de dados (2023)"
+        "en": "Strategy & Americas Directors",
+        "es": "Directores de Estrategia y Americas",
+        "fr": "Directeurs Stratégie et Amériques",
+        "pt": "Diretores de Estratégia e Américas"
       },
       "href": "#awards"
     },
     {
       "id": "reference",
       "title": {
-        "en": "Multi-country reference",
-        "es": "Referencia multi-pais",
-        "fr": "Référence multi-pays",
-        "pt": "Referência multipaíses"
+        "en": "50+ partners integrated",
+        "es": "50+ socios integrados",
+        "fr": "50+ partenaires intégrés",
+        "pt": "50+ parceiros integrados"
       },
       "detail": {
-        "en": "Impact assessments (2024)",
-        "es": "Evaluaciones de impacto (2024)",
-        "fr": "Évaluations d'impact (2024)",
-        "pt": "Avaliações de impacto (2024)"
+        "en": "Single intelligence system",
+        "es": "Sistema de inteligencia unico",
+        "fr": "Système d'intelligence unique",
+        "pt": "Sistema de inteligência único"
       },
-      "href": "#awards"
+      "href": "/case-studies/narrative-tracking"
     }
   ]
 }

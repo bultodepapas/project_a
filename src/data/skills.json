@@ -10,10 +10,10 @@
       },
       "tools": ["Power BI", "Excel", "Tableau", "BigQuery"],
       "evidence": {
-        "en": "Designed 3 impact frameworks used across regional teams",
-        "es": "Diseno 3 frameworks de impacto usados por equipos regionales",
-        "fr": "Conception de 3 cadres d'impact utilisés par les équipes régionales",
-        "pt": "Design de 3 frameworks de impacto usados por equipes regionais"
+        "en": "3 frameworks adopted across 8 regional teams in 20+ countries",
+        "es": "3 frameworks adoptados por 8 equipos regionales en 20+ paises",
+        "fr": "3 cadres adoptés par 8 équipes régionales dans 20+ pays",
+        "pt": "3 frameworks adotados por 8 equipes regionais em 20+ países"
       },
       "caseLink": "/case-studies/audience-framework"
     },
@@ -27,10 +27,10 @@
       },
       "tools": ["Brandwatch", "BuzzSumo", "Audiense", "Google BigQuery"],
       "evidence": {
-        "en": "Unified segmentation for cross-region comparisons",
-        "es": "Segmentacion unificada para comparaciones inter-regionales",
-        "fr": "Segmentation unifiée pour comparaisons interrégionales",
-        "pt": "Segmentação unificada para comparações inter-regionais"
+        "en": "Replaced external consultants, saving $10K+ annually",
+        "es": "Reemplazo consultores externos, ahorrando $10K+ anualmente",
+        "fr": "Remplacement des consultants externes, économie de 10K$+ par an",
+        "pt": "Substituiu consultores externos, economizando $10K+ anualmente"
       },
       "caseLink": "/case-studies/audience-framework"
     },
@@ -44,10 +44,10 @@
       },
       "tools": ["Tableau", "Looker Studio", "Google Analytics", "Excel"],
       "evidence": {
-        "en": "Standardized KPI system for regional performance",
-        "es": "Sistema de KPIs estandarizados para desempeno regional",
-        "fr": "Système de KPI standardisé pour la performance régionale",
-        "pt": "Sistema de KPI padronizado para desempenho regional"
+        "en": "Identified 20% overspending, cut reporting time 50%+",
+        "es": "Identifico 20% de sobregasto, redujo tiempo de reportes 50%+",
+        "fr": "Identifié 20% de dépenses excessives, réduit temps de reporting de 50%+",
+        "pt": "Identificou 20% de gastos excessivos, reduziu tempo de relatórios em 50%+"
       },
       "caseLink": "/case-studies/benchmark-system"
     },
@@ -61,12 +61,46 @@
       },
       "tools": ["Brandwatch", "Talkwalker", "NVivo", "ATLAS.ti"],
       "evidence": {
-        "en": "Real-time narrative monitoring and alerting",
-        "es": "Monitoreo narrativo en tiempo real y alertas",
-        "fr": "Suivi narratif et alertes en temps réel",
-        "pt": "Monitoramento narrativo e alertas em tempo real"
+        "en": "Reduced response time from weeks to 24-48 hours",
+        "es": "Redujo tiempo de respuesta de semanas a 24-48 horas",
+        "fr": "Temps de réponse réduit de semaines à 24-48 heures",
+        "pt": "Reduziu tempo de resposta de semanas para 24-48 horas"
       },
       "caseLink": "/case-studies/narrative-tracking"
+    },
+    {
+      "id": "research-methods",
+      "name": {
+        "en": "Research & Mixed Methods",
+        "es": "Investigacion y Metodos Mixtos",
+        "fr": "Recherche et Méthodes Mixtes",
+        "pt": "Pesquisa e Métodos Mistos"
+      },
+      "tools": ["Survey Design", "Qualitative Coding", "Content Analysis", "Excel"],
+      "evidence": {
+        "en": "Designed surveys and qualitative analysis for consumer behavior research across LATAM segments",
+        "es": "Diseno de encuestas y analisis cualitativo para investigacion de comportamiento del consumidor en segmentos LATAM",
+        "fr": "Conception d'enquêtes et analyse qualitative pour la recherche comportementale dans les segments LATAM",
+        "pt": "Design de pesquisas e análise qualitativa para pesquisa de comportamento do consumidor em segmentos LATAM"
+      },
+      "caseLink": "/case-studies/audience-framework"
+    },
+    {
+      "id": "capacity-building",
+      "name": {
+        "en": "Capacity Building",
+        "es": "Desarrollo de Capacidades",
+        "fr": "Renforcement des Capacités",
+        "pt": "Desenvolvimento de Capacidades"
+      },
+      "tools": ["Training Facilitation", "Documentation", "Data Literacy", "Workshop Design"],
+      "evidence": {
+        "en": "Trained regional teams across LATAM, Canada, and US on dashboards, benchmarks, and social listening tools",
+        "es": "Capacitacion de equipos regionales en LATAM, Canada y US en dashboards, benchmarks y herramientas de escucha social",
+        "fr": "Formation des équipes régionales en LATAM, Canada et US sur les tableaux de bord et outils d'écoute sociale",
+        "pt": "Treinamento de equipes regionais em LATAM, Canadá e EUA em dashboards, benchmarks e ferramentas de escuta social"
+      },
+      "caseLink": "/case-studies/audience-framework"
     }
   ]
 }
