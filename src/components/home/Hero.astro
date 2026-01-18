@@ -14,192 +14,553 @@ const { lang, chips, location, email, linkedin } = Astro.props;
 
 // Helper to get localized string
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
+
+// Stats for animated counters
+const stats = [
+  { value: 8, suffix: '+', label: lang === 'es' ? 'Años M&E' : lang === 'fr' ? 'Ans S&E' : lang === 'pt' ? 'Anos M&E' : 'Years M&E' },
+  { value: 15, suffix: '+', label: lang === 'es' ? 'Países' : lang === 'fr' ? 'Pays' : lang === 'pt' ? 'Países' : 'Countries' },
+  { value: 3, suffix: '', label: lang === 'es' ? 'Sistemas' : lang === 'fr' ? 'Systèmes' : lang === 'pt' ? 'Sistemas' : 'Systems' },
+];
+
+// Headline split into words for animation
+const headline = t(lang, 'hero.headline');
+const headlineWords = headline.split(' ');
 ---
 
-<section class="hero-section section min-h-[62vh] flex items-start pt-10 md:pt-14 relative overflow-hidden">
-  <!-- Subtle hero framing -->
-  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-background-alt/20 pointer-events-none"></div>
-  <div class="absolute left-0 top-20 bottom-20 w-px bg-border/60 pointer-events-none"></div>
-  <div class="absolute left-0 top-0 h-full w-[45%] bg-gradient-to-br from-background-alt/70 to-transparent pointer-events-none"></div>
-  <svg class="hero-leaf" viewBox="0 0 800 1000" aria-hidden="true">
-    <defs>
-      <linearGradient id="hero-leaf-fill" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="var(--color-accent-light)" stop-opacity="0.22" />
-        <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0.3" />
-      </linearGradient>
-      <linearGradient id="hero-leaf-vein" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.32" />
-        <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.16" />
-      </linearGradient>
-    </defs>
-    <g transform="translate(120 40) rotate(-8)">
-      <path
-        d="M 350 40
-           C 520 110, 600 300, 540 520
-           C 495 690, 380 860, 220 940
-           C 120 990, 40 900, 60 740
-           C 85 540, 150 330, 240 190
-           C 285 120, 320 75, 350 40 Z"
-        fill="url(#hero-leaf-fill)"
-      />
-      <path
-        d="M 350 50 C 310 170, 270 310, 230 470 C 200 600, 170 720, 150 840"
-        fill="none"
-        stroke="url(#hero-leaf-vein)"
-        stroke-width="6"
-        stroke-linecap="round"
-      />
-      <path
-        d="M 290 220 C 360 200, 430 210, 500 250"
-        fill="none"
-        stroke="url(#hero-leaf-vein)"
-        stroke-width="3.5"
-        stroke-linecap="round"
-      />
-      <path
-        d="M 250 340 C 330 320, 420 335, 510 390"
-        fill="none"
-        stroke="url(#hero-leaf-vein)"
-        stroke-width="3"
-        stroke-linecap="round"
-      />
-      <path
-        d="M 210 470 C 310 455, 410 485, 500 560"
-        fill="none"
-        stroke="url(#hero-leaf-vein)"
-        stroke-width="2.6"
-        stroke-linecap="round"
-      />
-      <path
-        d="M 180 620 C 300 610, 400 650, 470 740"
-        fill="none"
-        stroke="url(#hero-leaf-vein)"
-        stroke-width="2.4"
-        stroke-linecap="round"
-      />
-      <path
-        d="M 140 760 C 250 770, 320 810, 380 880"
-        fill="none"
-        stroke="url(#hero-leaf-vein)"
-        stroke-width="2.2"
-        stroke-linecap="round"
-      />
-    </g>
-  </svg>
+<section class="hero-section relative min-h-screen flex items-center overflow-hidden" id="hero">
+  <!-- Animated gradient background -->
+  <div class="absolute inset-0 bg-gradient-to-br from-background via-background to-background-alt"></div>
 
-  <div class="container relative z-10">
-    <div class="max-w-4xl">
-      <!-- Chips -->
-      <div class="flex flex-wrap gap-2 mb-4 stagger-children">
-        {chips.map((chip, index) => (
-          <span 
-            class="inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide rounded-full bg-background-alt text-foreground border border-border/70 shadow-sm animate-fade-in-up fill-mode-forwards"
-            style={`animation-delay: ${index * 100}ms;`}
-          >
-            {getStr(chip)}
+  <!-- Aurora effect -->
+  <div class="aurora-container absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
+    <div class="aurora aurora-3"></div>
+  </div>
+
+  <!-- Floating particles -->
+  <div class="particles-container absolute inset-0 pointer-events-none">
+    {Array.from({ length: 50 }).map((_, i) => (
+      <div
+        class="particle"
+        style={`
+          --x: ${Math.random() * 100}%;
+          --y: ${Math.random() * 100}%;
+          --duration: ${15 + Math.random() * 20}s;
+          --delay: ${Math.random() * -20}s;
+          --size: ${2 + Math.random() * 4}px;
+          --opacity: ${0.2 + Math.random() * 0.4};
+        `}
+      />
+    ))}
+  </div>
+
+  <!-- Grid pattern overlay -->
+  <div class="absolute inset-0 opacity-[0.015] pointer-events-none">
+    <div class="absolute inset-0" style="background-image: linear-gradient(var(--color-foreground) 1px, transparent 1px), linear-gradient(90deg, var(--color-foreground) 1px, transparent 1px); background-size: 60px 60px;"></div>
+  </div>
+
+  <!-- Radial gradient spotlight -->
+  <div class="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[120px] pointer-events-none animate-pulse-slow"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-violet-500/5 rounded-full blur-[100px] pointer-events-none animate-pulse-slow" style="animation-delay: -3s;"></div>
+
+  <div class="container relative z-10 py-20 md:py-32">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <!-- Left content -->
+      <div class="order-2 lg:order-1">
+        <!-- Status badge -->
+        <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-surface/80 backdrop-blur-sm border border-border mb-8 hero-reveal" style="--delay: 0ms">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
           </span>
-        ))}
-      </div>
+          <span class="text-sm font-medium text-foreground/80">
+            {lang === 'es' ? 'Disponible para proyectos' : lang === 'fr' ? 'Disponible pour projets' : lang === 'pt' ? 'Disponível para projetos' : 'Available for projects'}
+          </span>
+        </div>
 
-      <!-- Headline -->
-      <div class="overflow-hidden mb-4 pb-2">
-        <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground animate-reveal-text font-display leading-tight">
-          {t(lang, 'hero.headline')}
+        <!-- Chips -->
+        <div class="flex flex-wrap gap-2 mb-6">
+          {chips.map((chip, index) => (
+            <span
+              class="hero-reveal chip-item inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl bg-surface/60 backdrop-blur-sm text-foreground/90 border border-border/50 hover:border-accent/50 hover:bg-surface transition-all duration-300 cursor-default"
+              style={`--delay: ${100 + index * 100}ms`}
+            >
+              {index === 0 && (
+                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              )}
+              {index === 1 && (
+                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )}
+              {index === 2 && (
+                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )}
+              {getStr(chip)}
+            </span>
+          ))}
+        </div>
+
+        <!-- Headline with word animation -->
+        <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] mb-6">
+          {headlineWords.map((word, index) => (
+            <span class="inline-block overflow-hidden mr-[0.25em]">
+              <span
+                class="hero-word inline-block"
+                style={`--delay: ${400 + index * 100}ms`}
+              >
+                {word}
+              </span>
+            </span>
+          ))}
         </h1>
+
+        <!-- Subheadline with typing effect -->
+        <div class="mb-8 hero-reveal" style="--delay: 900ms">
+          <p class="text-lg md:text-xl lg:text-2xl text-muted leading-relaxed max-w-xl">
+            {t(lang, 'hero.subheadline')}
+          </p>
+        </div>
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap gap-4 mb-12 hero-reveal" style="--delay: 1100ms">
+          <a
+            href="#systems"
+            class="group relative inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-2xl overflow-hidden transition-all duration-300"
+          >
+            <!-- Animated gradient background -->
+            <div class="absolute inset-0 bg-gradient-to-r from-accent via-emerald-400 to-accent bg-[length:200%_100%] animate-gradient-x"></div>
+            <!-- Shine effect -->
+            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+            </div>
+            <span class="relative text-white flex items-center gap-2">
+              {t(lang, 'hero.cta.viewSystems')}
+              <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
+          </a>
+
+          <a
+            href={`/${lang}/resume`}
+            class="group relative inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-2xl border-2 border-border bg-surface/50 backdrop-blur-sm text-foreground hover:border-accent/50 hover:bg-surface transition-all duration-300"
+          >
+            <span class="flex items-center gap-2">
+              {t(lang, 'hero.cta.recruiterMode')}
+              <svg class="w-5 h-5 text-accent transform group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </span>
+          </a>
+        </div>
+
+        <!-- Quick contact -->
+        <div class="flex flex-wrap items-center gap-6 text-sm hero-reveal" style="--delay: 1300ms">
+          <a href={`mailto:${email}`} class="group flex items-center gap-2 text-muted hover:text-accent transition-colors">
+            <div class="w-8 h-8 rounded-lg bg-surface flex items-center justify-center border border-border group-hover:border-accent/50 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="font-medium">{email}</span>
+          </a>
+
+          <a href={linkedin} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 text-muted hover:text-accent transition-colors">
+            <div class="w-8 h-8 rounded-lg bg-surface flex items-center justify-center border border-border group-hover:border-accent/50 transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              </svg>
+            </div>
+            <span class="font-medium">LinkedIn</span>
+          </a>
+        </div>
       </div>
 
-      <!-- Subheadline -->
-      <div class="overflow-hidden mb-5 pb-1">
-        <p class="text-xl md:text-2xl text-foreground opacity-80 max-w-2xl animate-reveal-text" style="animation-delay: 200ms;">
-          {t(lang, 'hero.subheadline')}
-        </p>
-      </div>
+      <!-- Right content - Interactive orb -->
+      <div class="order-1 lg:order-2 flex justify-center lg:justify-end hero-reveal" style="--delay: 500ms">
+        <div class="orb-container relative">
+          <!-- Outer glow ring -->
+          <div class="absolute inset-0 rounded-full bg-gradient-to-r from-accent/20 via-violet-500/20 to-accent/20 blur-2xl animate-pulse-slow"></div>
 
-      <!-- Meta Line -->
-      <div class="flex flex-wrap items-center gap-4 text-sm text-muted mb-6 animate-fade-in-up fill-mode-forwards" style="animation-delay: 500ms;">
-        <span>{location}</span>
-        <span class="text-border">|</span>
-        <a href={`mailto:${email}`} class="hover:text-accent transition-colors">
-          {email}
-        </a>
-        <span class="text-border">|</span>
-        <a href={linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">
-          LinkedIn
-        </a>
-      </div>
+          <!-- Rotating rings -->
+          <div class="orbit-ring orbit-ring-1"></div>
+          <div class="orbit-ring orbit-ring-2"></div>
+          <div class="orbit-ring orbit-ring-3"></div>
 
-      <!-- CTAs -->
-      <div class="flex flex-wrap gap-4 animate-fade-in-up fill-mode-forwards" style="animation-delay: 600ms;">
-        <a
-          href="#systems"
-          class="hero-primary inline-flex items-center justify-center px-7 py-3 text-base font-semibold rounded-lg border border-primary text-primary bg-transparent hover:bg-primary/10 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200"
-        >
-          {t(lang, 'hero.cta.viewSystems')}
-        </a>
-        <a
-          href={`/${lang}/resume`}
-          class="hero-secondary inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground bg-background-alt/60 hover:bg-background-alt transition-colors hover:border-accent"
-        >
-          {t(lang, 'hero.cta.recruiterMode')}
-        </a>
+          <!-- Main orb -->
+          <div class="orb relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden">
+            <!-- Glassmorphism background -->
+            <div class="absolute inset-0 bg-gradient-to-br from-surface/80 via-surface/60 to-surface/40 backdrop-blur-xl"></div>
+
+            <!-- Inner gradient -->
+            <div class="absolute inset-4 rounded-full bg-gradient-to-br from-accent/10 via-transparent to-violet-500/10"></div>
+
+            <!-- Animated mesh gradient -->
+            <div class="absolute inset-0 mesh-gradient"></div>
+
+            <!-- Stats inside orb -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-8">
+              <div class="grid grid-cols-3 gap-4 w-full">
+                {stats.map((stat, index) => (
+                  <div class="text-center stat-item" style={`--stat-delay: ${1500 + index * 200}ms`}>
+                    <div class="text-2xl md:text-3xl lg:text-4xl font-bold text-accent tabular-nums">
+                      <span class="stat-counter" data-target={stat.value}>{stat.value}</span>{stat.suffix}
+                    </div>
+                    <div class="text-xs md:text-sm text-muted mt-1">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <!-- Central icon -->
+              <div class="mt-6 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-accent/20 to-violet-500/20 flex items-center justify-center border border-accent/30">
+                <svg class="w-8 h-8 md:w-10 md:h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+
+              <p class="text-center text-sm text-muted mt-4 max-w-[200px]">
+                {lang === 'es' ? 'Impacto medible en clima' : lang === 'fr' ? 'Impact mesurable sur le climat' : lang === 'pt' ? 'Impacto mensurável no clima' : 'Measurable climate impact'}
+              </p>
+            </div>
+
+            <!-- Floating orb particles -->
+            <div class="absolute inset-0 pointer-events-none">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div
+                  class="orb-particle absolute w-2 h-2 rounded-full bg-accent/60"
+                  style={`
+                    --angle: ${(i / 8) * 360}deg;
+                    --radius: ${35 + Math.random() * 10}%;
+                    --duration: ${8 + Math.random() * 4}s;
+                    --delay: ${Math.random() * -8}s;
+                  `}
+                />
+              ))}
+            </div>
+          </div>
+
+          <!-- Orbiting dots -->
+          <div class="orbiting-dot orbiting-dot-1"></div>
+          <div class="orbiting-dot orbiting-dot-2"></div>
+          <div class="orbiting-dot orbiting-dot-3"></div>
+        </div>
       </div>
     </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hero-reveal" style="--delay: 2000ms">
+    <a href="#proof" class="scroll-indicator group flex flex-col items-center gap-2 text-muted hover:text-accent transition-colors">
+      <span class="text-xs font-medium uppercase tracking-widest">
+        {lang === 'es' ? 'Explorar' : lang === 'fr' ? 'Explorer' : lang === 'pt' ? 'Explorar' : 'Explore'}
+      </span>
+      <div class="w-6 h-10 rounded-full border-2 border-current flex justify-center pt-2">
+        <div class="w-1.5 h-3 rounded-full bg-current animate-scroll-down"></div>
+      </div>
+    </a>
   </div>
 </section>
 
 <style>
-  .fill-mode-forwards {
-    animation-fill-mode: forwards;
+  /* Aurora effect */
+  .aurora-container {
+    filter: blur(80px);
+    opacity: 0.4;
   }
-  
-  @keyframes revealText {
-    from {
-      transform: translateY(100%);
+
+  .aurora {
+    position: absolute;
+    width: 60vw;
+    height: 60vh;
+    border-radius: 50%;
+    animation: aurora-float 15s ease-in-out infinite;
+  }
+
+  .aurora-1 {
+    top: -20%;
+    left: -10%;
+    background: radial-gradient(ellipse, rgba(45, 212, 191, 0.3), transparent 70%);
+    animation-delay: 0s;
+  }
+
+  .aurora-2 {
+    top: 20%;
+    right: -20%;
+    background: radial-gradient(ellipse, rgba(139, 92, 246, 0.25), transparent 70%);
+    animation-delay: -5s;
+  }
+
+  .aurora-3 {
+    bottom: -10%;
+    left: 30%;
+    background: radial-gradient(ellipse, rgba(59, 130, 246, 0.2), transparent 70%);
+    animation-delay: -10s;
+  }
+
+  @keyframes aurora-float {
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    25% { transform: translate(5%, 10%) scale(1.1) rotate(5deg); }
+    50% { transform: translate(-5%, 5%) scale(0.95) rotate(-5deg); }
+    75% { transform: translate(10%, -5%) scale(1.05) rotate(3deg); }
+  }
+
+  /* Particles */
+  .particle {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--size);
+    height: var(--size);
+    background: var(--color-accent);
+    border-radius: 50%;
+    opacity: var(--opacity);
+    animation: particle-float var(--duration) ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes particle-float {
+    0%, 100% { transform: translate(0, 0); opacity: var(--opacity); }
+    25% { transform: translate(30px, -40px); opacity: calc(var(--opacity) * 1.5); }
+    50% { transform: translate(-20px, -80px); opacity: var(--opacity); }
+    75% { transform: translate(40px, -40px); opacity: calc(var(--opacity) * 0.5); }
+  }
+
+  /* Hero reveal animation */
+  .hero-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: hero-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  .hero-word {
+    transform: translateY(100%);
+    animation: word-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  @keyframes hero-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
+  }
+
+  @keyframes word-reveal {
     to {
       transform: translateY(0);
     }
   }
-  
-  .animate-reveal-text {
-    transform: translateY(100%);
-    animation: revealText 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  /* Stat items reveal */
+  .stat-item {
+    opacity: 0;
+    transform: scale(0.8);
+    animation: stat-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--stat-delay, 0ms);
   }
-  .hero-leaf {
+
+  @keyframes stat-reveal {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Gradient animation */
+  .animate-gradient-x {
+    animation: gradient-x 3s ease infinite;
+  }
+
+  @keyframes gradient-x {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Pulse slow */
+  .animate-pulse-slow {
+    animation: pulse-slow 6s ease-in-out infinite;
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+  }
+
+  /* Orb container */
+  .orb-container {
+    width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    .orb-container {
+      width: 280px;
+      height: 280px;
+    }
+  }
+
+  /* Orbit rings */
+  .orbit-ring {
     position: absolute;
-    right: -4%;
-    top: -6%;
-    width: min(70vw, 720px);
-    height: auto;
-    opacity: 0.34;
-    filter: blur(0.3px);
-    pointer-events: none;
-    z-index: 0;
+    border: 1px dashed rgba(45, 212, 191, 0.2);
+    border-radius: 50%;
+    animation: orbit-spin linear infinite;
   }
 
-  :root.dark .hero-primary {
-    background: linear-gradient(135deg, var(--color-accent), var(--color-primary));
-    color: #0a0a0a;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+  .orbit-ring-1 {
+    width: 110%;
+    height: 110%;
+    animation-duration: 30s;
   }
 
-  :root.dark .hero-primary:hover {
-    background: linear-gradient(135deg, var(--color-accent-light), var(--color-accent));
+  .orbit-ring-2 {
+    width: 130%;
+    height: 130%;
+    animation-duration: 40s;
+    animation-direction: reverse;
+    border-color: rgba(139, 92, 246, 0.15);
   }
 
-  :root.dark .hero-secondary {
-    background: rgba(255, 255, 255, 0.06);
-    color: var(--color-foreground);
-    border-color: rgba(255, 255, 255, 0.18);
+  .orbit-ring-3 {
+    width: 150%;
+    height: 150%;
+    animation-duration: 50s;
+    border-color: rgba(59, 130, 246, 0.1);
   }
 
-  :root.dark .hero-secondary:hover {
-    background: rgba(45, 212, 191, 0.14);
-    border-color: rgba(45, 212, 191, 0.4);
+  @keyframes orbit-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 
+  /* Orbiting dots */
+  .orbiting-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: orbit-dot linear infinite;
+  }
+
+  .orbiting-dot-1 {
+    background: linear-gradient(135deg, #6ee7b7, #2dd4bf);
+    animation-duration: 15s;
+    box-shadow: 0 0 20px rgba(45, 212, 191, 0.5);
+  }
+
+  .orbiting-dot-2 {
+    background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+    animation-duration: 20s;
+    animation-delay: -7s;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+  }
+
+  .orbiting-dot-3 {
+    background: linear-gradient(135deg, #93c5fd, #3b82f6);
+    animation-duration: 25s;
+    animation-delay: -12s;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+
+  @keyframes orbit-dot {
+    from {
+      transform: rotate(0deg) translateX(200px) rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg) translateX(200px) rotate(-360deg);
+    }
+  }
+
+  @media (max-width: 768px) {
+    @keyframes orbit-dot {
+      from {
+        transform: rotate(0deg) translateX(140px) rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg) translateX(140px) rotate(-360deg);
+      }
+    }
+  }
+
+  /* Orb particles */
+  .orb-particle {
+    animation: orb-particle-float var(--duration) ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes orb-particle-float {
+    0%, 100% {
+      transform: rotate(var(--angle)) translateX(var(--radius)) rotate(calc(-1 * var(--angle)));
+      opacity: 0.6;
+    }
+    50% {
+      transform: rotate(calc(var(--angle) + 180deg)) translateX(calc(var(--radius) + 5%)) rotate(calc(-1 * var(--angle) - 180deg));
+      opacity: 1;
+    }
+  }
+
+  /* Mesh gradient inside orb */
+  .mesh-gradient {
+    background:
+      radial-gradient(at 40% 20%, rgba(45, 212, 191, 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, rgba(45, 212, 191, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+    animation: mesh-move 10s ease-in-out infinite;
+  }
+
+  @keyframes mesh-move {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(5%, 5%); }
+    50% { transform: translate(-5%, 5%); }
+    75% { transform: translate(5%, -5%); }
+  }
+
+  /* Scroll indicator */
+  .animate-scroll-down {
+    animation: scroll-down 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-down {
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(8px); opacity: 0.5; }
+  }
+
+  /* Chip hover effect */
+  .chip-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px -10px rgba(45, 212, 191, 0.2);
+  }
+
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .animate-reveal-text {
+    .aurora,
+    .particle,
+    .orbit-ring,
+    .orbiting-dot,
+    .orb-particle,
+    .mesh-gradient,
+    .animate-scroll-down,
+    .animate-pulse-slow,
+    .animate-gradient-x {
+      animation: none;
+    }
+    .hero-reveal,
+    .hero-word,
+    .stat-item {
+      opacity: 1;
       transform: none;
       animation: none;
     }
@@ -207,40 +568,79 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 </style>
 
 <script>
-  // Magnetic button effect for CTAs
-  function initMagneticButtons() {
-    // Check if user prefers reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+  function animateValue(el: HTMLElement, start: number, end: number, duration: number) {
+    const startTime = performance.now();
 
-    const buttons = document.querySelectorAll('.hero-section a[href="#systems"], .hero-section a[href*="/resume"]');
+    const step = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
 
-    buttons.forEach(button => {
-      const el = button as HTMLElement;
+      // Ease out cubic
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
 
-      el.addEventListener('mouseenter', () => {
-        el.style.transition = 'transform 0.1s ease-out';
-      });
+      const current = Math.floor(start + (end - start) * easeProgress);
+      el.textContent = current.toString();
 
-      el.addEventListener('mousemove', (e: MouseEvent) => {
-        const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    };
 
-        el.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
-      });
-
-      el.addEventListener('mouseleave', () => {
-        el.style.transition = 'transform 0.3s ease-out';
-        el.style.transform = 'translate(0, 0)';
-      });
-    });
+    requestAnimationFrame(step);
   }
 
-  // Initialize on page load
+  function initHero() {
+    // Animate stat counters when orb is visible
+    const statCounters = document.querySelectorAll('.stat-counter');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Delay to match CSS animation
+          setTimeout(() => {
+            statCounters.forEach((counter, index) => {
+              const el = counter as HTMLElement;
+              const target = parseInt(el.dataset.target || '0');
+
+              setTimeout(() => {
+                animateValue(el, 0, target, 1500);
+              }, index * 200);
+            });
+          }, 1500);
+
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+
+    const heroSection = document.getElementById('hero');
+    if (heroSection) {
+      observer.observe(heroSection);
+    }
+
+    // Parallax effect on mouse move for orb
+    const orbContainer = document.querySelector('.orb-container') as HTMLElement;
+    if (orbContainer && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.addEventListener('mousemove', (e) => {
+        const rect = orbContainer.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const moveX = (e.clientX - centerX) * 0.02;
+        const moveY = (e.clientY - centerY) * 0.02;
+
+        orbContainer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      });
+    }
+  }
+
+  // Initialize
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMagneticButtons);
+    document.addEventListener('DOMContentLoaded', initHero);
   } else {
-    initMagneticButtons();
+    initHero();
   }
+
+  // Reinitialize on page transitions
+  document.addEventListener('astro:page-load', initHero);
 </script>
