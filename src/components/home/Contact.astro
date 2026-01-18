@@ -15,7 +15,6 @@ const { lang, email, location, linkedin } = Astro.props;
 <section class="section" id="contact">
   <div class="container">
     <div class="contact-card max-w-3xl mx-auto text-center border border-border rounded-2xl bg-background-alt p-8 md:p-12 reveal-element opacity-0 scale-95 transition-all duration-500">
-      <canvas class="bug-canvas" aria-hidden="true"></canvas>
       <div class="contact-content">
         <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
           {t(lang, 'contact.title')}
@@ -75,227 +74,16 @@ const { lang, email, location, linkedin } = Astro.props;
     });
   }
 
-  function initBugInContactCard() {
-    const card = document.querySelector('#contact .contact-card');
-    const canvas = card?.querySelector('.bug-canvas');
-    if (!card || !canvas) return;
-    if (card.dataset.bugInit === 'true') return;
-    card.dataset.bugInit = 'true';
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const ctx = canvas.getContext('2d', { alpha: true });
-    if (!ctx) return;
-
-    const antImage = new Image();
-    antImage.src = '/assets/ant.png';
-
-    const FRAME_W = 33.3;
-    const FRAME_H = 47;
-    const FRAMES = 3;
-
-    const INSET = 14;
-    const SPEED_PX = 70;
-
-    let dpr = 1;
-    let W = 0;
-    let H = 0;
-    let path = null;
-    let u = 0;
-    let frame = 0;
-    let frameAcc = 0;
-    let lastTs = performance.now();
-    let running = true;
-
-    const io = new IntersectionObserver((entries) => {
-      running = entries[0]?.isIntersecting ?? true;
-    }, { threshold: 0.1 });
-    io.observe(card);
-
-    document.addEventListener('visibilitychange', () => {
-      running = !document.hidden;
-      if (running) lastTs = performance.now();
-    });
-
-    function clampRadius(r, maxR) {
-      if (!Number.isFinite(r)) return Math.min(24, maxR);
-      return Math.max(8, Math.min(r, maxR));
-    }
-
-    function readCardRadiusPx() {
-      const style = getComputedStyle(card);
-      const r = parseFloat(style.borderTopLeftRadius || '24');
-      return Number.isFinite(r) ? r : 24;
-    }
-
-    function makeRoundedRectPathMetrics(x, y, w, h, r) {
-      const top = Math.max(0, w - 2 * r);
-      const side = Math.max(0, h - 2 * r);
-      const arc = (Math.PI / 2) * r;
-      const total = 2 * (top + side) + 4 * arc;
-
-      function pointAt(s) {
-        if (s < top) {
-          return { x: x + r + s, y: y, a: 0 };
-        }
-        s -= top;
-
-        if (s < arc) {
-          const t = s / arc;
-          const ang = (-Math.PI / 2) + t * (Math.PI / 2);
-          const cx = x + w - r;
-          const cy = y + r;
-          return { x: cx + Math.cos(ang) * r, y: cy + Math.sin(ang) * r, a: ang + Math.PI / 2 };
-        }
-        s -= arc;
-
-        if (s < side) {
-          return { x: x + w, y: y + r + s, a: Math.PI / 2 };
-        }
-        s -= side;
-
-        if (s < arc) {
-          const t = s / arc;
-          const ang = 0 + t * (Math.PI / 2);
-          const cx = x + w - r;
-          const cy = y + h - r;
-          return { x: cx + Math.cos(ang) * r, y: cy + Math.sin(ang) * r, a: ang + Math.PI / 2 };
-        }
-        s -= arc;
-
-        if (s < top) {
-          return { x: x + w - r - s, y: y + h, a: Math.PI };
-        }
-        s -= top;
-
-        if (s < arc) {
-          const t = s / arc;
-          const ang = (Math.PI / 2) + t * (Math.PI / 2);
-          const cx = x + r;
-          const cy = y + h - r;
-          return { x: cx + Math.cos(ang) * r, y: cy + Math.sin(ang) * r, a: ang + Math.PI / 2 };
-        }
-        s -= arc;
-
-        if (s < side) {
-          return { x: x, y: y + h - r - s, a: -Math.PI / 2 };
-        }
-        s -= side;
-
-        const t = Math.min(1, s / arc);
-        const ang = Math.PI + t * (Math.PI / 2);
-        const cx = x + r;
-        const cy = y + r;
-        return { x: cx + Math.cos(ang) * r, y: cy + Math.sin(ang) * r, a: ang + Math.PI / 2 };
-      }
-
-      return { x, y, w, h, r, top, side, arc, total, pointAt };
-    }
-
-    function resize() {
-      const rect = card.getBoundingClientRect();
-      W = Math.max(1, rect.width);
-      H = Math.max(1, rect.height);
-      dpr = window.devicePixelRatio || 1;
-
-      canvas.width = Math.round(W * dpr);
-      canvas.height = Math.round(H * dpr);
-      canvas.style.width = `${W}px`;
-      canvas.style.height = `${H}px`;
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const outerR = readCardRadiusPx();
-      const innerW = W - INSET * 2;
-      const innerH = H - INSET * 2;
-      const maxR = Math.min(innerW, innerH) / 2;
-      const r = clampRadius(outerR - INSET, maxR);
-
-      path = makeRoundedRectPathMetrics(INSET, INSET, innerW, innerH, r);
-    }
-
-    function drawAnt(px, py, angle, dt) {
-      if (!antImage.complete) return;
-
-      frameAcc += dt;
-      if (frameAcc > 0.1) {
-        frameAcc = 0;
-        frame = (frame + 1) % FRAMES;
-      }
-
-      const bob = Math.sin(performance.now() * 0.02) * 0.6;
-
-      ctx.save();
-      ctx.translate(px, py);
-      ctx.rotate(angle);
-      ctx.globalAlpha = 0.95;
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
-      ctx.shadowBlur = 6;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 2;
-
-      ctx.drawImage(
-        antImage,
-        frame * FRAME_W, 0, FRAME_W, FRAME_H,
-        -FRAME_W / 2, -FRAME_H / 2 + bob,
-        FRAME_W, FRAME_H
-      );
-
-      ctx.restore();
-    }
-
-    function tick(ts) {
-      const dt = Math.min(0.05, (ts - lastTs) / 1000);
-      lastTs = ts;
-
-      if (running && path) {
-        ctx.clearRect(0, 0, W, H);
-
-        const du = (SPEED_PX * dt) / path.total;
-        u = (u + du) % 1;
-
-        const s = u * path.total;
-        const p = path.pointAt(s);
-
-        drawAnt(p.x, p.y, p.a, dt);
-      }
-
-      window.requestAnimationFrame(tick);
-    }
-
-    const ro = new ResizeObserver(resize);
-    ro.observe(card);
-
-    antImage.onload = () => {
-      resize();
-      lastTs = performance.now();
-      requestAnimationFrame(tick);
-    };
-  }
-
   // Initialize on load
   initContact();
-  initBugInContactCard();
 
   // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initContact);
-  document.addEventListener('astro:page-load', initBugInContactCard);
 </script>
 
 <style>
   .contact-card {
     position: relative;
-    overflow: hidden;
-  }
-
-  .bug-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    border-radius: inherit;
   }
 
   .contact-content {
