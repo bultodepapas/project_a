@@ -83,4 +83,4 @@ Data-driven digital strategist with over eight years of experience in analytics,
 *   **CRO & Testing:** Optimize 360, Optimizely (A/B Testing), Hotjar
 *   **CRM & Email:** Salesforce Marketing Cloud, ActiveCampaign, HubSpot
 *   **Languages & Coding:** SQL, Python (basic), HTML (tracking scripts)
-*   **Project Management Tools:** Asana, JIRA
+*   **Project Management Tools:** Asana, JIRA 
