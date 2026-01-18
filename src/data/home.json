@@ -104,8 +104,8 @@
       {
         "id": "learning",
         "label": { "en": "Learning Loop", "es": "Aprendizaje" },
-        "x": 460,
-        "y": 210,
+        "x": 605,
+        "y": 250,
         "color": "stroke-accent"
       }
     ],

@@ -129,7 +129,86 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
+
+          <!-- Pulse halo for decisions -->
+          <filter id="pulse-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="pulseBlur"/>
+            <feMerge>
+              <feMergeNode in="pulseBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+
+          <!-- Soft halo for learning label -->
+          <filter id="label-glow">
+            <feGaussianBlur stdDeviation="1.6" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
         </defs>
+
+        {(() => {
+          const inputsNode = nodes.find((node) => node.id === 'inputs');
+          if (!inputsNode) return null;
+          const baseRadius = getNodeRadius(inputsNode) + 10;
+          const orbitParticles = [
+            { rx: 8, ry: -4, dur: '5.6s', delay: '0s', opacity: 0.65, size: 2.2 },
+            { rx: 14, ry: 2, dur: '6.8s', delay: '1.2s', opacity: 0.5, size: 1.9 },
+            { rx: 4, ry: 10, dur: '7.6s', delay: '2.1s', opacity: 0.4, size: 1.6 },
+            { rx: 18, ry: 6, dur: '6.2s', delay: '0.6s', opacity: 0.55, size: 2.0 },
+            { rx: 12, ry: -8, dur: '7.1s', delay: '1.8s', opacity: 0.45, size: 1.8 }
+          ];
+
+          return (
+            <g class="input-orbit">
+              {orbitParticles.map((particle, i) => {
+                const rx = Math.max(10, baseRadius + particle.rx);
+                const ry = Math.max(10, baseRadius + particle.ry);
+                const pathId = `input-orbit-path-${i}`;
+                const d = `M ${inputsNode.x + rx} ${inputsNode.y} A ${rx} ${ry} 0 1 0 ${inputsNode.x - rx} ${inputsNode.y} A ${rx} ${ry} 0 1 0 ${inputsNode.x + rx} ${inputsNode.y}`;
+
+                return (
+                  <g>
+                    <path id={pathId} d={d} class="orbit-path" />
+                    <circle
+                      r={particle.size}
+                      class="orbit-particle"
+                      fill="var(--color-accent)"
+                      opacity={particle.opacity}
+                    >
+                      <animateMotion
+                        dur={particle.dur}
+                        repeatCount="indefinite"
+                        begin={particle.delay}
+                        calcMode="spline"
+                        keyTimes="0;0.35;0.7;1"
+                        keySplines="0.4 0 0.2 1;0.2 0 0.8 1;0.4 0 0.2 1"
+                      >
+                        <mpath href={`#${pathId}`} />
+                      </animateMotion>
+                      <animate
+                        attributeName="opacity"
+                        values={`${particle.opacity * 0.7};${particle.opacity};${particle.opacity * 0.6};${particle.opacity * 0.8}`}
+                        keyTimes="0;0.4;0.7;1"
+                        dur="2.4s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="r"
+                        values={`${particle.size};${particle.size + 0.6};${particle.size - 0.2};${particle.size}`}
+                        keyTimes="0;0.5;0.8;1"
+                        dur="3.2s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </g>
+                );
+              })}
+            </g>
+          );
+        })()}
 
         <!-- Edges with Animated Particles -->
         {edges.map((edge, edgeIndex) => {
@@ -143,26 +222,45 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
           // Calculate edge start and end points on circle perimeters
           const start = getStartPoint(startNode, endNode, startRadius, curveOffset);
           const end = getPerimeterPoint(startNode, endNode, endRadius, curveOffset);
+          let curveStart = start;
+          let curveEnd = end;
+          if (edge.curve) {
+            if (startNode.id === 'decisions') {
+              curveStart = {
+                x: startNode.x,
+                y: startNode.y + startRadius + curveOffset
+              };
+            }
+            if (endNode.id === 'processing') {
+              curveEnd = {
+                x: endNode.x,
+                y: endNode.y + endRadius + curveOffset
+              };
+            }
+          }
 
           // Particle configuration
           const particleCount = 3; // 3 particles per edge
-          const particleDuration = edge.curve ? '4s' : '3s'; // Slower for curves
-          const particleRadius = 3;
+          const particleDuration = edge.curve ? '4.4s' : '3s'; // Slower for curves
+          const particleRadius = edge.curve ? 2.4 : 3;
 
           if (edge.curve) {
-             const dx = end.x - start.x;
+             const dx = curveEnd.x - curveStart.x;
              const absDx = Math.abs(dx);
-             const direction = Math.sign(dx) || 1;
              const learningNode = nodes.find((node) => node.id === 'learning');
-             const loopTargetY = learningNode ? learningNode.y - 6 : Math.max(start.y, end.y) + 110;
-             const loopY = Math.min(260, Math.max(start.y + 60, loopTargetY));
-             const handleX = Math.min(160, absDx * 0.22);
-             const midHandleX = Math.min(120, absDx * 0.18);
-             const midX = (start.x + end.x) / 2;
-             const c1 = { x: start.x + direction * handleX, y: start.y };
-             const c2 = { x: midX - direction * midHandleX, y: loopY };
-             const c3 = { x: end.x - direction * handleX, y: end.y };
-             const pathD = `M ${start.x} ${start.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${midX} ${loopY} S ${c3.x} ${c3.y} ${end.x} ${end.y}`;
+             const loopTargetY = learningNode ? learningNode.y - 2 : Math.max(curveStart.y, curveEnd.y) + 80;
+             const loopY = Math.min(220, Math.max(curveStart.y + 40, loopTargetY));
+             const midX = (curveStart.x + curveEnd.x) / 2;
+             const labelCenterShift = absDx * 0.06;
+             const valleyX = midX + labelCenterShift;
+             const drop = Math.max(30, Math.min(80, (loopY - curveStart.y) * 0.6));
+             const flatHandle = Math.max(60, Math.min(150, absDx * 0.18));
+
+             const c1 = { x: curveStart.x, y: curveStart.y + drop };
+             const c2 = { x: valleyX - flatHandle, y: loopY };
+             const c3 = { x: valleyX + flatHandle, y: loopY };
+             const c4 = { x: curveEnd.x, y: curveEnd.y + drop };
+             const pathD = `M ${curveStart.x} ${curveStart.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${valleyX} ${loopY} C ${c3.x} ${c3.y} ${c4.x} ${c4.y} ${curveEnd.x} ${curveEnd.y}`;
              const pathId = `edge-path-${edgeIndex}`;
 
              return (
@@ -173,7 +271,7 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
                    class="edge-loop fill-none"
                    stroke="url(#loop-gradient)"
                    stroke-width={strokeWidth}
-                   stroke-dasharray="7 6"
+                   stroke-dasharray="5 7"
                    stroke-linecap="round"
                    stroke-linejoin="round"
                    marker-end="url(#arrowhead-loop)"
@@ -181,31 +279,39 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
 
                  {/* Flow particles for curved edge - using accent color for cohesion */}
                  {Array.from({ length: particleCount }).map((_, i) => (
-                   <circle
-                     r={particleRadius}
-                     class="flow-particle flow-particle-loop"
-                     fill="var(--color-accent)"
-                     opacity="0"
-                   >
-                     <animateMotion
-                       dur={particleDuration}
-                       repeatCount="indefinite"
-                       begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
-                     >
-                       <mpath href={`#${pathId}`} />
-                     </animateMotion>
-                     <animate
-                       attributeName="opacity"
-                       values="0;0.5;0.5;0"
-                       keyTimes="0;0.1;0.9;1"
-                       dur={particleDuration}
-                       repeatCount="indefinite"
-                       begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
-                     />
-                   </circle>
-                 ))}
-               </g>
-             );
+                  <circle
+                    r={particleRadius}
+                    class="flow-particle flow-particle-loop"
+                    fill="var(--color-accent)"
+                    opacity="0"
+                  >
+                    <animateMotion
+                      dur={particleDuration}
+                      repeatCount="indefinite"
+                      begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
+                    >
+                      <mpath href={`#${pathId}`} />
+                    </animateMotion>
+                    <animate
+                      attributeName="opacity"
+                      values="0;0.35;0.35;0"
+                      keyTimes="0;0.1;0.9;1"
+                      dur={particleDuration}
+                      repeatCount="indefinite"
+                      begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
+                    />
+                    <animate
+                      attributeName="r"
+                      values={`${particleRadius};${particleRadius + 0.6};${particleRadius}`}
+                      keyTimes="0;0.5;1"
+                      dur="2.8s"
+                      repeatCount="indefinite"
+                      begin={`${i * 0.4}s`}
+                    />
+                  </circle>
+                ))}
+              </g>
+            );
           }
 
           const pathId = `edge-path-${edgeIndex}`;
@@ -258,6 +364,8 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
           const isSecondary = node.id === 'processing' || node.id === 'outputs';
           const isTertiary = node.id === 'inputs' || node.id === 'learning';
           const isLearning = node.id === 'learning';
+          const isInputs = node.id === 'inputs';
+          const isDecisions = node.id === 'decisions';
 
           // Typography hierarchy
           const textSize = isPrimary ? 'text-base' : isSecondary ? 'text-sm' : 'text-sm';
@@ -271,7 +379,7 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
                 cx={node.x}
                 cy={node.y}
                 r={nodeRadius + 3}
-                class="fill-none stroke-accent/20 stroke-1"
+                class={`fill-none stroke-accent/20 stroke-1${isDecisions ? ' pulse-ring' : ''}`}
               />
             )}
 
@@ -282,10 +390,12 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
                 cy={node.y}
                 r={nodeRadius}
                 class={isPrimary
-                  ? 'fill-accent stroke-accent-dark stroke-2 node-primary'
+                  ? 'fill-accent stroke-accent-dark stroke-2 node-primary heartbeat-node'
                   : isSecondary
                     ? 'fill-surface stroke-accent stroke-2 node-secondary'
-                    : 'fill-background stroke-border stroke-2 node-tertiary'
+                    : isInputs
+                      ? 'fill-accent/10 stroke-accent/40 stroke-2 node-tertiary'
+                      : 'fill-background stroke-border stroke-2 node-tertiary'
                 }
                 style={isPrimary ? 'filter: url(#glow);' : ''}
               />
@@ -296,8 +406,10 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
               x={node.x}
               y={node.y}
               dy={isLearning ? '-4' : '5'}
+              dx={isLearning ? '-3' : '0'}
               text-anchor="middle"
-              class={`${textSize} ${textWeight} pointer-events-none select-none ${isPrimary ? 'fill-background' : 'fill-foreground'}${isLearning ? ' opacity-80' : ''}`}
+              class={`${textSize} ${textWeight} pointer-events-none select-none ${isPrimary ? 'fill-background' : 'fill-foreground'}${isLearning ? ' opacity-85 tracking-[0.06em] uppercase' : ''}`}
+              style={isLearning ? 'filter: url(#label-glow); font-size: 1.1em;' : ''}
             >
               {getStr(node.label)}
             </text>
@@ -327,12 +439,12 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
     // Handle flow particle animations based on motion preference
     if (reduced) {
       // Disable flow particles for reduced motion
-      document.querySelectorAll('#operating-model .flow-particle').forEach((particle) => {
+      document.querySelectorAll('#operating-model .flow-particle, #operating-model .orbit-particle').forEach((particle) => {
         (particle as SVGElement).style.display = 'none';
       });
     } else {
       // Ensure particles are visible
-      document.querySelectorAll('#operating-model .flow-particle').forEach((particle) => {
+      document.querySelectorAll('#operating-model .flow-particle, #operating-model .orbit-particle').forEach((particle) => {
         (particle as SVGElement).style.display = 'block';
       });
     }
@@ -372,7 +484,15 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
 
   /* Loop particles with slightly more blur for depth differentiation */
   .flow-particle-loop {
-    filter: blur(0.8px);
+    filter: blur(0.9px);
+  }
+  .orbit-path {
+    fill: none;
+    stroke: transparent;
+  }
+  .orbit-particle {
+    pointer-events: none;
+    filter: blur(0.6px);
   }
 
   /* Node animations and interactions */
@@ -382,6 +502,14 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
 
   .node-primary {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .heartbeat-node {
+    transform-origin: center;
+    animation: heartbeat 1.2s infinite;
+  }
+  .pulse-ring {
+    animation: heartbeat-ring 1.2s infinite;
+    filter: url(#pulse-glow);
   }
 
   .node-secondary {
@@ -414,11 +542,31 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
 
   .edge-loop {
     transition: stroke-width 0.3s ease;
+    opacity: 0.75;
+  }
+
+  @keyframes heartbeat {
+    0% { transform: scale(1); }
+    12% { transform: scale(1.04); }
+    20% { transform: scale(1); }
+    30% { transform: scale(1.02); }
+    40% { transform: scale(1); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes heartbeat-ring {
+    0% { opacity: 0.22; transform: scale(1); }
+    12% { opacity: 0.45; transform: scale(1.05); }
+    20% { opacity: 0.18; transform: scale(1.01); }
+    30% { opacity: 0.35; transform: scale(1.03); }
+    40% { opacity: 0.18; transform: scale(1); }
+    100% { opacity: 0.22; transform: scale(1); }
   }
 
   /* Disable particle animations for reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .flow-particle {
+    .flow-particle,
+    .orbit-particle {
       display: none !important;
     }
 
@@ -429,6 +577,11 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
     .edge-primary,
     .edge-loop {
       transition: none !important;
+    }
+    .heartbeat-node,
+    .pulse-ring {
+      animation: none !important;
+      transform: none !important;
     }
   }
 </style>
