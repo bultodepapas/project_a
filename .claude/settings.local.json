@@ -12,7 +12,9 @@
       "mcp__playwright__browser_console_messages",
       "Bash(node -e:*)",
       "Bash(npm run dev:*)",
-      "Bash(timeout /t 5 /nobreak)"
+      "Bash(timeout /t 5 /nobreak)",
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__list_directory"
     ]
   }
 }
