@@ -257,3 +257,39 @@
     animation: none !important;
   }
 }
+
+/* PRINT STYLES */
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: white;
+  }
+
+  /* Hide UI elements */
+  nav,
+  footer,
+  header,
+  .no-print,
+  [data-menu-toggle],
+  [data-mobile-menu] {
+    display: none !important;
+  }
+
+  /* Reset layout for print */
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Remove link artifacts */
+  a[href]:after {
+    content: none !important;
+  }
+}
