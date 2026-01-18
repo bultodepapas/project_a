@@ -53,7 +53,7 @@ Data-driven digital strategist with over eight years of experience in analytics,
 
 **Master’s Degree in Business Analytics**
 *Aston University - UK*
-*   *2023 – 2025*
+*   *2023 – Jan 2026*
 
 **Master’s Degree in Global Business Management**
 *Rennes School of Business - France*

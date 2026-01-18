@@ -631,7 +631,7 @@ education:
     institution: "Aston University"
     location: "Birmingham, United Kingdom"
     year: "2026"
-    status: "in-progress"
+    status: "completed"
     focus:
       en: "Business Analytics, Data Analysis, Strategic Decision-Making"
       es: "Analítica de Negocios, Análisis de Datos, Toma de Decisiones Estratégicas"
