@@ -16,17 +16,19 @@ const { lang, chips, location, email, linkedin } = Astro.props;
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 ---
 
-<section class="section min-h-[70vh] flex items-start pt-12 md:pt-16 relative overflow-hidden">
-  <!-- Optional: Subtle background element -->
-  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-background-alt/30 pointer-events-none"></div>
+<section class="section min-h-[62vh] flex items-start pt-10 md:pt-14 relative overflow-hidden">
+  <!-- Subtle hero framing -->
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-background-alt/20 pointer-events-none"></div>
+  <div class="absolute left-0 top-20 bottom-20 w-px bg-border/60 pointer-events-none"></div>
+  <div class="absolute left-0 top-0 h-full w-[45%] bg-gradient-to-br from-background-alt/70 to-transparent pointer-events-none"></div>
 
   <div class="container relative z-10">
     <div class="max-w-4xl">
       <!-- Chips -->
-      <div class="flex flex-wrap gap-2 mb-6 stagger-children">
+      <div class="flex flex-wrap gap-2 mb-4 stagger-children">
         {chips.map((chip, index) => (
           <span 
-            class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20 animate-fade-in-up opacity-0 fill-mode-forwards"
+            class="inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide rounded-full bg-background-alt text-foreground border border-border/70 shadow-sm animate-fade-in-up fill-mode-forwards"
             style={`animation-delay: ${index * 100}ms;`}
           >
             {getStr(chip)}
@@ -35,21 +37,21 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
       </div>
 
       <!-- Headline -->
-      <div class="overflow-hidden mb-6 pb-2">
+      <div class="overflow-hidden mb-4 pb-2">
         <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold text-foreground animate-reveal-text font-display leading-tight">
           {t(lang, 'hero.headline')}
         </h1>
       </div>
 
       <!-- Subheadline -->
-      <div class="overflow-hidden mb-8 pb-1">
+      <div class="overflow-hidden mb-5 pb-1">
         <p class="text-xl md:text-2xl text-foreground opacity-80 max-w-2xl animate-reveal-text" style="animation-delay: 200ms;">
           {t(lang, 'hero.subheadline')}
         </p>
       </div>
 
       <!-- Meta Line -->
-      <div class="flex flex-wrap items-center gap-4 text-sm text-muted mb-10 animate-fade-in-up opacity-0 fill-mode-forwards" style="animation-delay: 500ms;">
+      <div class="flex flex-wrap items-center gap-4 text-sm text-muted mb-6 animate-fade-in-up fill-mode-forwards" style="animation-delay: 500ms;">
         <span>{location}</span>
         <span class="text-border">|</span>
         <a href={`mailto:${email}`} class="hover:text-accent transition-colors">
@@ -62,16 +64,16 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
       </div>
 
       <!-- CTAs -->
-      <div class="flex flex-wrap gap-4 animate-fade-in-up opacity-0 fill-mode-forwards" style="animation-delay: 600ms;">
+      <div class="flex flex-wrap gap-4 animate-fade-in-up fill-mode-forwards" style="animation-delay: 600ms;">
         <a
           href="#systems"
-          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200"
+          class="inline-flex items-center justify-center px-7 py-3 text-base font-semibold rounded-lg bg-primary text-white hover:bg-primary-light transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200"
         >
           {t(lang, 'hero.cta.viewSystems')}
         </a>
         <a
           href={`/${lang}/resume`}
-          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background-alt transition-colors hover:border-accent"
+          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground bg-background-alt/60 hover:bg-background-alt transition-colors hover:border-accent"
         >
           {t(lang, 'hero.cta.recruiterMode')}
         </a>
