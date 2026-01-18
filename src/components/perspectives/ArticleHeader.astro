@@ -1,0 +1,77 @@
+---
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  category: string;
+  publishDate: string;
+  readTime: string;
+  originalUrl?: string;
+}
+
+const { lang, title, category, publishDate, readTime, originalUrl } = Astro.props;
+
+// Category colors mapping
+const categoryColors: Record<string, string> = {
+  'ai-marketing': 'text-emerald-500 bg-emerald-500/10',
+  'strategy': 'text-blue-500 bg-blue-500/10',
+  'industry-trends': 'text-amber-500 bg-amber-500/10',
+  'personal-growth': 'text-purple-500 bg-purple-500/10',
+};
+
+const categoryColor = categoryColors[category] || 'text-accent bg-accent/10';
+
+// Format date
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(lang, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+---
+
+<header class="mb-12 pb-8 border-b border-border">
+  <div class="flex flex-wrap items-center gap-3 mb-4">
+    <span class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide ${categoryColor}`}>
+      {t(lang, `perspectives.index.filters.${category}`)}
+    </span>
+  </div>
+
+  <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-4">{title}</h1>
+
+  <div class="flex flex-wrap items-center gap-4 text-sm text-muted">
+    <div class="flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+      <span>{formatDate(publishDate)}</span>
+    </div>
+    <span class="text-border">|</span>
+    <div class="flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span>{readTime}</span>
+    </div>
+    {originalUrl && (
+      <>
+        <span class="text-border">|</span>
+        <a
+          href={originalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 text-accent hover:underline"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+          </svg>
+          <span>{t(lang, 'perspectives.detail.readOnMedium')}</span>
+        </a>
+      </>
+    )}
+  </div>
+</header>
