@@ -21,6 +21,7 @@ export default {
         // Text
         foreground: 'var(--color-text)',
         muted: 'var(--color-text-muted)',
+        inverse: 'var(--color-text-inverse)',
         // Borders
         border: 'var(--color-border)',
         'border-strong': 'var(--color-border-strong)',

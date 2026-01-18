@@ -26,7 +26,7 @@ const { lang, email, location, linkedin } = Astro.props;
         <div class="contact-actions flex flex-wrap justify-center gap-4">
           <a
             href={`mailto:${email}`}
-            class="contact-action inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition-colors"
+            class="contact-action inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-inverse hover:bg-primary-light transition-colors"
           >
             {t(lang, 'contact.email')}
           </a>
