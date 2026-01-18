@@ -78,10 +78,75 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
   }
   return `${d} Z`;
 }
+
+function getWaveRingPath(cx: number, cy: number, baseR: number, amp: number, waves: number) {
+  const points = 120;
+  let d = '';
+  for (let i = 0; i <= points; i += 1) {
+    const t = (i / points) * Math.PI * 2;
+    const r = baseR + Math.sin(t * waves) * amp;
+    const x = cx + Math.cos(t) * r;
+    const y = cy + Math.sin(t) * r;
+    d += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
+  }
+  return `${d} Z`;
+}
+
+// Background shooting stars configuration - Numeric coordinates for 1000x1000 canvas
+const shootingStars = [
+  { id: 's1', x: 100, y: 200, angle: 10, length: 300, speed: '8s', delay: '0s', dist: 1200 },
+  { id: 's2', x: 300, y: 600, angle: -5, length: 250, speed: '12s', delay: '4s', dist: 1000 },
+  { id: 's3', x: 700, y: 150, angle: 15, length: 200, speed: '9s', delay: '1.5s', dist: 900 },
+  { id: 's4', x: 900, y: 700, angle: -10, length: 280, speed: '15s', delay: '7s', dist: 1100 },
+  { id: 's5', x: 50, y: 800, angle: -20, length: 350, speed: '11s', delay: '2.5s', dist: 1300 },
+  { id: 's6', x: 500, y: 100, angle: 8, length: 220, speed: '10s', delay: '5s', dist: 1000 },
+];
 ---
 
-<section class="section" id="operating-model">
-  <div class="container">
+<section class="section relative overflow-hidden" id="operating-model">
+  <!-- Background Animation Layer - Abstract 1000x1000 Coordinate System -->
+  <div class="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
+    <svg class="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="bg-star-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0" />
+          <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0.6" />
+        </linearGradient>
+      </defs>
+      {shootingStars.map((star) => (
+        <g transform={`rotate(${star.angle}, ${star.x}, ${star.y})`}>
+          <rect
+            x={star.x}
+            y={star.y}
+            width={star.length}
+            height="2"
+            fill="url(#bg-star-gradient)"
+            opacity="0"
+            class="shooting-star"
+          >
+            <animate
+              attributeName="x"
+              from={star.x - star.length}
+              to={star.x + star.dist}
+              dur={star.speed}
+              begin={star.delay}
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="opacity"
+              values="0;0.5;0"
+              keyTimes="0;0.5;1"
+              dur={star.speed}
+              begin={star.delay}
+              repeatCount="indefinite"
+            />
+          </rect>
+        </g>
+      ))}
+    </svg>
+  </div>
+
+  <div class="container relative z-10">
     <div class="text-center mb-12">
       <h2 id="operating-model-title" class="text-3xl md:text-4xl font-bold text-foreground mb-3 reveal-element opacity-0 translate-y-4 transition-all">
         {t(lang, 'operatingModel.title')}
@@ -100,6 +165,13 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
         <title id="operating-model-diagram-title">{t(lang, 'operatingModel.diagramTitle')}</title>
         <desc id="operating-model-diagram-desc">{t(lang, 'operatingModel.diagramDesc')}</desc>
         <defs>
+          <!-- Star Trail Gradient -->
+          <linearGradient id="star-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0" />
+            <stop offset="50%" stop-color="var(--color-accent)" stop-opacity="0.5" />
+            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0" />
+          </linearGradient>
+
           <!-- Enhanced gradient for main flow -->
           <linearGradient id="edge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.3" />
@@ -130,7 +202,7 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
             <polygon points="0 0, 14 6, 0 12" fill="var(--color-accent)" />
           </marker>
           <!-- Loop arrow -->
-          <marker id="arrowhead-loop" markerWidth="14" markerHeight="12" refX="13" refY="6" orient="auto" markerUnits="strokeWidth">
+          <marker id="arrowhead-loop" markerWidth="14" markerHeight="12" refX="0" refY="6" orient="auto" markerUnits="strokeWidth">
             <polygon points="0 0, 14 6, 0 12" fill="var(--color-accent)" opacity="0.55" />
           </marker>
 
@@ -247,7 +319,7 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
             if (endNode.id === 'processing') {
               curveEnd = {
                 x: endNode.x,
-                y: endNode.y + endRadius + curveOffset
+                y: endNode.y + endRadius + curveOffset + 12
               };
             }
           }
@@ -353,6 +425,10 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
                     dur={particleDuration}
                     repeatCount="indefinite"
                     begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
+                    calcMode="spline"
+                    keyPoints="0;0.25;0.75;1"
+                    keyTimes="0;0.25;0.8;1"
+                    keySplines="0.2 0 0.9 0.3;0.2 0 0.8 1;0.1 0 0.2 1"
                   >
                     <mpath href={`#${pathId}`} />
                   </animateMotion>
@@ -380,8 +456,9 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
           const isInputs = node.id === 'inputs';
           const isDecisions = node.id === 'decisions';
           const isProcessing = node.id === 'processing';
+          const isOutputs = node.id === 'outputs';
           const gearPath = isProcessing
-            ? getGearPath(node.x, node.y, nodeRadius + 2, nodeRadius + 6, 24)
+            ? getGearPath(node.x, node.y, nodeRadius, nodeRadius + 8, 24)
             : '';
 
           // Typography hierarchy
@@ -399,14 +476,8 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
                 class={`fill-none stroke-accent/20 stroke-1${isDecisions ? ' pulse-ring' : ''}`}
               />
             )}
-            {isProcessing && (
-              <g class="gear-rotate">
-                <path d={gearPath} class="gear-teeth" />
-              </g>
-            )}
-
-            {/* Main node circle */}
-            {!isLearning && (
+            {/* Main node circle or gear body */}
+            {!isLearning && !isProcessing && (
               <circle
                 cx={node.x}
                 cy={node.y}
@@ -421,6 +492,26 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
                 }
                 style={isPrimary ? 'filter: url(#glow);' : ''}
               />
+            )}
+            {isProcessing && (
+              <g class="gear-rotate">
+                <path d={gearPath} class="gear-body" />
+                <circle
+                  cx={node.x}
+                  cy={node.y}
+                  r={nodeRadius - 6}
+                  class="gear-core"
+                />
+              </g>
+            )}
+            {isOutputs && (
+              <g>
+                {/* Outer Wave - Rotating Clockwise */}
+                <path d={getWaveRingPath(node.x, node.y, nodeRadius + 6, 2.5, 8)} class="wave-ring wave-cw" />
+                
+                {/* Inner Wave - Rotating Counter-Clockwise (creates interference pattern) */}
+                <path d={getWaveRingPath(node.x, node.y, nodeRadius + 6, 2.5, 8)} class="wave-ring wave-ccw" />
+              </g>
             )}
 
             {/* Node label with hierarchy */}
@@ -461,12 +552,12 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
     // Handle flow particle animations based on motion preference
     if (reduced) {
       // Disable flow particles for reduced motion
-      document.querySelectorAll('#operating-model .flow-particle, #operating-model .orbit-particle').forEach((particle) => {
+      document.querySelectorAll('#operating-model .flow-particle, #operating-model .orbit-particle, #operating-model .shooting-star').forEach((particle) => {
         (particle as SVGElement).style.display = 'none';
       });
     } else {
       // Ensure particles are visible
-      document.querySelectorAll('#operating-model .flow-particle, #operating-model .orbit-particle').forEach((particle) => {
+      document.querySelectorAll('#operating-model .flow-particle, #operating-model .orbit-particle, #operating-model .shooting-star').forEach((particle) => {
         (particle as SVGElement).style.display = 'block';
       });
     }
@@ -504,6 +595,11 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
     filter: blur(0.5px);
   }
 
+  /* Shooting star styles - no blur for visibility */
+  .shooting-star {
+    pointer-events: none;
+  }
+
   /* Loop particles with slightly more blur for depth differentiation */
   .flow-particle-loop {
     filter: blur(0.9px);
@@ -534,14 +630,45 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
     filter: url(#pulse-glow);
   }
   .gear-rotate {
+    transform-box: fill-box;
     transform-origin: center;
-    animation: gear-rotate 12s linear infinite;
+    animation: gear-rotate 16s linear infinite;
   }
-  .gear-teeth {
-    fill: none;
-    stroke: rgba(56, 140, 168, 0.35);
-    stroke-width: 1.5;
+  .gear-body {
+    fill: rgba(240, 248, 250, 0.85);
+    stroke: rgba(56, 140, 168, 0.55);
+    stroke-width: 1.6;
     stroke-linejoin: round;
+  }
+  .gear-core {
+    fill: rgba(255, 255, 255, 0.95);
+    stroke: rgba(56, 140, 168, 0.5);
+    stroke-width: 1.4;
+  }
+  .wave-rotate {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: wave-rotate 18s linear infinite;
+  }
+  .wave-ring {
+    fill: none;
+    stroke: rgba(56, 140, 168, 0.45);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 2px rgba(56, 140, 168, 0.35));
+  }
+  .wave-cw {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: wave-rotate 12s linear infinite;
+    opacity: 0.8;
+  }
+  .wave-ccw {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: wave-rotate-reverse 15s linear infinite;
+    opacity: 0.6;
+    stroke-dasharray: 4 4;
   }
 
   .node-secondary {
@@ -597,6 +724,15 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
   @keyframes gear-rotate {
     to { transform: rotate(360deg); }
   }
+  @keyframes wave-rotate {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes wave-rotate-reverse {
+    to { transform: rotate(-360deg); }
+  }
+  @keyframes wave-pulse {
+    0% { opacity: 0.55; }
+
 
   /* Disable particle animations for reduced motion */
   @media (prefers-reduced-motion: reduce) {
@@ -615,7 +751,8 @@ function getGearPath(cx: number, cy: number, innerR: number, outerR: number, tee
     }
     .heartbeat-node,
     .pulse-ring,
-    .gear-rotate {
+    .gear-rotate,
+    .wave-ring {
       animation: none !important;
       transform: none !important;
     }

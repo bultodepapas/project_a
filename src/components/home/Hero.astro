@@ -21,6 +21,71 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
   <div class="absolute inset-0 bg-gradient-to-b from-transparent to-background-alt/20 pointer-events-none"></div>
   <div class="absolute left-0 top-20 bottom-20 w-px bg-border/60 pointer-events-none"></div>
   <div class="absolute left-0 top-0 h-full w-[45%] bg-gradient-to-br from-background-alt/70 to-transparent pointer-events-none"></div>
+  <svg class="hero-leaf" viewBox="0 0 800 1000" aria-hidden="true">
+    <defs>
+      <linearGradient id="hero-leaf-fill" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#8fd6b6" stop-opacity="0.22" />
+        <stop offset="100%" stop-color="#3f9f77" stop-opacity="0.3" />
+      </linearGradient>
+      <linearGradient id="hero-leaf-vein" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#79caa7" stop-opacity="0.32" />
+        <stop offset="100%" stop-color="#2f7f5d" stop-opacity="0.16" />
+      </linearGradient>
+    </defs>
+    <g transform="translate(120 40) rotate(-8)">
+      <path
+        d="M 350 40
+           C 520 110, 600 300, 540 520
+           C 495 690, 380 860, 220 940
+           C 120 990, 40 900, 60 740
+           C 85 540, 150 330, 240 190
+           C 285 120, 320 75, 350 40 Z"
+        fill="url(#hero-leaf-fill)"
+      />
+      <path
+        d="M 350 50 C 310 170, 270 310, 230 470 C 200 600, 170 720, 150 840"
+        fill="none"
+        stroke="url(#hero-leaf-vein)"
+        stroke-width="6"
+        stroke-linecap="round"
+      />
+      <path
+        d="M 290 220 C 360 200, 430 210, 500 250"
+        fill="none"
+        stroke="url(#hero-leaf-vein)"
+        stroke-width="3.5"
+        stroke-linecap="round"
+      />
+      <path
+        d="M 250 340 C 330 320, 420 335, 510 390"
+        fill="none"
+        stroke="url(#hero-leaf-vein)"
+        stroke-width="3"
+        stroke-linecap="round"
+      />
+      <path
+        d="M 210 470 C 310 455, 410 485, 500 560"
+        fill="none"
+        stroke="url(#hero-leaf-vein)"
+        stroke-width="2.6"
+        stroke-linecap="round"
+      />
+      <path
+        d="M 180 620 C 300 610, 400 650, 470 740"
+        fill="none"
+        stroke="url(#hero-leaf-vein)"
+        stroke-width="2.4"
+        stroke-linecap="round"
+      />
+      <path
+        d="M 140 760 C 250 770, 320 810, 380 880"
+        fill="none"
+        stroke="url(#hero-leaf-vein)"
+        stroke-width="2.2"
+        stroke-linecap="round"
+      />
+    </g>
+  </svg>
 
   <div class="container relative z-10">
     <div class="max-w-4xl">
@@ -99,6 +164,17 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
   .animate-reveal-text {
     transform: translateY(100%);
     animation: revealText 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .hero-leaf {
+    position: absolute;
+    right: -4%;
+    top: -6%;
+    width: min(70vw, 720px);
+    height: auto;
+    opacity: 0.34;
+    filter: blur(0.3px);
+    pointer-events: none;
+    z-index: 0;
   }
 
   @media (prefers-reduced-motion: reduce) {
