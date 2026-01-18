@@ -2,11 +2,15 @@
   "items": [
     {
       "id": "frameworks",
+      "icon": "layers",
+      "color": "#6ee7b7",
+      "metric": 3,
+      "suffix": "",
       "title": {
-        "en": "3 impact frameworks built",
-        "es": "3 frameworks de impacto creados",
-        "fr": "3 cadres d'impact créés",
-        "pt": "3 frameworks de impacto criados"
+        "en": "Impact Frameworks Built",
+        "es": "Frameworks de Impacto",
+        "fr": "Cadres d'Impact Créés",
+        "pt": "Frameworks de Impacto"
       },
       "detail": {
         "en": "Audience, Benchmark, Narrative",
@@ -14,71 +18,92 @@
         "fr": "Audience, Référence, Récit",
         "pt": "Audiência, Benchmark, Narrativa"
       },
-      "href": "/case-studies/audience-framework"
+      "href": "/case-studies/audience-framework",
+      "progress": 100
     },
     {
       "id": "scope",
+      "icon": "globe",
+      "color": "#93c5fd",
+      "metric": 20,
+      "suffix": "+",
       "title": {
-        "en": "20+ countries covered",
-        "es": "20+ paises cubiertos",
-        "fr": "20+ pays couverts",
-        "pt": "20+ países cobertos"
+        "en": "Countries Covered",
+        "es": "Países Cubiertos",
+        "fr": "Pays Couverts",
+        "pt": "Países Cobertos"
       },
       "detail": {
         "en": "All LATAM, US & Canada",
-        "es": "Todo LATAM, US y Canada",
+        "es": "Todo LATAM, US y Canadá",
         "fr": "Toute l'LATAM, US et Canada",
         "pt": "Todo LATAM, EUA e Canadá"
       },
-      "href": "#systems"
+      "href": "#systems",
+      "progress": 85
     },
     {
       "id": "experience",
+      "icon": "clock",
+      "color": "#c4b5fd",
+      "metric": 8,
+      "suffix": "+",
       "title": {
-        "en": "8+ years in M&E",
-        "es": "8+ anos en M&E",
-        "fr": "8+ ans en S&E",
-        "pt": "8+ anos em M&E"
+        "en": "Years in M&E",
+        "es": "Años en M&E",
+        "fr": "Ans en S&E",
+        "pt": "Anos em M&E"
       },
       "detail": {
         "en": "Monitoring, evaluation, analysis",
-        "es": "Monitoreo, evaluacion, analisis",
+        "es": "Monitoreo, evaluación, análisis",
         "fr": "Suivi, évaluation, analyse",
         "pt": "Monitoramento, avaliação, análise"
       },
-      "href": "#timeline"
+      "href": "#timeline",
+      "progress": 80
     },
     {
       "id": "recognition",
+      "icon": "award",
+      "color": "#fcd34d",
+      "metric": null,
+      "suffix": "",
       "title": {
-        "en": "Executive recognition",
-        "es": "Reconocimiento ejecutivo",
-        "fr": "Reconnaissance exécutive",
-        "pt": "Reconhecimento executivo"
+        "en": "Executive Recognition",
+        "es": "Reconocimiento Ejecutivo",
+        "fr": "Reconnaissance Exécutive",
+        "pt": "Reconhecimento Executivo"
       },
       "detail": {
         "en": "Strategy & Americas Directors",
-        "es": "Directores de Estrategia y Americas",
+        "es": "Directores de Estrategia y Américas",
         "fr": "Directeurs Stratégie et Amériques",
         "pt": "Diretores de Estratégia e Américas"
       },
-      "href": "#awards"
+      "href": "#awards",
+      "progress": 100
     },
     {
-      "id": "reference",
+      "id": "partners",
+      "icon": "users",
+      "color": "#f9a8d4",
+      "metric": 50,
+      "suffix": "+",
       "title": {
-        "en": "50+ partners integrated",
-        "es": "50+ socios integrados",
-        "fr": "50+ partenaires intégrés",
-        "pt": "50+ parceiros integrados"
+        "en": "Partners Integrated",
+        "es": "Socios Integrados",
+        "fr": "Partenaires Intégrés",
+        "pt": "Parceiros Integrados"
       },
       "detail": {
         "en": "Single intelligence system",
-        "es": "Sistema de inteligencia unico",
+        "es": "Sistema de inteligencia único",
         "fr": "Système d'intelligence unique",
         "pt": "Sistema de inteligência único"
       },
-      "href": "/case-studies/narrative-tracking"
+      "href": "/case-studies/narrative-tracking",
+      "progress": 90
     }
   ]
 }

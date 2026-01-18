@@ -25,15 +25,48 @@
     "items": [
       {
         "key": "evidence",
-        "caseSlug": "audience-framework"
+        "caseSlug": "audience-framework",
+        "icon": "database",
+        "color": "#6ee7b7",
+        "gradient": "from-emerald-400 to-teal-500",
+        "metric": "$10K+",
+        "metricLabel": { "en": "saved annually", "es": "ahorrados al año", "fr": "économisés/an", "pt": "economizados/ano" },
+        "highlights": [
+          { "en": "8 regional teams", "es": "8 equipos regionales", "fr": "8 équipes régionales", "pt": "8 equipes regionais" },
+          { "en": "20+ countries", "es": "20+ países", "fr": "20+ pays", "pt": "20+ países" },
+          { "en": "Executive-level adoption", "es": "Adopción ejecutiva", "fr": "Adoption exécutive", "pt": "Adoção executiva" }
+        ],
+        "tools": ["Brandwatch", "BigQuery", "Power BI"]
       },
       {
         "key": "narrative",
-        "caseSlug": "narrative-tracking"
+        "caseSlug": "narrative-tracking",
+        "icon": "trendingUp",
+        "color": "#93c5fd",
+        "gradient": "from-blue-400 to-indigo-500",
+        "metric": "50+",
+        "metricLabel": { "en": "partners integrated", "es": "socios integrados", "fr": "partenaires intégrés", "pt": "parceiros integrados" },
+        "highlights": [
+          { "en": "24-48h response time", "es": "24-48h de respuesta", "fr": "Réponse 24-48h", "pt": "Resposta 24-48h" },
+          { "en": "Real-time dashboards", "es": "Dashboards en tiempo real", "fr": "Tableaux en temps réel", "pt": "Dashboards em tempo real" },
+          { "en": "Quarterly trend analysis", "es": "Análisis trimestral", "fr": "Analyse trimestrielle", "pt": "Análise trimestral" }
+        ],
+        "tools": ["Brandwatch", "Talkwalker", "NVivo"]
       },
       {
         "key": "standardize",
-        "caseSlug": "benchmark-system"
+        "caseSlug": "benchmark-system",
+        "icon": "barChart",
+        "color": "#c4b5fd",
+        "gradient": "from-violet-400 to-purple-500",
+        "metric": "50%+",
+        "metricLabel": { "en": "faster reporting", "es": "reportes más rápidos", "fr": "rapports plus rapides", "pt": "relatórios mais rápidos" },
+        "highlights": [
+          { "en": "20% cost savings", "es": "20% ahorro en costos", "fr": "20% d'économies", "pt": "20% economia" },
+          { "en": "Cross-regional KPIs", "es": "KPIs inter-regionales", "fr": "KPIs inter-régionaux", "pt": "KPIs inter-regionais" },
+          { "en": "Board-level reports", "es": "Reportes de directiva", "fr": "Rapports direction", "pt": "Relatórios diretoria" }
+        ],
+        "tools": ["Tableau", "BigQuery", "Looker"]
       }
     ]
   },
@@ -42,6 +75,10 @@
       {
         "slug": "audience-framework",
         "eyebrow": "Audience",
+        "icon": "users",
+        "color": "#6ee7b7",
+        "accentGradient": "from-emerald-400/20 to-teal-500/20",
+        "stats": { "value": "8", "label": { "en": "Regional Teams", "es": "Equipos Regionales", "fr": "Équipes Régionales", "pt": "Equipes Regionais" } },
         "title": {
           "en": "Audience Intelligence Framework",
           "es": "Framework de Inteligencia de Audiencias",
@@ -53,11 +90,20 @@
           "es": "Metodologia multi-pais para medir cambio conductual y conciencia politica",
           "fr": "Méthodologie multi-pays pour la mesure du changement comportemental et de la sensibilisation politique",
           "pt": "Metodologia multipaíses para medição de mudança comportamental e conscientização política"
-        }
+        },
+        "features": [
+          { "en": "Segmentation Analysis", "es": "Análisis de Segmentación", "fr": "Analyse de Segmentation", "pt": "Análise de Segmentação" },
+          { "en": "Behavioral Tracking", "es": "Seguimiento Conductual", "fr": "Suivi Comportemental", "pt": "Rastreamento Comportamental" },
+          { "en": "Policy Awareness", "es": "Conciencia Política", "fr": "Sensibilisation Politique", "pt": "Conscientização Política" }
+        ]
       },
       {
         "slug": "benchmark-system",
         "eyebrow": "Benchmark",
+        "icon": "chart",
+        "color": "#c4b5fd",
+        "accentGradient": "from-violet-400/20 to-purple-500/20",
+        "stats": { "value": "50%", "label": { "en": "Faster Reports", "es": "Reportes Más Rápidos", "fr": "Rapports Plus Rapides", "pt": "Relatórios Mais Rápidos" } },
         "title": {
           "en": "Performance Benchmark System",
           "es": "Sistema de Benchmark de Desempeno",
@@ -69,11 +115,20 @@
           "es": "Metricas estandarizadas para comparar eficiencia entre regiones",
           "fr": "Métriques standardisées pour comparer l'efficacité entre les régions",
           "pt": "Métricas padronizadas para comparar eficiência entre regiões"
-        }
+        },
+        "features": [
+          { "en": "KPI Framework", "es": "Framework de KPIs", "fr": "Cadre de KPI", "pt": "Framework de KPIs" },
+          { "en": "Regional Comparison", "es": "Comparación Regional", "fr": "Comparaison Régionale", "pt": "Comparação Regional" },
+          { "en": "Automated Pipelines", "es": "Pipelines Automatizados", "fr": "Pipelines Automatisés", "pt": "Pipelines Automatizados" }
+        ]
       },
       {
         "slug": "narrative-tracking",
         "eyebrow": "Narrative",
+        "icon": "pulse",
+        "color": "#93c5fd",
+        "accentGradient": "from-blue-400/20 to-indigo-500/20",
+        "stats": { "value": "50+", "label": { "en": "Partners", "es": "Socios", "fr": "Partenaires", "pt": "Parceiros" } },
         "title": {
           "en": "Narrative Tracking System",
           "es": "Sistema de Seguimiento Narrativo",
@@ -85,7 +140,12 @@
           "es": "Monitoreo de tendencias y sentimiento en discurso ambiental",
           "fr": "Suivi des tendances et du sentiment dans le discours environnemental",
           "pt": "Monitoramento de tendências e sentimento no discurso ambiental"
-        }
+        },
+        "features": [
+          { "en": "Trend Detection", "es": "Detección de Tendencias", "fr": "Détection de Tendances", "pt": "Detecção de Tendências" },
+          { "en": "Sentiment Analysis", "es": "Análisis de Sentimiento", "fr": "Analyse de Sentiment", "pt": "Análise de Sentimento" },
+          { "en": "Real-time Alerts", "es": "Alertas en Tiempo Real", "fr": "Alertes en Temps Réel", "pt": "Alertas em Tempo Real" }
+        ]
       }
     ]
   },
@@ -94,44 +154,41 @@
       {
         "id": "inputs",
         "label": { "en": "Inputs", "es": "Entradas", "fr": "Entrées", "pt": "Entradas" },
-        "x": 100,
-        "y": 80,
-        "color": "stroke-muted"
+        "icon": "database",
+        "color": "#6ee7b7",
+        "description": { "en": "Data collection from multiple sources", "es": "Recolección de datos de múltiples fuentes", "fr": "Collecte de données de sources multiples", "pt": "Coleta de dados de múltiplas fontes" },
+        "items": ["Surveys", "APIs", "Partners"]
       },
       {
         "id": "processing",
         "label": { "en": "Processing", "es": "Proceso", "fr": "Traitement", "pt": "Processamento" },
-        "x": 320,
-        "y": 80,
-        "color": "stroke-accent"
+        "icon": "cog",
+        "color": "#fcd34d",
+        "description": { "en": "Analysis, transformation & synthesis", "es": "Análisis, transformación y síntesis", "fr": "Analyse, transformation et synthèse", "pt": "Análise, transformação e síntese" },
+        "items": ["ETL", "ML Models", "Analytics"]
       },
       {
         "id": "outputs",
         "label": { "en": "Outputs", "es": "Salidas", "fr": "Sorties", "pt": "Saídas" },
-        "x": 560,
-        "y": 80,
-        "color": "stroke-muted"
+        "icon": "chart",
+        "color": "#93c5fd",
+        "description": { "en": "Reports, dashboards & insights", "es": "Reportes, dashboards e insights", "fr": "Rapports, tableaux de bord et analyses", "pt": "Relatórios, dashboards e insights" },
+        "items": ["Dashboards", "Reports", "Alerts"]
       },
       {
         "id": "decisions",
         "label": { "en": "Decisions", "es": "Decisiones", "fr": "Décisions", "pt": "Decisões" },
-        "x": 820,
-        "y": 80,
-        "color": "stroke-primary"
-      },
-      {
-        "id": "learning",
-        "label": { "en": "Learning Loop", "es": "Aprendizaje", "fr": "Boucle d'Apprentissage", "pt": "Ciclo de Aprendizado" },
-        "x": 605,
-        "y": 250,
-        "color": "stroke-accent"
+        "icon": "target",
+        "color": "#c4b5fd",
+        "description": { "en": "Strategic actions & resource allocation", "es": "Acciones estratégicas y asignación de recursos", "fr": "Actions stratégiques et allocation des ressources", "pt": "Ações estratégicas e alocação de recursos" },
+        "items": ["Strategy", "Budget", "Priorities"]
       }
     ],
     "edges": [
       { "from": "inputs", "to": "processing" },
       { "from": "processing", "to": "outputs" },
       { "from": "outputs", "to": "decisions" },
-      { "from": "decisions", "to": "processing", "curve": true }
+      { "from": "decisions", "to": "inputs", "curve": true, "label": { "en": "Learning Loop", "es": "Ciclo de Aprendizaje", "fr": "Boucle d'Apprentissage", "pt": "Ciclo de Aprendizado" } }
     ]
   }
 }

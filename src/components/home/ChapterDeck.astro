@@ -2,104 +2,315 @@
 import { t } from '@/i18n';
 import type { Lang } from '@/i18n/config';
 
+interface SystemCard {
+  slug: string;
+  eyebrow: string;
+  icon: string;
+  color: string;
+  accentGradient: string;
+  stats: {
+    value: string;
+    label: Record<string, string>;
+  };
+  title: Record<string, string>;
+  description: Record<string, string>;
+  features: Array<Record<string, string>>;
+}
+
 interface Props {
   lang: Lang;
-  chapters: Array<{
-    slug: string;
-    eyebrow: string;
-    title: { [key: string]: string } | string;
-    description: { [key: string]: string } | string;
-  }>;
+  chapters: SystemCard[];
 }
 
 const { lang, chapters } = Astro.props;
 
 // Helper to get localized string
-const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
+const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang] || obj.en);
 
+// Icon SVG paths
+const iconPaths: Record<string, string> = {
+  users: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+  chart: 'M18 20V10M12 20V4M6 20v-6',
+  pulse: 'M22 12h-4l-3 9L9 3l-3 9H2'
+};
 ---
 
-<section id="systems" class="relative z-10 bg-background-alt py-10 md:py-16 overflow-hidden transition-colors duration-700" data-systems-section>
-  <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-background to-transparent pointer-events-none"></div>
-  <div class="absolute left-0 top-0 h-full w-[32%] bg-background/70 pointer-events-none hidden md:block"></div>
+<section id="systems" class="relative z-10 py-20 md:py-28 overflow-hidden transition-colors duration-700" data-systems-section>
+  <!-- Animated Background -->
+  <div class="absolute inset-0 pointer-events-none">
+    <!-- Base gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-background-alt/50 to-background"></div>
+
+    <!-- Animated orbs that change based on active card -->
+    <div class="system-orb orb-1 absolute w-[500px] h-[500px] rounded-full blur-3xl opacity-0 transition-all duration-1000"
+         style="top: 10%; left: -10%;"></div>
+    <div class="system-orb orb-2 absolute w-[400px] h-[400px] rounded-full blur-3xl opacity-0 transition-all duration-1000"
+         style="bottom: 10%; right: -10%;"></div>
+
+    <!-- Grid pattern -->
+    <svg class="absolute inset-0 w-full h-full opacity-[0.02]" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="systems-grid" width="80" height="80" patternUnits="userSpaceOnUse">
+          <path d="M 80 0 L 0 0 0 80" fill="none" stroke="currentColor" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#systems-grid)" />
+    </svg>
+
+    <!-- Floating particles -->
+    {Array.from({ length: 20 }).map((_, i) => (
+      <div
+        class="absolute w-1 h-1 rounded-full bg-accent/30 system-particle"
+        style={`
+          left: ${10 + Math.random() * 80}%;
+          top: ${10 + Math.random() * 80}%;
+          animation: system-float ${6 + Math.random() * 4}s ease-in-out infinite;
+          animation-delay: ${Math.random() * 3}s;
+        `}
+      />
+    ))}
+  </div>
+
+  <div class="absolute left-0 top-0 h-full w-[32%] bg-gradient-to-r from-background/90 to-transparent pointer-events-none hidden md:block z-10"></div>
+
   <!-- Pinned Container -->
   <div class="chapter-pin-wrapper relative h-[90vh] flex items-center">
     <div class="container relative h-full flex flex-col justify-center">
-      <div class="grid md:grid-cols-[minmax(240px,320px)_1fr] md:gap-10 items-center">
-        <!-- Static Header (remains visible) -->
-        <div class="mb-8 md:mb-0 max-w-sm">
-          <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
+      <div class="grid md:grid-cols-[minmax(280px,380px)_1fr] md:gap-12 items-center">
+        <!-- Static Header with premium design -->
+        <div class="mb-10 md:mb-0 max-w-md relative z-20">
+          <!-- Eyebrow badge -->
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6 reveal-header opacity-0 translate-y-4">
+            <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span class="text-sm font-medium text-accent">
+              {lang === 'es' ? 'Sistemas de Impacto' : lang === 'fr' ? 'Systèmes d\'Impact' : lang === 'pt' ? 'Sistemas de Impacto' : 'Impact Systems'}
+            </span>
+          </div>
+
+          <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-4 reveal-header opacity-0 translate-y-4" style="transition-delay: 100ms;">
             {t(lang, 'systems.title')}
           </h2>
-          <p class="text-lg text-muted">
+          <p class="text-lg text-muted mb-8 reveal-header opacity-0 translate-y-4" style="transition-delay: 200ms;">
             {t(lang, 'systems.subtitle')}
           </p>
-          <!-- Progress Indicator -->
-          <div class="hidden md:flex gap-3 mt-6">
-            {chapters.map((_, i) => (
-              <div 
-                class="chapter-dot w-3 h-3 rounded-full bg-border/60 border border-border/70 transition-colors duration-300" 
-                data-index={i}
-              ></div>
-            ))}
+
+          <!-- Progress Indicator - Enhanced -->
+          <div class="hidden md:block reveal-header opacity-0 translate-y-4" style="transition-delay: 300ms;">
+            <div class="flex items-center gap-4">
+              {chapters.map((chapter, i) => (
+                <button
+                  class="chapter-dot group relative flex items-center gap-2 transition-all duration-500"
+                  data-index={i}
+                  data-color={chapter.color}
+                >
+                  <!-- Dot with ring -->
+                  <div class="relative">
+                    <div class="w-3 h-3 rounded-full bg-border/60 transition-all duration-500 group-hover:scale-125"
+                         style={`--dot-color: ${chapter.color};`}></div>
+                    <div class="absolute inset-0 rounded-full opacity-0 scale-150 transition-all duration-500"
+                         style={`background: ${chapter.color}; filter: blur(4px);`}></div>
+                  </div>
+                  <!-- Label on hover -->
+                  <span class="text-xs text-muted opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap">
+                    {chapter.eyebrow}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <!-- Progress bar -->
+            <div class="mt-4 h-0.5 w-full bg-border/30 rounded-full overflow-hidden">
+              <div class="scroll-progress h-full bg-accent rounded-full transition-all duration-300" style="width: 0%;"></div>
+            </div>
           </div>
         </div>
 
-        <!-- Chapters Stack -->
-        <div class="chapters-stack relative w-full max-w-4xl h-[56vh] md:h-[460px]">
-          {chapters.map((chapter, index) => (
-            <div 
-              class="chapter-card absolute inset-0 w-full h-full bg-surface border border-border rounded-2xl shadow-xl p-10 flex flex-col justify-center opacity-0 translate-y-8"
-              data-index={index}
-            >
-              <div class="flex items-center justify-between text-sm uppercase tracking-wider text-accent mb-6">
-                <span class="font-semibold">{chapter.eyebrow}</span>
-                <span class="text-muted">0{index + 1}</span>
+        <!-- Chapters Stack - Enhanced -->
+        <div class="chapters-stack relative w-full max-w-4xl h-[60vh] md:h-[520px]" style="perspective: 1200px;">
+          {chapters.map((chapter, index) => {
+            const iconPath = iconPaths[chapter.icon] || iconPaths.users;
+
+            return (
+              <div
+                class="chapter-card absolute inset-0 w-full h-full rounded-3xl opacity-0 translate-y-8"
+                data-index={index}
+                data-color={chapter.color}
+                style={`--card-color: ${chapter.color};`}
+              >
+                <!-- Card glow -->
+                <div class="absolute -inset-2 rounded-3xl opacity-0 blur-2xl transition-opacity duration-700"
+                     style={`background: ${chapter.color}30;`}></div>
+
+                <!-- Main card -->
+                <div class="card-content relative h-full bg-surface/90 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
+                  <!-- Top accent bar -->
+                  <div class="absolute top-0 inset-x-0 h-1 opacity-80"
+                       style={`background: linear-gradient(90deg, ${chapter.color}, ${chapter.color}60);`}></div>
+
+                  <!-- Background pattern -->
+                  <div class="absolute inset-0 opacity-[0.03]">
+                    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <pattern id={`card-pattern-${index}`} width="40" height="40" patternUnits="userSpaceOnUse">
+                          <circle cx="20" cy="20" r="1" fill="currentColor"/>
+                        </pattern>
+                      </defs>
+                      <rect width="100%" height="100%" fill={`url(#card-pattern-${index})`} />
+                    </svg>
+                  </div>
+
+                  <!-- Content -->
+                  <div class="relative h-full flex flex-col p-8 md:p-12">
+                    <!-- Header row -->
+                    <div class="flex items-start justify-between mb-8">
+                      <!-- Eyebrow and number -->
+                      <div class="flex items-center gap-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider"
+                              style={`background: ${chapter.color}20; color: ${chapter.color};`}>
+                          {chapter.eyebrow}
+                        </span>
+                        <span class="text-6xl font-black text-foreground/5">
+                          0{index + 1}
+                        </span>
+                      </div>
+
+                      <!-- Animated icon -->
+                      <div class="icon-wrapper relative">
+                        <!-- Rotating ring -->
+                        <svg class="absolute -inset-3 w-20 h-20 opacity-30" viewBox="0 0 80 80">
+                          <circle
+                            cx="40" cy="40" r="36"
+                            fill="none"
+                            stroke={chapter.color}
+                            stroke-width="1"
+                            stroke-dasharray="6 4"
+                            class="animate-spin-slow"
+                          />
+                        </svg>
+
+                        <!-- Icon container -->
+                        <div class="relative w-14 h-14 rounded-2xl flex items-center justify-center"
+                             style={`background: linear-gradient(135deg, ${chapter.color}30, ${chapter.color}10);`}>
+                          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke={chapter.color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d={iconPath}/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h3 class="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
+                      {getStr(chapter.title)}
+                    </h3>
+
+                    <!-- Description -->
+                    <p class="text-lg md:text-xl text-muted mb-8 max-w-2xl">
+                      {getStr(chapter.description)}
+                    </p>
+
+                    <!-- Features grid -->
+                    <div class="flex flex-wrap gap-3 mb-8">
+                      {chapter.features.map((feature, fIndex) => (
+                        <div class="feature-tag flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10"
+                             style={`transition-delay: ${fIndex * 50}ms;`}>
+                          <svg class="w-4 h-4" viewBox="0 0 20 20" fill={chapter.color}>
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                          </svg>
+                          <span class="text-sm text-muted">{getStr(feature)}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <!-- Bottom row: Stats and CTA -->
+                    <div class="mt-auto flex items-end justify-between">
+                      <!-- Stats box -->
+                      <div class="stats-box p-4 rounded-xl bg-gradient-to-br from-background/80 to-background/40 border border-white/5">
+                        <div class="flex items-baseline gap-2">
+                          <span class="text-4xl font-black" style={`color: ${chapter.color};`}>
+                            {chapter.stats.value}
+                          </span>
+                          <span class="text-sm text-muted">
+                            {getStr(chapter.stats.label)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- CTA -->
+                      <a
+                        href={`/${lang}/case-studies/${chapter.slug}`}
+                        class="group inline-flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-300 hover:scale-105"
+                        style={`background: ${chapter.color}; color: #1a1a2e;`}
+                      >
+                        <span class="font-semibold">
+                          {t(lang, 'systems.viewCase')}
+                        </span>
+                        <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 class="text-3xl md:text-5xl font-bold text-foreground mb-6">
-                {getStr(chapter.title)}
-              </h3>
-              <p class="text-xl text-muted mb-8 max-w-2xl">
-                {getStr(chapter.description)}
-              </p>
-              <div>
-                <a 
-                  href={`/${lang}/case-studies/${chapter.slug}`}
-                  class="inline-flex items-center text-accent hover:text-accent-light font-medium transition-colors group"
-                >
-                  {t(lang, 'systems.viewCase')}
-                  <span class="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
-                </a>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Mobile Fallback / Reduced Motion (Accordion style) -->
+  <!-- Mobile Fallback / Reduced Motion (Premium Accordion) -->
   <div class="chapter-accordion hidden flex-col gap-6 container pb-12">
-    {chapters.map((chapter, index) => (
-      <div class="bg-surface border border-border rounded-xl p-6">
-        <div class="flex items-center justify-between text-xs uppercase tracking-wider text-accent mb-2">
-          <span class="font-semibold">{chapter.eyebrow}</span>
-          <span class="text-muted">0{index + 1}</span>
+    {chapters.map((chapter, index) => {
+      const iconPath = iconPaths[chapter.icon] || iconPaths.users;
+
+      return (
+        <div class="group bg-surface/80 backdrop-blur-sm border border-white/10 rounded-2xl p-6 transition-all duration-300 hover:border-white/20"
+             style={`--card-color: ${chapter.color};`}>
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                   style={`background: ${chapter.color}20;`}>
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke={chapter.color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d={iconPath}/>
+                </svg>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-xs font-semibold uppercase"
+                    style={`background: ${chapter.color}20; color: ${chapter.color};`}>
+                {chapter.eyebrow}
+              </span>
+            </div>
+            <span class="text-3xl font-black text-foreground/10">0{index + 1}</span>
+          </div>
+
+          <h3 class="text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors">
+            {getStr(chapter.title)}
+          </h3>
+          <p class="text-muted mb-4">
+            {getStr(chapter.description)}
+          </p>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-baseline gap-1">
+              <span class="text-2xl font-bold" style={`color: ${chapter.color};`}>{chapter.stats.value}</span>
+              <span class="text-xs text-muted">{getStr(chapter.stats.label)}</span>
+            </div>
+            <a
+              href={`/${lang}/case-studies/${chapter.slug}`}
+              class="inline-flex items-center gap-2 text-sm font-medium transition-colors"
+              style={`color: ${chapter.color};`}
+            >
+              {t(lang, 'systems.viewCase')}
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
         </div>
-        <h3 class="text-xl font-bold text-foreground mb-2">
-          {getStr(chapter.title)}
-        </h3>
-        <p class="text-muted mb-4">
-          {getStr(chapter.description)}
-        </p>
-        <a 
-          href={`/${lang}/case-studies/${chapter.slug}`}
-          class="text-sm font-medium text-accent hover:underline"
-        >
-          {t(lang, 'systems.viewCase')} →
-        </a>
-      </div>
-    ))}
+      );
+    })}
   </div>
 </section>
 
@@ -110,10 +321,25 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
     const section = document.getElementById('systems');
     if (section) {
       initChapterDeck(section);
+
+      // Initialize reveal animations for header
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('opacity-0', 'translate-y-4');
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      section.querySelectorAll('.reveal-header').forEach(el => {
+        revealObserver.observe(el);
+      });
     }
   }
 
-  function toggleBodyClass(isActive) {
+  function toggleBodyClass(isActive: boolean) {
     document.body.classList.toggle('section-systems', isActive);
   }
 
@@ -143,51 +369,91 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 </script>
 
 <style>
-  /* Stack Peek Effect Styles */
+  /* Particle animation */
+  @keyframes system-float {
+    0%, 100% {
+      transform: translateY(0) translateX(0);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translateY(-20px) translateX(10px);
+      opacity: 0.6;
+    }
+  }
+
+  /* Spin animation for icon rings */
+  .animate-spin-slow {
+    animation: spin 25s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Card Stack Styles */
   .chapter-card {
     transform-origin: center center;
     will-change: transform, opacity, z-index;
-    transition: box-shadow 0.3s ease;
+    transition: box-shadow 0.5s ease;
+    transform-style: preserve-3d;
   }
 
-  /* Enhanced shadow for depth perception */
   .chapters-stack .chapter-card {
     box-shadow: var(--shadow-xl);
   }
 
-  /* Subtle border enhancement for stacked cards */
-  .chapter-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border: 1px solid var(--color-border);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  /* Active card glow */
+  .chapter-card[style*="opacity: 1"] > div:first-child {
+    opacity: 0.3 !important;
   }
 
-  /* Show border on peek cards for depth */
-  .chapter-card[style*="opacity: 0.2"]::before,
-  .chapter-card[style*="opacity: 0.1"]::before {
-    opacity: 1;
+  /* Card content glassmorphism */
+  .card-content {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
   }
 
-  /* Ensure smooth perspective */
-  .chapters-stack {
-    perspective: 1000px;
-    perspective-origin: center center;
+  /* Dot active state */
+  .chapter-dot.active > div > div:first-child {
+    background: var(--dot-color) !important;
+    transform: scale(1.25);
   }
 
-  /* Subtle backdrop blur for peek cards (glassmorphism lite) */
-  .chapter-card[style*="opacity: 0.2"],
-  .chapter-card[style*="opacity: 0.1"] {
-    backdrop-filter: blur(2px);
+  .chapter-dot.active > div > div:last-child {
+    opacity: 0.5 !important;
   }
 
+  /* Feature tags hover */
+  .feature-tag:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Header reveal transitions */
+  .reveal-header {
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  /* Progress bar animation */
+  .scroll-progress {
+    transition: width 0.1s linear;
+  }
+
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .chapter-card {
-      transition: none !important;
+    .chapter-card,
+    .system-particle,
+    .animate-spin-slow {
+      animation: none !important;
+      transition: opacity 0.3s ease !important;
+    }
+
+    .reveal-header {
+      opacity: 1 !important;
+      transform: none !important;
     }
   }
 </style>

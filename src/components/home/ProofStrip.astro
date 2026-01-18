@@ -5,9 +5,15 @@ import type { Lang } from '@/i18n/config';
 interface Props {
   lang: Lang;
   items: Array<{
+    id: string;
+    icon?: string;
+    color?: string;
+    metric?: number | null;
+    suffix?: string;
     href: string;
     title: { [key: string]: string } | string;
     detail: { [key: string]: string } | string;
+    progress?: number;
   }>;
 }
 
@@ -22,80 +28,343 @@ function resolveHref(href: string) {
   return href;
 }
 
-// Extract number from title for animation (if exists)
-function extractNumber(text: string): { hasNumber: boolean; number: number; prefix: string; suffix: string } {
-  const match = text.match(/^(\D*)(\d+)(\+?)(\D*)$/);
-  if (match) {
-    return {
-      hasNumber: true,
-      number: parseInt(match[2], 10),
-      prefix: match[1].trim(),
-      suffix: (match[3] + match[4]).trim()
-    };
-  }
-  return { hasNumber: false, number: 0, prefix: '', suffix: text };
-}
+// Default colors
+const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
 ---
 
-<section class="section bg-background-alt" id="proof">
-  <div class="container">
-    <h2 class="text-xs font-semibold text-muted uppercase tracking-wider mb-6 reveal-element">
-      {t(lang, 'proof.title')}
-    </h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 stagger-container">
-      {items.map((item, index) => {
-        const titleText = getStr(item.title);
-        const numberData = extractNumber(titleText);
+<section class="section relative overflow-hidden py-24" id="proof">
+  <!-- Animated background -->
+  <div class="absolute inset-0 pointer-events-none">
+    <!-- Gradient mesh -->
+    <div class="absolute inset-0 bg-gradient-to-br from-background via-background-alt/50 to-background"></div>
 
-        return (
-          <a
-            href={resolveHref(item.href)}
-            class="proof-card group relative p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all reveal-element opacity-0 translate-y-4"
-            style={`transition-delay: ${index * 100}ms`}
-            data-index={index}
-          >
-            {/* Mini progress bar */}
-            <div class="absolute top-0 left-0 right-0 h-0.5 bg-border/30 rounded-t-lg overflow-hidden">
+    <!-- Floating orbs -->
+    <div class="proof-orb absolute top-10 left-[10%] w-64 h-64 rounded-full bg-emerald-500/5 blur-3xl"></div>
+    <div class="proof-orb absolute bottom-10 right-[10%] w-80 h-80 rounded-full bg-blue-500/5 blur-3xl" style="animation-delay: -3s"></div>
+    <div class="proof-orb absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-violet-500/3 blur-3xl" style="animation-delay: -6s"></div>
+
+    <!-- Connecting lines background pattern -->
+    <svg class="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid-pattern" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="currentColor" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+    </svg>
+  </div>
+
+  <div class="container relative z-10">
+    <!-- Header -->
+    <div class="text-center mb-16 reveal-element opacity-0 translate-y-6 transition-all duration-1000">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium mb-6">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        {t(lang, 'proof.title')}
+      </div>
+
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+        {lang === 'es' ? 'Resultados que Hablan' : lang === 'fr' ? 'Des Résultats qui Parlent' : lang === 'pt' ? 'Resultados que Falam' : 'Results that Speak'}
+      </h2>
+      <p class="text-lg text-muted max-w-2xl mx-auto">
+        {lang === 'es' ? 'Métricas reales de impacto en programas internacionales de clima y sostenibilidad' :
+         lang === 'fr' ? 'Métriques réelles d\'impact dans les programmes internationaux de climat et durabilité' :
+         lang === 'pt' ? 'Métricas reais de impacto em programas internacionais de clima e sustentabilidade' :
+         'Real impact metrics from international climate and sustainability programmes'}
+      </p>
+    </div>
+
+    <!-- Proof Cards Grid -->
+    <div class="proof-grid relative">
+      <!-- Connection lines SVG (desktop only) -->
+      <svg class="connection-lines absolute inset-0 w-full h-full pointer-events-none hidden lg:block" style="z-index: 0;">
+        <defs>
+          <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.3" />
+            <stop offset="50%" stop-color="var(--color-accent)" stop-opacity="0.1" />
+            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0.3" />
+          </linearGradient>
+        </defs>
+        <!-- Lines will be drawn via CSS -->
+      </svg>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative" style="z-index: 1;">
+        {items.map((item, index) => {
+          const color = item.color || defaultColors[index % defaultColors.length];
+          const hasMetric = item.metric !== null && item.metric !== undefined;
+          const progress = item.progress || 100;
+          const circumference = 2 * Math.PI * 40; // radius = 40
+          const offset = circumference - (progress / 100) * circumference;
+
+          return (
+            <a
+              href={resolveHref(item.href)}
+              class="proof-card group relative reveal-element opacity-0 translate-y-8 transition-all duration-1000"
+              style={`--delay: ${index * 150}ms; --card-color: ${color}`}
+              data-index={index}
+            >
+              {/* Glow effect on hover */}
               <div
-                class="proof-progress h-full bg-accent origin-left scale-x-0 transition-transform duration-1000 ease-out"
-                data-card-index={index}
+                class="absolute -inset-2 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"
+                style={`background: ${color}20`}
               ></div>
-            </div>
 
-            <div class="flex items-center justify-between mb-2">
-              <p class="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
-                {numberData.hasNumber ? (
-                  <>
-                    {numberData.prefix && <span>{numberData.prefix} </span>}
-                    <span
-                      class="proof-number tabular-nums"
-                      data-target={numberData.number}
-                      data-card-index={index}
-                    >
-                      0
+              {/* Card content */}
+              <div class="relative p-6 rounded-2xl bg-surface/80 backdrop-blur-sm border border-border group-hover:border-transparent transition-all duration-500 h-full overflow-hidden">
+                {/* Gradient border on hover */}
+                <div
+                  class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[1px]"
+                  style={`background: linear-gradient(135deg, ${color}60, transparent 50%, ${color}30)`}
+                >
+                  <div class="w-full h-full rounded-2xl bg-surface"></div>
+                </div>
+
+                {/* Content wrapper */}
+                <div class="relative z-10">
+                  {/* Icon with circular progress */}
+                  <div class="relative w-20 h-20 mx-auto mb-4">
+                    {/* Progress ring */}
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 88 88">
+                      {/* Background ring */}
+                      <circle
+                        cx="44"
+                        cy="44"
+                        r="40"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        class="text-border"
+                      />
+                      {/* Progress ring */}
+                      <circle
+                        cx="44"
+                        cy="44"
+                        r="40"
+                        fill="none"
+                        stroke={color}
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-dasharray={circumference}
+                        stroke-dashoffset={circumference}
+                        class="progress-ring transition-all duration-1500 ease-out"
+                        data-offset={offset}
+                        data-card-index={index}
+                      />
+                    </svg>
+
+                    {/* Icon in center */}
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <div
+                        class="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                        style={`background: linear-gradient(135deg, ${color}25, ${color}10)`}
+                      >
+                        {item.icon === 'layers' && (
+                          <svg class="w-6 h-6" style={`color: ${color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                          </svg>
+                        )}
+                        {item.icon === 'globe' && (
+                          <svg class="w-6 h-6" style={`color: ${color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                        {item.icon === 'clock' && (
+                          <svg class="w-6 h-6" style={`color: ${color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                        {item.icon === 'award' && (
+                          <svg class="w-6 h-6" style={`color: ${color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                          </svg>
+                        )}
+                        {item.icon === 'users' && (
+                          <svg class="w-6 h-6" style={`color: ${color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                        )}
+                        {!item.icon && (
+                          <svg class="w-6 h-6" style={`color: ${color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Metric number */}
+                  <div class="text-center mb-3">
+                    {hasMetric ? (
+                      <div class="text-4xl md:text-5xl font-bold tabular-nums" style={`color: ${color}`}>
+                        <span
+                          class="proof-number"
+                          data-target={item.metric}
+                          data-card-index={index}
+                        >0</span>{item.suffix}
+                      </div>
+                    ) : (
+                      <div class="w-10 h-10 mx-auto rounded-full flex items-center justify-center" style={`background: ${color}20`}>
+                        <svg class="w-5 h-5" style={`color: ${color}`} fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <h3 class="text-base font-semibold text-foreground text-center mb-2 group-hover:text-accent transition-colors">
+                    {getStr(item.title)}
+                  </h3>
+
+                  {/* Detail */}
+                  <p class="text-sm text-muted text-center leading-relaxed">
+                    {getStr(item.detail)}
+                  </p>
+
+                  {/* Arrow indicator */}
+                  <div class="mt-4 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                    <span class="inline-flex items-center gap-1 text-xs font-medium" style={`color: ${color}`}>
+                      {lang === 'es' ? 'Ver más' : lang === 'fr' ? 'Voir plus' : lang === 'pt' ? 'Ver mais' : 'Learn more'}
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
                     </span>
-                    {numberData.suffix && <span> {numberData.suffix}</span>}
-                  </>
-                ) : (
-                  <span>{titleText}</span>
-                )}
-              </p>
-              <span class="text-xs text-muted group-hover:text-accent transition-colors">+</span>
+                  </div>
+                </div>
+
+                {/* Decorative corner */}
+                <div
+                  class="absolute top-0 right-0 w-24 h-24 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+                  style={`background: radial-gradient(circle at top right, ${color}, transparent 70%)`}
+                ></div>
+
+                {/* Pulse dot indicator */}
+                <div class="absolute top-4 right-4">
+                  <span class="relative flex h-2 w-2">
+                    <span
+                      class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                      style={`background: ${color}`}
+                    ></span>
+                    <span
+                      class="relative inline-flex rounded-full h-2 w-2"
+                      style={`background: ${color}`}
+                    ></span>
+                  </span>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- Bottom summary -->
+    <div class="mt-16 flex flex-wrap justify-center gap-8 reveal-element opacity-0 translate-y-6 transition-all duration-1000" style="--delay: 900ms">
+      <div class="flex items-center gap-4 px-6 py-4 rounded-2xl bg-surface/60 backdrop-blur-sm border border-border">
+        <div class="flex -space-x-2">
+          {defaultColors.slice(0, 3).map((color) => (
+            <div
+              class="w-8 h-8 rounded-full border-2 border-surface flex items-center justify-center"
+              style={`background: linear-gradient(135deg, ${color}, ${color}cc)`}
+            >
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
             </div>
-            <p class="text-sm text-muted mt-1 leading-relaxed">
-              {getStr(item.detail)}
-            </p>
-          </a>
-        );
-      })}
+          ))}
+        </div>
+        <div>
+          <p class="text-sm font-medium text-foreground">
+            {lang === 'es' ? 'Impacto verificado' : lang === 'fr' ? 'Impact vérifié' : lang === 'pt' ? 'Impacto verificado' : 'Verified Impact'}
+          </p>
+          <p class="text-xs text-muted">
+            {lang === 'es' ? 'Métricas de organizaciones líderes' : lang === 'fr' ? 'Métriques d\'organisations leaders' : lang === 'pt' ? 'Métricas de organizações líderes' : 'Metrics from leading organizations'}
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
+<style>
+  /* Floating orbs animation */
+  .proof-orb {
+    animation: proof-float 12s ease-in-out infinite;
+  }
+
+  @keyframes proof-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(10px, -20px) scale(1.05); }
+    50% { transform: translate(-15px, 10px) scale(0.98); }
+    75% { transform: translate(20px, 15px) scale(1.02); }
+  }
+
+  /* Card reveal animation */
+  .proof-card {
+    animation-delay: var(--delay, 0ms);
+  }
+
+  /* Card hover effects */
+  .proof-card:hover {
+    transform: translateY(-12px) scale(1.02);
+  }
+
+  /* Progress ring transition */
+  .progress-ring {
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+
+  /* Connection dots between cards (desktop) */
+  @media (min-width: 1024px) {
+    .proof-card:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -24px;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--card-color), transparent);
+      transform: translateY(-50%);
+      opacity: 0.4;
+      z-index: 2;
+    }
+  }
+
+  /* Staggered reveal */
+  .reveal-element {
+    animation: reveal-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  @keyframes reveal-up {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .proof-orb,
+    .animate-ping {
+      animation: none;
+    }
+    .proof-card:hover {
+      transform: none;
+    }
+    .reveal-element {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+</style>
+
 <script>
   /**
-   * ProofStrip Animation Controller
-   * Handles count-up animation and progress bar reveal with reduced-motion support
+   * ProofStrip Animation Controller - Premium Edition
    */
 
   type AnimationState = {
@@ -105,20 +374,24 @@ function extractNumber(text: string): { hasNumber: boolean; number: number; pref
 
   const animations = new Map<Element, AnimationState>();
 
-  /**
-   * Easing function for smooth count-up (easeOutCubic)
-   */
-  function easeOutCubic(t: number): number {
-    return 1 - Math.pow(1 - t, 3);
+  // Premium easing functions
+  function easeOutExpo(t: number): number {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  }
+
+  function easeOutBack(t: number): number {
+    const c1 = 1.70158;
+    const c3 = c1 + 1;
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
   }
 
   /**
-   * Animate number from 0 to target with easing
+   * Animate number with premium easing
    */
   function animateNumber(
     element: Element,
     target: number,
-    duration: number = 1200,
+    duration: number = 2000,
     delay: number = 0
   ): void {
     const state: AnimationState = { rafId: null, startTime: null };
@@ -130,7 +403,7 @@ function extractNumber(text: string): { hasNumber: boolean; number: number; pref
 
         const elapsed = currentTime - state.startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const easedProgress = easeOutCubic(progress);
+        const easedProgress = easeOutExpo(progress);
         const currentValue = Math.floor(easedProgress * target);
 
         element.textContent = currentValue.toString();
@@ -138,7 +411,6 @@ function extractNumber(text: string): { hasNumber: boolean; number: number; pref
         if (progress < 1) {
           state.rafId = requestAnimationFrame(animate);
         } else {
-          // Ensure we end exactly on target
           element.textContent = target.toString();
           animations.delete(element);
         }
@@ -155,12 +427,12 @@ function extractNumber(text: string): { hasNumber: boolean; number: number; pref
   }
 
   /**
-   * Animate progress bar fill
+   * Animate progress ring
    */
-  function animateProgressBar(element: Element, delay: number = 0): void {
+  function animateProgressRing(element: SVGCircleElement, delay: number = 0): void {
+    const offset = element.dataset.offset;
     setTimeout(() => {
-      element.classList.remove('scale-x-0');
-      element.classList.add('scale-x-100');
+      element.style.strokeDashoffset = offset || '0';
     }, delay);
   }
 
@@ -178,68 +450,82 @@ function extractNumber(text: string): { hasNumber: boolean; number: number; pref
     const reduced = prefersReducedMotion();
 
     // Cleanup existing animations
-    animations.forEach((state, element) => {
+    animations.forEach((state) => {
       if (state.rafId !== null) {
         cancelAnimationFrame(state.rafId);
       }
     });
     animations.clear();
 
-    const observer = new IntersectionObserver(
+    // Header reveal
+    const headerObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('opacity-0', 'translate-y-6');
+          entry.target.classList.add('opacity-100', 'translate-y-0');
+          headerObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('#proof > .container > .reveal-element').forEach((el) => {
+      headerObserver.observe(el);
+    });
+
+    // Cards observer
+    const cardObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const card = entry.target as HTMLElement;
             const cardIndex = parseInt(card.dataset.index || '0', 10);
-            const baseDelay = cardIndex * 100;
+            const baseDelay = cardIndex * 150;
 
             // Reveal card
-            card.classList.remove('opacity-0', 'translate-y-4');
+            card.classList.remove('opacity-0', 'translate-y-8');
             card.classList.add('opacity-100', 'translate-y-0');
 
             if (!reduced) {
-              // Animate number if present
+              // Animate progress ring
+              const progressRing = card.querySelector('.progress-ring') as SVGCircleElement;
+              if (progressRing) {
+                animateProgressRing(progressRing, baseDelay + 300);
+              }
+
+              // Animate number
               const numberEl = card.querySelector('.proof-number');
               if (numberEl) {
                 const target = parseInt(numberEl.getAttribute('data-target') || '0', 10);
-                const numberDelay = baseDelay + 200; // Slight delay after card reveal
-                animateNumber(numberEl, target, 1200, numberDelay);
-              }
-
-              // Animate progress bar
-              const progressEl = card.querySelector('.proof-progress');
-              if (progressEl) {
-                const progressDelay = baseDelay + 150;
-                animateProgressBar(progressEl, progressDelay);
+                animateNumber(numberEl, target, 2000, baseDelay + 500);
               }
             } else {
               // Reduced motion: Show final state immediately
+              const progressRing = card.querySelector('.progress-ring') as SVGCircleElement;
+              if (progressRing) {
+                const offset = progressRing.dataset.offset;
+                progressRing.style.strokeDashoffset = offset || '0';
+              }
+
               const numberEl = card.querySelector('.proof-number');
               if (numberEl) {
                 const target = numberEl.getAttribute('data-target') || '0';
                 numberEl.textContent = target;
               }
-
-              const progressEl = card.querySelector('.proof-progress');
-              if (progressEl) {
-                progressEl.classList.remove('scale-x-0');
-                progressEl.classList.add('scale-x-100');
-              }
             }
 
-            observer.unobserve(entry.target);
+            cardObserver.unobserve(entry.target);
           }
         });
       },
       {
-        threshold: 0.1,
+        threshold: 0.15,
         rootMargin: '50px',
       }
     );
 
     // Observe all proof cards
     document.querySelectorAll('#proof .proof-card').forEach((el) => {
-      observer.observe(el);
+      cardObserver.observe(el);
     });
   }
 
@@ -249,7 +535,7 @@ function extractNumber(text: string): { hasNumber: boolean; number: number; pref
   // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initProofStrip);
 
-  // Cleanup on page unload (important for view transitions)
+  // Cleanup on page unload
   document.addEventListener('astro:before-swap', () => {
     animations.forEach((state) => {
       if (state.rafId !== null) {
@@ -259,21 +545,3 @@ function extractNumber(text: string): { hasNumber: boolean; number: number; pref
     animations.clear();
   });
 </script>
-
-<style>
-  .proof-number {
-    display: inline-block;
-    min-width: 1ch; /* Prevent layout shift during count */
-  }
-
-  /* Ensure smooth transitions respect reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .proof-card {
-      transition-duration: 0.01ms !important;
-    }
-
-    .proof-progress {
-      transition-duration: 0.01ms !important;
-    }
-  }
-</style>
