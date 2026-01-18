@@ -5,6 +5,7 @@ import type { Lang } from '@/i18n/config';
 interface Props {
   lang: Lang;
   items: Array<{
+    id: string;
     name: string;
     level: string;
     usedFor: { [key: string]: string } | string;
@@ -15,28 +16,247 @@ const { lang, items } = Astro.props;
 
 // Helper to get localized string
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
+
+// Level configurations with percentages and colors
+const levelConfig: Record<string, { percent: number; color: string; gradient: string }> = {
+  native: { percent: 100, color: '#3f9f77', gradient: 'from-emerald-400 to-emerald-600' },
+  fluent: { percent: 90, color: '#3b82f6', gradient: 'from-blue-400 to-blue-600' },
+  advanced: { percent: 75, color: '#8b5cf6', gradient: 'from-violet-400 to-violet-600' },
+  working: { percent: 60, color: '#f59e0b', gradient: 'from-amber-400 to-amber-600' },
+};
+
+// Flag emojis for each language
+const flagMap: Record<string, string> = {
+  english: '🇬🇧',
+  spanish: '🇪🇸',
+  portuguese: '🇧🇷',
+  french: '🇫🇷',
+};
+
+// Language native names
+const nativeNames: Record<string, string> = {
+  english: 'English',
+  spanish: 'Español',
+  portuguese: 'Português',
+  french: 'Français',
+};
 ---
 
-<section class="section" id="languages">
-  <div class="container">
-    <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-12 reveal-element opacity-0 translate-y-4 transition-all">
-      {t(lang, 'languages.title')}
-    </h2>
+<section class="section relative overflow-hidden" id="languages">
+  <!-- Background decoration -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-accent/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl"></div>
+  </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {items.map((item, index) => (
-        <div 
-          class="p-4 rounded-lg bg-surface border border-border reveal-element opacity-0 translate-y-4 transition-all"
-          style={`transition-delay: ${index * 100}ms`}
-        >
-          <p class="font-semibold text-foreground">{item.name}</p>
-          <p class="text-sm text-accent">{t(lang, `languages.levels.${item.level}`)}</p>
-          <p class="text-xs text-muted mt-2">{t(lang, 'languages.usedFor')} {getStr(item.usedFor)}</p>
+  <div class="container relative z-10">
+    <!-- Header -->
+    <div class="text-center mb-16 reveal-element opacity-0 translate-y-4 transition-all duration-700">
+      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        {t(lang, 'languages.title')}
+      </h2>
+      <p class="text-muted max-w-2xl mx-auto">
+        {t(lang, 'languages.subtitle') || 'Multilingual professional enabling global collaboration'}
+      </p>
+
+      <!-- Decorative line -->
+      <div class="flex items-center justify-center gap-3 mt-6">
+        <div class="h-px w-16 bg-gradient-to-r from-transparent to-accent/50"></div>
+        <div class="flex gap-2">
+          {Object.values(flagMap).map(flag => (
+            <span class="text-lg opacity-60">{flag}</span>
+          ))}
         </div>
-      ))}
+        <div class="h-px w-16 bg-gradient-to-l from-transparent to-accent/50"></div>
+      </div>
+    </div>
+
+    <!-- Language Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      {items.map((item, index) => {
+        const config = levelConfig[item.level] || levelConfig.working;
+        const flag = flagMap[item.id] || '🌐';
+        const nativeName = nativeNames[item.id] || item.name;
+        const circumference = 2 * Math.PI * 36; // radius = 36
+        const offset = circumference - (config.percent / 100) * circumference;
+
+        return (
+          <div
+            class="language-card group relative reveal-element opacity-0 translate-y-4 transition-all duration-700"
+            style={`transition-delay: ${index * 150}ms`}
+            data-level={item.level}
+            data-percent={config.percent}
+          >
+            <!-- Card background with gradient border -->
+            <div class="absolute inset-0 rounded-2xl bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[1px]"
+                 style={`background: linear-gradient(135deg, ${config.color}40, transparent 50%, ${config.color}20)`}>
+              <div class="w-full h-full rounded-2xl bg-surface"></div>
+            </div>
+
+            <!-- Card content -->
+            <div class="relative p-6 rounded-2xl bg-surface border border-border group-hover:border-transparent transition-all duration-500 group-hover:shadow-xl">
+              <div class="flex items-start gap-5">
+                <!-- Circular Progress -->
+                <div class="relative flex-shrink-0">
+                  <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 80 80">
+                    <!-- Background circle -->
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="36"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="4"
+                      class="text-border"
+                    />
+                    <!-- Progress circle -->
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="36"
+                      fill="none"
+                      stroke={config.color}
+                      stroke-width="4"
+                      stroke-linecap="round"
+                      stroke-dasharray={circumference}
+                      stroke-dashoffset={circumference}
+                      class="progress-ring transition-all duration-1000 ease-out"
+                      data-offset={offset}
+                    />
+                  </svg>
+
+                  <!-- Flag in center -->
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-3xl transform group-hover:scale-110 transition-transform duration-300">
+                      {flag}
+                    </span>
+                  </div>
+
+                  <!-- Percentage badge -->
+                  <div
+                    class="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full text-xs font-bold text-white shadow-lg"
+                    style={`background: ${config.color}`}
+                  >
+                    {config.percent}%
+                  </div>
+                </div>
+
+                <!-- Language details -->
+                <div class="flex-1 min-w-0">
+                  <!-- Language name -->
+                  <div class="flex items-baseline gap-2 mb-1">
+                    <h3 class="text-xl font-bold text-foreground group-hover:text-accent transition-colors">
+                      {item.name}
+                    </h3>
+                    <span class="text-sm text-muted italic">
+                      {nativeName !== item.name && `(${nativeName})`}
+                    </span>
+                  </div>
+
+                  <!-- Level badge -->
+                  <div class="inline-flex items-center gap-2 mb-3">
+                    <span
+                      class="px-3 py-1 rounded-full text-sm font-medium text-white"
+                      style={`background: linear-gradient(135deg, ${config.color}, ${config.color}cc)`}
+                    >
+                      {t(lang, `languages.levels.${item.level}`)}
+                    </span>
+                  </div>
+
+                  <!-- Used for -->
+                  <div class="space-y-2">
+                    <p class="text-xs font-medium text-muted uppercase tracking-wider">
+                      {t(lang, 'languages.usedFor')}
+                    </p>
+                    <p class="text-sm text-foreground/80 leading-relaxed">
+                      {getStr(item.usedFor)}
+                    </p>
+                  </div>
+
+                  <!-- Skill bar (additional visual) -->
+                  <div class="mt-4 h-1.5 bg-border rounded-full overflow-hidden">
+                    <div
+                      class="skill-bar h-full rounded-full transition-all duration-1000 ease-out"
+                      style={`width: 0%; background: linear-gradient(90deg, ${config.color}, ${config.color}80)`}
+                      data-width={config.percent}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Decorative corner accent -->
+              <div
+                class="absolute top-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+                style={`background: radial-gradient(circle at top right, ${config.color}, transparent 70%)`}
+              ></div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Bottom stats summary -->
+    <div class="mt-16 flex flex-wrap justify-center gap-8 reveal-element opacity-0 translate-y-4 transition-all duration-700" style="transition-delay: 600ms">
+      <div class="text-center">
+        <div class="text-3xl font-bold text-accent">4</div>
+        <div class="text-sm text-muted">{lang === 'es' ? 'Idiomas' : lang === 'fr' ? 'Langues' : lang === 'pt' ? 'Idiomas' : 'Languages'}</div>
+      </div>
+      <div class="w-px h-12 bg-border"></div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-accent">3</div>
+        <div class="text-sm text-muted">{lang === 'es' ? 'Continentes' : lang === 'fr' ? 'Continents' : lang === 'pt' ? 'Continentes' : 'Continents'}</div>
+      </div>
+      <div class="w-px h-12 bg-border"></div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-accent">8+</div>
+        <div class="text-sm text-muted">{lang === 'es' ? 'Años multilingüe' : lang === 'fr' ? 'Années multilingue' : lang === 'pt' ? 'Anos multilíngue' : 'Years multilingual'}</div>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  .language-card {
+    perspective: 1000px;
+  }
+
+  .language-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .progress-ring {
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+
+  /* Floating animation for flags on hover */
+  .language-card:hover .text-3xl {
+    animation: float 2s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1.1); }
+    50% { transform: translateY(-4px) scale(1.1); }
+  }
+
+  /* Glow effect on progress */
+  .skill-bar {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .language-card:hover {
+      transform: none;
+    }
+    .language-card:hover .text-3xl {
+      animation: none;
+    }
+    .progress-ring,
+    .skill-bar {
+      transition: none;
+    }
+  }
+</style>
 
 <script>
   function initLanguages() {
@@ -45,11 +265,30 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
         if (entry.isIntersecting) {
           entry.target.classList.remove('opacity-0', 'translate-y-4');
           entry.target.classList.add('opacity-100', 'translate-y-0');
+
+          // Animate progress rings
+          const progressRing = entry.target.querySelector('.progress-ring') as SVGCircleElement;
+          if (progressRing) {
+            const offset = progressRing.dataset.offset;
+            setTimeout(() => {
+              progressRing.style.strokeDashoffset = offset || '0';
+            }, 300);
+          }
+
+          // Animate skill bars
+          const skillBar = entry.target.querySelector('.skill-bar') as HTMLElement;
+          if (skillBar) {
+            const width = skillBar.dataset.width;
+            setTimeout(() => {
+              skillBar.style.width = `${width}%`;
+            }, 500);
+          }
+
           observer.unobserve(entry.target);
         }
       });
     }, {
-      threshold: 0.1,
+      threshold: 0.2,
       rootMargin: '50px'
     });
 
