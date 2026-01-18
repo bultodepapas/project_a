@@ -69,14 +69,15 @@
   }
 
   .edge-primary {
-    @apply stroke-accent stroke-2;
+    @apply stroke-2;
     stroke-linecap: round;
   }
 
   .edge-loop {
     @apply stroke-muted/70 stroke-2;
     stroke-linecap: round;
-    stroke-dasharray: 6 7;
+    stroke-width: 1.5;
+    stroke-dasharray: 4 7;
     animation: flowDash 3.5s linear infinite;
   }
 
@@ -87,6 +88,16 @@
   .node-loop circle,
   .node-loop text {
     opacity: 0.85;
+  }
+
+  .node-decision circle {
+    stroke-width: 2.5;
+    filter: drop-shadow(0 6px 16px rgba(74, 144, 164, 0.25));
+  }
+
+  .operating-model-card {
+    background: linear-gradient(140deg, #ffffff 0%, #fbfbfb 45%, #f7f7f7 100%);
+    box-shadow: var(--shadow-lg);
   }
 }
 
