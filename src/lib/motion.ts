@@ -42,13 +42,14 @@ export function initChapterDeck(section: HTMLElement) {
     accordion.classList.remove('flex');
   }
 
+  const cardElements = Array.from(cards) as HTMLElement[];
+
   /**
    * Update card stack visibility for "peek" effect
    * Shows current card fully, next 2 cards peeking behind
    */
   function updateCardStack(activeIndex: number) {
-    cards.forEach((card, i) => {
-      const htmlCard = card as HTMLElement;
+    cardElements.forEach((htmlCard, i) => {
 
       if (i === activeIndex) {
         // Active card: fully visible, highest z-index
@@ -68,6 +69,23 @@ export function initChapterDeck(section: HTMLElement) {
         htmlCard.style.pointerEvents = 'none';
       }
     });
+  }
+
+  function setInitialCardStates() {
+    cardElements.forEach((card, i) => {
+      if (i === 0) {
+        gsap.set(card, { opacity: 1, y: 0, scale: 1 });
+      } else if (i === 1) {
+        gsap.set(card, { opacity: 0.2, y: 12, scale: 0.97 });
+      } else if (i === 2) {
+        gsap.set(card, { opacity: 0.1, y: 24, scale: 0.94 });
+      } else {
+        gsap.set(card, { opacity: 0, y: 0, scale: 1 });
+      }
+    });
+
+    updateDots(0);
+    updateCardStack(0);
   }
 
   // GSAP Timeline with enhanced scrub for smoother feel
@@ -92,8 +110,10 @@ export function initChapterDeck(section: HTMLElement) {
     }
   });
 
+  setInitialCardStates();
+
   // Animate cards with stack peek effect
-  cards.forEach((card, i) => {
+  cardElements.forEach((card, i) => {
     const isLast = i === cards.length - 1;
 
     // Set initial state for peek cards

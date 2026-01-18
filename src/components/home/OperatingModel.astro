@@ -65,6 +65,19 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
     y: from.y + (radius + offset) * Math.sin(angle)
   };
 }
+
+function getGearPath(cx: number, cy: number, innerR: number, outerR: number, teeth: number) {
+  const step = (Math.PI * 2) / (teeth * 2);
+  let d = '';
+  for (let i = 0; i < teeth * 2; i += 1) {
+    const angle = i * step;
+    const r = i % 2 === 0 ? outerR : innerR;
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+    d += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
+  }
+  return `${d} Z`;
+}
 ---
 
 <section class="section" id="operating-model">
@@ -366,6 +379,10 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
           const isLearning = node.id === 'learning';
           const isInputs = node.id === 'inputs';
           const isDecisions = node.id === 'decisions';
+          const isProcessing = node.id === 'processing';
+          const gearPath = isProcessing
+            ? getGearPath(node.x, node.y, nodeRadius + 2, nodeRadius + 6, 24)
+            : '';
 
           // Typography hierarchy
           const textSize = isPrimary ? 'text-base' : isSecondary ? 'text-sm' : 'text-sm';
@@ -381,6 +398,11 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
                 r={nodeRadius + 3}
                 class={`fill-none stroke-accent/20 stroke-1${isDecisions ? ' pulse-ring' : ''}`}
               />
+            )}
+            {isProcessing && (
+              <g class="gear-rotate">
+                <path d={gearPath} class="gear-teeth" />
+              </g>
             )}
 
             {/* Main node circle */}
@@ -511,6 +533,16 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
     animation: heartbeat-ring 1.2s infinite;
     filter: url(#pulse-glow);
   }
+  .gear-rotate {
+    transform-origin: center;
+    animation: gear-rotate 12s linear infinite;
+  }
+  .gear-teeth {
+    fill: none;
+    stroke: rgba(56, 140, 168, 0.35);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
 
   .node-secondary {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -562,6 +594,9 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
     40% { opacity: 0.18; transform: scale(1); }
     100% { opacity: 0.22; transform: scale(1); }
   }
+  @keyframes gear-rotate {
+    to { transform: rotate(360deg); }
+  }
 
   /* Disable particle animations for reduced motion */
   @media (prefers-reduced-motion: reduce) {
@@ -579,7 +614,8 @@ function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number},
       transition: none !important;
     }
     .heartbeat-node,
-    .pulse-ring {
+    .pulse-ring,
+    .gear-rotate {
       animation: none !important;
       transform: none !important;
     }
