@@ -35,7 +35,10 @@ async function generatePDFs() {
   }
 
   console.log('🚀 Starting PDF generation...');
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu']
+  });
   const page = await browser.newPage();
 
   // Expanded language list
@@ -48,7 +51,10 @@ async function generatePDFs() {
     console.log(`📄 Generating PDF for [${lang.toUpperCase()}] from ${url}...`);
 
     try {
-      const response = await page.goto(url, { waitUntil: 'networkidle0' });
+      const response = await page.goto(url, { 
+        waitUntil: 'networkidle0',
+        timeout: 60000 // 60 seconds timeout
+      });
       
       if (!response || !response.ok()) {
         throw new Error(`Failed to load page: ${response?.status()} ${response?.statusText()}`);
@@ -66,7 +72,14 @@ async function generatePDFs() {
         preferCSSPageSize: true // Respect @page CSS rules
       });
 
-      console.log(`✅ Saved: ${path.relative(process.cwd(), outputPath)}`);
+      const stats = fs.statSync(outputPath);
+      const sizeInKb = (stats.size / 1024).toFixed(2);
+
+      if (stats.size < 1000) {
+        console.warn(`⚠️ Warning: Generated PDF for [${lang.toUpperCase()}] is suspiciously small (${sizeInKb} KB). Check for errors.`);
+      } else {
+        console.log(`✅ Saved: ${path.relative(process.cwd(), outputPath)} (${sizeInKb} KB)`);
+      }
     } catch (error) {
       console.error(`❌ Failed to generate PDF for [${lang.toUpperCase()}]:`, error);
     }
