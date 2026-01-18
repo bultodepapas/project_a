@@ -635,14 +635,18 @@ const shootingStars = [
     animation: gear-rotate 16s linear infinite;
   }
   .gear-body {
-    fill: rgba(240, 248, 250, 0.85);
-    stroke: rgba(56, 140, 168, 0.55);
+    fill: var(--color-surface);
+    fill-opacity: 0.85;
+    stroke: var(--color-accent);
+    stroke-opacity: 0.55;
     stroke-width: 1.6;
     stroke-linejoin: round;
   }
   .gear-core {
-    fill: rgba(255, 255, 255, 0.95);
-    stroke: rgba(56, 140, 168, 0.5);
+    fill: var(--color-background);
+    fill-opacity: 0.95;
+    stroke: var(--color-accent);
+    stroke-opacity: 0.5;
     stroke-width: 1.4;
   }
   .wave-rotate {
@@ -652,10 +656,15 @@ const shootingStars = [
   }
   .wave-ring {
     fill: none;
-    stroke: rgba(56, 140, 168, 0.45);
+    stroke: var(--color-accent);
+    stroke-opacity: 0.45;
     stroke-width: 1.2;
     stroke-linejoin: round;
     filter: drop-shadow(0 0 2px rgba(56, 140, 168, 0.35));
+  }
+  
+  :root.dark .wave-ring {
+    filter: drop-shadow(0 0 2px rgba(45, 212, 191, 0.35));
   }
   .wave-cw {
     transform-box: fill-box;
