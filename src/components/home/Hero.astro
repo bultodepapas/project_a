@@ -16,7 +16,7 @@ const { lang, chips, location, email, linkedin } = Astro.props;
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 ---
 
-<section class="section min-h-[90vh] flex items-center relative overflow-hidden">
+<section class="section min-h-[80vh] flex items-center relative overflow-hidden">
   <!-- Optional: Subtle background element -->
   <div class="absolute inset-0 bg-gradient-to-b from-transparent to-background-alt/30 pointer-events-none"></div>
 
@@ -43,7 +43,7 @@ const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 
       <!-- Subheadline -->
       <div class="overflow-hidden mb-8 pb-1">
-        <p class="text-xl md:text-2xl text-muted max-w-2xl transform translate-y-full animate-reveal-text" style="animation-delay: 200ms;">
+        <p class="text-xl md:text-2xl text-foreground opacity-80 max-w-2xl transform translate-y-full animate-reveal-text" style="animation-delay: 200ms;">
           {t(lang, 'hero.subheadline')}
         </p>
       </div>
