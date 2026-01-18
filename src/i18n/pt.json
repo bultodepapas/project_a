@@ -1,139 +1,139 @@
 {
   "site": {
     "title": "Angela Parra Sanchez",
-    "description": "[PT] Data & Impact Assessment Specialist. Building measurement systems and audience intelligence for international climate and sustainability programmes."
+    "description": "Especialista em Dados e Avaliação de Impacto. Construção de sistemas de medição e inteligência de audiência para programas climáticos internacionais."
   },
   "nav": {
-    "systems": "[PT] Systems",
-    "caseStudies": "[PT] Case Studies",
-    "resume": "[PT] Resume",
-    "contact": "[PT] Contact"
+    "systems": "Sistemas",
+    "caseStudies": "Estudos de Caso",
+    "resume": "Currículo",
+    "contact": "Contato"
   },
   "hero": {
-    "headline": "[PT] Data & Impact Assessment Specialist",
-    "subheadline": "[PT] Building measurement systems and audience intelligence for international climate and sustainability programmes",
+    "headline": "Especialista em Dados e Avaliação de Impacto",
+    "subheadline": "Construção de sistemas de medição e inteligência de audiência para programas climáticos internacionais",
     "cta": {
-      "viewSystems": "[PT] View Systems",
-      "recruiterMode": "[PT] Recruiter Mode"
+      "viewSystems": "Ver Sistemas",
+      "recruiterMode": "Modo Recrutador"
     }
   },
   "proof": {
-    "title": "[PT] Proven Impact"
+    "title": "Impacto Comprovado"
   },
   "hiredFor": {
-    "title": "[PT] What I'm hired for",
+    "title": "O que eu faço",
     "bullets": {
-      "evidence": "[PT] Build evidence systems that survive turnover",
-      "narrative": "[PT] Translate narratives into measurable strategy",
-      "standardize": "[PT] Standardize performance across teams and regions"
+      "evidence": "Construir sistemas de evidência resilientes",
+      "narrative": "Traduzir narrativas em estratégia mensurável",
+      "standardize": "Padronizar desempenho entre equipes e regiões"
     }
   },
   "systems": {
-    "title": "[PT] Systems Portfolio",
-    "subtitle": "[PT] Frameworks designed for institutional learning and decision-making",
-    "viewCase": "[PT] View case study"
+    "title": "Portfólio de Sistemas",
+    "subtitle": "Frameworks projetados para aprendizado institucional e tomada de decisão",
+    "viewCase": "Ver estudo de caso"
   },
   "operatingModel": {
-    "title": "[PT] Operating Model",
-    "lead": "[PT] A repeatable flow that links collection, synthesis, and decisions.",
-    "subtitle": "[PT] How data flows from collection to decision",
-    "diagramTitle": "[PT] Operating model data flow diagram",
-    "diagramDesc": "[PT] Inputs move through processing to outputs and decisions, with a learning loop feeding back to inputs."
+    "title": "Modelo Operacional",
+    "lead": "Um fluxo repetível que conecta coleta, síntese e decisões.",
+    "subtitle": "Como os dados fluem da coleta à decisão",
+    "diagramTitle": "Diagrama de fluxo de dados do modelo operacional",
+    "diagramDesc": "As entradas passam pelo processamento para saídas e decisões, com um ciclo de aprendizado retornando às entradas."
   },
   "capabilities": {
-    "title": "[PT] Capabilities",
-    "evidencePrefix": "[PT] Used in:"
+    "title": "Capacidades",
+    "evidencePrefix": "Usado em:"
   },
   "timeline": {
-    "title": "[PT] Experience",
-    "present": "[PT] Present"
+    "title": "Experiência",
+    "present": "Atual"
   },
   "education": {
-    "title": "[PT] Education",
-    "inProgress": "[PT] In Progress"
+    "title": "Educação",
+    "inProgress": "Em Andamento"
   },
   "languages": {
-    "title": "[PT] Languages",
-    "usedFor": "[PT] Used for:",
+    "title": "Idiomas",
+    "usedFor": "Usado para:",
     "levels": {
-      "native": "[PT] Native",
-      "fluent": "[PT] Fluent",
-      "advanced": "[PT] Advanced",
-      "working": "[PT] Working Proficiency"
+      "native": "Nativo",
+      "fluent": "Fluente",
+      "advanced": "Avançado",
+      "working": "Proficiência Profissional"
     }
   },
   "awards": {
-    "title": "[PT] Recognition"
+    "title": "Reconhecimento"
   },
   "contact": {
-    "title": "[PT] Let's Connect",
-    "subtitle": "[PT] Open to opportunities in impact measurement, data strategy, and M&E",
-    "email": "[PT] Email",
-    "linkedin": "[PT] LinkedIn",
-    "downloadPdf": "[PT] Download Resume",
-    "copyEmail": "[PT] Copy email",
-    "emailCopied": "[PT] Email copied!"
+    "title": "Vamos Conectar",
+    "subtitle": "Aberta a oportunidades em medição de impacto, estratégia de dados e M&E",
+    "email": "Email",
+    "linkedin": "LinkedIn",
+    "downloadPdf": "Baixar Currículo",
+    "copyEmail": "Copiar email",
+    "emailCopied": "Email copiado!"
   },
   "cases": {
     "index": {
-      "title": "[PT] Case Studies",
-      "subtitle": "[PT] Systems designed for institutional learning and impact measurement",
+      "title": "Estudos de Caso",
+      "subtitle": "Sistemas projetados para aprendizado institucional e medição de impacto",
       "filters": {
-        "all": "[PT] All",
-        "theme": "[PT] Theme",
-        "region": "[PT] Region"
+        "all": "Todos",
+        "theme": "Tema",
+        "region": "Região"
       },
-      "noResults": "[PT] No cases match the current filters."
+      "noResults": "Nenhum caso corresponde aos filtros atuais."
     },
     "detail": {
-      "problem": "[PT] The Challenge",
-      "approach": "[PT] Approach",
-      "systemDesign": "[PT] System Design",
-      "dataSources": "[PT] Data Sources",
-      "outputs": "[PT] Outputs",
-      "decisionImpact": "[PT] Decision Impact",
-      "adoption": "[PT] Adoption & Cadence",
-      "governance": "[PT] Governance",
-      "tools": "[PT] Tools Used",
-      "artifacts": "[PT] Artifacts",
-      "backToIndex": "[PT] All Case Studies",
-      "nextCase": "[PT] Next Case",
-      "prevCase": "[PT] Previous Case"
+      "problem": "O Desafio",
+      "approach": "Abordagem",
+      "systemDesign": "Design do Sistema",
+      "dataSources": "Fontes de Dados",
+      "outputs": "Entregáveis",
+      "decisionImpact": "Impacto na Decisão",
+      "adoption": "Adoção & Cadência",
+      "governance": "Governança",
+      "tools": "Ferramentas Usadas",
+      "artifacts": "Artefatos",
+      "backToIndex": "Todos os Estudos",
+      "nextCase": "Próximo Caso",
+      "prevCase": "Caso Anterior"
     },
     "fallback": {
-      "banner": "[PT] This case study is available in English.",
-      "viewInEnglish": "[PT] View in English"
+      "banner": "Este estudo de caso está disponível em inglês.",
+      "viewInEnglish": "Ver em Inglês"
     }
   },
   "resume": {
-    "title": "[PT] Resume",
-    "subtitle": "[PT] Data & Impact Assessment Specialist",
-    "summary": "[PT] Summary",
-    "strengths": "[PT] Key Strengths",
-    "experience": "[PT] Experience",
-    "education": "[PT] Education",
-    "skills": "[PT] Technical Skills",
-    "languages": "[PT] Languages",
-    "awards": "[PT] Recognition",
-    "topCases": "[PT] Featured Work",
-    "downloadPdf": "[PT] Download PDF Resume",
-    "viewCase": "[PT] View case study"
+    "title": "Currículo",
+    "subtitle": "Especialista em Dados e Avaliação de Impacto",
+    "summary": "Resumo",
+    "strengths": "Pontos Fortes",
+    "experience": "Experiência",
+    "education": "Educação",
+    "skills": "Habilidades Técnicas",
+    "languages": "Idiomas",
+    "awards": "Reconhecimento",
+    "topCases": "Trabalhos em Destaque",
+    "downloadPdf": "Baixar Currículo PDF",
+    "viewCase": "Ver estudo de caso"
   },
   "footer": {
-    "copyright": "[PT] (c) {year} Angela Parra Sanchez. All rights reserved.",
-    "builtWith": "[PT] Built with Astro"
+    "copyright": "(c) {year} Angela Parra Sanchez. Todos os direitos reservados.",
+    "builtWith": "Construído com Astro"
   },
   "a11y": {
-    "skipToContent": "[PT] Skip to content",
-    "menuToggle": "[PT] Toggle menu",
-    "menuOpen": "[PT] Open menu",
-    "menuClose": "[PT] Close menu",
-    "languageSwitch": "[PT] Switch language",
-    "closeModal": "[PT] Close",
-    "externalLink": "[PT] Opens in new tab",
-    "currentPage": "[PT] Current page"
+    "skipToContent": "Pular para o conteúdo",
+    "menuToggle": "Alternar menu",
+    "menuOpen": "Abrir menu",
+    "menuClose": "Fechar menu",
+    "languageSwitch": "Mudar idioma",
+    "closeModal": "Fechar",
+    "externalLink": "Abre em nova aba",
+    "currentPage": "Página atual"
   },
   "meta": {
-    "ogImageAlt": "[PT] Angela Parra Sanchez - Data & Impact Assessment Specialist"
+    "ogImageAlt": "Angela Parra Sanchez - Especialista em Dados e Avaliação de Impacto"
   }
 }

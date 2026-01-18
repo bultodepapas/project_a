@@ -5,8 +5,8 @@
       "degree": {
         "en": "Master's in Business Analytics",
         "es": "Maestria en Analitica de Negocios",
-        "fr": "[FR] Master's in Business Analytics",
-        "pt": "[PT] Master's in Business Analytics"
+        "fr": "Master en Business Analytics",
+        "pt": "Mestrado em Business Analytics"
       },
       "org": "Aston University",
       "location": "Birmingham, UK",
@@ -17,8 +17,8 @@
       "degree": {
         "en": "Master's in Global Business Management",
         "es": "Maestria en Gestion de Negocios Globales",
-        "fr": "[FR] Master's in Global Business Management",
-        "pt": "[PT] Master's in Global Business Management"
+        "fr": "Master en Gestion des Affaires Mondiales",
+        "pt": "Mestrado em Gestão de Negócios Globais"
       },
       "org": "Rennes School of Business",
       "location": "Rennes, France",
@@ -29,8 +29,8 @@
       "degree": {
         "en": "BA in International Business",
         "es": "Licenciatura en Negocios Internacionales",
-        "fr": "[FR] BA in International Business",
-        "pt": "[PT] BA in International Business"
+        "fr": "Licence en Commerce International",
+        "pt": "Bacharelado em Negócios Internacionais"
       },
       "org": "Universidad de La Salle",
       "location": "Bogota, Colombia",

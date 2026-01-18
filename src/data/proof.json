@@ -5,14 +5,14 @@
       "title": {
         "en": "3 impact frameworks built",
         "es": "3 frameworks de impacto creados",
-        "fr": "[FR] 3 impact frameworks built",
-        "pt": "[PT] 3 impact frameworks built"
+        "fr": "3 cadres d'impact créés",
+        "pt": "3 frameworks de impacto criados"
       },
       "detail": {
         "en": "Audience, Benchmark, Narrative",
         "es": "Audiencias, Benchmark, Narrativas",
-        "fr": "[FR] Audience, Benchmark, Narrative",
-        "pt": "[PT] Audience, Benchmark, Narrative"
+        "fr": "Audience, Référence, Récit",
+        "pt": "Audiência, Benchmark, Narrativa"
       },
       "href": "/case-studies/audience-framework"
     },
@@ -21,14 +21,14 @@
       "title": {
         "en": "Cross-regional scope",
         "es": "Alcance multi-regional",
-        "fr": "[FR] Cross-regional scope",
-        "pt": "[PT] Cross-regional scope"
+        "fr": "Portée interrégionale",
+        "pt": "Escopo inter-regional"
       },
       "detail": {
         "en": "LATAM, US/Canada, Europe",
         "es": "LATAM, US/Canada, Europa",
-        "fr": "[FR] LATAM, US/Canada, Europe",
-        "pt": "[PT] LATAM, US/Canada, Europe"
+        "fr": "LATAM, US/Canada, Europe",
+        "pt": "LATAM, EUA/Canadá, Europa"
       },
       "href": "#systems"
     },
@@ -37,14 +37,14 @@
       "title": {
         "en": "8+ years in M&E",
         "es": "8+ anos en M&E",
-        "fr": "[FR] 8+ years in M&E",
-        "pt": "[PT] 8+ years in M&E"
+        "fr": "8+ ans en S&E",
+        "pt": "8+ anos em M&E"
       },
       "detail": {
         "en": "Monitoring, evaluation, analysis",
         "es": "Monitoreo, evaluacion, analisis",
-        "fr": "[FR] Monitoring, evaluation, analysis",
-        "pt": "[PT] Monitoring, evaluation, analysis"
+        "fr": "Suivi, évaluation, analyse",
+        "pt": "Monitoramento, avaliação, análise"
       },
       "href": "#timeline"
     },
@@ -53,14 +53,14 @@
       "title": {
         "en": "Recognized at ECF",
         "es": "Reconocida en ECF",
-        "fr": "[FR] Recognized at ECF",
-        "pt": "[PT] Recognized at ECF"
+        "fr": "Reconnue à l'ECF",
+        "pt": "Reconhecida na ECF"
       },
       "detail": {
         "en": "Data frameworks (2023)",
         "es": "Frameworks de datos (2023)",
-        "fr": "[FR] Data frameworks (2023)",
-        "pt": "[PT] Data frameworks (2023)"
+        "fr": "Cadres de données (2023)",
+        "pt": "Frameworks de dados (2023)"
       },
       "href": "#awards"
     },
@@ -69,14 +69,14 @@
       "title": {
         "en": "Multi-country reference",
         "es": "Referencia multi-pais",
-        "fr": "[FR] Multi-country reference",
-        "pt": "[PT] Multi-country reference"
+        "fr": "Référence multi-pays",
+        "pt": "Referência multipaíses"
       },
       "detail": {
         "en": "Impact assessments (2024)",
         "es": "Evaluaciones de impacto (2024)",
-        "fr": "[FR] Impact assessments (2024)",
-        "pt": "[PT] Impact assessments (2024)"
+        "fr": "Évaluations d'impact (2024)",
+        "pt": "Avaliações de impacto (2024)"
       },
       "href": "#awards"
     }

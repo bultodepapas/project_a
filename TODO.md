@@ -53,7 +53,7 @@
 - [x] Add 'fr' and 'pt' locale support (config & routing)
 - [x] Create 'fr' and 'pt' JSON dictionaries
 - [x] Scaffold 'fr' and 'pt' content files (Markdown/MDX)
-- [ ] Translate content: Site metadata & JSON data
-- [ ] Translate content: Home & Resume pages
-- [ ] Translate content: Case studies
+- [x] Translate content: Site metadata & JSON data
+- [x] Translate content: Home & Resume pages
+- [x] Translate content: Case studies
 - [ ] Translate content: PDFs

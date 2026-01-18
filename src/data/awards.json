@@ -6,15 +6,15 @@
       "title": {
         "en": "Data Frameworks Recognition",
         "es": "Reconocimiento por Frameworks de Datos",
-        "fr": "[FR] Data Frameworks Recognition",
-        "pt": "[PT] Data Frameworks Recognition"
+        "fr": "Reconnaissance Cadres de Données",
+        "pt": "Reconhecimento por Frameworks de Dados"
       },
       "org": "European Climate Foundation",
       "description": {
         "en": "Recognized for designing data frameworks enhancing cross-regional M&E",
         "es": "Reconocida por disenar frameworks de datos que mejoran el M&E inter-regional",
-        "fr": "[FR] Recognized for designing data frameworks enhancing cross-regional M&E",
-        "pt": "[PT] Recognized for designing data frameworks enhancing cross-regional M&E"
+        "fr": "Reconnue pour la conception de cadres de données améliorant le S&E interrégional",
+        "pt": "Reconhecida por projetar frameworks de dados melhorando o M&E inter-regional"
       }
     },
     {
@@ -23,20 +23,20 @@
       "title": {
         "en": "Multi-Country Impact Reference",
         "es": "Referencia de Impacto Multi-Pais",
-        "fr": "[FR] Multi-Country Impact Reference",
-        "pt": "[PT] Multi-Country Impact Reference"
+        "fr": "Référence d'Impact Multi-Pays",
+        "pt": "Referência de Impacto Multipaíses"
       },
       "org": {
         "en": "International Assessments",
         "es": "Evaluaciones Internacionales",
-        "fr": "[FR] International Assessments",
-        "pt": "[PT] International Assessments"
+        "fr": "Évaluations Internationales",
+        "pt": "Avaliações Internacionais"
       },
       "description": {
         "en": "Performance systems referenced in multi-country impact assessments",
         "es": "Sistemas de desempeno referenciados en evaluaciones de impacto multi-pais",
-        "fr": "[FR] Performance systems referenced in multi-country impact assessments",
-        "pt": "[PT] Performance systems referenced in multi-country impact assessments"
+        "fr": "Systèmes de performance référencés dans les évaluations d'impact multi-pays",
+        "pt": "Sistemas de desempenho referenciados em avaliações de impacto multipaíses"
       }
     }
   ]

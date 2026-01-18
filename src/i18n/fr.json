@@ -1,139 +1,139 @@
 {
   "site": {
     "title": "Angela Parra Sanchez",
-    "description": "[FR] Data & Impact Assessment Specialist. Building measurement systems and audience intelligence for international climate and sustainability programmes."
+    "description": "Spécialiste en Données et Évaluation d'Impact. Création de systèmes de mesure et intelligence d'audience pour programmes climatiques internationaux."
   },
   "nav": {
-    "systems": "[FR] Systems",
-    "caseStudies": "[FR] Case Studies",
-    "resume": "[FR] Resume",
-    "contact": "[FR] Contact"
+    "systems": "Systèmes",
+    "caseStudies": "Études de Cas",
+    "resume": "CV",
+    "contact": "Contact"
   },
   "hero": {
-    "headline": "[FR] Data & Impact Assessment Specialist",
-    "subheadline": "[FR] Building measurement systems and audience intelligence for international climate and sustainability programmes",
+    "headline": "Spécialiste en Données et Évaluation d'Impact",
+    "subheadline": "Création de systèmes de mesure et intelligence d'audience pour programmes climatiques internationaux",
     "cta": {
-      "viewSystems": "[FR] View Systems",
-      "recruiterMode": "[FR] Recruiter Mode"
+      "viewSystems": "Voir les Systèmes",
+      "recruiterMode": "Mode Recruteur"
     }
   },
   "proof": {
-    "title": "[FR] Proven Impact"
+    "title": "Impact Prouvé"
   },
   "hiredFor": {
-    "title": "[FR] What I'm hired for",
+    "title": "Pourquoi m'embaucher",
     "bullets": {
-      "evidence": "[FR] Build evidence systems that survive turnover",
-      "narrative": "[FR] Translate narratives into measurable strategy",
-      "standardize": "[FR] Standardize performance across teams and regions"
+      "evidence": "Construire des systèmes de preuves durables",
+      "narrative": "Traduire les récits en stratégie mesurable",
+      "standardize": "Standardiser la performance entre équipes et régions"
     }
   },
   "systems": {
-    "title": "[FR] Systems Portfolio",
-    "subtitle": "[FR] Frameworks designed for institutional learning and decision-making",
-    "viewCase": "[FR] View case study"
+    "title": "Portfolio de Systèmes",
+    "subtitle": "Cadres conçus pour l'apprentissage institutionnel et la prise de décision",
+    "viewCase": "Voir l'étude de cas"
   },
   "operatingModel": {
-    "title": "[FR] Operating Model",
-    "lead": "[FR] A repeatable flow that links collection, synthesis, and decisions.",
-    "subtitle": "[FR] How data flows from collection to decision",
-    "diagramTitle": "[FR] Operating model data flow diagram",
-    "diagramDesc": "[FR] Inputs move through processing to outputs and decisions, with a learning loop feeding back to inputs."
+    "title": "Modèle Opérationnel",
+    "lead": "Un flux répétable reliant collecte, synthèse et décisions.",
+    "subtitle": "Flux de données de la collecte à la décision",
+    "diagramTitle": "Diagramme du flux de données du modèle opérationnel",
+    "diagramDesc": "Les entrées passent par le traitement vers les sorties et les décisions, avec une boucle d'apprentissage retournant aux entrées."
   },
   "capabilities": {
-    "title": "[FR] Capabilities",
-    "evidencePrefix": "[FR] Used in:"
+    "title": "Compétences",
+    "evidencePrefix": "Utilisé dans :"
   },
   "timeline": {
-    "title": "[FR] Experience",
-    "present": "[FR] Present"
+    "title": "Expérience",
+    "present": "Actuel"
   },
   "education": {
-    "title": "[FR] Education",
-    "inProgress": "[FR] In Progress"
+    "title": "Formation",
+    "inProgress": "En Cours"
   },
   "languages": {
-    "title": "[FR] Languages",
-    "usedFor": "[FR] Used for:",
+    "title": "Langues",
+    "usedFor": "Utilisé pour :",
     "levels": {
-      "native": "[FR] Native",
-      "fluent": "[FR] Fluent",
-      "advanced": "[FR] Advanced",
-      "working": "[FR] Working Proficiency"
+      "native": "Natif",
+      "fluent": "Courant",
+      "advanced": "Avancé",
+      "working": "Compétence Professionnelle"
     }
   },
   "awards": {
-    "title": "[FR] Recognition"
+    "title": "Reconnaissance"
   },
   "contact": {
-    "title": "[FR] Let's Connect",
-    "subtitle": "[FR] Open to opportunities in impact measurement, data strategy, and M&E",
-    "email": "[FR] Email",
-    "linkedin": "[FR] LinkedIn",
-    "downloadPdf": "[FR] Download Resume",
-    "copyEmail": "[FR] Copy email",
-    "emailCopied": "[FR] Email copied!"
+    "title": "Connectons-nous",
+    "subtitle": "Ouverte aux opportunités en mesure d'impact, stratégie de données et S&E",
+    "email": "Email",
+    "linkedin": "LinkedIn",
+    "downloadPdf": "Télécharger CV",
+    "copyEmail": "Copier email",
+    "emailCopied": "Email copié !"
   },
   "cases": {
     "index": {
-      "title": "[FR] Case Studies",
-      "subtitle": "[FR] Systems designed for institutional learning and impact measurement",
+      "title": "Études de Cas",
+      "subtitle": "Systèmes conçus pour l'apprentissage institutionnel et la mesure d'impact",
       "filters": {
-        "all": "[FR] All",
-        "theme": "[FR] Theme",
-        "region": "[FR] Region"
+        "all": "Tous",
+        "theme": "Thème",
+        "region": "Région"
       },
-      "noResults": "[FR] No cases match the current filters."
+      "noResults": "Aucun cas ne correspond aux filtres actuels."
     },
     "detail": {
-      "problem": "[FR] The Challenge",
-      "approach": "[FR] Approach",
-      "systemDesign": "[FR] System Design",
-      "dataSources": "[FR] Data Sources",
-      "outputs": "[FR] Outputs",
-      "decisionImpact": "[FR] Decision Impact",
-      "adoption": "[FR] Adoption & Cadence",
-      "governance": "[FR] Governance",
-      "tools": "[FR] Tools Used",
-      "artifacts": "[FR] Artifacts",
-      "backToIndex": "[FR] All Case Studies",
-      "nextCase": "[FR] Next Case",
-      "prevCase": "[FR] Previous Case"
+      "problem": "Le Défi",
+      "approach": "Approche",
+      "systemDesign": "Conception du Système",
+      "dataSources": "Sources de Données",
+      "outputs": "Livrables",
+      "decisionImpact": "Impact Décisionnel",
+      "adoption": "Adoption & Cadence",
+      "governance": "Gouvernance",
+      "tools": "Outils Utilisés",
+      "artifacts": "Artefacts",
+      "backToIndex": "Toutes les Études",
+      "nextCase": "Cas Suivant",
+      "prevCase": "Cas Précédent"
     },
     "fallback": {
-      "banner": "[FR] This case study is available in English.",
-      "viewInEnglish": "[FR] View in English"
+      "banner": "Cette étude de cas est disponible en anglais.",
+      "viewInEnglish": "Voir en Anglais"
     }
   },
   "resume": {
-    "title": "[FR] Resume",
-    "subtitle": "[FR] Data & Impact Assessment Specialist",
-    "summary": "[FR] Summary",
-    "strengths": "[FR] Key Strengths",
-    "experience": "[FR] Experience",
-    "education": "[FR] Education",
-    "skills": "[FR] Technical Skills",
-    "languages": "[FR] Languages",
-    "awards": "[FR] Recognition",
-    "topCases": "[FR] Featured Work",
-    "downloadPdf": "[FR] Download PDF Resume",
-    "viewCase": "[FR] View case study"
+    "title": "CV",
+    "subtitle": "Spécialiste en Données et Évaluation d'Impact",
+    "summary": "Résumé",
+    "strengths": "Forces Clés",
+    "experience": "Expérience",
+    "education": "Formation",
+    "skills": "Compétences Techniques",
+    "languages": "Langues",
+    "awards": "Reconnaissance",
+    "topCases": "Travaux Clés",
+    "downloadPdf": "Télécharger CV PDF",
+    "viewCase": "Voir l'étude de cas"
   },
   "footer": {
-    "copyright": "[FR] (c) {year} Angela Parra Sanchez. All rights reserved.",
-    "builtWith": "[FR] Built with Astro"
+    "copyright": "(c) {year} Angela Parra Sanchez. Tous droits réservés.",
+    "builtWith": "Construit avec Astro"
   },
   "a11y": {
-    "skipToContent": "[FR] Skip to content",
-    "menuToggle": "[FR] Toggle menu",
-    "menuOpen": "[FR] Open menu",
-    "menuClose": "[FR] Close menu",
-    "languageSwitch": "[FR] Switch language",
-    "closeModal": "[FR] Close",
-    "externalLink": "[FR] Opens in new tab",
-    "currentPage": "[FR] Current page"
+    "skipToContent": "Aller au contenu",
+    "menuToggle": "Basculer menu",
+    "menuOpen": "Ouvrir menu",
+    "menuClose": "Fermer menu",
+    "languageSwitch": "Changer de langue",
+    "closeModal": "Fermer",
+    "externalLink": "Ouvre dans un nouvel onglet",
+    "currentPage": "Page actuelle"
   },
   "meta": {
-    "ogImageAlt": "[FR] Angela Parra Sanchez - Data & Impact Assessment Specialist"
+    "ogImageAlt": "Angela Parra Sanchez - Spécialiste en Données et Évaluation d'Impact"
   }
 }

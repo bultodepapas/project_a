@@ -2,7 +2,7 @@
 pageSlug: "home"
 lang: "pt"
 title: "Angela Parra Sanchez"
-description: "[PT] Data & Impact Assessment Specialist. Building measurement systems and audience intelligence for international climate and sustainability programmes."
+description: "Especialista em Dados e Avaliação de Impacto. Construção de sistemas de medição e inteligência de audiência para programas climáticos internacionais."
 ---
 
-[PT] Home content placeholder for future narrative blocks.
+Conteúdo da página inicial reservado para futuros blocos narrativos.

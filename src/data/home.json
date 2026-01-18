@@ -5,19 +5,19 @@
         "en": "Bogota - Remote EU",
         "es": "Bogota - Remote EU",
         "fr": "Bogota - Remote EU",
-        "pt": "Bogota - Remote EU"
+        "pt": "Bogotá - Remoto UE"
       },
       {
         "en": "8+ years M&E",
         "es": "8+ anos M&E",
-        "fr": "8+ years M&E",
-        "pt": "8+ years M&E"
+        "fr": "8+ ans S&E",
+        "pt": "8+ anos M&E"
       },
       {
         "en": "SDG 8 - 9 - 13",
         "es": "SDG 8 - 9 - 13",
-        "fr": "SDG 8 - 9 - 13",
-        "pt": "SDG 8 - 9 - 13"
+        "fr": "ODD 8 - 9 - 13",
+        "pt": "ODS 8 - 9 - 13"
       }
     ]
   },
@@ -45,14 +45,14 @@
         "title": {
           "en": "Audience Intelligence Framework",
           "es": "Framework de Inteligencia de Audiencias",
-          "fr": "[FR] Audience Intelligence Framework",
-          "pt": "[PT] Audience Intelligence Framework"
+          "fr": "Cadre d'Intelligence d'Audience",
+          "pt": "Framework de Inteligência de Audiência"
         },
         "description": {
           "en": "Multi-country methodology for behavioral change and policy awareness measurement",
           "es": "Metodologia multi-pais para medir cambio conductual y conciencia politica",
-          "fr": "[FR] Multi-country methodology for behavioral change and policy awareness measurement",
-          "pt": "[PT] Multi-country methodology for behavioral change and policy awareness measurement"
+          "fr": "Méthodologie multi-pays pour la mesure du changement comportemental et de la sensibilisation politique",
+          "pt": "Metodologia multipaíses para medição de mudança comportamental e conscientização política"
         }
       },
       {
@@ -61,14 +61,14 @@
         "title": {
           "en": "Performance Benchmark System",
           "es": "Sistema de Benchmark de Desempeno",
-          "fr": "[FR] Performance Benchmark System",
-          "pt": "[PT] Performance Benchmark System"
+          "fr": "Système de Référence de Performance",
+          "pt": "Sistema de Benchmark de Desempenho"
         },
         "description": {
           "en": "Standardized metrics to compare efficiency across regions",
           "es": "Metricas estandarizadas para comparar eficiencia entre regiones",
-          "fr": "[FR] Standardized metrics to compare efficiency across regions",
-          "pt": "[PT] Standardized metrics to compare efficiency across regions"
+          "fr": "Métriques standardisées pour comparer l'efficacité entre les régions",
+          "pt": "Métricas padronizadas para comparar eficiência entre regiões"
         }
       },
       {
@@ -77,14 +77,14 @@
         "title": {
           "en": "Narrative Tracking System",
           "es": "Sistema de Seguimiento Narrativo",
-          "fr": "[FR] Narrative Tracking System",
-          "pt": "[PT] Narrative Tracking System"
+          "fr": "Système de Suivi Narratif",
+          "pt": "Sistema de Rastreamento Narrativo"
         },
         "description": {
           "en": "Monitoring trends and sentiment in environmental discourse",
           "es": "Monitoreo de tendencias y sentimiento en discurso ambiental",
-          "fr": "[FR] Monitoring trends and sentiment in environmental discourse",
-          "pt": "[PT] Monitoring trends and sentiment in environmental discourse"
+          "fr": "Suivi des tendances et du sentiment dans le discours environnemental",
+          "pt": "Monitoramento de tendências e sentimento no discurso ambiental"
         }
       }
     ]
@@ -93,35 +93,35 @@
     "nodes": [
       {
         "id": "inputs",
-        "label": { "en": "Inputs", "es": "Entradas", "fr": "[FR] Inputs", "pt": "[PT] Inputs" },
+        "label": { "en": "Inputs", "es": "Entradas", "fr": "Entrées", "pt": "Entradas" },
         "x": 100,
         "y": 80,
         "color": "stroke-muted"
       },
       {
         "id": "processing",
-        "label": { "en": "Processing", "es": "Proceso", "fr": "[FR] Processing", "pt": "[PT] Processing" },
+        "label": { "en": "Processing", "es": "Proceso", "fr": "Traitement", "pt": "Processamento" },
         "x": 320,
         "y": 80,
         "color": "stroke-accent"
       },
       {
         "id": "outputs",
-        "label": { "en": "Outputs", "es": "Salidas", "fr": "[FR] Outputs", "pt": "[PT] Outputs" },
+        "label": { "en": "Outputs", "es": "Salidas", "fr": "Sorties", "pt": "Saídas" },
         "x": 560,
         "y": 80,
         "color": "stroke-muted"
       },
       {
         "id": "decisions",
-        "label": { "en": "Decisions", "es": "Decisiones", "fr": "[FR] Decisions", "pt": "[PT] Decisions" },
+        "label": { "en": "Decisions", "es": "Decisiones", "fr": "Décisions", "pt": "Decisões" },
         "x": 820,
         "y": 80,
         "color": "stroke-primary"
       },
       {
         "id": "learning",
-        "label": { "en": "Learning Loop", "es": "Aprendizaje", "fr": "[FR] Learning Loop", "pt": "[PT] Learning Loop" },
+        "label": { "en": "Learning Loop", "es": "Aprendizaje", "fr": "Boucle d'Apprentissage", "pt": "Ciclo de Aprendizado" },
         "x": 605,
         "y": 250,
         "color": "stroke-accent"

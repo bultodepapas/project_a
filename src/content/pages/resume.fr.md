@@ -1,8 +1,8 @@
 ---
 pageSlug: "resume"
 lang: "fr"
-title: "Resume"
-description: "[FR] ATS-friendly resume for Angela Parra Sanchez."
+title: "CV"
+description: "CV compatible ATS pour Angela Parra Sanchez."
 ---
 
-[FR] Resume narrative placeholder.
+Espace réservé pour le résumé narratif.

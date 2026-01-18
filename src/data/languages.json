@@ -7,8 +7,8 @@
       "usedFor": {
         "en": "Research, reporting, stakeholder comms",
         "es": "Investigacion, reportes, comunicacion con stakeholders",
-        "fr": "[FR] Research, reporting, stakeholder comms",
-        "pt": "[PT] Research, reporting, stakeholder comms"
+        "fr": "Recherche, reporting, communication parties prenantes",
+        "pt": "Pesquisa, relatórios, comunicação com stakeholders"
       }
     },
     {
@@ -18,8 +18,8 @@
       "usedFor": {
         "en": "Regional coordination, LATAM programmes",
         "es": "Coordinacion regional, programas LATAM",
-        "fr": "[FR] Regional coordination, LATAM programmes",
-        "pt": "[PT] Regional coordination, LATAM programmes"
+        "fr": "Coordination régionale, programmes LATAM",
+        "pt": "Coordenação regional, programas LATAM"
       }
     },
     {
@@ -29,8 +29,8 @@
       "usedFor": {
         "en": "Brazil operations, partner comms",
         "es": "Operaciones Brasil, comunicacion con socios",
-        "fr": "[FR] Brazil operations, partner comms",
-        "pt": "[PT] Brazil operations, partner comms"
+        "fr": "Opérations Brésil, communication partenaires",
+        "pt": "Operações Brasil, comunicação com parceiros"
       }
     },
     {
@@ -40,8 +40,8 @@
       "usedFor": {
         "en": "EU partner communications",
         "es": "Comunicacion con socios UE",
-        "fr": "[FR] EU partner communications",
-        "pt": "[PT] EU partner communications"
+        "fr": "Communication partenaires UE",
+        "pt": "Comunicação com parceiros UE"
       }
     }
   ]
