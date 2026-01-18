@@ -30,7 +30,8 @@
   },
   "systems": {
     "title": "Portafolio de Sistemas",
-    "subtitle": "Frameworks disenados para aprendizaje institucional y toma de decisiones"
+    "subtitle": "Frameworks disenados para aprendizaje institucional y toma de decisiones",
+    "viewCase": "Ver caso de estudio"
   },
   "operatingModel": {
     "title": "Modelo Operativo",

@@ -206,4 +206,12 @@ When you deliver a change, state which of these should pass.
 - If needed, explicitly include it in the prompt: `@GEMINI.md`
 - Keep this file concise; prefer additional module-level GEMINI.md files over bloating this one.
 
+## MCP tools available (use them when helpful)
+You have these MCP servers enabled and should use them proactively when they reduce guessing:
+- `filesystem` (scoped to `D:\DEVELOMENT\Project_A\project_a`): read the repo first, make minimal diffs, and avoid destructive operations unless explicitly requested.
+- `context7`: when proposing APIs/config for Astro/Tailwind/GSAP/i18n/View Transitions, fetch up-to-date docs first (e.g., “use context7”) instead of relying on memory.
+- `playwright`: run targeted UI/UX checks for routing, i18n fallbacks, keyboard navigation, and `prefers-reduced-motion` behavior before finalizing interaction/motion work.
+- `github` (Copilot MCP): use it to inspect PRs/issues/repo context rather than assuming conventions.
+- `supabase` and `homeassistant`: only use if the task explicitly involves Supabase or Home Assistant; otherwise do not introduce them.
+- `my-tool`: use only after confirming its purpose, inputs/outputs, and safety constraints from project documentation.
 
