@@ -3,6 +3,8 @@
     {
       "id": "ecf-frameworks",
       "year": "2023",
+      "icon": "chart",
+      "color": "#6ee7b7",
       "title": {
         "en": "Data Frameworks Recognition",
         "es": "Reconocimiento por Frameworks de Datos",
@@ -12,17 +14,25 @@
       "org": "European Climate Foundation",
       "description": {
         "en": "Recognized for designing data frameworks enhancing cross-regional M&E",
-        "es": "Reconocida por disenar frameworks de datos que mejoran el M&E inter-regional",
+        "es": "Reconocida por diseñar frameworks de datos que mejoran el M&E inter-regional",
         "fr": "Reconnue pour la conception de cadres de données améliorant le S&E interrégional",
         "pt": "Reconhecida por projetar frameworks de dados melhorando o M&E inter-regional"
+      },
+      "highlights": {
+        "en": ["Cross-regional impact", "Scalable systems", "Evidence-based"],
+        "es": ["Impacto inter-regional", "Sistemas escalables", "Basado en evidencia"],
+        "fr": ["Impact interrégional", "Systèmes évolutifs", "Basé sur des preuves"],
+        "pt": ["Impacto inter-regional", "Sistemas escaláveis", "Baseado em evidências"]
       }
     },
     {
       "id": "impact-reference",
       "year": "2024",
+      "icon": "globe",
+      "color": "#93c5fd",
       "title": {
         "en": "Multi-Country Impact Reference",
-        "es": "Referencia de Impacto Multi-Pais",
+        "es": "Referencia de Impacto Multi-País",
         "fr": "Référence d'Impact Multi-Pays",
         "pt": "Referência de Impacto Multipaíses"
       },
@@ -34,9 +44,15 @@
       },
       "description": {
         "en": "Performance systems referenced in multi-country impact assessments",
-        "es": "Sistemas de desempeno referenciados en evaluaciones de impacto multi-pais",
+        "es": "Sistemas de desempeño referenciados en evaluaciones de impacto multi-país",
         "fr": "Systèmes de performance référencés dans les évaluations d'impact multi-pays",
         "pt": "Sistemas de desempenho referenciados em avaliações de impacto multipaíses"
+      },
+      "highlights": {
+        "en": ["Global recognition", "Methodology cited", "Best practices"],
+        "es": ["Reconocimiento global", "Metodología citada", "Mejores prácticas"],
+        "fr": ["Reconnaissance mondiale", "Méthodologie citée", "Meilleures pratiques"],
+        "pt": ["Reconhecimento global", "Metodologia citada", "Melhores práticas"]
       }
     }
   ]

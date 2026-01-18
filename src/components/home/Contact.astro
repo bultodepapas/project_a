@@ -10,57 +10,257 @@ interface Props {
 }
 
 const { lang, email, location, linkedin } = Astro.props;
+
+// Contact methods with icons and colors
+const contactMethods = [
+  {
+    id: 'email',
+    icon: 'mail',
+    href: `mailto:${email}`,
+    label: t(lang, 'contact.email'),
+    value: email,
+    color: '#6ee7b7',
+    description: lang === 'es' ? 'Respuesta en 24h' : lang === 'fr' ? 'Réponse en 24h' : lang === 'pt' ? 'Resposta em 24h' : 'Response within 24h'
+  },
+  {
+    id: 'linkedin',
+    icon: 'linkedin',
+    href: linkedin,
+    label: 'LinkedIn',
+    value: 'Angela Parra',
+    color: '#93c5fd',
+    description: lang === 'es' ? 'Conectemos profesionalmente' : lang === 'fr' ? 'Connectons-nous' : lang === 'pt' ? 'Vamos conectar' : 'Let\'s connect professionally',
+    external: true
+  },
+  {
+    id: 'resume',
+    icon: 'document',
+    href: `/${lang}/resume`,
+    label: t(lang, 'contact.downloadPdf'),
+    value: 'CV / Resume',
+    color: '#c4b5fd',
+    description: lang === 'es' ? 'Ver experiencia completa' : lang === 'fr' ? 'Voir expérience complète' : lang === 'pt' ? 'Ver experiência completa' : 'View full experience'
+  }
+];
 ---
 
-<section class="section" id="contact">
-  <div class="container">
-    <div class="contact-card max-w-3xl mx-auto text-center border border-border rounded-2xl bg-background-alt p-8 md:p-12 reveal-element opacity-0 scale-95 transition-all duration-500">
-      <div class="contact-content">
-        <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          {t(lang, 'contact.title')}
-        </h2>
-        <p class="text-lg text-muted mb-8">
-          {t(lang, 'contact.subtitle')}
-        </p>
+<section class="section relative overflow-hidden" id="contact">
+  <!-- Background decorations -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-500/3 rounded-full blur-3xl"></div>
+  </div>
 
-        <div class="flex flex-wrap justify-center gap-4">
-          <a
-            href={`mailto:${email}`}
-            class="contact-email inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition-colors"
+  <!-- Decorative grid pattern -->
+  <div class="absolute inset-0 opacity-[0.02] pointer-events-none">
+    <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0); background-size: 40px 40px;"></div>
+  </div>
+
+  <div class="container relative z-10">
+    <!-- Header -->
+    <div class="text-center mb-16 reveal-element opacity-0 translate-y-6 transition-all duration-1000">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium mb-6">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+        </span>
+        {lang === 'es' ? 'Disponible para nuevos proyectos' : lang === 'fr' ? 'Disponible pour nouveaux projets' : lang === 'pt' ? 'Disponível para novos projetos' : 'Available for new projects'}
+      </div>
+
+      <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-4">
+        {t(lang, 'contact.title')}
+      </h2>
+      <p class="text-lg text-muted max-w-2xl mx-auto">
+        {t(lang, 'contact.subtitle')}
+      </p>
+    </div>
+
+    <!-- Contact Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
+      {contactMethods.map((method, index) => (
+        <a
+          href={method.href}
+          target={method.external ? '_blank' : undefined}
+          rel={method.external ? 'noopener noreferrer' : undefined}
+          class="contact-card group relative reveal-element opacity-0 translate-y-6 transition-all duration-1000"
+          style={`transition-delay: ${(index + 1) * 200}ms`}
+        >
+          <!-- Gradient border on hover -->
+          <div
+            class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[1px]"
+            style={`background: linear-gradient(135deg, ${method.color}, transparent 60%)`}
           >
-            {t(lang, 'contact.email')}
-          </a>
-          <a
-            href={`/${lang}/resume`}
-            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
-          >
-            {t(lang, 'contact.downloadPdf')}
-          </a>
-          <a
-            href={linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
-          >
-            {t(lang, 'contact.linkedin')}
-          </a>
+            <div class="w-full h-full rounded-2xl bg-surface"></div>
+          </div>
+
+          <!-- Card content -->
+          <div class="relative p-8 rounded-2xl bg-surface border border-border group-hover:border-transparent transition-all duration-500 group-hover:shadow-2xl h-full">
+            <!-- Icon -->
+            <div
+              class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110"
+              style={`background: linear-gradient(135deg, ${method.color}30, ${method.color}10)`}
+            >
+              {method.icon === 'mail' && (
+                <svg class="w-8 h-8 transition-colors duration-300" style={`color: ${method.color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              )}
+              {method.icon === 'linkedin' && (
+                <svg class="w-8 h-8 transition-colors duration-300" style={`color: ${method.color}`} fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+              )}
+              {method.icon === 'document' && (
+                <svg class="w-8 h-8 transition-colors duration-300" style={`color: ${method.color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              )}
+            </div>
+
+            <!-- Label -->
+            <h3 class="text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors duration-300">
+              {method.label}
+            </h3>
+
+            <!-- Description -->
+            <p class="text-sm text-muted mb-4">
+              {method.description}
+            </p>
+
+            <!-- Arrow indicator -->
+            <div class="flex items-center gap-2 text-sm font-medium" style={`color: ${method.color}`}>
+              <span>{method.external ? (lang === 'es' ? 'Abrir' : lang === 'fr' ? 'Ouvrir' : lang === 'pt' ? 'Abrir' : 'Open') : (lang === 'es' ? 'Ir' : lang === 'fr' ? 'Aller' : lang === 'pt' ? 'Ir' : 'Go')}</span>
+              <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </div>
+
+            <!-- Decorative corner -->
+            <div
+              class="absolute top-0 right-0 w-24 h-24 opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-tr-2xl"
+              style={`background: radial-gradient(circle at top right, ${method.color}, transparent 70%)`}
+            ></div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Location & Availability Info -->
+    <div class="max-w-4xl mx-auto reveal-element opacity-0 translate-y-6 transition-all duration-1000" style="transition-delay: 800ms">
+      <div class="relative p-8 rounded-3xl bg-gradient-to-br from-surface to-background border border-border overflow-hidden">
+        <!-- Background pattern -->
+        <div class="absolute inset-0 opacity-5">
+          <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><g fill=\"%23000\" fill-opacity=\"0.4\"><path d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/></g></g></svg>'); background-size: 30px 30px;"></div>
         </div>
 
-        <div class="mt-6 text-sm text-muted">
-          {email} | {location}
+        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8">
+          <!-- Location -->
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-amber-200/30 to-amber-400/20 flex items-center justify-center">
+              <svg class="w-7 h-7 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted mb-1">{lang === 'es' ? 'Ubicación' : lang === 'fr' ? 'Localisation' : lang === 'pt' ? 'Localização' : 'Location'}</p>
+              <p class="font-semibold text-foreground">{location}</p>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="hidden md:block w-px h-16 bg-border"></div>
+
+          <!-- Timezone -->
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-200/30 to-blue-400/20 flex items-center justify-center">
+              <svg class="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted mb-1">{lang === 'es' ? 'Zona horaria' : lang === 'fr' ? 'Fuseau horaire' : lang === 'pt' ? 'Fuso horário' : 'Timezone'}</p>
+              <p class="font-semibold text-foreground">GMT-5 (COT)</p>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="hidden md:block w-px h-16 bg-border"></div>
+
+          <!-- Work preference -->
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-200/30 to-emerald-400/20 flex items-center justify-center">
+              <svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-muted mb-1">{lang === 'es' ? 'Preferencia' : lang === 'fr' ? 'Préférence' : lang === 'pt' ? 'Preferência' : 'Preference'}</p>
+              <p class="font-semibold text-foreground">{lang === 'es' ? 'Remoto / Híbrido' : lang === 'fr' ? 'Télétravail / Hybride' : lang === 'pt' ? 'Remoto / Híbrido' : 'Remote / Hybrid'}</p>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+
+    <!-- Quick copy email -->
+    <div class="mt-10 text-center reveal-element opacity-0 translate-y-6 transition-all duration-1000" style="transition-delay: 1000ms">
+      <button
+        id="copy-email-btn"
+        data-email={email}
+        class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-surface border border-border hover:border-accent/50 text-muted hover:text-foreground transition-all duration-300 group"
+      >
+        <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+        <span class="font-mono text-sm">{email}</span>
+        <span class="text-xs px-2 py-1 rounded bg-accent/10 text-accent font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          {t(lang, 'contact.copyEmail')}
+        </span>
+      </button>
+      <p id="copy-feedback" class="mt-3 text-sm text-accent opacity-0 transition-opacity duration-300">
+        {t(lang, 'contact.emailCopied')}
+      </p>
     </div>
   </div>
 </section>
 
+<style>
+  .contact-card {
+    perspective: 1000px;
+  }
+
+  .contact-card:hover {
+    transform: translateY(-8px);
+  }
+
+  /* Subtle glow on hover */
+  .contact-card:hover .group-hover\:shadow-2xl {
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.15),
+      0 0 40px -15px var(--color-accent);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .contact-card:hover {
+      transform: none;
+    }
+    .animate-ping {
+      animation: none;
+    }
+  }
+</style>
+
 <script>
   function initContact() {
+    // Reveal animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.remove('opacity-0', 'scale-95');
-          entry.target.classList.add('opacity-100', 'scale-100');
+          entry.target.classList.remove('opacity-0', 'translate-y-6');
+          entry.target.classList.add('opacity-100', 'translate-y-0');
           observer.unobserve(entry.target);
         }
       });
@@ -72,6 +272,32 @@ const { lang, email, location, linkedin } = Astro.props;
     document.querySelectorAll('#contact .reveal-element').forEach((el) => {
       observer.observe(el);
     });
+
+    // Copy email functionality
+    const copyBtn = document.getElementById('copy-email-btn');
+    const feedback = document.getElementById('copy-feedback');
+
+    if (copyBtn && feedback) {
+      copyBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const email = copyBtn.dataset.email;
+
+        if (email) {
+          try {
+            await navigator.clipboard.writeText(email);
+            feedback.classList.remove('opacity-0');
+            feedback.classList.add('opacity-100');
+
+            setTimeout(() => {
+              feedback.classList.remove('opacity-100');
+              feedback.classList.add('opacity-0');
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy email:', err);
+          }
+        }
+      });
+    }
   }
 
   // Initialize on load
@@ -80,25 +306,3 @@ const { lang, email, location, linkedin } = Astro.props;
   // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initContact);
 </script>
-
-<style>
-  .contact-card {
-    position: relative;
-  }
-
-  .contact-content {
-    position: relative;
-    z-index: 1;
-  }
-
-  :root.dark .contact-email {
-    background: transparent;
-    color: var(--color-accent-light);
-    border: 1px solid var(--color-accent);
-  }
-
-  :root.dark .contact-email:hover {
-    background: rgba(45, 212, 191, 0.12);
-    color: var(--color-accent-light);
-  }
-</style>
