@@ -6,6 +6,7 @@
   "nav": {
     "systems": "Systèmes",
     "caseStudies": "Études de Cas",
+    "perspectives": "Perspectives",
     "resume": "CV",
     "contact": "Contact"
   },
@@ -50,7 +51,10 @@
   },
   "education": {
     "title": "Formation",
-    "inProgress": "En Cours"
+    "subtitle": "Parcours académique dans trois pays",
+    "inProgress": "En Cours",
+    "progress": "Progression",
+    "expected": "Prévu"
   },
   "languages": {
     "title": "Langues",
@@ -103,6 +107,26 @@
     "fallback": {
       "banner": "Cette étude de cas est disponible en anglais.",
       "viewInEnglish": "Voir en Anglais"
+    }
+  },
+  "perspectives": {
+    "index": {
+      "title": "Perspectives",
+      "subtitle": "Réflexions sur le marketing digital, l'IA et la stratégie basée sur les données",
+      "filters": {
+        "all": "Tous",
+        "ai-marketing": "IA et Marketing",
+        "strategy": "Stratégie",
+        "industry-trends": "Tendances",
+        "personal-growth": "Croissance Personnelle"
+      },
+      "noResults": "Aucun article ne correspond au filtre actuel."
+    },
+    "detail": {
+      "backToIndex": "Toutes les Perspectives",
+      "publishedOn": "Publié",
+      "readTime": "min de lecture",
+      "readOnMedium": "Lire sur Medium"
     }
   },
   "resume": {

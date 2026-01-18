@@ -8,9 +8,23 @@
         "fr": "Master en Business Analytics",
         "pt": "Mestrado em Business Analytics"
       },
+      "field": {
+        "en": "Data Science & Analytics",
+        "es": "Ciencia de Datos y Analitica",
+        "fr": "Science des Données et Analytique",
+        "pt": "Ciência de Dados e Análise"
+      },
       "org": "Aston University",
       "location": "Birmingham, UK",
-      "year": "2026"
+      "country": "uk",
+      "year": "2026",
+      "status": "inProgress",
+      "highlights": {
+        "en": ["Advanced Analytics", "Machine Learning", "Business Intelligence"],
+        "es": ["Analitica Avanzada", "Machine Learning", "Inteligencia de Negocios"],
+        "fr": ["Analytique Avancée", "Machine Learning", "Business Intelligence"],
+        "pt": ["Análise Avançada", "Machine Learning", "Business Intelligence"]
+      }
     },
     {
       "id": "msc-global",
@@ -20,9 +34,22 @@
         "fr": "Master en Gestion des Affaires Mondiales",
         "pt": "Mestrado em Gestão de Negócios Globais"
       },
+      "field": {
+        "en": "International Strategy & Management",
+        "es": "Estrategia y Gestion Internacional",
+        "fr": "Stratégie et Gestion Internationale",
+        "pt": "Estratégia e Gestão Internacional"
+      },
       "org": "Rennes School of Business",
       "location": "Rennes, France",
-      "year": "2016"
+      "country": "fr",
+      "year": "2016",
+      "highlights": {
+        "en": ["Cross-cultural Management", "Global Strategy", "International Marketing"],
+        "es": ["Gestion Intercultural", "Estrategia Global", "Marketing Internacional"],
+        "fr": ["Gestion Interculturelle", "Stratégie Globale", "Marketing International"],
+        "pt": ["Gestão Intercultural", "Estratégia Global", "Marketing Internacional"]
+      }
     },
     {
       "id": "ba-international",
@@ -32,9 +59,22 @@
         "fr": "Licence en Commerce International",
         "pt": "Bacharelado em Negócios Internacionais"
       },
+      "field": {
+        "en": "Business Administration",
+        "es": "Administracion de Empresas",
+        "fr": "Administration des Affaires",
+        "pt": "Administração de Empresas"
+      },
       "org": "Universidad de La Salle",
       "location": "Bogota, Colombia",
-      "year": "2016"
+      "country": "co",
+      "year": "2016",
+      "highlights": {
+        "en": ["International Trade", "Economics", "Business Development"],
+        "es": ["Comercio Internacional", "Economia", "Desarrollo Empresarial"],
+        "fr": ["Commerce International", "Économie", "Développement Commercial"],
+        "pt": ["Comércio Internacional", "Economia", "Desenvolvimento Empresarial"]
+      }
     }
   ]
 }

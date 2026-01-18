@@ -51,7 +51,10 @@
   },
   "education": {
     "title": "Educacion",
-    "inProgress": "En Progreso"
+    "subtitle": "Trayectoria academica en tres paises",
+    "inProgress": "En Progreso",
+    "progress": "Progreso",
+    "expected": "Esperado"
   },
   "languages": {
     "title": "Idiomas",

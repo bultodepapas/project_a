@@ -51,7 +51,10 @@
   },
   "education": {
     "title": "Education",
-    "inProgress": "In Progress"
+    "subtitle": "Academic journey across three countries",
+    "inProgress": "In Progress",
+    "progress": "Progress",
+    "expected": "Expected"
   },
   "languages": {
     "title": "Languages",
