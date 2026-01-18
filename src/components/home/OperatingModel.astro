@@ -30,22 +30,39 @@ const { nodes, edges } = model;
 // Helper to get localized string
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 
-const baseRadius = 40;
-const primaryRadius = 46;
+// Visual hierarchy with distinct node sizes
+const primaryRadius = 56;   // Decisions - focal point
+const secondaryRadius = 44; // Processing, Outputs - important nodes
+const tertiaryRadius = 40;  // Inputs, Learning - supporting nodes
 
 function getNodeRadius(node: Node) {
-  return node.id === 'decisions' ? primaryRadius : baseRadius;
+  if (node.id === 'decisions') return primaryRadius;
+  if (node.id === 'processing' || node.id === 'outputs') return secondaryRadius;
+  return tertiaryRadius;
 }
 
 // Helper to calculate point on circle circumference
+// Calculates where a line from 'from' to 'to' intersects the circle at 'to'
 function getPerimeterPoint(from: {x: number, y: number}, to: {x: number, y: number}, radius: number, offset: number = 5) {
   const dx = to.x - from.x;
   const dy = to.y - from.y;
   const angle = Math.atan2(dy, dx);
-  
+
   return {
     x: to.x - (radius + offset) * Math.cos(angle),
     y: to.y - (radius + offset) * Math.sin(angle)
+  };
+}
+
+// Helper to get start point on circle perimeter (opposite direction)
+function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number}, radius: number, offset: number = 5) {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const angle = Math.atan2(dy, dx);
+
+  return {
+    x: from.x + (radius + offset) * Math.cos(angle),
+    y: from.y + (radius + offset) * Math.sin(angle)
   };
 }
 ---
@@ -65,86 +82,224 @@ function getPerimeterPoint(from: {x: number, y: number}, to: {x: number, y: numb
     </div>
 
     <!-- SVG Diagram -->
-    <div class="operating-model-card w-full max-w-5xl mx-auto aspect-[3/1] md:aspect-[4/1] border border-border rounded-xl p-6 md:p-8 reveal-element opacity-0 translate-y-8 transition-all delay-200">
-      <svg viewBox="0 0 800 230" class="w-full h-full" role="img" aria-labelledby="operating-model-diagram-title operating-model-diagram-desc">
+    <div class="operating-model-card w-full max-w-5xl mx-auto aspect-[3/1] md:aspect-[10/3] border border-border rounded-xl p-6 md:p-8 reveal-element opacity-0 translate-y-8 transition-all delay-200">
+      <svg viewBox="0 0 1000 300" class="w-full h-full" role="img" aria-labelledby="operating-model-diagram-title operating-model-diagram-desc">
         <title id="operating-model-diagram-title">{t(lang, 'operatingModel.diagramTitle')}</title>
         <desc id="operating-model-diagram-desc">{t(lang, 'operatingModel.diagramDesc')}</desc>
         <defs>
+          <!-- Enhanced gradient for main flow -->
           <linearGradient id="edge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="var(--color-border)" />
-            <stop offset="100%" stop-color="var(--color-accent)" />
+            <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.3" />
+            <stop offset="50%" stop-color="var(--color-accent)" stop-opacity="0.7" />
+            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="1" />
           </linearGradient>
-          <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth">
-            <polygon points="0 0, 10 4, 0 8" fill="var(--color-accent)" />
+
+          <!-- Gradient for learning loop - using accent with reduced opacity for cohesion -->
+          <linearGradient id="loop-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.4" />
+            <stop offset="50%" stop-color="var(--color-accent)" stop-opacity="0.3" />
+            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0.25" />
+          </linearGradient>
+
+          <!-- Node gradients -->
+          <linearGradient id="node-gradient-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="var(--color-accent)" />
+            <stop offset="100%" stop-color="var(--color-accent-dark)" />
+          </linearGradient>
+
+          <linearGradient id="node-gradient-secondary" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="var(--color-background)" />
+            <stop offset="100%" stop-color="var(--color-surface)" />
+          </linearGradient>
+
+          <!-- Enhanced arrowheads -->
+          <marker id="arrowhead" markerWidth="14" markerHeight="12" refX="13" refY="6" orient="auto" markerUnits="strokeWidth">
+            <polygon points="0 0, 14 6, 0 12" fill="var(--color-accent)" />
           </marker>
-          <marker id="arrowhead-loop" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
-            <polygon points="0 0, 8 3, 0 6" fill="var(--color-text-muted)" />
+          <!-- Loop arrow - reversed polygon for correct direction on U-turn curves -->
+          <marker id="arrowhead-loop" markerWidth="12" markerHeight="10" refX="1" refY="5" orient="auto" markerUnits="strokeWidth">
+            <polygon points="12 0, 0 5, 12 10" fill="var(--color-accent)" opacity="0.6" />
           </marker>
+
+          <!-- Glow filter for primary node -->
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
         </defs>
 
-        <!-- Edges -->
-        {edges.map((edge) => {
+        <!-- Edges with Animated Particles -->
+        {edges.map((edge, edgeIndex) => {
           const startNode = nodes.find(n => n.id === edge.from)!;
           const endNode = nodes.find(n => n.id === edge.to)!;
           const startRadius = getNodeRadius(startNode);
           const endRadius = getNodeRadius(endNode);
-          const curveOffset = edge.curve ? 10 : 6;
-          
-          // Calculate trimming
-          const start = getPerimeterPoint(endNode, startNode, startRadius, curveOffset);
+          const curveOffset = edge.curve ? 12 : 8;
+          const strokeWidth = edge.curve ? 2 : 2.5;
+
+          // Calculate edge start and end points on circle perimeters
+          const start = getStartPoint(startNode, endNode, startRadius, curveOffset);
           const end = getPerimeterPoint(startNode, endNode, endRadius, curveOffset);
 
+          // Particle configuration
+          const particleCount = 3; // 3 particles per edge
+          const particleDuration = edge.curve ? '4s' : '3s'; // Slower for curves
+          const particleRadius = 3;
+
           if (edge.curve) {
-             // Improve Feedback Loop Curve
-             // If going back to inputs (Learning -> Inputs), curve DOWN/Left
+             // Enhanced curve logic for elegant flow
              const isFeedback = startNode.y > 100 || endNode.y > 100;
-             
-             // Control point logic for nice swoop
+
+             // Control point logic for smooth, elegant curves
              let cx, cy;
              if (isFeedback) {
-                cx = (start.x + end.x) / 2;
-                cy = Math.max(start.y, end.y) + 60; // Curve below
+                cx = (start.x + end.x) / 2 - 40;
+                cy = Math.max(start.y, end.y) + 70; // Deeper curve below
              } else {
                 cx = (start.x + end.x) / 2;
-                cy = (start.y + end.y) / 2 - 40; // Curve above
+                cy = (start.y + end.y) / 2 - 50; // Higher curve above
              }
 
+             // Path goes from start to end, using reversed arrowhead polygon
+             const pathD = `M ${start.x} ${start.y} Q ${cx} ${cy} ${end.x} ${end.y}`;
+             const pathId = `edge-path-${edgeIndex}`;
+
              return (
-               <path 
-                 d={`M ${start.x} ${start.y} Q ${cx} ${cy} ${end.x} ${end.y}`}
-                 class="edge-loop fill-none"
-                 marker-end="url(#arrowhead-loop)"
-               />
+               <g>
+                 <path
+                   id={pathId}
+                   d={pathD}
+                   class="edge-loop fill-none"
+                   stroke="url(#loop-gradient)"
+                   stroke-width={strokeWidth}
+                   stroke-dasharray="6 4"
+                   marker-end="url(#arrowhead-loop)"
+                 />
+
+                 {/* Flow particles for curved edge - using accent color for cohesion */}
+                 {Array.from({ length: particleCount }).map((_, i) => (
+                   <circle
+                     r={particleRadius}
+                     class="flow-particle flow-particle-loop"
+                     fill="var(--color-accent)"
+                     opacity="0"
+                   >
+                     <animateMotion
+                       dur={particleDuration}
+                       repeatCount="indefinite"
+                       begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
+                     >
+                       <mpath href={`#${pathId}`} />
+                     </animateMotion>
+                     <animate
+                       attributeName="opacity"
+                       values="0;0.5;0.5;0"
+                       keyTimes="0;0.1;0.9;1"
+                       dur={particleDuration}
+                       repeatCount="indefinite"
+                       begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
+                     />
+                   </circle>
+                 ))}
+               </g>
              );
           }
-          
+
+          const pathId = `edge-path-${edgeIndex}`;
+          const pathD = `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
+
           return (
-            <line 
-              x1={start.x} y1={start.y} 
-              x2={end.x} y2={end.y} 
-              class="edge-primary"
-              stroke="url(#edge-gradient)"
-              marker-end="url(#arrowhead)"
-            />
+            <g>
+              <path
+                id={pathId}
+                d={pathD}
+                class="edge-primary fill-none"
+                stroke="url(#edge-gradient)"
+                stroke-width={strokeWidth}
+                marker-end="url(#arrowhead)"
+              />
+
+              {/* Flow particles for straight edge */}
+              {Array.from({ length: particleCount }).map((_, i) => (
+                <circle
+                  r={particleRadius}
+                  class="flow-particle"
+                  fill="var(--color-accent)"
+                  opacity="0"
+                >
+                  <animateMotion
+                    dur={particleDuration}
+                    repeatCount="indefinite"
+                    begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
+                  >
+                    <mpath href={`#${pathId}`} />
+                  </animateMotion>
+                  <animate
+                    attributeName="opacity"
+                    values="0;0.8;0.8;0"
+                    keyTimes="0;0.1;0.9;1"
+                    dur={particleDuration}
+                    repeatCount="indefinite"
+                    begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
+                  />
+                </circle>
+              ))}
+            </g>
           );
         })}
 
         <!-- Nodes -->
         {nodes.map((node, i) => {
           const nodeRadius = getNodeRadius(node);
-          const isLoop = node.id === 'learning';
-          const isDecision = node.id === 'decisions';
-          const nodeClass = isLoop ? 'node-loop' : 'node-core';
-          const decisionClass = isDecision ? 'node-decision' : '';
+          const isPrimary = node.id === 'decisions';
+          const isSecondary = node.id === 'processing' || node.id === 'outputs';
+          const isTertiary = node.id === 'inputs' || node.id === 'learning';
+
+          // Typography hierarchy
+          const textSize = isPrimary ? 'text-base' : isSecondary ? 'text-sm' : 'text-sm';
+          const textWeight = isPrimary ? 'font-bold' : isSecondary ? 'font-semibold' : 'font-medium';
 
           return (
-          <g class={`group animate-pulse-node ${nodeClass} ${decisionClass}`} style={`animation-delay: ${i * 0.5}s`}>
-            <circle cx={node.x} cy={node.y} r={nodeRadius} class={`fill-background stroke-2 ${node.color} transition-all duration-300`} />
-            <text x={node.x} y={node.y} dy="5" text-anchor="middle" class="text-xs md:text-sm font-medium fill-foreground pointer-events-none select-none">
+          <g class="group node-group" style={`animation-delay: ${i * 0.5}s`}>
+            {/* Outer ring for depth (only for primary and secondary) */}
+            {(isPrimary || isSecondary) && (
+              <circle
+                cx={node.x}
+                cy={node.y}
+                r={nodeRadius + 3}
+                class="fill-none stroke-accent/20 stroke-1"
+              />
+            )}
+
+            {/* Main node circle */}
+            <circle
+              cx={node.x}
+              cy={node.y}
+              r={nodeRadius}
+              class={isPrimary
+                ? 'fill-accent stroke-accent-dark stroke-2 node-primary'
+                : isSecondary
+                  ? 'fill-surface stroke-accent stroke-2 node-secondary'
+                  : 'fill-background stroke-border stroke-2 node-tertiary'
+              }
+              style={isPrimary ? 'filter: url(#glow);' : ''}
+            />
+
+            {/* Node label with hierarchy */}
+            <text
+              x={node.x}
+              y={node.y}
+              dy="5"
+              text-anchor="middle"
+              class={`${textSize} ${textWeight} pointer-events-none select-none ${isPrimary ? 'fill-background' : 'fill-foreground'}`}
+            >
               {getStr(node.label)}
             </text>
-            
-            <!-- Tooltip (SVG only) -->
+
+            <!-- Tooltip -->
             <title>{getStr(node.label)}</title>
           </g>
         )})}
@@ -154,7 +309,32 @@ function getPerimeterPoint(from: {x: number, y: number}, to: {x: number, y: numb
 </section>
 
 <script>
+  /**
+   * Operating Model Animation Controller
+   * Handles reveal animations and flow particle motion with reduced-motion support
+   */
+
+  function prefersReducedMotion(): boolean {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
   function initOperatingModel() {
+    const reduced = prefersReducedMotion();
+
+    // Handle flow particle animations based on motion preference
+    if (reduced) {
+      // Disable flow particles for reduced motion
+      document.querySelectorAll('#operating-model .flow-particle').forEach((particle) => {
+        (particle as SVGElement).style.display = 'none';
+      });
+    } else {
+      // Ensure particles are visible
+      document.querySelectorAll('#operating-model .flow-particle').forEach((particle) => {
+        (particle as SVGElement).style.display = 'block';
+      });
+    }
+
+    // Reveal animation observer
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -179,3 +359,73 @@ function getPerimeterPoint(from: {x: number, y: number}, to: {x: number, y: numb
   // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initOperatingModel);
 </script>
+
+<style>
+  /* Flow particle styles */
+  .flow-particle {
+    pointer-events: none;
+    filter: blur(0.5px);
+  }
+
+  /* Loop particles with slightly more blur for depth differentiation */
+  .flow-particle-loop {
+    filter: blur(0.8px);
+  }
+
+  /* Node animations and interactions */
+  .node-group {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .node-primary {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .node-secondary {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .node-tertiary {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.9;
+  }
+
+  /* Subtle hover effects */
+  .node-group:hover .node-primary {
+    filter: url(#glow) brightness(1.1);
+  }
+
+  .node-group:hover .node-secondary {
+    stroke-width: 2.5;
+  }
+
+  .node-group:hover .node-tertiary {
+    opacity: 1;
+    stroke-width: 2.5;
+  }
+
+  /* Edge styles */
+  .edge-primary {
+    transition: stroke-width 0.3s ease;
+  }
+
+  .edge-loop {
+    transition: stroke-width 0.3s ease;
+  }
+
+  /* Disable particle animations for reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .flow-particle {
+      display: none !important;
+    }
+
+    .node-group,
+    .node-primary,
+    .node-secondary,
+    .node-tertiary,
+    .edge-primary,
+    .edge-loop {
+      transition: none !important;
+    }
+  }
+</style>

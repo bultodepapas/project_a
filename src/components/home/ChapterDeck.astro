@@ -151,9 +151,54 @@ const colors = [
 </script>
 
 <style>
-  /* Ensure clean stacking context */
+  /* Stack Peek Effect Styles */
   .chapter-card {
     transform-origin: center center;
-    will-change: transform, opacity;
+    will-change: transform, opacity, z-index;
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* Enhanced shadow for depth perception */
+  .chapters-stack .chapter-card {
+    box-shadow:
+      0 10px 30px -5px rgba(0, 0, 0, 0.1),
+      0 20px 40px -10px rgba(0, 0, 0, 0.08),
+      0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Subtle border enhancement for stacked cards */
+  .chapter-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Show border on peek cards for depth */
+  .chapter-card[style*="opacity: 0.2"]::before,
+  .chapter-card[style*="opacity: 0.1"]::before {
+    opacity: 1;
+  }
+
+  /* Ensure smooth perspective */
+  .chapters-stack {
+    perspective: 1000px;
+    perspective-origin: center center;
+  }
+
+  /* Subtle backdrop blur for peek cards (glassmorphism lite) */
+  .chapter-card[style*="opacity: 0.2"],
+  .chapter-card[style*="opacity: 0.1"] {
+    backdrop-filter: blur(2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chapter-card {
+      transition: none !important;
+    }
   }
 </style>

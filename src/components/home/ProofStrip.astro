@@ -21,6 +21,20 @@ function resolveHref(href: string) {
   if (href.startsWith('/')) return `/${lang}${href}`;
   return href;
 }
+
+// Extract number from title for animation (if exists)
+function extractNumber(text: string): { hasNumber: boolean; number: number; prefix: string; suffix: string } {
+  const match = text.match(/^(\D*)(\d+)(\+?)(\D*)$/);
+  if (match) {
+    return {
+      hasNumber: true,
+      number: parseInt(match[2], 10),
+      prefix: match[1].trim(),
+      suffix: (match[3] + match[4]).trim()
+    };
+  }
+  return { hasNumber: false, number: 0, prefix: '', suffix: text };
+}
 ---
 
 <section class="section bg-background-alt" id="proof">
@@ -29,43 +43,202 @@ function resolveHref(href: string) {
       {t(lang, 'proof.title')}
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 stagger-container">
-      {items.map((item, index) => (
-        <a
-          href={resolveHref(item.href)}
-          class="group p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all reveal-element opacity-0 translate-y-4"
-          style={`transition-delay: ${index * 100}ms`}
-        >
-          <div class="flex items-center justify-between mb-2">
-            <p class="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
-              {getStr(item.title)}
+      {items.map((item, index) => {
+        const titleText = getStr(item.title);
+        const numberData = extractNumber(titleText);
+
+        return (
+          <a
+            href={resolveHref(item.href)}
+            class="proof-card group relative p-4 rounded-lg bg-surface border border-border hover:border-accent hover:shadow-md transition-all reveal-element opacity-0 translate-y-4"
+            style={`transition-delay: ${index * 100}ms`}
+            data-index={index}
+          >
+            {/* Mini progress bar */}
+            <div class="absolute top-0 left-0 right-0 h-0.5 bg-border/30 rounded-t-lg overflow-hidden">
+              <div
+                class="proof-progress h-full bg-accent origin-left scale-x-0 transition-transform duration-1000 ease-out"
+                data-card-index={index}
+              ></div>
+            </div>
+
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
+                {numberData.hasNumber ? (
+                  <>
+                    {numberData.prefix && <span>{numberData.prefix} </span>}
+                    <span
+                      class="proof-number tabular-nums"
+                      data-target={numberData.number}
+                      data-card-index={index}
+                    >
+                      0
+                    </span>
+                    {numberData.suffix && <span> {numberData.suffix}</span>}
+                  </>
+                ) : (
+                  <span>{titleText}</span>
+                )}
+              </p>
+              <span class="text-xs text-muted group-hover:text-accent transition-colors">+</span>
+            </div>
+            <p class="text-sm text-muted mt-1 leading-relaxed">
+              {getStr(item.detail)}
             </p>
-            <span class="text-xs text-muted group-hover:text-accent transition-colors">+</span>
-          </div>
-          <p class="text-sm text-muted mt-1 leading-relaxed">
-            {getStr(item.detail)}
-          </p>
-        </a>
-      ))}
+          </a>
+        );
+      })}
     </div>
   </div>
 </section>
 
 <script>
-  function initProofStrip() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.remove('opacity-0', 'translate-y-4');
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '50px'
-    });
+  /**
+   * ProofStrip Animation Controller
+   * Handles count-up animation and progress bar reveal with reduced-motion support
+   */
 
-    document.querySelectorAll('#proof .reveal-element').forEach((el) => {
+  type AnimationState = {
+    rafId: number | null;
+    startTime: number | null;
+  };
+
+  const animations = new Map<Element, AnimationState>();
+
+  /**
+   * Easing function for smooth count-up (easeOutCubic)
+   */
+  function easeOutCubic(t: number): number {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  /**
+   * Animate number from 0 to target with easing
+   */
+  function animateNumber(
+    element: Element,
+    target: number,
+    duration: number = 1200,
+    delay: number = 0
+  ): void {
+    const state: AnimationState = { rafId: null, startTime: null };
+    animations.set(element, state);
+
+    const start = () => {
+      const animate = (currentTime: number) => {
+        if (!state.startTime) state.startTime = currentTime;
+
+        const elapsed = currentTime - state.startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutCubic(progress);
+        const currentValue = Math.floor(easedProgress * target);
+
+        element.textContent = currentValue.toString();
+
+        if (progress < 1) {
+          state.rafId = requestAnimationFrame(animate);
+        } else {
+          // Ensure we end exactly on target
+          element.textContent = target.toString();
+          animations.delete(element);
+        }
+      };
+
+      state.rafId = requestAnimationFrame(animate);
+    };
+
+    if (delay > 0) {
+      setTimeout(start, delay);
+    } else {
+      start();
+    }
+  }
+
+  /**
+   * Animate progress bar fill
+   */
+  function animateProgressBar(element: Element, delay: number = 0): void {
+    setTimeout(() => {
+      element.classList.remove('scale-x-0');
+      element.classList.add('scale-x-100');
+    }, delay);
+  }
+
+  /**
+   * Check if user prefers reduced motion
+   */
+  function prefersReducedMotion(): boolean {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  /**
+   * Initialize proof strip animations
+   */
+  function initProofStrip() {
+    const reduced = prefersReducedMotion();
+
+    // Cleanup existing animations
+    animations.forEach((state, element) => {
+      if (state.rafId !== null) {
+        cancelAnimationFrame(state.rafId);
+      }
+    });
+    animations.clear();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const card = entry.target as HTMLElement;
+            const cardIndex = parseInt(card.dataset.index || '0', 10);
+            const baseDelay = cardIndex * 100;
+
+            // Reveal card
+            card.classList.remove('opacity-0', 'translate-y-4');
+            card.classList.add('opacity-100', 'translate-y-0');
+
+            if (!reduced) {
+              // Animate number if present
+              const numberEl = card.querySelector('.proof-number');
+              if (numberEl) {
+                const target = parseInt(numberEl.getAttribute('data-target') || '0', 10);
+                const numberDelay = baseDelay + 200; // Slight delay after card reveal
+                animateNumber(numberEl, target, 1200, numberDelay);
+              }
+
+              // Animate progress bar
+              const progressEl = card.querySelector('.proof-progress');
+              if (progressEl) {
+                const progressDelay = baseDelay + 150;
+                animateProgressBar(progressEl, progressDelay);
+              }
+            } else {
+              // Reduced motion: Show final state immediately
+              const numberEl = card.querySelector('.proof-number');
+              if (numberEl) {
+                const target = numberEl.getAttribute('data-target') || '0';
+                numberEl.textContent = target;
+              }
+
+              const progressEl = card.querySelector('.proof-progress');
+              if (progressEl) {
+                progressEl.classList.remove('scale-x-0');
+                progressEl.classList.add('scale-x-100');
+              }
+            }
+
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px',
+      }
+    );
+
+    // Observe all proof cards
+    document.querySelectorAll('#proof .proof-card').forEach((el) => {
       observer.observe(el);
     });
   }
@@ -75,4 +248,32 @@ function resolveHref(href: string) {
 
   // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initProofStrip);
+
+  // Cleanup on page unload (important for view transitions)
+  document.addEventListener('astro:before-swap', () => {
+    animations.forEach((state) => {
+      if (state.rafId !== null) {
+        cancelAnimationFrame(state.rafId);
+      }
+    });
+    animations.clear();
+  });
 </script>
+
+<style>
+  .proof-number {
+    display: inline-block;
+    min-width: 1ch; /* Prevent layout shift during count */
+  }
+
+  /* Ensure smooth transitions respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .proof-card {
+      transition-duration: 0.01ms !important;
+    }
+
+    .proof-progress {
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>

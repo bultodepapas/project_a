@@ -76,36 +76,36 @@
       {
         "id": "inputs",
         "label": { "en": "Inputs", "es": "Entradas" },
-        "x": 50,
-        "y": 50,
+        "x": 100,
+        "y": 80,
         "color": "stroke-muted"
       },
       {
         "id": "processing",
         "label": { "en": "Processing", "es": "Proceso" },
-        "x": 250,
-        "y": 50,
+        "x": 320,
+        "y": 80,
         "color": "stroke-accent"
       },
       {
         "id": "outputs",
         "label": { "en": "Outputs", "es": "Salidas" },
-        "x": 450,
-        "y": 50,
+        "x": 560,
+        "y": 80,
         "color": "stroke-muted"
       },
       {
         "id": "decisions",
         "label": { "en": "Decisions", "es": "Decisiones" },
-        "x": 650,
-        "y": 50,
+        "x": 820,
+        "y": 80,
         "color": "stroke-primary"
       },
       {
         "id": "learning",
         "label": { "en": "Learning Loop", "es": "Aprendizaje" },
-        "x": 350,
-        "y": 175,
+        "x": 460,
+        "y": 220,
         "color": "stroke-accent"
       }
     ],
