@@ -35,7 +35,10 @@
   },
   "operatingModel": {
     "title": "Modelo Operativo",
-    "subtitle": "Como fluyen los datos desde la recoleccion hasta la decision"
+    "lead": "Un flujo repetible que conecta recoleccion, sintesis y decisiones.",
+    "subtitle": "Como fluyen los datos desde la recoleccion hasta la decision",
+    "diagramTitle": "Diagrama de flujo del modelo operativo",
+    "diagramDesc": "Las entradas pasan por el proceso hacia salidas y decisiones, con un ciclo de aprendizaje que vuelve a las entradas."
   },
   "capabilities": {
     "title": "Capacidades",

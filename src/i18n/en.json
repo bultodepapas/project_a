@@ -35,7 +35,10 @@
   },
   "operatingModel": {
     "title": "Operating Model",
-    "subtitle": "How data flows from collection to decision"
+    "lead": "A repeatable flow that links collection, synthesis, and decisions.",
+    "subtitle": "How data flows from collection to decision",
+    "diagramTitle": "Operating model data flow diagram",
+    "diagramDesc": "Inputs move through processing to outputs and decisions, with a learning loop feeding back to inputs."
   },
   "capabilities": {
     "title": "Capabilities",

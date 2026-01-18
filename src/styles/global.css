@@ -67,6 +67,27 @@
   .btn {
     @apply inline-flex items-center justify-center rounded-lg px-6 py-3 font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2;
   }
+
+  .edge-primary {
+    @apply stroke-accent stroke-2;
+    stroke-linecap: round;
+  }
+
+  .edge-loop {
+    @apply stroke-muted/70 stroke-2;
+    stroke-linecap: round;
+    stroke-dasharray: 6 7;
+    animation: flowDash 3.5s linear infinite;
+  }
+
+  .node-core {
+    cursor: default;
+  }
+
+  .node-loop circle,
+  .node-loop text {
+    opacity: 0.85;
+  }
 }
 
 /* Custom Animations */
@@ -127,7 +148,10 @@
 
   .animate-fade-in-up,
   .stagger-children > *,
-  .animate-reveal-text {
+  .animate-reveal-text,
+  .animate-flow,
+  .animate-pulse-node,
+  .edge-loop {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
