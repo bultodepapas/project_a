@@ -12,19 +12,19 @@ interface Props {
 const { lang, email, location, linkedin } = Astro.props;
 const wormPreset = {
   segments: 15,
-  loopDur: 10.8,
-  waveDur: 2.2,
+  loopDur: 18,
+  waveDur: 3.1,
   spacing: 0.22,
-  wiggleAmp: 0.28
+  wiggleAmp: 0.18
 };
 
-const motionKeyPoints = '0;0.23;0.27;0.5;0.73;0.77;1';
-const motionKeyTimes = '0;0.2;0.32;0.55;0.76;0.88;1';
-const motionKeySplines = '0.18 0.05 0.55 1;0.3 0 0.7 1;0.18 0.05 0.55 1;0.3 0 0.7 1;0.18 0.05 0.55 1;0.3 0 0.7 1';
+const motionKeyPoints = '0;0.08;0.16;0.24;0.32;0.4;0.48;0.56;0.64;0.72;0.8;0.88;0.94;0.98;1';
+const motionKeyTimes = '0;0.08;0.16;0.26;0.36;0.46;0.56;0.64;0.72;0.8;0.86;0.92;0.96;0.99;1';
+const motionKeySplines = '0.2 0.05 0.5 1;0.28 0 0.7 1;0.2 0.05 0.5 1;0.28 0 0.7 1;0.2 0.05 0.5 1;0.28 0 0.7 1;0.2 0.05 0.5 1;0.28 0 0.7 1;0.2 0.05 0.5 1;0.28 0 0.7 1;0.2 0.05 0.5 1;0.28 0 0.7 1;0.2 0.05 0.5 1;0.28 0 0.7 1';
 
 const wormSegments = Array.from({ length: wormPreset.segments }).map((_, i) => {
   const t = i / (wormPreset.segments - 1);
-  const size = 3.2 - t * 1.1;
+  const size = 2.2 - t * 0.85;
   const baseOpacity = 0.4 + (1 - t) * 0.5;
   const motionDelay = (i * wormPreset.spacing).toFixed(2);
   const waveDelay = (i * 0.12).toFixed(2);
@@ -51,25 +51,39 @@ const wormSegments = Array.from({ length: wormPreset.segments }).map((_, i) => {
   <div class="container">
     <div class="contact-card max-w-3xl mx-auto text-center border border-border rounded-2xl bg-background-alt p-8 md:p-12 reveal-element opacity-0 scale-95 transition-all duration-500">
       <div class="worm-border" aria-hidden="true">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none">
           <defs>
             <linearGradient id="worm-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="rgba(56, 140, 168, 0.2)" />
-              <stop offset="55%" stop-color="rgba(56, 140, 168, 0.85)" />
-              <stop offset="100%" stop-color="rgba(56, 140, 168, 0.4)" />
+              <stop offset="0%" stop-color="rgba(56, 140, 168, 0.10)" />
+              <stop offset="55%" stop-color="rgba(56, 140, 168, 0.78)" />
+              <stop offset="100%" stop-color="rgba(56, 140, 168, 0.16)" />
             </linearGradient>
             <radialGradient id="worm-head-gradient" cx="35%" cy="35%" r="70%">
-              <stop offset="0%" stop-color="rgba(255, 255, 255, 0.9)" />
-              <stop offset="55%" stop-color="rgba(56, 140, 168, 0.85)" />
-              <stop offset="100%" stop-color="rgba(32, 92, 118, 0.95)" />
+              <stop offset="0%" stop-color="rgba(255, 255, 255, 0.95)" />
+              <stop offset="55%" stop-color="rgba(56, 140, 168, 0.90)" />
+              <stop offset="100%" stop-color="rgba(32, 92, 118, 0.98)" />
             </radialGradient>
             <path
               id="worm-path"
-              d="M 8 2 H 92 Q 98 2 98 8 V 92 Q 98 98 92 98 H 8 Q 2 98 2 92 V 8 Q 2 2 8 2 Z"
+              d="M 24 6 H 276 Q 294 6 294 24 V 96 Q 294 114 276 114 H 24 Q 6 114 6 96 V 24 Q 6 6 24 6 Z"
             />
+            <mask id="worm-mask">
+              <rect x="0" y="0" width="300" height="120" fill="black" />
+              <path
+                d="M 24 6 H 276 Q 294 6 294 24 V 96 Q 294 114 276 114 H 24 Q 6 114 6 96 V 24 Q 6 6 24 6 Z"
+                fill="none"
+                stroke="white"
+                stroke-width="14"
+                stroke-linejoin="round"
+                stroke-linecap="round"
+              />
+            </mask>
           </defs>
-          <path d="M 8 2 H 92 Q 98 2 98 8 V 92 Q 98 98 92 98 H 8 Q 2 98 2 92 V 8 Q 2 2 8 2 Z" class="worm-track" />
-          <g class="worm-body">
+          <path
+            d="M 24 6 H 276 Q 294 6 294 24 V 96 Q 294 114 276 114 H 24 Q 6 114 6 96 V 24 Q 6 6 24 6 Z"
+            class="worm-track"
+          />
+          <g class="worm-body" mask="url(#worm-mask)">
             {wormSegments.map((seg, i) => (
               <circle
                 r={seg.size}
@@ -80,6 +94,7 @@ const wormSegments = Array.from({ length: wormPreset.segments }).map((_, i) => {
                   dur={`${wormPreset.loopDur}s`}
                   repeatCount="indefinite"
                   begin={seg.motionDelay}
+                  rotate="auto"
                   calcMode="spline"
                   keyPoints={motionKeyPoints}
                   keyTimes={motionKeyTimes}
@@ -99,7 +114,7 @@ const wormSegments = Array.from({ length: wormPreset.segments }).map((_, i) => {
                 />
                 <animate
                   attributeName="r"
-                  values={`${seg.size};${seg.size + 0.65};${seg.size - 0.25};${seg.size + 0.55};${seg.size}`}
+                  values={`${seg.size};${seg.size + 0.55};${seg.size - 0.18};${seg.size + 0.45};${seg.size}`}
                   keyTimes="0;0.25;0.5;0.75;1"
                   keySplines="0.2 0 0.6 1;0.2 0 0.6 1;0.2 0 0.6 1;0.2 0 0.6 1"
                   dur={`${wormPreset.waveDur}s`}
@@ -109,7 +124,7 @@ const wormSegments = Array.from({ length: wormPreset.segments }).map((_, i) => {
                 />
                 <animate
                   attributeName="opacity"
-                  values={`${(seg.baseOpacity * 0.6).toFixed(2)};${(seg.baseOpacity * 1.12).toFixed(2)};${(seg.baseOpacity * 0.55).toFixed(2)};${(seg.baseOpacity * 1.05).toFixed(2)};${(seg.baseOpacity * 0.6).toFixed(2)}`}
+                  values={`${(seg.baseOpacity * 0.55).toFixed(2)};${(seg.baseOpacity * 1.05).toFixed(2)};${(seg.baseOpacity * 0.52).toFixed(2)};${(seg.baseOpacity * 1.0).toFixed(2)};${(seg.baseOpacity * 0.55).toFixed(2)}`}
                   keyTimes="0;0.25;0.5;0.75;1"
                   keySplines="0.2 0 0.6 1;0.2 0 0.6 1;0.2 0 0.6 1;0.2 0 0.6 1"
                   dur={`${wormPreset.waveDur}s`}
@@ -198,6 +213,7 @@ const wormSegments = Array.from({ length: wormPreset.segments }).map((_, i) => {
     inset: -10px;
     pointer-events: none;
     z-index: 0;
+    opacity: 0.95;
   }
 
   .worm-border svg {
@@ -207,10 +223,10 @@ const wormSegments = Array.from({ length: wormPreset.segments }).map((_, i) => {
 
   .worm-track {
     fill: none;
-    stroke: rgba(56, 140, 168, 0.2);
-    stroke-width: 0.6;
-    stroke-dasharray: 2.8 4.2;
-    opacity: 0.7;
+    stroke: rgba(56, 140, 168, 0.10);
+    stroke-width: 1.1;
+    stroke-dasharray: 10 14;
+    opacity: 0.55;
   }
 
   .contact-content {
@@ -219,15 +235,15 @@ const wormSegments = Array.from({ length: wormPreset.segments }).map((_, i) => {
   }
 
   .worm-body {
-    filter: drop-shadow(0 0 3px rgba(56, 140, 168, 0.35));
-  }
-
-  .worm-segment {
-    filter: blur(0.2px);
+    filter:
+      drop-shadow(0 0 3px rgba(56, 140, 168, 0.22))
+      drop-shadow(0 0 8px rgba(56, 140, 168, 0.12));
   }
 
   .worm-head {
-    filter: drop-shadow(0 0 6px rgba(56, 140, 168, 0.6));
+    filter:
+      drop-shadow(0 0 6px rgba(56, 140, 168, 0.45))
+      drop-shadow(0 0 12px rgba(56, 140, 168, 0.14));
   }
 
   @media (prefers-reduced-motion: reduce) {
