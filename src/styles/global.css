@@ -45,6 +45,10 @@
   section[id] {
     scroll-margin-top: 6rem;
   }
+
+  body.section-systems header {
+    background-color: rgba(250, 250, 250, 0.82);
+  }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;

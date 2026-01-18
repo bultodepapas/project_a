@@ -26,13 +26,14 @@ const colors = [
 
 ---
 
-<section id="systems" class="relative z-10 bg-background-alt py-12 md:py-24 overflow-hidden transition-colors duration-700">
+<section id="systems" class="relative z-10 bg-background-alt py-10 md:py-16 overflow-hidden transition-colors duration-700" data-systems-section>
+  <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-background to-transparent pointer-events-none"></div>
   <!-- Pinned Container -->
-  <div class="chapter-pin-wrapper relative h-screen flex items-center">
+  <div class="chapter-pin-wrapper relative h-[90vh] flex items-center">
     <div class="container relative h-full flex flex-col justify-center">
       
       <!-- Static Header (remains visible) -->
-      <div class="mb-12 md:mb-0 md:absolute md:top-24 md:left-6 md:z-20 max-w-sm">
+      <div class="mb-8 md:mb-0 md:absolute md:top-16 md:left-6 md:z-20 max-w-sm">
         <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
           {t(lang, 'systems.title')}
         </h2>
@@ -40,10 +41,10 @@ const colors = [
           {t(lang, 'systems.subtitle')}
         </p>
         <!-- Progress Indicator -->
-        <div class="hidden md:flex gap-2 mt-8">
+        <div class="hidden md:flex gap-3 mt-6">
           {chapters.map((_, i) => (
             <div 
-              class="chapter-dot w-2 h-2 rounded-full bg-border transition-colors duration-300" 
+              class="chapter-dot w-2.5 h-2.5 rounded-full bg-border/60 border border-border/70 transition-colors duration-300" 
               data-index={i}
             ></div>
           ))}
@@ -51,10 +52,10 @@ const colors = [
       </div>
 
       <!-- Chapters Stack -->
-      <div class="chapters-stack relative w-full max-w-4xl mx-auto h-[60vh] md:h-[500px]">
+      <div class="chapters-stack relative w-full max-w-4xl mx-auto h-[56vh] md:h-[460px]">
         {chapters.map((chapter, index) => (
           <div 
-            class="chapter-card absolute inset-0 w-full h-full bg-surface border border-border rounded-xl shadow-lg p-8 flex flex-col justify-center opacity-0 translate-y-8"
+            class="chapter-card absolute inset-0 w-full h-full bg-surface border border-border rounded-2xl shadow-xl p-10 flex flex-col justify-center opacity-0 translate-y-8"
             data-index={index}
             data-color={colors[index % colors.length]}
           >
@@ -118,11 +119,33 @@ const colors = [
     }
   }
 
+  function toggleBodyClass(isActive) {
+    document.body.classList.toggle('section-systems', isActive);
+  }
+
+  function initBodyObserver() {
+    const section = document.getElementById('systems');
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        toggleBodyClass(entry.isIntersecting);
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(section);
+  }
+
   // Initialize on load
   setup();
+  initBodyObserver();
 
   // Re-initialize on view transitions
-  document.addEventListener('astro:page-load', setup);
+  document.addEventListener('astro:page-load', () => {
+    setup();
+    initBodyObserver();
+  });
 </script>
 
 <style>

@@ -65,17 +65,9 @@ export function initChapterDeck(section: HTMLElement) {
       ease: 'power2.out',
       onStart: () => {
         updateDots(i);
-        updateBackground(card.getAttribute('data-color'));
       },
       onReverseComplete: () => {
         updateDots(i - 1);
-        // Find previous card color
-        if (i > 0) {
-           const prevCard = cards[i - 1];
-           updateBackground(prevCard.getAttribute('data-color'));
-        } else {
-           updateBackground(null); // Reset
-        }
       }
     });
     
@@ -92,14 +84,6 @@ export function initChapterDeck(section: HTMLElement) {
       });
     }
   });
-
-  function updateBackground(color: string | null) {
-    if (color) {
-      gsap.to(section, { backgroundColor: color, duration: 0.5 });
-    } else {
-      gsap.to(section, { backgroundColor: '', duration: 0.5, clearProps: 'backgroundColor' });
-    }
-  }
 
   function updateDots(activeParam: number) {
     const activeIndex = Math.max(0, Math.min(activeParam, dots.length ? dots.length - 1 : 0));
