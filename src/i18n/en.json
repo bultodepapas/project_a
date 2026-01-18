@@ -30,7 +30,8 @@
   },
   "systems": {
     "title": "Systems Portfolio",
-    "subtitle": "Frameworks designed for institutional learning and decision-making"
+    "subtitle": "Frameworks designed for institutional learning and decision-making",
+    "viewCase": "View case study"
   },
   "operatingModel": {
     "title": "Operating Model",

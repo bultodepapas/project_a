@@ -90,10 +90,10 @@ export function initChapterDeck(section: HTMLElement) {
     dots.forEach((dot, i) => {
       if (i === activeIndex) {
         dot.classList.add('bg-accent');
-        dot.classList.remove('bg-border');
+        dot.classList.remove('bg-border/60');
       } else {
         dot.classList.remove('bg-accent');
-        dot.classList.add('bg-border');
+        dot.classList.add('bg-border/60');
       }
     });
   }

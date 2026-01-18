@@ -28,58 +28,60 @@ const colors = [
 
 <section id="systems" class="relative z-10 bg-background-alt py-10 md:py-16 overflow-hidden transition-colors duration-700" data-systems-section>
   <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-background to-transparent pointer-events-none"></div>
+  <div class="absolute left-0 top-0 h-full w-[32%] bg-background/70 pointer-events-none hidden md:block"></div>
   <!-- Pinned Container -->
   <div class="chapter-pin-wrapper relative h-[90vh] flex items-center">
     <div class="container relative h-full flex flex-col justify-center">
-      
-      <!-- Static Header (remains visible) -->
-      <div class="mb-8 md:mb-0 md:absolute md:top-16 md:left-6 md:z-20 max-w-sm">
-        <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          {t(lang, 'systems.title')}
-        </h2>
-        <p class="text-lg text-muted">
-          {t(lang, 'systems.subtitle')}
-        </p>
-        <!-- Progress Indicator -->
-        <div class="hidden md:flex gap-3 mt-6">
-          {chapters.map((_, i) => (
+      <div class="grid md:grid-cols-[minmax(240px,320px)_1fr] md:gap-10 items-center">
+        <!-- Static Header (remains visible) -->
+        <div class="mb-8 md:mb-0 max-w-sm">
+          <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            {t(lang, 'systems.title')}
+          </h2>
+          <p class="text-lg text-muted">
+            {t(lang, 'systems.subtitle')}
+          </p>
+          <!-- Progress Indicator -->
+          <div class="hidden md:flex gap-3 mt-6">
+            {chapters.map((_, i) => (
+              <div 
+                class="chapter-dot w-3 h-3 rounded-full bg-border/60 border border-border/70 transition-colors duration-300" 
+                data-index={i}
+              ></div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Chapters Stack -->
+        <div class="chapters-stack relative w-full max-w-4xl h-[56vh] md:h-[460px]">
+          {chapters.map((chapter, index) => (
             <div 
-              class="chapter-dot w-2.5 h-2.5 rounded-full bg-border/60 border border-border/70 transition-colors duration-300" 
-              data-index={i}
-            ></div>
+              class="chapter-card absolute inset-0 w-full h-full bg-surface border border-border rounded-2xl shadow-xl p-10 flex flex-col justify-center opacity-0 translate-y-8"
+              data-index={index}
+              data-color={colors[index % colors.length]}
+            >
+              <div class="flex items-center justify-between text-sm uppercase tracking-wider text-accent mb-6">
+                <span class="font-semibold">{chapter.eyebrow}</span>
+                <span class="text-muted">0{index + 1}</span>
+              </div>
+              <h3 class="text-3xl md:text-5xl font-bold text-foreground mb-6">
+                {getStr(chapter.title)}
+              </h3>
+              <p class="text-xl text-muted mb-8 max-w-2xl">
+                {getStr(chapter.description)}
+              </p>
+              <div>
+                <a 
+                  href={`/${lang}/case-studies/${chapter.slug}`}
+                  class="inline-flex items-center text-accent hover:text-accent-light font-medium transition-colors group"
+                >
+                  {t(lang, 'systems.viewCase')}
+                  <span class="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+                </a>
+              </div>
+            </div>
           ))}
         </div>
-      </div>
-
-      <!-- Chapters Stack -->
-      <div class="chapters-stack relative w-full max-w-4xl mx-auto h-[56vh] md:h-[460px]">
-        {chapters.map((chapter, index) => (
-          <div 
-            class="chapter-card absolute inset-0 w-full h-full bg-surface border border-border rounded-2xl shadow-xl p-10 flex flex-col justify-center opacity-0 translate-y-8"
-            data-index={index}
-            data-color={colors[index % colors.length]}
-          >
-            <div class="flex items-center justify-between text-sm uppercase tracking-wider text-accent mb-6">
-              <span class="font-semibold">{chapter.eyebrow}</span>
-              <span class="text-muted">0{index + 1}</span>
-            </div>
-            <h3 class="text-3xl md:text-5xl font-bold text-foreground mb-6">
-              {getStr(chapter.title)}
-            </h3>
-            <p class="text-xl text-muted mb-8 max-w-2xl">
-              {getStr(chapter.description)}
-            </p>
-            <div>
-              <a 
-                href={`/${lang}/case-studies/${chapter.slug}`}
-                class="inline-flex items-center text-accent hover:text-accent-light font-medium transition-colors group"
-              >
-                View Case Study 
-                <span class="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
-              </a>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   </div>
@@ -102,7 +104,7 @@ const colors = [
           href={`/${lang}/case-studies/${chapter.slug}`}
           class="text-sm font-medium text-accent hover:underline"
         >
-          View Case Study →
+          {t(lang, 'systems.viewCase')} →
         </a>
       </div>
     ))}
