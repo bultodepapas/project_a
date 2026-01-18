@@ -1,0 +1,122 @@
+---
+/**
+ * Article Detail Page
+ * Individual article with full content
+ */
+
+import Page from '@/layouts/Page.astro';
+import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
+import { t } from '@/i18n';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import ArticleHeader from '@/components/perspectives/ArticleHeader.astro';
+
+export interface Props {
+  entry: CollectionEntry<'articles'>;
+}
+
+export async function getStaticPaths() {
+  const entries: CollectionEntry<'articles'>[] = await getCollection('articles');
+  return entries.map((entry) => ({
+    params: { lang: entry.data.lang, slug: entry.data.articleSlug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { lang, slug } = Astro.params;
+
+if (!isValidLang(lang!) || !slug) {
+  return Astro.redirect(`/${lang || 'en'}/perspectives`);
+}
+
+const typedLang = lang as Lang;
+const articleData = entry.data;
+const { Content } = await entry.render();
+
+// Get all articles for navigation
+const allArticles = await getCollection('articles');
+const articlesForLang = allArticles
+  .filter((a: CollectionEntry<'articles'>) => a.data.lang === typedLang)
+  .sort((a: CollectionEntry<'articles'>, b: CollectionEntry<'articles'>) => {
+    return new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime();
+  });
+
+const currentIndex = articlesForLang.findIndex((a) => a.data.articleSlug === articleData.articleSlug);
+const prevArticle = currentIndex < articlesForLang.length - 1 ? articlesForLang[currentIndex + 1] : null;
+const nextArticle = currentIndex > 0 ? articlesForLang[currentIndex - 1] : null;
+---
+
+<Page
+  title={`${articleData.title} | Angela Parra Sanchez`}
+  description={articleData.excerpt}
+  lang={typedLang}
+  ogType="article"
+>
+  <article class="section">
+    <div class="container max-w-4xl">
+      <!-- Breadcrumb -->
+      <nav class="mb-8">
+        <a href={`/${typedLang}/perspectives`} class="text-sm text-muted hover:text-accent transition-colors">
+          &larr; {t(typedLang, 'perspectives.detail.backToIndex')}
+        </a>
+      </nav>
+
+      <ArticleHeader
+        lang={typedLang}
+        title={articleData.title}
+        category={articleData.category}
+        publishDate={articleData.publishDate}
+        readTime={articleData.readTime}
+        originalUrl={articleData.originalUrl}
+      />
+
+      <!-- Article Content -->
+      <div class="prose prose-neutral dark:prose-invert max-w-none mb-12">
+        <Content />
+      </div>
+
+      <!-- Tags -->
+      {articleData.tags && articleData.tags.length > 0 && (
+        <div class="mb-12 pt-8 border-t border-border">
+          <div class="flex flex-wrap gap-2">
+            {articleData.tags.map((tag: string) => (
+              <span class="px-3 py-1 text-xs font-medium rounded-full bg-background-alt text-muted border border-border">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Navigation -->
+      <nav class="flex flex-col sm:flex-row justify-between gap-4 pt-8 border-t border-border">
+        {prevArticle ? (
+          <a
+            href={`/${typedLang}/perspectives/${prevArticle.data.articleSlug}`}
+            class="group flex-1 p-4 rounded-lg border border-border hover:border-accent transition-all"
+          >
+            <span class="text-xs text-muted uppercase tracking-wider mb-1 block">Previous</span>
+            <span class="text-foreground font-medium group-hover:text-accent transition-colors line-clamp-1">
+              {prevArticle.data.title}
+            </span>
+          </a>
+        ) : (
+          <div class="flex-1"></div>
+        )}
+        {nextArticle ? (
+          <a
+            href={`/${typedLang}/perspectives/${nextArticle.data.articleSlug}`}
+            class="group flex-1 p-4 rounded-lg border border-border hover:border-accent transition-all text-right"
+          >
+            <span class="text-xs text-muted uppercase tracking-wider mb-1 block">Next</span>
+            <span class="text-foreground font-medium group-hover:text-accent transition-colors line-clamp-1">
+              {nextArticle.data.title}
+            </span>
+          </a>
+        ) : (
+          <div class="flex-1"></div>
+        )}
+      </nav>
+    </div>
+  </article>
+</Page>

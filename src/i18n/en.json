@@ -6,6 +6,7 @@
   "nav": {
     "systems": "Systems",
     "caseStudies": "Case Studies",
+    "perspectives": "Perspectives",
     "resume": "Resume",
     "contact": "Contact"
   },
@@ -103,6 +104,26 @@
     "fallback": {
       "banner": "This case study is available in English.",
       "viewInEnglish": "View in English"
+    }
+  },
+  "perspectives": {
+    "index": {
+      "title": "Perspectives",
+      "subtitle": "Thoughts on digital marketing, AI, and data-driven strategy",
+      "filters": {
+        "all": "All",
+        "ai-marketing": "AI & Marketing",
+        "strategy": "Strategy",
+        "industry-trends": "Industry Trends",
+        "personal-growth": "Personal Growth"
+      },
+      "noResults": "No articles match the current filter."
+    },
+    "detail": {
+      "backToIndex": "All Perspectives",
+      "publishedOn": "Published",
+      "readTime": "min read",
+      "readOnMedium": "Read on Medium"
     }
   },
   "resume": {

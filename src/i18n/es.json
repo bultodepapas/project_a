@@ -6,6 +6,7 @@
   "nav": {
     "systems": "Sistemas",
     "caseStudies": "Casos de Estudio",
+    "perspectives": "Perspectivas",
     "resume": "Curriculum",
     "contact": "Contacto"
   },
@@ -103,6 +104,26 @@
     "fallback": {
       "banner": "Este caso de estudio esta disponible en ingles.",
       "viewInEnglish": "Ver en ingles"
+    }
+  },
+  "perspectives": {
+    "index": {
+      "title": "Perspectivas",
+      "subtitle": "Reflexiones sobre marketing digital, IA y estrategia basada en datos",
+      "filters": {
+        "all": "Todos",
+        "ai-marketing": "IA y Marketing",
+        "strategy": "Estrategia",
+        "industry-trends": "Tendencias",
+        "personal-growth": "Crecimiento Personal"
+      },
+      "noResults": "No hay articulos que coincidan con el filtro actual."
+    },
+    "detail": {
+      "backToIndex": "Todas las Perspectivas",
+      "publishedOn": "Publicado",
+      "readTime": "min de lectura",
+      "readOnMedium": "Leer en Medium"
     }
   },
   "resume": {
