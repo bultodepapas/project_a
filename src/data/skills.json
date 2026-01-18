@@ -4,12 +4,16 @@
       "id": "impact-assessment",
       "name": {
         "en": "Impact Assessment",
-        "es": "Evaluacion de Impacto"
+        "es": "Evaluacion de Impacto",
+        "fr": "[FR] Impact Assessment",
+        "pt": "[PT] Impact Assessment"
       },
       "tools": ["Power BI", "Excel", "Tableau", "BigQuery"],
       "evidence": {
         "en": "Designed 3 impact frameworks used across regional teams",
-        "es": "Diseno 3 frameworks de impacto usados por equipos regionales"
+        "es": "Diseno 3 frameworks de impacto usados por equipos regionales",
+        "fr": "[FR] Designed 3 impact frameworks used across regional teams",
+        "pt": "[PT] Designed 3 impact frameworks used across regional teams"
       },
       "caseLink": "/case-studies/audience-framework"
     },
@@ -17,12 +21,16 @@
       "id": "audience-intelligence",
       "name": {
         "en": "Audience Intelligence",
-        "es": "Inteligencia de Audiencias"
+        "es": "Inteligencia de Audiencias",
+        "fr": "[FR] Audience Intelligence",
+        "pt": "[PT] Audience Intelligence"
       },
       "tools": ["Brandwatch", "BuzzSumo", "Audiense", "Google BigQuery"],
       "evidence": {
         "en": "Unified segmentation for cross-region comparisons",
-        "es": "Segmentacion unificada para comparaciones inter-regionales"
+        "es": "Segmentacion unificada para comparaciones inter-regionales",
+        "fr": "[FR] Unified segmentation for cross-region comparisons",
+        "pt": "[PT] Unified segmentation for cross-region comparisons"
       },
       "caseLink": "/case-studies/audience-framework"
     },
@@ -30,12 +38,16 @@
       "id": "benchmarking",
       "name": {
         "en": "Performance Benchmarking",
-        "es": "Benchmark de Desempeno"
+        "es": "Benchmark de Desempeno",
+        "fr": "[FR] Performance Benchmarking",
+        "pt": "[PT] Performance Benchmarking"
       },
       "tools": ["Tableau", "Looker Studio", "Google Analytics", "Excel"],
       "evidence": {
         "en": "Standardized KPI system for regional performance",
-        "es": "Sistema de KPIs estandarizados para desempeno regional"
+        "es": "Sistema de KPIs estandarizados para desempeno regional",
+        "fr": "[FR] Standardized KPI system for regional performance",
+        "pt": "[PT] Standardized KPI system for regional performance"
       },
       "caseLink": "/case-studies/benchmark-system"
     },
@@ -43,12 +55,16 @@
       "id": "narrative-tracking",
       "name": {
         "en": "Narrative Tracking",
-        "es": "Seguimiento Narrativo"
+        "es": "Seguimiento Narrativo",
+        "fr": "[FR] Narrative Tracking",
+        "pt": "[PT] Narrative Tracking"
       },
       "tools": ["Brandwatch", "Talkwalker", "NVivo", "ATLAS.ti"],
       "evidence": {
         "en": "Real-time narrative monitoring and alerting",
-        "es": "Monitoreo narrativo en tiempo real y alertas"
+        "es": "Monitoreo narrativo en tiempo real y alertas",
+        "fr": "[FR] Real-time narrative monitoring and alerting",
+        "pt": "[PT] Real-time narrative monitoring and alerting"
       },
       "caseLink": "/case-studies/narrative-tracking"
     }

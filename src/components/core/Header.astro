@@ -19,7 +19,6 @@ const { lang, currentPath } = Astro.props;
 const navItems = [
   { key: 'systems', href: '#systems' },
   { key: 'caseStudies', href: `/${lang}/case-studies` },
-  { key: 'resume', href: `/${lang}/resume` },
   { key: 'contact', href: '#contact' },
 ];
 ---
@@ -43,7 +42,8 @@ const navItems = [
           navItems.map((item) => (
             <a
               href={item.href}
-              class="text-sm font-medium text-muted hover:text-foreground transition-colors"
+              class="header-link magnet-target text-sm font-medium text-muted hover:text-foreground transition-colors"
+              data-magnet
             >
               {t(lang, `nav.${item.key}`)}
             </a>
@@ -56,7 +56,8 @@ const navItems = [
         <!-- Resume CTA -->
         <a
           href={`/${lang}/resume`}
-          class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-accent text-accent hover:bg-accent hover:text-white transition-colors"
+          class="header-cta magnet-target inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-accent text-accent hover:bg-accent hover:text-white transition-colors"
+          data-magnet
         >
           {t(lang, 'nav.resume')}
         </a>
@@ -114,6 +115,49 @@ const navItems = [
   </div>
 </header>
 
+<style>
+  .magnet-target {
+    position: relative;
+    transition: transform 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  .magnet-target::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: inherit;
+    background: radial-gradient(
+      120px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(63, 159, 119, 0.18),
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .magnet-target:hover::after {
+    opacity: 1;
+  }
+
+  .header-cta {
+    box-shadow: 0 8px 18px rgba(24, 89, 64, 0.08);
+  }
+
+  .header-cta:hover {
+    box-shadow: 0 12px 26px rgba(24, 89, 64, 0.16);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .magnet-target {
+      transition: color 0.2s ease, box-shadow 0.2s ease;
+    }
+  }
+</style>
+
 <script>
   // Mobile menu toggle
   const menuToggle = document.querySelector('[data-menu-toggle]');
@@ -129,4 +173,41 @@ const navItems = [
       mobileMenu?.classList.add('hidden');
     });
   });
+
+  function initHeaderMagnet() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+    if (prefersReducedMotion || !hasFinePointer) return;
+
+    const targets = document.querySelectorAll<HTMLElement>('.magnet-target[data-magnet]');
+
+    targets.forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        el.style.transition = 'transform 0.12s ease-out';
+      });
+
+      el.addEventListener('mousemove', (e: MouseEvent) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const mx = ((e.clientX - rect.left) / rect.width) * 100;
+        const my = ((e.clientY - rect.top) / rect.height) * 100;
+
+        el.style.setProperty('--mx', `${mx}%`);
+        el.style.setProperty('--my', `${my}%`);
+        el.style.transform = `translate3d(${x * 0.12}px, ${y * 0.12}px, 0)`;
+      });
+
+      el.addEventListener('mouseleave', () => {
+        el.style.transition = 'transform 0.3s ease-out';
+        el.style.transform = 'translate3d(0, 0, 0)';
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeaderMagnet);
+  } else {
+    initHeaderMagnet();
+  }
 </script>

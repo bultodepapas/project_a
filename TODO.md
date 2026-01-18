@@ -48,3 +48,12 @@
 - [ ] Add explicit "Reduced Motion" toggle (optional, strictly respecting system pref now)
 - [ ] Final Lighthouse audit (Performance/A11y)
 - [ ] Add more mock data/real content to verify edge cases
+
+## Internationalization Expansion (Current)
+- [x] Add 'fr' and 'pt' locale support (config & routing)
+- [x] Create 'fr' and 'pt' JSON dictionaries
+- [x] Scaffold 'fr' and 'pt' content files (Markdown/MDX)
+- [ ] Translate content: Site metadata & JSON data
+- [ ] Translate content: Home & Resume pages
+- [ ] Translate content: Case studies
+- [ ] Translate content: PDFs

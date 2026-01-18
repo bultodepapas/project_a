@@ -5,6 +5,8 @@
 
 import en from './en.json';
 import es from './es.json';
+import fr from './fr.json';
+import pt from './pt.json';
 import { defaultLang, type Lang } from './config';
 
 // Re-export config
@@ -14,6 +16,8 @@ export * from './config';
 const translations: Record<Lang, typeof en> = {
   en,
   es,
+  fr,
+  pt,
 };
 
 type TranslationKey = string;

@@ -5,7 +5,9 @@
       "org": "European Climate Foundation",
       "title": {
         "en": "Data & Audience Insights Strategist",
-        "es": "Data & Audience Insights Strategist"
+        "es": "Data & Audience Insights Strategist",
+        "fr": "[FR] Data & Audience Insights Strategist",
+        "pt": "[PT] Data & Audience Insights Strategist"
       },
       "period": "2021 - Present",
       "location": "Remote",
@@ -19,6 +21,16 @@
           "Lidero diseno analitico para programas climaticos internacionales",
           "Diseno 3 frameworks de evaluacion de impacto",
           "Colaboro con socios UE y consorcios filantropicos"
+        ],
+        "fr": [
+          "[FR] Led analytical design for international climate programmes",
+          "[FR] Designed 3 impact assessment frameworks",
+          "[FR] Collaborated with EU partners and philanthropic consortia"
+        ],
+        "pt": [
+          "[PT] Led analytical design for international climate programmes",
+          "[PT] Designed 3 impact assessment frameworks",
+          "[PT] Collaborated with EU partners and philanthropic consortia"
         ]
       },
       "tags": ["Climate", "M&E", "International"]
@@ -28,7 +40,9 @@
       "org": "Fidelizador",
       "title": {
         "en": "Marketing & Communications Manager",
-        "es": "Marketing & Communications Manager"
+        "es": "Marketing & Communications Manager",
+        "fr": "[FR] Marketing & Communications Manager",
+        "pt": "[PT] Marketing & Communications Manager"
       },
       "period": "2018 - 2021",
       "location": "Santiago, Chile",
@@ -42,6 +56,16 @@
           "Establecio el Departamento de Marketing desde cero",
           "Diseno herramientas de monitoreo para resultados de campanas",
           "Coordino equipo multidisciplinario"
+        ],
+        "fr": [
+          "[FR] Established Marketing Department from scratch",
+          "[FR] Designed monitoring tools for campaign outcomes",
+          "[FR] Coordinated multidisciplinary team"
+        ],
+        "pt": [
+          "[PT] Established Marketing Department from scratch",
+          "[PT] Designed monitoring tools for campaign outcomes",
+          "[PT] Coordinated multidisciplinary team"
         ]
       },
       "tags": ["Marketing", "Operations"]
@@ -51,7 +75,9 @@
       "org": "Eadbox",
       "title": {
         "en": "Digital Education and Marketing Specialist",
-        "es": "Digital Education and Marketing Specialist"
+        "es": "Digital Education and Marketing Specialist",
+        "fr": "[FR] Digital Education and Marketing Specialist",
+        "pt": "[PT] Digital Education and Marketing Specialist"
       },
       "period": "2017 - 2018",
       "location": "Sao Paulo, Brazil",
@@ -63,6 +89,14 @@
         "es": [
           "Apoyo a programas de aprendizaje digital",
           "Analisis de datos sobre participacion de estudiantes"
+        ],
+        "fr": [
+          "[FR] Supported digital learning programmes",
+          "[FR] Data analysis on learner participation"
+        ],
+        "pt": [
+          "[PT] Supported digital learning programmes",
+          "[PT] Data analysis on learner participation"
         ]
       },
       "tags": ["Education", "Data"]

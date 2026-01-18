@@ -1,6 +1,5 @@
 ---
-import { type Lang, getLocalizedPath, langNamesShort } from '@/i18n/config';
-import { t } from '@/i18n';
+import { type Lang, getLocalizedPath, langNamesShort, supportedLangs } from '@/i18n/config';
 
 interface Props {
   currentLang: Lang;
@@ -8,19 +7,34 @@ interface Props {
 }
 
 const { currentLang, currentPath } = Astro.props;
-
-const otherLang = currentLang === 'en' ? 'es' : 'en';
-const switchUrl = getLocalizedPath(currentPath, otherLang);
 ---
 
-<div class="flex items-center gap-1 text-sm">
-  <span class="font-medium text-foreground">{langNamesShort[currentLang]}</span>
-  <span class="text-muted">/</span>
-  <a
-    href={switchUrl}
-    class="text-muted hover:text-foreground transition-colors"
-    aria-label={t(currentLang, 'a11y.languageSwitch')}
-  >
-    {langNamesShort[otherLang]}
-  </a>
+<div class="flex items-center gap-2 text-sm">
+  {
+    supportedLangs.map((lang, index) => {
+      const isCurrent = lang === currentLang;
+      const href = getLocalizedPath(currentPath, lang);
+      const label = langNamesShort[lang];
+
+      return (
+        <>
+          {index > 0 && <span class="text-muted/40" aria-hidden="true">|</span>}
+          {isCurrent ? (
+            <span class="font-medium text-foreground cursor-default" aria-current="page">
+              {label}
+            </span>
+          ) : (
+            <a
+              href={href}
+              class="text-muted hover:text-foreground transition-colors"
+              aria-label={`Switch to ${label}`}
+              hreflang={lang}
+            >
+              {label}
+            </a>
+          )}
+        </>
+      );
+    })
+  }
 </div>

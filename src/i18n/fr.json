@@ -1,0 +1,139 @@
+{
+  "site": {
+    "title": "Angela Parra Sanchez",
+    "description": "[FR] Data & Impact Assessment Specialist. Building measurement systems and audience intelligence for international climate and sustainability programmes."
+  },
+  "nav": {
+    "systems": "[FR] Systems",
+    "caseStudies": "[FR] Case Studies",
+    "resume": "[FR] Resume",
+    "contact": "[FR] Contact"
+  },
+  "hero": {
+    "headline": "[FR] Data & Impact Assessment Specialist",
+    "subheadline": "[FR] Building measurement systems and audience intelligence for international climate and sustainability programmes",
+    "cta": {
+      "viewSystems": "[FR] View Systems",
+      "recruiterMode": "[FR] Recruiter Mode"
+    }
+  },
+  "proof": {
+    "title": "[FR] Proven Impact"
+  },
+  "hiredFor": {
+    "title": "[FR] What I'm hired for",
+    "bullets": {
+      "evidence": "[FR] Build evidence systems that survive turnover",
+      "narrative": "[FR] Translate narratives into measurable strategy",
+      "standardize": "[FR] Standardize performance across teams and regions"
+    }
+  },
+  "systems": {
+    "title": "[FR] Systems Portfolio",
+    "subtitle": "[FR] Frameworks designed for institutional learning and decision-making",
+    "viewCase": "[FR] View case study"
+  },
+  "operatingModel": {
+    "title": "[FR] Operating Model",
+    "lead": "[FR] A repeatable flow that links collection, synthesis, and decisions.",
+    "subtitle": "[FR] How data flows from collection to decision",
+    "diagramTitle": "[FR] Operating model data flow diagram",
+    "diagramDesc": "[FR] Inputs move through processing to outputs and decisions, with a learning loop feeding back to inputs."
+  },
+  "capabilities": {
+    "title": "[FR] Capabilities",
+    "evidencePrefix": "[FR] Used in:"
+  },
+  "timeline": {
+    "title": "[FR] Experience",
+    "present": "[FR] Present"
+  },
+  "education": {
+    "title": "[FR] Education",
+    "inProgress": "[FR] In Progress"
+  },
+  "languages": {
+    "title": "[FR] Languages",
+    "usedFor": "[FR] Used for:",
+    "levels": {
+      "native": "[FR] Native",
+      "fluent": "[FR] Fluent",
+      "advanced": "[FR] Advanced",
+      "working": "[FR] Working Proficiency"
+    }
+  },
+  "awards": {
+    "title": "[FR] Recognition"
+  },
+  "contact": {
+    "title": "[FR] Let's Connect",
+    "subtitle": "[FR] Open to opportunities in impact measurement, data strategy, and M&E",
+    "email": "[FR] Email",
+    "linkedin": "[FR] LinkedIn",
+    "downloadPdf": "[FR] Download Resume",
+    "copyEmail": "[FR] Copy email",
+    "emailCopied": "[FR] Email copied!"
+  },
+  "cases": {
+    "index": {
+      "title": "[FR] Case Studies",
+      "subtitle": "[FR] Systems designed for institutional learning and impact measurement",
+      "filters": {
+        "all": "[FR] All",
+        "theme": "[FR] Theme",
+        "region": "[FR] Region"
+      },
+      "noResults": "[FR] No cases match the current filters."
+    },
+    "detail": {
+      "problem": "[FR] The Challenge",
+      "approach": "[FR] Approach",
+      "systemDesign": "[FR] System Design",
+      "dataSources": "[FR] Data Sources",
+      "outputs": "[FR] Outputs",
+      "decisionImpact": "[FR] Decision Impact",
+      "adoption": "[FR] Adoption & Cadence",
+      "governance": "[FR] Governance",
+      "tools": "[FR] Tools Used",
+      "artifacts": "[FR] Artifacts",
+      "backToIndex": "[FR] All Case Studies",
+      "nextCase": "[FR] Next Case",
+      "prevCase": "[FR] Previous Case"
+    },
+    "fallback": {
+      "banner": "[FR] This case study is available in English.",
+      "viewInEnglish": "[FR] View in English"
+    }
+  },
+  "resume": {
+    "title": "[FR] Resume",
+    "subtitle": "[FR] Data & Impact Assessment Specialist",
+    "summary": "[FR] Summary",
+    "strengths": "[FR] Key Strengths",
+    "experience": "[FR] Experience",
+    "education": "[FR] Education",
+    "skills": "[FR] Technical Skills",
+    "languages": "[FR] Languages",
+    "awards": "[FR] Recognition",
+    "topCases": "[FR] Featured Work",
+    "downloadPdf": "[FR] Download PDF Resume",
+    "viewCase": "[FR] View case study"
+  },
+  "footer": {
+    "copyright": "[FR] (c) {year} Angela Parra Sanchez. All rights reserved.",
+    "builtWith": "[FR] Built with Astro"
+  },
+  "a11y": {
+    "skipToContent": "[FR] Skip to content",
+    "menuToggle": "[FR] Toggle menu",
+    "menuOpen": "[FR] Open menu",
+    "menuClose": "[FR] Close menu",
+    "languageSwitch": "[FR] Switch language",
+    "closeModal": "[FR] Close",
+    "externalLink": "[FR] Opens in new tab",
+    "currentPage": "[FR] Current page"
+  },
+  "meta": {
+    "ogImageAlt": "[FR] Angela Parra Sanchez - Data & Impact Assessment Specialist"
+  }
+}

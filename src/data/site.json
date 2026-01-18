@@ -2,20 +2,28 @@
   "name": "Angela Parra Sanchez",
   "jobTitle": {
     "en": "Data & Impact Assessment Specialist",
-    "es": "Especialista en Datos y Evaluacion de Impacto"
+    "es": "Especialista en Datos y Evaluacion de Impacto",
+    "fr": "[FR] Data & Impact Assessment Specialist",
+    "pt": "[PT] Data & Impact Assessment Specialist"
   },
   "tagline": {
     "en": "Building measurement systems and audience intelligence for international climate and sustainability programmes",
-    "es": "Construyendo sistemas de medicion e inteligencia de audiencias para programas internacionales de clima y sostenibilidad"
+    "es": "Construyendo sistemas de medicion e inteligencia de audiencias para programas internacionales de clima y sostenibilidad",
+    "fr": "[FR] Building measurement systems and audience intelligence for international climate and sustainability programmes",
+    "pt": "[PT] Building measurement systems and audience intelligence for international climate and sustainability programmes"
   },
   "location": {
     "en": "Bogota, Colombia - Remote EU",
-    "es": "Bogota, Colombia - Remote EU"
+    "es": "Bogota, Colombia - Remote EU",
+    "fr": "Bogota, Colombia - Remote EU",
+    "pt": "Bogota, Colombia - Remote EU"
   },
   "email": "angelae.parras@gmail.com",
   "linkedin": "https://www.linkedin.com/in/angela-parra-sanchez-89548165",
   "pdf": {
     "en": "/pdf/angela-parra-resume-en.pdf",
-    "es": "/pdf/angela-parra-resume-es.pdf"
+    "es": "/pdf/angela-parra-resume-es.pdf",
+    "fr": "/pdf/angela-parra-resume-en.pdf",
+    "pt": "/pdf/angela-parra-resume-en.pdf"
   }
 }

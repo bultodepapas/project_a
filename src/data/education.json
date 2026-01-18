@@ -4,7 +4,9 @@
       "id": "msc-analytics",
       "degree": {
         "en": "Master's in Business Analytics",
-        "es": "Maestria en Analitica de Negocios"
+        "es": "Maestria en Analitica de Negocios",
+        "fr": "[FR] Master's in Business Analytics",
+        "pt": "[PT] Master's in Business Analytics"
       },
       "org": "Aston University",
       "location": "Birmingham, UK",
@@ -14,7 +16,9 @@
       "id": "msc-global",
       "degree": {
         "en": "Master's in Global Business Management",
-        "es": "Maestria en Gestion de Negocios Globales"
+        "es": "Maestria en Gestion de Negocios Globales",
+        "fr": "[FR] Master's in Global Business Management",
+        "pt": "[PT] Master's in Global Business Management"
       },
       "org": "Rennes School of Business",
       "location": "Rennes, France",
@@ -24,7 +28,9 @@
       "id": "ba-international",
       "degree": {
         "en": "BA in International Business",
-        "es": "Licenciatura en Negocios Internacionales"
+        "es": "Licenciatura en Negocios Internacionales",
+        "fr": "[FR] BA in International Business",
+        "pt": "[PT] BA in International Business"
       },
       "org": "Universidad de La Salle",
       "location": "Bogota, Colombia",

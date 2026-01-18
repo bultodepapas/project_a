@@ -5,7 +5,7 @@ const cases = defineCollection({
   schema: z.object({
     title: z.string(),
     caseSlug: z.string(),
-    lang: z.enum(['en', 'es']),
+    lang: z.enum(['en', 'es', 'fr', 'pt']),
     theme: z.enum(['audience', 'benchmark', 'narrative', 'capacity']),
     role: z.string(),
     org: z.string(),
@@ -38,7 +38,7 @@ const pages = defineCollection({
   type: 'content',
   schema: z.object({
     pageSlug: z.enum(['home', 'resume']),
-    lang: z.enum(['en', 'es']),
+    lang: z.enum(['en', 'es', 'fr', 'pt']),
     title: z.string(),
     description: z.string(),
   }),
