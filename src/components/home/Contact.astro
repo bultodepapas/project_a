@@ -12,7 +12,7 @@ interface Props {
 const { lang, email, location, linkedin } = Astro.props;
 ---
 
-<section class="section contact-section" id="contact">
+<section class="section" id="contact">
   <div class="container">
     <div class="contact-card max-w-3xl mx-auto text-center border border-border rounded-2xl bg-background-alt p-8 md:p-12 reveal-element opacity-0 scale-95 transition-all duration-500">
       <div class="contact-content">
@@ -23,16 +23,16 @@ const { lang, email, location, linkedin } = Astro.props;
           {t(lang, 'contact.subtitle')}
         </p>
 
-        <div class="contact-actions flex flex-wrap justify-center gap-4">
+        <div class="flex flex-wrap justify-center gap-4">
           <a
             href={`mailto:${email}`}
-            class="contact-action inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-inverse hover:bg-primary-light transition-colors"
+            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-primary text-white hover:bg-primary-light transition-colors"
           >
             {t(lang, 'contact.email')}
           </a>
           <a
             href={`/${lang}/resume`}
-            class="contact-action inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
+            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
           >
             {t(lang, 'contact.downloadPdf')}
           </a>
@@ -40,13 +40,13 @@ const { lang, email, location, linkedin } = Astro.props;
             href={linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            class="contact-action inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
+            class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-border text-foreground hover:bg-background transition-colors"
           >
             {t(lang, 'contact.linkedin')}
           </a>
         </div>
 
-        <div class="contact-meta mt-6 text-sm text-muted">
+        <div class="mt-6 text-sm text-muted">
           {email} | {location}
         </div>
       </div>
@@ -82,90 +82,12 @@ const { lang, email, location, linkedin } = Astro.props;
 </script>
 
 <style>
-  .contact-section {
-    position: relative;
-  }
-
-  .contact-section::before {
-    content: '';
-    position: absolute;
-    inset: 6% 8% auto;
-    height: 65%;
-    background:
-      radial-gradient(45% 45% at 20% 20%, var(--color-text-muted) 0%, transparent 60%),
-      radial-gradient(35% 45% at 80% 10%, var(--color-text-muted) 0%, transparent 60%),
-      radial-gradient(45% 55% at 70% 85%, var(--color-text-muted) 0%, transparent 60%);
-    opacity: 0.05;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  :root.dark .contact-section::before {
-    opacity: 0.08;
-  }
-
   .contact-card {
     position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow-xl);
-  }
-
-  .contact-card::before {
-    content: '';
-    position: absolute;
-    inset: 1px;
-    border-radius: inherit;
-    border: 1px solid var(--color-border);
-    pointer-events: none;
-  }
-
-  .contact-card::after {
-    content: '';
-    position: absolute;
-    inset: -30% -10% auto;
-    height: 70%;
-    background: linear-gradient(135deg, var(--color-surface), transparent);
-    opacity: 0.6;
-    transform: rotate(-2deg);
-    pointer-events: none;
-  }
-
-  :root.dark .contact-card::after {
-    opacity: 0.1;
-    background: linear-gradient(135deg, var(--color-accent), transparent);
   }
 
   .contact-content {
     position: relative;
     z-index: 1;
-  }
-
-  .contact-actions {
-    position: relative;
-  }
-
-  .contact-actions::before {
-    content: '';
-    position: absolute;
-    top: -22px;
-    left: 50%;
-    width: 120px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--color-border), transparent);
-    transform: translateX(-50%);
-  }
-
-  .contact-action {
-    box-shadow: var(--shadow-md);
-    transition: transform 200ms ease, box-shadow 200ms ease;
-  }
-
-  .contact-action:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .contact-meta {
-    letter-spacing: 0.02em;
   }
 </style>
