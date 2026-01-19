@@ -2407,36 +2407,4 @@ NODE_ENV=production
 *Documento generado: 2026-01-17*
 *Próxima revisión: Después de Sprint 0*
 
-Effects:
-
-View Transitions (transiciones entre páginas)
-Sección “pinned” con scroll‑sync (ChapterDeck con ScrollTrigger)
-Fade + slide up (hero headline/subheadline)
-Stagger reveal (chips y bullets)
-Fade‑in al entrar en viewport (proof cards)
-Line‑draw (diagrama/linea de timeline)
-Progress bar fill (timeline year progress)
-Glow pulse en nodos (timeline)
-Aurora background flotante (hero)
-Gradiente animado / sweep de gradiente (CTA)
-Mesh gradient en movimiento (hero orb)
-Orbs/partículas flotantes (hero, proof, operating, timeline, hired)
-Orbit rings + orbiting dots (hero)
-Sparkle / twinkle (awards, timeline)
-Shine sweep (badge de awards)
-Shimmer (metric cards)
-Glassmorphism en cards (ChapterDeck)
-Holographic/iridescent shimmer (Education cards/banner)
-Glitch title (Education)
-Spotlight hover (Education, Timeline)
-Card glow hover (Awards, HiredFor, Timeline)
-3D tilt en cards (Timeline, HiredFor)
-Parallax en orb con mouse (Hero, Education orbs)
-Counters animados (Hero stats, ProofStrip, Languages)
-Progress ring animado (ProofStrip)
-Ping/pulse indicators (estrellas/badges)
-Scroll‑down indicator animado (Hero)
-Flow/dash line animation (global, HiredFor, OperatingModel)
-Trophy bounce (Awards)
-Rotate ring (Awards/Operating)
-Reveal‑up de cards (ProofStrip)
+go to effect_library.for inspiration for the design and tools and effects
