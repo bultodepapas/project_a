@@ -113,13 +113,25 @@ const iconPaths: Record<string, string> = {
 
             <!-- Content wrapper -->
             <div class="relative flex items-center gap-2">
-              <!-- Text: hecho con amor (translated) -->
-              <p class="font-display font-semibold text-xs tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-blue-500 to-violet-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                {t(lang, 'nav.tagline')}
-              </p>
+              <!-- Text: hecho con amor (translated) - Character reveal -->
+              <div class="font-display font-semibold text-xs">
+                <!-- Accessibility: provide full text for screen readers -->
+                <span class="sr-only">{t(lang, 'nav.tagline')}</span>
+                <!-- Visual animation (hidden from SR) -->
+                <span aria-hidden="true">
+                  {t(lang, 'nav.tagline').split('').map((char, index) => (
+                    <span
+                      class="inline-block nav-char-reveal"
+                      style={`--char-index: ${index}`}
+                    >
+                      {char === ' ' ? '\u00A0' : char}
+                    </span>
+                  ))}
+                </span>
+              </div>
 
-              <!-- Heart: Pulsing -->
-              <div class="relative w-5 h-5 flex items-center justify-center flex-shrink-0">
+              <!-- Heart: Pulsing (appears after text) -->
+              <div class="relative w-5 h-5 flex items-center justify-center flex-shrink-0 nav-heart-container">
                 <!-- SVG Heart with glow -->
                 <svg
                   class="w-full h-full nav-heart-pulse"
@@ -627,9 +639,56 @@ const iconPaths: Record<string, string> = {
     animation: nav-aurora-drift 10s ease-in-out infinite reverse;
   }
 
+  /* === CHARACTER REVEAL ANIMATION === */
+  .nav-char-reveal {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(-8px);
+    color: var(--color-text);
+  }
+
+  /* Activate on logo hover */
+  .nav-logo:hover .nav-char-reveal {
+    animation: nav-char-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(var(--char-index) * 0.04s);
+  }
+
+  @keyframes nav-char-reveal {
+    0% {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* === HEARTBEAT ANIMATION === */
+  .nav-heart-container {
+    opacity: 0;
+  }
+
+  /* Appear after text finishes (reduced delay) */
+  .nav-logo:hover .nav-heart-container {
+    animation: nav-heart-appear 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.8s;
+  }
+
+  @keyframes nav-heart-appear {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
   .nav-heart-pulse {
     animation: nav-heartbeat 1s ease-in-out infinite;
+    animation-delay: 0.8s;
   }
 
   @keyframes nav-heartbeat {
@@ -660,7 +719,7 @@ const iconPaths: Record<string, string> = {
     background: #ec4899;
     box-shadow: 0 0 8px rgba(236, 72, 153, 1), 0 0 16px rgba(217, 70, 239, 0.8);
     animation: nav-love-burst 1.2s ease-out infinite;
-    animation-delay: calc(var(--love-index) * 0.14s);
+    animation-delay: calc(0.8s + var(--love-index) * 0.14s);
     z-index: -1;
   }
 

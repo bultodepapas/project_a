@@ -1,4 +1,8 @@
 ---
+/**
+ * ArticleFilters - Animated Filter Pills with Morphing Indicator
+ * Features: Sliding pill indicator, micro-bounce, smooth transitions
+ */
 import { t } from '@/i18n';
 import type { Lang } from '@/i18n/config';
 
@@ -8,42 +12,376 @@ interface Props {
 }
 
 const { lang, categories } = Astro.props;
+
+// Category icons (optional, can be used if needed)
+const categoryIcons: Record<string, string> = {
+  'ai-marketing': 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+  'strategy': 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+  'industry-trends': 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
+  'personal-growth': 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
+};
 ---
 
-<div class="article-filters mb-8">
-  <div class="flex flex-col gap-4">
-    <!-- Category Filters -->
-    <div class="filter-group">
-      <div class="flex flex-wrap gap-2" id="category-filters">
+<div class="article-filters relative">
+  <!-- Filters Container with Morphing Background -->
+  <div class="filters-wrapper relative">
+    <!-- Sliding Pill Indicator (positioned dynamically via JS) -->
+    <div class="pill-indicator absolute rounded-full transition-all duration-500 ease-out pointer-events-none"></div>
+
+    <!-- Filter Buttons -->
+    <div class="filter-buttons flex flex-wrap gap-2" id="category-filters">
+      <!-- All Button -->
+      <button
+        class="filter-btn group relative px-5 py-2.5 text-sm font-medium rounded-full transition-all duration-300 active"
+        data-filter="all"
+        data-group="category"
+      >
+        <span class="btn-content relative z-10 flex items-center gap-2">
+          <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          <span>{t(lang, 'perspectives.index.filters.all')}</span>
+        </span>
+        <span class="btn-ripple absolute inset-0 rounded-full"></span>
+      </button>
+
+      <!-- Category Buttons -->
+      {categories.map((category) => (
         <button
-          class="filter-btn px-4 py-2 text-sm font-medium rounded-full border border-primary bg-primary text-white transition-all hover:opacity-90 active"
-          data-filter="all"
+          class="filter-btn group relative px-5 py-2.5 text-sm font-medium rounded-full transition-all duration-300"
+          data-filter={category}
           data-group="category"
         >
-          {t(lang, 'perspectives.index.filters.all')}
+          <span class="btn-content relative z-10 flex items-center gap-2">
+            {categoryIcons[category] && (
+              <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={categoryIcons[category]} />
+              </svg>
+            )}
+            <span>{t(lang, `perspectives.index.filters.${category}`)}</span>
+          </span>
+          <span class="btn-ripple absolute inset-0 rounded-full"></span>
         </button>
-        {categories.map((category) => (
-          <button
-            class="filter-btn px-4 py-2 text-sm font-medium rounded-full border border-border text-muted hover:border-accent hover:text-accent transition-all"
-            data-filter={category}
-            data-group="category"
-          >
-            {t(lang, `perspectives.index.filters.${category}`)}
-          </button>
-        ))}
-      </div>
+      ))}
     </div>
+  </div>
+
+  <!-- Active Filter Count Badge -->
+  <div class="filter-count hidden absolute -top-2 -right-2 w-6 h-6 rounded-full bg-accent text-white text-xs font-bold flex items-center justify-center shadow-lg">
+    <span class="count-value">0</span>
   </div>
 </div>
 
 <style>
-  :root.dark .article-filters .filter-btn.bg-primary {
-    background: transparent;
-    color: var(--color-accent-light);
-    border-color: var(--color-accent);
+  /* ============================================
+   * FILTERS WRAPPER
+   * ============================================ */
+  .filters-wrapper {
+    display: inline-flex;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.05),
+      inset 0 1px 1px rgba(255, 255, 255, 0.5);
   }
 
-  :root.dark .article-filters .filter-btn.bg-primary:hover {
-    background: rgba(45, 212, 191, 0.12);
+  :root.dark .filters-wrapper {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.2),
+      inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  }
+
+  /* ============================================
+   * SLIDING PILL INDICATOR
+   * ============================================ */
+  .pill-indicator {
+    background: var(--color-accent);
+    height: calc(100% - 12px);
+    top: 6px;
+    opacity: 0;
+    box-shadow:
+      0 4px 15px rgba(74, 144, 164, 0.4),
+      inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    transition:
+      left 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.3s ease;
+  }
+
+  :root.dark .pill-indicator {
+    box-shadow:
+      0 4px 20px rgba(45, 212, 191, 0.3),
+      inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .pill-indicator.visible {
+    opacity: 1;
+  }
+
+  /* ============================================
+   * FILTER BUTTONS
+   * ============================================ */
+  .filter-btn {
+    color: var(--color-text-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .filter-btn:hover {
+    color: var(--color-text);
+  }
+
+  .filter-btn.active {
+    color: white;
+  }
+
+  :root.dark .filter-btn {
+    color: var(--color-text-muted);
+  }
+
+  :root.dark .filter-btn:hover {
+    color: var(--color-text);
+  }
+
+  :root.dark .filter-btn.active {
+    color: var(--color-bg);
+  }
+
+  /* ============================================
+   * BUTTON CONTENT
+   * ============================================ */
+  .btn-content {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .filter-btn:hover .btn-content {
+    transform: translateY(-1px);
+  }
+
+  .filter-btn:active .btn-content {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  /* ============================================
+   * RIPPLE EFFECT
+   * ============================================ */
+  .btn-ripple {
+    background: radial-gradient(circle, rgba(74, 144, 164, 0.15) 0%, transparent 70%);
+    transform: scale(0);
+    opacity: 0;
+    transition: all 0.5s ease;
+  }
+
+  .filter-btn:hover .btn-ripple {
+    transform: scale(2);
+    opacity: 1;
+  }
+
+  :root.dark .btn-ripple {
+    background: radial-gradient(circle, rgba(45, 212, 191, 0.15) 0%, transparent 70%);
+  }
+
+  /* ============================================
+   * MICRO-BOUNCE ON CLICK
+   * ============================================ */
+  .filter-btn.clicked {
+    animation: micro-bounce 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  }
+
+  @keyframes micro-bounce {
+    0%, 100% { transform: scale(1); }
+    30% { transform: scale(0.95); }
+    50% { transform: scale(1.02); }
+    70% { transform: scale(0.98); }
+  }
+
+  /* ============================================
+   * ICON ANIMATIONS
+   * ============================================ */
+  .filter-btn svg {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .filter-btn:hover svg {
+    transform: scale(1.1);
+  }
+
+  .filter-btn.active svg {
+    transform: scale(1.1);
+  }
+
+  /* ============================================
+   * FOCUS STATES
+   * ============================================ */
+  .filter-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* ============================================
+   * FILTER COUNT BADGE
+   * ============================================ */
+  .filter-count {
+    animation: badge-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes badge-pop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  /* ============================================
+   * RESPONSIVE
+   * ============================================ */
+  @media (max-width: 640px) {
+    .filters-wrapper {
+      padding: 4px;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 0.875rem;
+      font-size: 0.75rem;
+    }
+
+    .filter-btn svg {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+  }
+
+  /* ============================================
+   * REDUCED MOTION
+   * ============================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .pill-indicator,
+    .filter-btn,
+    .btn-content,
+    .btn-ripple,
+    .filter-btn svg,
+    .filter-count {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .pill-indicator {
+      transition: left 0.1s, width 0.1s, opacity 0.1s;
+    }
   }
 </style>
+
+<script>
+  import { initOnce, initSection } from '@/lib/lifecycle';
+  import { useFilters, type FilterConfig } from '@/lib/ui/filters';
+
+  function initFiltersUI() {
+    const container = document.querySelector('.article-filters');
+    if (!container) return;
+
+    initOnce(container, 'article-filters-premium', () => {
+      const wrapper = container.querySelector('.filters-wrapper') as HTMLElement;
+      const pillIndicator = container.querySelector('.pill-indicator') as HTMLElement;
+      const buttons = container.querySelectorAll('.filter-btn');
+
+      if (!wrapper || !pillIndicator || buttons.length === 0) return;
+
+      // Position pill indicator on active button
+      function updatePillPosition(activeBtn: HTMLElement) {
+        const wrapperRect = wrapper.getBoundingClientRect();
+        const btnRect = activeBtn.getBoundingClientRect();
+
+        const left = btnRect.left - wrapperRect.left;
+        const width = btnRect.width;
+
+        pillIndicator.style.left = `${left}px`;
+        pillIndicator.style.width = `${width}px`;
+        pillIndicator.classList.add('visible');
+      }
+
+      // Initialize pill position
+      const initialActive = container.querySelector('.filter-btn.active') as HTMLElement;
+      if (initialActive) {
+        // Delay to ensure layout is ready
+        requestAnimationFrame(() => {
+          updatePillPosition(initialActive);
+        });
+      }
+
+      // Handle button clicks
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          // Remove active from all
+          buttons.forEach((b) => b.classList.remove('active'));
+
+          // Add active to clicked
+          btn.classList.add('active');
+
+          // Add micro-bounce
+          btn.classList.add('clicked');
+          setTimeout(() => btn.classList.remove('clicked'), 400);
+
+          // Update pill position
+          updatePillPosition(btn as HTMLElement);
+        });
+      });
+
+      // Filter configuration
+      const config: FilterConfig = {
+        cardSelector: '.article-card',
+        filterAttr: 'data-category',
+        noResultsSelector: '#no-results-message',
+        displayStyle: 'flex',
+        onShow: (el) => {
+          const wrapper = el.closest('.article-wrapper') as HTMLElement;
+          if (wrapper) {
+            wrapper.style.display = 'block';
+            requestAnimationFrame(() => {
+              wrapper.classList.add('revealed');
+            });
+          }
+        },
+        onHide: (el) => {
+          const wrapper = el.closest('.article-wrapper') as HTMLElement;
+          if (wrapper) {
+            wrapper.classList.remove('revealed');
+            // Wait for animation before hiding
+            setTimeout(() => {
+              if (!wrapper.classList.contains('revealed')) {
+                wrapper.style.display = 'none';
+              }
+            }, 300);
+          }
+        },
+      };
+
+      // Initialize filter logic
+      useFilters(container as HTMLElement, config);
+
+      // Handle window resize
+      const resizeHandler = () => {
+        const activeBtn = container.querySelector('.filter-btn.active') as HTMLElement;
+        if (activeBtn) {
+          updatePillPosition(activeBtn);
+        }
+      };
+
+      window.addEventListener('resize', resizeHandler);
+
+      return () => {
+        window.removeEventListener('resize', resizeHandler);
+      };
+    });
+  }
+
+  initSection('article-filters-init', initFiltersUI);
+</script>

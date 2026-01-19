@@ -1,7 +1,7 @@
 ---
 /**
- * Perspectives Index
- * Filterable list of all articles
+ * Perspectives Index - Cinematic Editorial Experience
+ * Premium filterable article grid with immersive effects
  */
 
 import Page from '@/layouts/Page.astro';
@@ -46,30 +46,67 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
   description={pageDescription}
   lang={typedLang}
 >
-  <div class="section min-h-screen">
-    <div class="container">
-      <!-- Header -->
-      <header class="mb-12 animate-fade-in-up">
-        <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          {t(typedLang, 'perspectives.index.title')}
+  <!-- Cinematic Hero Section -->
+  <section class="perspectives-hero relative min-h-[45vh] md:min-h-[50vh] flex items-center justify-center overflow-hidden">
+    <!-- Aurora Background -->
+    <div class="aurora-bg absolute inset-0 pointer-events-none">
+      <div class="aurora-orb aurora-orb-1"></div>
+      <div class="aurora-orb aurora-orb-2"></div>
+      <div class="aurora-orb aurora-orb-3"></div>
+    </div>
+
+    <!-- Mesh Gradient Overlay -->
+    <div class="mesh-gradient absolute inset-0 pointer-events-none opacity-60"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles-container absolute inset-0 pointer-events-none overflow-hidden">
+      {[...Array(12)].map((_, i) => (
+        <div class={`particle particle-${i + 1}`}></div>
+      ))}
+    </div>
+
+    <!-- Hero Content -->
+    <div class="container relative z-10 text-center">
+      <div class="hero-content max-w-4xl mx-auto">
+        <!-- Animated Title -->
+        <h1 class="perspectives-title text-5xl md:text-7xl lg:text-8xl font-display font-bold mb-6 overflow-hidden">
+          <span class="title-word inline-block">{t(typedLang, 'perspectives.index.title')}</span>
         </h1>
-        <p class="text-lg text-muted max-w-2xl">
+
+        <!-- Typewriter Subtitle -->
+        <p class="perspectives-subtitle text-lg md:text-xl lg:text-2xl text-muted max-w-2xl mx-auto opacity-0">
           {t(typedLang, 'perspectives.index.subtitle')}
         </p>
-      </header>
 
-      <!-- Filters -->
-      <div class="animate-fade-in-up" style="animation-delay: 100ms">
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator mt-12 opacity-0">
+          <div class="scroll-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Gradient Fade -->
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
+  </section>
+
+  <!-- Main Content Section -->
+  <div class="section relative -mt-8">
+    <div class="container">
+      <!-- Filters with Morphing Indicator -->
+      <div class="filters-section mb-12 opacity-0 translate-y-8 transition-all duration-700 ease-out">
         <ArticleFilters
           lang={typedLang}
           categories={categories}
         />
       </div>
 
-      <!-- Articles Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]">
+      <!-- Articles Grid with Masonry Effect -->
+      <div class="articles-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[400px]">
         {articles.map((articleEntry: CollectionEntry<'articles'>, index: number) => (
-          <div class="h-full animate-fade-in-up" style={`animation-delay: ${(index * 100) + 200}ms`}>
+          <div
+            class="article-wrapper h-full opacity-0 translate-y-12"
+            style={`--stagger-delay: ${index * 100}ms`}
+          >
             <ArticleCard
               lang={typedLang}
               articleEntry={articleEntry}
@@ -79,40 +116,391 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
       </div>
 
       <!-- No Results Message -->
-      <div id="no-results-message" class="hidden py-12 text-center text-muted">
-        <p class="text-lg">{t(typedLang, 'perspectives.index.noResults')}</p>
-        <button
-          class="mt-4 text-accent hover:underline filter-btn"
-          data-filter="all"
-          data-group="category"
-          onclick="document.querySelector('.article-filters .filter-btn[data-filter=\'all\']').click()"
-        >
-          {t(typedLang, 'perspectives.index.filters.all')}
-        </button>
+      <div id="no-results-message" class="hidden py-16 text-center">
+        <div class="no-results-content max-w-md mx-auto">
+          <div class="no-results-icon mb-6">
+            <svg class="w-16 h-16 mx-auto text-muted/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p class="text-lg text-muted mb-4">{t(typedLang, 'perspectives.index.noResults')}</p>
+          <button
+            class="reset-filter-btn px-6 py-3 text-sm font-medium rounded-full bg-accent/10 text-accent hover:bg-accent/20 transition-all duration-300"
+            data-filter="all"
+            data-group="category"
+          >
+            {t(typedLang, 'perspectives.index.filters.all')}
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </Page>
 
+<style>
+  /* ============================================
+   * AURORA BACKGROUND
+   * ============================================ */
+  .aurora-bg {
+    background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-alt) 100%);
+  }
+
+  .aurora-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: aurora-float 20s ease-in-out infinite;
+  }
+
+  .aurora-orb-1 {
+    width: 600px;
+    height: 600px;
+    background: linear-gradient(135deg, var(--color-accent) 0%, rgba(74, 144, 164, 0.3) 100%);
+    top: -200px;
+    left: -100px;
+    animation-delay: 0s;
+  }
+
+  .aurora-orb-2 {
+    width: 500px;
+    height: 500px;
+    background: linear-gradient(225deg, #8b5cf6 0%, rgba(139, 92, 246, 0.2) 100%);
+    top: 50%;
+    right: -150px;
+    animation-delay: -7s;
+    animation-duration: 25s;
+  }
+
+  .aurora-orb-3 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(45deg, #06b6d4 0%, rgba(6, 182, 212, 0.2) 100%);
+    bottom: -100px;
+    left: 30%;
+    animation-delay: -14s;
+    animation-duration: 22s;
+  }
+
+  :root.dark .aurora-orb {
+    opacity: 0.25;
+  }
+
+  :root.dark .aurora-orb-1 {
+    background: linear-gradient(135deg, var(--color-accent) 0%, rgba(45, 212, 191, 0.2) 100%);
+  }
+
+  :root.dark .aurora-orb-2 {
+    background: linear-gradient(225deg, #a78bfa 0%, rgba(167, 139, 250, 0.15) 100%);
+  }
+
+  :root.dark .aurora-orb-3 {
+    background: linear-gradient(45deg, #22d3ee 0%, rgba(34, 211, 238, 0.15) 100%);
+  }
+
+  @keyframes aurora-float {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    25% {
+      transform: translate(30px, -20px) scale(1.05);
+    }
+    50% {
+      transform: translate(-20px, 30px) scale(0.95);
+    }
+    75% {
+      transform: translate(-30px, -10px) scale(1.02);
+    }
+  }
+
+  /* ============================================
+   * MESH GRADIENT
+   * ============================================ */
+  .mesh-gradient {
+    background:
+      radial-gradient(at 40% 20%, rgba(74, 144, 164, 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, rgba(74, 144, 164, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+  }
+
+  :root.dark .mesh-gradient {
+    background:
+      radial-gradient(at 40% 20%, rgba(45, 212, 191, 0.12) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(167, 139, 250, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(34, 211, 238, 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, rgba(45, 212, 191, 0.06) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(167, 139, 250, 0.06) 0px, transparent 50%);
+  }
+
+  /* ============================================
+   * FLOATING PARTICLES
+   * ============================================ */
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: particle-float 15s ease-in-out infinite;
+  }
+
+  .particle-1 { top: 20%; left: 10%; animation-delay: 0s; }
+  .particle-2 { top: 60%; left: 20%; animation-delay: -2s; animation-duration: 18s; }
+  .particle-3 { top: 30%; left: 40%; animation-delay: -4s; animation-duration: 20s; }
+  .particle-4 { top: 70%; left: 60%; animation-delay: -6s; animation-duration: 16s; }
+  .particle-5 { top: 15%; left: 80%; animation-delay: -8s; animation-duration: 22s; }
+  .particle-6 { top: 50%; left: 90%; animation-delay: -10s; animation-duration: 17s; }
+  .particle-7 { top: 80%; left: 30%; animation-delay: -12s; animation-duration: 19s; }
+  .particle-8 { top: 40%; left: 70%; animation-delay: -14s; animation-duration: 21s; }
+  .particle-9 { top: 25%; left: 55%; animation-delay: -3s; animation-duration: 23s; }
+  .particle-10 { top: 65%; left: 45%; animation-delay: -7s; animation-duration: 18s; }
+  .particle-11 { top: 35%; left: 25%; animation-delay: -11s; animation-duration: 20s; }
+  .particle-12 { top: 75%; left: 85%; animation-delay: -5s; animation-duration: 16s; }
+
+  @keyframes particle-float {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+      opacity: 0.3;
+    }
+    25% {
+      transform: translate(20px, -30px) scale(1.2);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translate(-15px, 20px) scale(0.8);
+      opacity: 0.2;
+    }
+    75% {
+      transform: translate(25px, 10px) scale(1.1);
+      opacity: 0.4;
+    }
+  }
+
+  /* ============================================
+   * HERO TITLE ANIMATION
+   * ============================================ */
+  .perspectives-title {
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-muted) 50%, var(--color-accent) 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  :root.dark .perspectives-title {
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent-light) 50%, var(--color-accent) 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .title-word {
+    transform: translateY(100%);
+    opacity: 0;
+    animation: title-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.3s;
+  }
+
+  @keyframes title-reveal {
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* ============================================
+   * SUBTITLE TYPEWRITER
+   * ============================================ */
+  .perspectives-subtitle.animate {
+    opacity: 1;
+    animation: subtitle-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes subtitle-fade {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+      filter: blur(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+
+  /* ============================================
+   * SCROLL INDICATOR
+   * ============================================ */
+  .scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scroll-indicator.animate {
+    opacity: 1;
+    animation: fade-in 0.6s ease forwards;
+    animation-delay: 1.5s;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--color-accent), transparent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse {
+    0% { top: -100%; }
+    100% { top: 100%; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 0.6; }
+  }
+
+  /* ============================================
+   * ARTICLE WRAPPER ANIMATIONS
+   * ============================================ */
+  .article-wrapper {
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--stagger-delay, 0ms);
+  }
+
+  .article-wrapper.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ============================================
+   * FILTERS SECTION
+   * ============================================ */
+  .filters-section.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ============================================
+   * NO RESULTS
+   * ============================================ */
+  .no-results-icon svg {
+    animation: float-gentle 3s ease-in-out infinite;
+  }
+
+  @keyframes float-gentle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* ============================================
+   * REDUCED MOTION
+   * ============================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .aurora-orb,
+    .particle,
+    .title-word,
+    .perspectives-subtitle,
+    .scroll-indicator,
+    .scroll-line::after,
+    .article-wrapper,
+    .no-results-icon svg {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .perspectives-title {
+      animation: none;
+      background-position: 0% 50%;
+    }
+  }
+</style>
+
 <script>
   import { initOnce, initSection } from '@/lib/lifecycle';
-  import { createRevealObserver } from '@/lib/ui/animations';
+  import { initArticleFiltersUI } from '@/lib/ui/article-filters';
 
-  // Simple reveal animation observer
-  function initReveal() {
-    const container = document.querySelector('.section');
-    initOnce(container, 'perspectives-index-reveal', (root) => {
-      return createRevealObserver(root, {
-        selector: '.reveal-element',
+  function initPerspectives() {
+    const container = document.querySelector('.perspectives-hero');
+    if (!container) return;
+
+    initOnce(container, 'perspectives-cinematic', () => {
+      // Animate subtitle after title
+      setTimeout(() => {
+        const subtitle = document.querySelector('.perspectives-subtitle');
+        subtitle?.classList.add('animate');
+      }, 800);
+
+      // Animate scroll indicator
+      setTimeout(() => {
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        scrollIndicator?.classList.add('animate');
+      }, 1200);
+
+      // Reveal filters
+      setTimeout(() => {
+        const filters = document.querySelector('.filters-section');
+        filters?.classList.add('revealed');
+      }, 600);
+
+      // Staggered reveal for article cards
+      const observerOptions = {
         threshold: 0.1,
-        visibleClass: '',
-        onReveal: (el) => {
-          el.classList.remove('opacity-0', 'translate-y-4');
-          el.classList.add('opacity-100', 'translate-y-0');
-        },
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            cardObserver.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.article-wrapper').forEach((card) => {
+        cardObserver.observe(card);
       });
+
+      // Initialize filters
+      initArticleFiltersUI();
+
+      // Reset filter button handler
+      const resetBtn = document.querySelector('.reset-filter-btn');
+      resetBtn?.addEventListener('click', () => {
+        const allBtn = document.querySelector('.article-filters .filter-btn[data-filter="all"]') as HTMLElement;
+        allBtn?.click();
+      });
+
+      return () => {
+        cardObserver.disconnect();
+      };
     });
   }
 
-  initSection('perspectives-index-reveal-init', initReveal);
+  initSection('perspectives-init', initPerspectives);
 </script>
