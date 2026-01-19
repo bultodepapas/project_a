@@ -707,7 +707,7 @@ const iconPaths: Record<string, string> = {
 </style>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initGlobal } from '@/lib/lifecycle';
 
   function initHeader() {
     const header = document.querySelector('[data-header]') as HTMLElement;
@@ -858,6 +858,5 @@ const iconPaths: Record<string, string> = {
     });
   }
 
-  initHeader();
-  document.addEventListener('astro:page-load', initHeader);
+  initGlobal('header-init', initHeader);
 </script>

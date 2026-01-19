@@ -329,7 +329,7 @@ const otherLangs = supportedLangs.filter(lang => lang !== currentLang);
 </style>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initGlobal } from '@/lib/lifecycle';
 
   function initLangSwitch() {
     const switches = document.querySelectorAll('[data-lang-switch]');
@@ -431,6 +431,5 @@ const otherLangs = supportedLangs.filter(lang => lang !== currentLang);
     });
   }
 
-  initLangSwitch();
-  document.addEventListener('astro:page-load', initLangSwitch);
+  initGlobal('lang-switch-init', initLangSwitch);
 </script>

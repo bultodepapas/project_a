@@ -383,7 +383,7 @@ const iconPaths: Record<string, string> = {
 </style>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initSection } from '@/lib/lifecycle';
   import { createRevealObserver } from '@/lib/ui/animations';
 
   function initOperatingModel() {
@@ -402,6 +402,5 @@ const iconPaths: Record<string, string> = {
     });
   }
 
-  initOperatingModel();
-  document.addEventListener('astro:page-load', initOperatingModel);
+  initSection('operating-model-init', initOperatingModel);
 </script>

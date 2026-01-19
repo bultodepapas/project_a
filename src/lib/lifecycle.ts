@@ -3,12 +3,16 @@ type Cleanup = () => void;
 type LifecycleStore = {
   cleanups: Set<Cleanup>;
   inited: WeakMap<Element, Set<string>>;
+  pageLoadKeys: Set<string>;
+  globalKeys: Set<string>;
 };
 
 const store = ((globalThis as unknown as { __uiLifecycle?: LifecycleStore }).__uiLifecycle ??=
   {
     cleanups: new Set<Cleanup>(),
     inited: new WeakMap<Element, Set<string>>(),
+    pageLoadKeys: new Set<string>(),
+    globalKeys: new Set<string>(),
   }) as LifecycleStore;
 
 function markInitialized(el: Element, key: string): boolean {
@@ -48,4 +52,21 @@ export function runCleanups() {
     }
   });
   store.cleanups.clear();
+}
+
+function registerPageLoad(key: string, init: () => void) {
+  if (store.pageLoadKeys.has(key)) return;
+  store.pageLoadKeys.add(key);
+  document.addEventListener('astro:page-load', init);
+}
+
+export function initSection(key: string, init: () => void) {
+  init();
+  registerPageLoad(key, init);
+}
+
+export function initGlobal(key: string, init: () => void) {
+  if (store.globalKeys.has(key)) return;
+  store.globalKeys.add(key);
+  init();
 }

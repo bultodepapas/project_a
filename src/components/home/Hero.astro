@@ -568,7 +568,7 @@ const headlineWords = headline.split(' ');
 </style>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initSection } from '@/lib/lifecycle';
   import { animateCounter, bindTilt, createRevealObserver } from '@/lib/ui/animations';
 
   function initHero() {
@@ -623,6 +623,5 @@ const headlineWords = headline.split(' ');
     });
   }
 
-  initHero();
-  document.addEventListener('astro:page-load', initHero);
+  initSection('hero-init', initHero);
 </script>

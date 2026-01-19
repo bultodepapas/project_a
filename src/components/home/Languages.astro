@@ -394,7 +394,7 @@ const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stro
 </section>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initSection } from '@/lib/lifecycle';
   import { animateCounter, animateRing, animateWaveBar, bindTilt, createRevealObserver } from '@/lib/ui/animations';
 
   function initLanguages() {
@@ -479,8 +479,7 @@ const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stro
     });
   }
 
-  initLanguages();
-  document.addEventListener('astro:page-load', initLanguages);
+  initSection('languages-init', initLanguages);
 </script>
 
 <style>

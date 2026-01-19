@@ -306,7 +306,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
 </style>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initSection } from '@/lib/lifecycle';
   import { createRevealObserver } from '@/lib/ui/animations';
 
   function initAwards() {
@@ -328,6 +328,5 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
     });
   }
 
-  initAwards();
-  document.addEventListener('astro:page-load', initAwards);
+  initSection('awards-init', initAwards);
 </script>

@@ -254,7 +254,7 @@ const contactMethods = [
 </style>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initSection } from '@/lib/lifecycle';
   import { createRevealObserver } from '@/lib/ui/animations';
 
   function initContact() {
@@ -305,6 +305,5 @@ const contactMethods = [
     });
   }
 
-  initContact();
-  document.addEventListener('astro:page-load', initContact);
+  initSection('contact-init', initContact);
 </script>

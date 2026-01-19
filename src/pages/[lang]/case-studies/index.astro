@@ -100,7 +100,7 @@ const pageDescription = t(typedLang, 'cases.index.subtitle');
 </Page>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initSection } from '@/lib/lifecycle';
   import { createRevealObserver } from '@/lib/ui/animations';
 
   // Simple reveal animation observer
@@ -119,6 +119,5 @@ const pageDescription = t(typedLang, 'cases.index.subtitle');
     });
   }
   
-  initReveal();
-  document.addEventListener('astro:page-load', initReveal);
+  initSection('cases-index-reveal-init', initReveal);
 </script>

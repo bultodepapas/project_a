@@ -363,7 +363,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
 </style>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initSection } from '@/lib/lifecycle';
   import { animateCounter, animateRing, createRevealObserver } from '@/lib/ui/animations';
 
   function initProofStrip() {
@@ -441,6 +441,5 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
     });
   }
 
-  initProofStrip();
-  document.addEventListener('astro:page-load', initProofStrip);
+  initSection('proof-strip-init', initProofStrip);
 </script>

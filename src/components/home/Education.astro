@@ -406,7 +406,7 @@ const icons: Record<string, string> = {
 </section>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initSection } from '@/lib/lifecycle';
   import { animateCounter, animateWaveBar, createRevealObserver } from '@/lib/ui/animations';
 
   function initEducation() {
@@ -669,8 +669,7 @@ const icons: Record<string, string> = {
     });
   }
 
-  initEducation();
-  document.addEventListener('astro:page-load', initEducation);
+  initSection('education-init', initEducation);
 </script>
 
 <style>

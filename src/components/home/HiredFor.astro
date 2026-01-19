@@ -424,7 +424,7 @@ const iconPaths: Record<string, string> = {
 </style>
 
 <script>
-  import { initOnce } from '@/lib/lifecycle';
+  import { initOnce, initSection } from '@/lib/lifecycle';
   import { animateCounter, bindTilt, createRevealObserver } from '@/lib/ui/animations';
 
   function parseMetric(metric: string) {
@@ -538,6 +538,5 @@ const iconPaths: Record<string, string> = {
     if (path2) path2.setAttribute('d', curve2);
   }
 
-  initHiredFor();
-  document.addEventListener('astro:page-load', initHiredFor);
+  initSection('hired-for-init', initHiredFor);
 </script>
