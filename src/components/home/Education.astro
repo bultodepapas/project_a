@@ -407,12 +407,13 @@ const icons: Record<string, string> = {
 
 <script>
   import { initOnce } from '@/lib/lifecycle';
+  import { animateCounter, animateWaveBar, createRevealObserver } from '@/lib/ui/animations';
 
   function initEducation() {
     const section = document.getElementById('education');
     initOnce(section, 'education', (root) => {
       const disposers: Array<() => void> = [];
-      const intervals: number[] = [];
+      const cleanups: Array<() => void> = [];
       const on = (
         target: EventTarget,
         event: string,
@@ -424,8 +425,6 @@ const icons: Record<string, string> = {
       };
 
       let animationId: number | null = null;
-      let observer: IntersectionObserver | null = null;
-      let statsObserver: IntersectionObserver | null = null;
 
       // === CONSTELLATION PARTICLE NETWORK ===
       const canvas = root.querySelector('#edu-constellation') as HTMLCanvasElement | null;
@@ -529,20 +528,6 @@ const icons: Record<string, string> = {
         }
       }
 
-      // === 3D CARD FLIP ===
-      root.querySelectorAll('.edu-card').forEach((card) => {
-        let isFlipped = false;
-        const handleClick = () => {
-          isFlipped = !isFlipped;
-          if (isFlipped) {
-            (card as HTMLElement).style.transform = 'rotateY(180deg)';
-          } else {
-            (card as HTMLElement).style.transform = 'rotateY(0deg)';
-          }
-        };
-        on(card, 'click', handleClick);
-      });
-
       // === MAGNETIC CARD TILT ===
       root.querySelectorAll('.edu-card-wrapper').forEach((wrapper) => {
         const card = wrapper.querySelector('.edu-card') as HTMLElement | null;
@@ -623,24 +608,16 @@ const icons: Record<string, string> = {
       });
 
       // === REVEAL ANIMATIONS ===
-      observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-
-            entry.target.querySelectorAll('.edu-progress-bar').forEach((bar) => {
-              const width = (bar as HTMLElement).dataset.width || '0';
-              setTimeout(() => {
-                (bar as HTMLElement).style.width = `${width}%`;
-              }, 600);
-            });
-
-            observer?.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.4, rootMargin: '-50px 0px -50px 0px' });
-
-      root.querySelectorAll('.edu-reveal').forEach((el) => observer?.observe(el));
+      const revealCleanup = createRevealObserver(root, {
+        selector: '.edu-reveal',
+        threshold: 0.4,
+        rootMargin: '-50px 0px -50px 0px',
+        onReveal: (el) => {
+          el.querySelectorAll('.edu-progress-bar').forEach((bar) => {
+            cleanups.push(animateWaveBar(bar as HTMLElement, { delay: 600 }));
+          });
+        },
+      });
 
       // === PARALLAX ORBS ===
       const orbs = root.querySelectorAll('.edu-orb');
@@ -659,42 +636,34 @@ const icons: Record<string, string> = {
       }
 
       // === STAT COUNTER ANIMATION ===
-      const stats = root.querySelectorAll('.edu-stat-value');
-      statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement;
-            const text = el.textContent || '';
-            const match = text.match(/(\d+)/);
-            if (match) {
-              const target = parseInt(match[1], 10);
-              let current = 0;
-              const increment = target / 30;
-              const suffix = text.replace(/\d+/, '');
+      const statsCleanup = createRevealObserver(root, {
+        selector: '.edu-stat-value',
+        threshold: 0.5,
+        onReveal: (el) => {
+          const targetEl = el as HTMLElement;
+          const text = targetEl.textContent || '';
+          const match = text.match(/(\d+)/);
+          if (!match) return;
 
-              const counter = window.setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                  current = target;
-                  clearInterval(counter);
-                }
-                el.textContent = Math.floor(current) + suffix;
-              }, 30);
-              intervals.push(counter);
-            }
-            statsObserver?.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.5 });
+          const target = parseInt(match[1], 10);
+          const suffix = text.replace(/\d+/, '');
 
-      stats.forEach((stat) => statsObserver?.observe(stat));
+          cleanups.push(
+            animateCounter(targetEl, {
+              target,
+              duration: 1000,
+              suffix,
+            })
+          );
+        },
+      });
 
       return () => {
         if (animationId !== null) cancelAnimationFrame(animationId);
-        intervals.forEach((intervalId) => clearInterval(intervalId));
-        observer?.disconnect();
-        statsObserver?.disconnect();
         disposers.forEach((dispose) => dispose());
+        revealCleanup();
+        statsCleanup();
+        cleanups.forEach((cleanup) => cleanup());
       };
     });
   }

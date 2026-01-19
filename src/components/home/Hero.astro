@@ -569,74 +569,55 @@ const headlineWords = headline.split(' ');
 
 <script>
   import { initOnce } from '@/lib/lifecycle';
-
-  function animateValue(el: HTMLElement, start: number, end: number, duration: number) {
-    const startTime = performance.now();
-
-    const step = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-
-      // Ease out cubic
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
-
-      const current = Math.floor(start + (end - start) * easeProgress);
-      el.textContent = current.toString();
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      }
-    };
-
-    requestAnimationFrame(step);
-  }
+  import { animateCounter, bindTilt, createRevealObserver } from '@/lib/ui/animations';
 
   function initHero() {
     const heroSection = document.getElementById('hero');
     initOnce(heroSection, 'hero', (root) => {
-      const statCounters = root.querySelectorAll('.stat-counter');
+      const counters = Array.from(root.querySelectorAll('.stat-counter')) as HTMLElement[];
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let observer: IntersectionObserver | null = null;
-      let handleMouseMove: ((e: MouseEvent) => void) | null = null;
+      const cleanups: Array<() => void> = [];
+      const timeouts: number[] = [];
+      let countersStarted = false;
 
-      observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => {
-              statCounters.forEach((counter, index) => {
-                const el = counter as HTMLElement;
-                const target = parseInt(el.dataset.target || '0', 10);
-                setTimeout(() => {
-                  animateValue(el, 0, target, 1500);
-                }, index * 200);
-              });
-            }, 1500);
-
-            observer?.disconnect();
-          }
+      const startCounters = () => {
+        if (countersStarted || prefersReducedMotion) return;
+        countersStarted = true;
+        counters.forEach((counter, index) => {
+          const timeoutId = window.setTimeout(() => {
+            cleanups.push(
+              animateCounter(counter, {
+                target: parseInt(counter.dataset.target || '0', 10),
+                duration: 1500,
+              })
+            );
+          }, 1500 + index * 200);
+          timeouts.push(timeoutId);
         });
-      }, { threshold: 0.3 });
+      };
 
-      observer.observe(root);
+      const revealCleanup = createRevealObserver(root, {
+        selector: '.orb-container',
+        threshold: 0.3,
+        onReveal: startCounters,
+      });
 
       const orbContainer = root.querySelector('.orb-container') as HTMLElement | null;
-      if (orbContainer && !prefersReducedMotion) {
-        handleMouseMove = (e: MouseEvent) => {
-          const rect = orbContainer.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          const moveX = (e.clientX - centerX) * 0.02;
-          const moveY = (e.clientY - centerY) * 0.02;
-          orbContainer.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        };
-        document.addEventListener('mousemove', handleMouseMove);
+      if (orbContainer) {
+        cleanups.push(
+          bindTilt(orbContainer, {
+            intensity: 40,
+            scale: 1.02,
+            perspective: 1200,
+            disabled: prefersReducedMotion,
+          })
+        );
       }
 
       return () => {
-        observer?.disconnect();
-        if (handleMouseMove) {
-          document.removeEventListener('mousemove', handleMouseMove);
-        }
+        revealCleanup();
+        timeouts.forEach((timeoutId) => window.clearTimeout(timeoutId));
+        cleanups.forEach((cleanup) => cleanup());
       };
     });
   }

@@ -395,122 +395,52 @@ const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stro
 
 <script>
   import { initOnce } from '@/lib/lifecycle';
+  import { animateCounter, animateRing, animateWaveBar, bindTilt, createRevealObserver } from '@/lib/ui/animations';
 
   function initLanguages() {
     const section = document.getElementById('languages');
     initOnce(section, 'languages', (root) => {
-      const disposers: Array<() => void> = [];
-      const on = (
-        target: EventTarget,
-        event: string,
-        handler: (e: Event) => void,
-        options?: AddEventListenerOptions
-      ) => {
-        target.addEventListener(event, handler, options);
-        disposers.push(() => target.removeEventListener(event, handler, options));
+      const cleanups: Array<() => void> = [];
+      const timeouts: number[] = [];
+      const schedule = (fn: () => void, delay: number) => {
+        const id = window.setTimeout(fn, delay);
+        timeouts.push(id);
       };
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-
-            const progressRing = entry.target.querySelector('.lang-progress-ring') as SVGCircleElement;
-            if (progressRing) {
-              const offset = progressRing.dataset.offset;
-              setTimeout(() => {
-                progressRing.style.strokeDashoffset = offset || '0';
-              }, 500);
-            }
-
-            const waveBar = entry.target.querySelector('.lang-wave-bar') as HTMLElement;
-            if (waveBar) {
-              const width = waveBar.dataset.width;
-              setTimeout(() => {
-                waveBar.style.width = `${width}%`;
-              }, 700);
-            }
-
-            const counters = entry.target.querySelectorAll('.lang-counter');
-            counters.forEach((counter, i) => {
-              setTimeout(() => {
-                animateCounter(counter as HTMLElement);
-              }, 900 + i * 150);
-            });
-
-            observer.unobserve(entry.target);
+      const cleanupReveal = createRevealObserver(root, {
+        selector: '.lang-reveal',
+        threshold: 0.45,
+        rootMargin: '-60px 0px -60px 0px',
+        visibleClass: 'is-visible',
+        onReveal: (el) => {
+          const progressRing = el.querySelector('.lang-progress-ring') as SVGCircleElement | null;
+          if (progressRing) {
+            cleanups.push(animateRing(progressRing, { delay: 500 }));
           }
+
+          const waveBar = el.querySelector('.lang-wave-bar') as HTMLElement | null;
+          if (waveBar) {
+            cleanups.push(animateWaveBar(waveBar, { delay: 700 }));
+          }
+
+          const counters = el.querySelectorAll('.lang-counter');
+          counters.forEach((counter, i) => {
+            schedule(() => {
+              cleanups.push(animateCounter(counter as HTMLElement, { duration: 1000 }));
+            }, 900 + i * 150);
+          });
+        },
+      });
+
+      root.querySelectorAll('.lang-card').forEach((card) => {
+        const cleanupTilt = bindTilt(card as HTMLElement, {
+          intensity: 20,
+          scale: 1.02,
+          perspective: 1000,
+          spotlight: '.lang-spotlight',
+          shimmer: '.lang-shimmer',
         });
-      }, { threshold: 0.45, rootMargin: '-60px 0px -60px 0px' });
-
-      root.querySelectorAll('.lang-reveal').forEach((el) => observer.observe(el));
-
-      function animateCounter(el: HTMLElement) {
-        const target = parseInt(el.dataset.target || '0', 10);
-        const duration = 1000;
-        const start = performance.now();
-
-        const step = (currentTime: number) => {
-          const elapsed = currentTime - start;
-          const progress = Math.min(elapsed / duration, 1);
-          const easeOut = 1 - Math.pow(1 - progress, 3);
-          const current = Math.floor(easeOut * target);
-          el.textContent = current.toString();
-
-          if (progress < 1) {
-            requestAnimationFrame(step);
-          } else {
-            el.textContent = target.toString();
-          }
-        };
-
-        requestAnimationFrame(step);
-      }
-
-      root.querySelectorAll('.lang-card-wrapper').forEach((wrapper) => {
-        const card = wrapper.querySelector('.lang-card') as HTMLElement | null;
-        const spotlight = wrapper.querySelector('.lang-spotlight') as HTMLElement | null;
-        const shimmer = wrapper.querySelector('.lang-shimmer') as HTMLElement | null;
-
-        if (!card) return;
-
-        const handleMove = (e: Event) => {
-          const mouseEvent = e as MouseEvent;
-          const rect = (wrapper as HTMLElement).getBoundingClientRect();
-          const x = mouseEvent.clientX - rect.left;
-          const y = mouseEvent.clientY - rect.top;
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-
-          const rotateX = (y - centerY) / 20;
-          const rotateY = (centerX - x) / 20;
-
-          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-
-          if (spotlight) {
-            spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.15) 0%, transparent 60%)`;
-          }
-
-          if (shimmer) {
-            const percent = (x / rect.width) * 100;
-            shimmer.style.background = `linear-gradient(
-              ${105 + (x / rect.width) * 30}deg,
-              transparent 0%,
-              rgba(255,255,255,0.05) ${percent - 10}%,
-              rgba(255,255,255,0.1) ${percent}%,
-              rgba(255,255,255,0.05) ${percent + 10}%,
-              transparent 100%
-            )`;
-          }
-        };
-
-        const handleLeave = () => {
-          card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
-          if (shimmer) shimmer.style.background = 'transparent';
-        };
-
-        on(wrapper, 'mousemove', handleMove);
-        on(wrapper, 'mouseleave', handleLeave);
+        cleanups.push(cleanupTilt);
       });
 
       root.querySelectorAll('.lang-flag-3d').forEach((flag) => {
@@ -525,13 +455,18 @@ const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stro
         const handleLeave = () => {
           el.style.transform = 'rotateY(0) rotateX(0) scale(1)';
         };
-        on(el, 'mousemove', handleMove);
-        on(el, 'mouseleave', handleLeave);
+        el.addEventListener('mousemove', handleMove);
+        el.addEventListener('mouseleave', handleLeave);
+        cleanups.push(() => {
+          el.removeEventListener('mousemove', handleMove);
+          el.removeEventListener('mouseleave', handleLeave);
+        });
       });
 
       return () => {
-        observer.disconnect();
-        disposers.forEach((dispose) => dispose());
+        cleanupReveal();
+        timeouts.forEach((id) => window.clearTimeout(id));
+        cleanups.forEach((cleanup) => cleanup());
       };
     });
   }

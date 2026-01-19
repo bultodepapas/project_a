@@ -386,27 +386,20 @@ const nodeColors = nodes.map(n => n.color);
 
 <script>
   import { initOnce } from '@/lib/lifecycle';
+  import { createRevealObserver } from '@/lib/ui/animations';
 
   function initOperatingModel() {
     const section = document.getElementById('operating-model');
     initOnce(section, 'operating-model', (root) => {
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-          }
-        });
-      }, {
+      const cleanupReveal = createRevealObserver(root, {
+        selector: '.op-reveal',
         threshold: 0.1,
-        rootMargin: '50px'
-      });
-
-      root.querySelectorAll('.op-reveal').forEach((el) => {
-        revealObserver.observe(el);
+        rootMargin: '50px',
+        visibleClass: 'is-visible',
       });
 
       return () => {
-        revealObserver.disconnect();
+        cleanupReveal();
       };
     });
   }

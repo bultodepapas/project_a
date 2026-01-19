@@ -45,73 +45,28 @@ const { lang, themes, regions } = Astro.props;
 
 <script>
   import { initOnce } from '@/lib/lifecycle';
+  import { useFilters } from '@/lib/ui/filters';
 
   function initFilters() {
     const container = document.querySelector('.case-filters');
     initOnce(container, 'case-filters', (root) => {
-      const filterBtns = root.querySelectorAll('.filter-btn');
-      const cards = document.querySelectorAll('.case-card');
       const noResultsMsg = document.getElementById('no-results-message');
-      const disposers: Array<() => void> = [];
 
-      const on = (
-        target: EventTarget,
-        event: string,
-        handler: EventListenerOrEventListenerObject,
-        options?: AddEventListenerOptions
-      ) => {
-        target.addEventListener(event, handler, options);
-        disposers.push(() => target.removeEventListener(event, handler, options));
-      };
-
-      let activeTheme = 'all';
-
-      filterBtns.forEach((btn) => {
-        on(btn, 'click', () => {
-          const group = btn.getAttribute('data-group');
-          const filter = btn.getAttribute('data-filter') || 'all';
-
-          document.querySelectorAll(`.filter-btn[data-group="${group}"]`).forEach((b) => {
-            b.classList.remove('bg-primary', 'text-white', 'border-primary');
-            b.classList.add('bg-transparent', 'text-muted', 'border-border');
-          });
-          btn.classList.remove('bg-transparent', 'text-muted', 'border-border');
-          btn.classList.add('bg-primary', 'text-white', 'border-primary');
-
-          activeTheme = filter;
-          filterCards();
-        });
+      return useFilters(root, {
+        cardSelector: '.case-card',
+        filterAttr: 'data-theme',
+        noResultsEl: noResultsMsg,
+        onShow: (card) => {
+          setTimeout(() => {
+            card.classList.remove('opacity-0', 'translate-y-4');
+            card.classList.add('opacity-100', 'translate-y-0');
+          }, 50);
+        },
+        onHide: (card) => {
+          card.classList.add('opacity-0', 'translate-y-4');
+          card.classList.remove('opacity-100', 'translate-y-0');
+        },
       });
-
-      function filterCards() {
-        let visibleCount = 0;
-
-        cards.forEach((card) => {
-          const cardTheme = card.getAttribute('data-theme');
-          const isVisible = activeTheme === 'all' || cardTheme === activeTheme;
-
-          if (isVisible) {
-            (card as HTMLElement).style.display = 'flex';
-            setTimeout(() => {
-              card.classList.remove('opacity-0', 'translate-y-4');
-              card.classList.add('opacity-100', 'translate-y-0');
-            }, 50);
-            visibleCount++;
-          } else {
-            (card as HTMLElement).style.display = 'none';
-            card.classList.add('opacity-0', 'translate-y-4');
-            card.classList.remove('opacity-100', 'translate-y-0');
-          }
-        });
-
-        if (noResultsMsg) {
-          noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
-        }
-      }
-
-      return () => {
-        disposers.forEach((dispose) => dispose());
-      };
     });
   }
 
