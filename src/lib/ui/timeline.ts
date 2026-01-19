@@ -13,22 +13,6 @@ export function initTimelineUI() {
       });
 
       const cleanups: Array<() => void> = [];
-      root.querySelectorAll('.tl-card').forEach((card) => {
-        const cardEl = card as HTMLElement;
-        const cleanupTilt = bindTilt(cardEl, {
-          intensity: 20,
-          scale: 1.02,
-          perspective: 1000,
-          onMove: ({ x, y }) => {
-            const spotlight = cardEl.querySelector('.tl-spotlight') as HTMLElement | null;
-            if (spotlight) {
-              spotlight.style.setProperty('--mouse-x', `${x}px`);
-              spotlight.style.setProperty('--mouse-y', `${y}px`);
-            }
-          },
-        });
-        cleanups.push(cleanupTilt);
-      });
 
       return () => {
         cleanupReveal();

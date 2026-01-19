@@ -130,7 +130,8 @@ export function initEducationUI() {
         }
       }
 
-      // === MAGNETIC CARD TILT (deferred until reveal) ===
+      // === MAGNETIC CARD TILT (deferred until reveal) === DESACTIVADO
+      // Efecto tilt desactivado para education cards
 
       // === FLAG 3D ROTATION ===
       root.querySelectorAll('.edu-flag-3d').forEach((flag) => {
@@ -164,51 +165,6 @@ export function initEducationUI() {
             if (card) {
               let isFlipped = false;
 
-              const handleMove = (e: Event) => {
-                if (isFlipped) return;
-                const mouseEvent = e as MouseEvent;
-                const rect = (wrapper as HTMLElement).getBoundingClientRect();
-                const x = mouseEvent.clientX - rect.left;
-                const y = mouseEvent.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                // Disable transition for smooth tilt movement
-                card.style.transition = 'none';
-
-                const rotateX = (y - centerY) / 15;
-                const rotateY = (centerX - x) / 15;
-
-                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-
-                if (spotlight) {
-                  spotlight.style.opacity = '1';
-                  spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.15) 0%, transparent 60%)`;
-                }
-
-                if (holographic) {
-                  holographic.style.background = `
-                    linear-gradient(
-                      ${110 + (x / rect.width) * 40}deg,
-                      transparent 0%,
-                      hsla(${(x / rect.width) * 360}, 100%, 70%, 0.1) 30%,
-                      hsla(${((x / rect.width) * 360 + 60) % 360}, 100%, 70%, 0.15) 50%,
-                      hsla(${((x / rect.width) * 360 + 120) % 360}, 100%, 70%, 0.1) 70%,
-                      transparent 100%
-                    )
-                  `;
-                }
-              };
-
-              const handleLeave = () => {
-                // Re-enable transition and reset
-                card.style.transition = '';
-                if (!isFlipped) {
-                  card.style.transform = 'rotateX(0) rotateY(0)';
-                }
-                if (spotlight) spotlight.style.opacity = '0';
-              };
-
               const handleFlip = () => {
                 isFlipped = !isFlipped;
                 // Disable transition for instant flip
@@ -220,8 +176,6 @@ export function initEducationUI() {
                 }
               };
 
-              on(wrapper, 'mousemove', handleMove);
-              on(wrapper, 'mouseleave', handleLeave);
               on(card, 'click', handleFlip);
             }
           }

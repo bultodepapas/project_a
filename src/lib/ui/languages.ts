@@ -51,17 +51,6 @@ export function initLanguagesUI() {
         },
       });
 
-      root.querySelectorAll('.lang-card').forEach((card) => {
-        const cleanupTilt = bindTilt(card as HTMLElement, {
-          intensity: 20,
-          scale: 1.02,
-          perspective: 1000,
-          spotlight: '.lang-spotlight',
-          shimmer: '.lang-shimmer',
-        });
-        cleanups.push(cleanupTilt);
-      });
-
       root.querySelectorAll('.lang-flag-3d').forEach((flag) => {
         const el = flag as HTMLElement;
         const handleMove = (e: Event) => {
