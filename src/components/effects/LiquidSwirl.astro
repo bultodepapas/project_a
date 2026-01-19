@@ -1,198 +1,134 @@
 ---
 /**
- * LiquidSwirl Component
+ * LiquidSwirl Component - SIMPLIFIED VERSION
  * 
- * Envuelve una tarjeta con efecto de vórtice líquido interactivo.
- * Proporciona:
- * - SVG filter con feTurbulence dinámico
- * - Clip-path que se distorsiona según posición del mouse
- * - Variables CSS para control desde liquid-swirl.ts
+ * Efecto de spotlight líquido que sigue el cursor
+ * Basado en el patrón exitoso de ChapterDeck y Education
  * 
  * Props:
  * - intensity: número 0-1, qué tan intenso es el efecto
  * - radius: radio del vórtice en px
- * - color: color base del efecto (opcional, por defecto usa CSS)
+ * - color: color base del efecto
  */
 
 interface Props {
   intensity?: number;
   radius?: number;
   color?: string;
-  baseFrequency?: number;
 }
 
-const { intensity = 0.8, radius = 150, color, baseFrequency = 0.3 } = Astro.props;
+const { intensity = 0.8, radius = 600, color = 'rgba(255,255,255,0.25)' } = Astro.props;
 ---
 
-<div
-  class="liquid-swirl-wrapper"
-  data-liquid-swirl
-  data-swirl-intensity={intensity}
-  data-swirl-radius={radius}
-  data-swirl-color={color || 'inherit'}
-  data-swirl-base-frequency={baseFrequency}
->
-  {/* SVG Filter Container - Definiciones de filtros reutilizables */}
-  <svg
-    class="liquid-swirl-filters"
-    data-liquid-filter
-    viewBox="0 0 400 400"
-    width="0"
-    height="0"
-    aria-hidden="true"
-  >
-    <defs>
-      {/* Filtro principal con turbulencia dinámica */}
-      <filter id="liquidSwirl" x="-50%" y="-50%" width="200%" height="200%">
-        {/* feTurbulence: crea el patrón de fluido */}
-        <feTurbulence
-          type="fractalNoise"
-          baseFrequency={baseFrequency}
-          numOctaves="4"
-          result="turbulence"
-          seed="1"
-        />
-
-        {/* feDisplacementMap: distorsiona usando el turbulence */}
-        <feDisplacementMap
-          in="SourceGraphic"
-          in2="turbulence"
-          scale="25"
-          xChannelSelector="R"
-          yChannelSelector="G"
-        />
-
-        {/* feGaussianBlur: suaviza los bordes */}
-        <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" />
-
-        {/* feColorMatrix: controla opacidad basado en intensidad */}
-        <feComponentTransfer>
-          <feFuncA type="linear" slope="var(--swirl-intensity, 0)" />
-        </feComponentTransfer>
-      </filter>
-
-      {/* Filtro secundario para efecto de "absorción" */}
-      <filter id="liquidSwirlAbsorption">
-        <feTurbulence
-          type="fractalNoise"
-          baseFrequency="0.5"
-          numOctaves="3"
-          result="turbulence"
-        />
-
-        <feDisplacementMap
-          in="SourceGraphic"
-          in2="turbulence"
-          scale="8"
-          xChannelSelector="R"
-          yChannelSelector="G"
-        />
-      </filter>
-
-      {/* Radial gradient para efecto de vórtice */}
-      <radialGradient id="swirlGradient" cx="50%" cy="50%" r="60%">
-        <stop offset="0%" style="stop-color: currentColor; stop-opacity: 0.3;" />
-        <stop offset="60%" style="stop-color: currentColor; stop-opacity: 0.1;" />
-        <stop offset="100%" style="stop-color: currentColor; stop-opacity: 0;" />
-      </radialGradient>
-    </defs>
-  </svg>
-
-  {/* Elemento decorativo del vórtice */}
-  <div
-    class="liquid-swirl-effect"
-    data-swirl-clip
-    style={{
-      '--swirl-x': '50%',
-      '--swirl-y': '50%',
-      '--swirl-intensity': '0',
-      '--swirl-angle': '0rad',
-      '--swirl-distance': '0px',
-    } as Record<string, any>}
-  />
+<div class="liquid-swirl-wrapper" data-liquid-card>
+  {/* Spotlight effect (follows cursor) */}
+  <div 
+    class="liquid-spotlight" 
+    data-spotlight
+    style={`
+      --intensity: ${intensity};
+      --radius: ${radius}px;
+      --spot-color: ${color};
+    `}
+  ></div>
 
   {/* Slot para contenido (la tarjeta real) */}
-  <div class="liquid-swirl-content">
-    <slot />
-  </div>
+  <slot />
 </div>
 
 <style>
   .liquid-swirl-wrapper {
     position: relative;
-    overflow: hidden;
-    border-radius: inherit;
-
-    /* Inicializa variables CSS para animación */
-    --swirl-x: 50%;
-    --swirl-y: 50%;
-    --swirl-intensity: 0;
-    --swirl-angle: 0rad;
-    --swirl-distance: 0px;
-    --swirl-color: currentColor;
-
-    /* GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform;
-  }
-
-  .liquid-swirl-filters {
-    position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
-    pointer-events: none;
-  }
-
-  .liquid-swirl-effect {
-    position: absolute;
-    top: 0;
-    left: 0;
+    display: block;
     width: 100%;
     height: 100%;
-    pointer-events: none;
+  }
+
+  .liquid-spotlight {
+    position: absolute;
+    inset: 0;
     opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Fondo con gradiente radial mejorado */
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 10;
+    
+    /* Gradiente radial que sigue el cursor - MAS INTENSO */
     background: radial-gradient(
-      circle at calc(var(--swirl-x)) calc(var(--swirl-y)),
-      rgba(255, 255, 255, calc(0.2 * var(--swirl-intensity))),
-      rgba(255, 255, 255, calc(0.1 * var(--swirl-intensity))) 40%,
-      transparent 75%
+      var(--radius, 600px) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      var(--spot-color, rgba(255,255,255,0.35)) 0%,
+      rgba(255,255,255,0.22) 15%,
+      rgba(255,255,255,0.12) 30%,
+      rgba(255,255,255,0.05) 50%,
+      transparent 70%
     );
-
-    /* Filter SVG para efecto de turbulencia */
-    filter: url(#liquidSwirl);
-
-    /* Rotación sutil basada en posición del mouse */
-    transform: rotate(calc(var(--swirl-angle) * 0.5)) scale(calc(1 + var(--swirl-intensity) * 0.15));
-    transform-origin: calc(var(--swirl-x)) calc(var(--swirl-y));
+    
+    /* Efectos adicionales para "liquid feel" */
+    filter: blur(0.5px);
+    mix-blend-mode: screen;
   }
 
-  /* Cuando el mouse está dentro, aumenta opacidad */
-  .liquid-swirl-wrapper:hover .liquid-swirl-effect {
-    opacity: 0.9;
+  /* Show on hover */
+  .liquid-swirl-wrapper:hover .liquid-spotlight {
+    opacity: 1;
   }
 
-  .liquid-swirl-content {
-    position: relative;
-    z-index: 1;
+  /* Dark mode enhancement */
+  :global(:root.dark) .liquid-spotlight {
+    background: radial-gradient(
+      var(--radius, 600px) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      var(--spot-color, rgba(255,255,255,0.4)) 0%,
+      rgba(255,255,255,0.28) 15%,
+      rgba(255,255,255,0.16) 30%,
+      rgba(255,255,255,0.08) 50%,
+      transparent 70%
+    );
   }
 
-  /* GPU acceleration only on hover */
-  .liquid-swirl-wrapper:hover {
-    will-change: transform, filter;
-  }
-
-  /* Soporte para reduced motion */
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .liquid-swirl-wrapper {
-      --swirl-intensity: 0 !important;
-    }
-
-    .liquid-swirl-effect {
+    .liquid-spotlight {
       display: none;
     }
   }
 </style>
+
+<script>
+  // Initialize spotlight effect on mount
+  function initLiquidSpotlight() {
+    const cards = document.querySelectorAll('[data-liquid-card]');
+    
+    cards.forEach(card => {
+      const spotlight = card.querySelector('[data-spotlight]') as HTMLElement;
+      if (!spotlight) return;
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        spotlight.style.setProperty('--mouse-x', `${x}%`);
+        spotlight.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      card.addEventListener('mouseenter', () => {
+        spotlight.style.opacity = '0.95';
+      });
+
+      card.addEventListener('mouseleave', () => {
+        spotlight.style.opacity = '0';
+      });
+    });
+  }
+
+  // Run on load
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLiquidSpotlight);
+    } else {
+      initLiquidSpotlight();
+    }
+
+    // Reinitialize after view transitions
+    document.addEventListener('astro:page-load', initLiquidSpotlight);
+  }
+</script>

@@ -9,7 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "validate": "tsx scripts/validate-content.ts",
+    "validate": "tsx scripts/validate.ts",
     "gen:pdf": "tsx scripts/generate-pdf.ts",
     "check": "astro check",
     "test": "vitest"

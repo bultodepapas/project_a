@@ -109,7 +109,7 @@ export function initLiquidSwirl(config: LiquidSwirlConfig): () => void {
     // Intensidad decrece con distancia
     const maxDistance = Math.sqrt(centerX * centerX + centerY * centerY);
     const distanceRatio = Math.max(0, 1 - distance / maxDistance);
-    const currentIntensity = (distanceRatio * intensity) + idleIntensityBoost;
+    const currentIntensity = Math.max(0.3, (distanceRatio * intensity) + idleIntensityBoost); // Min 0.3 para visibilidad
 
     // Ángulo hacia el cursor para rotación del vórtice
     const angle = Math.atan2(dy, dx);
@@ -124,7 +124,7 @@ export function initLiquidSwirl(config: LiquidSwirlConfig): () => void {
     // Actualiza el filtro SVG feTurbulence
     const turbulence = svgFilter.querySelector('feTurbulence') as SVGElement;
     if (turbulence) {
-      const dynamicFreq = baseFrequency + currentIntensity * 0.3;
+      const dynamicFreq = baseFrequency + currentIntensity * 0.5; // Más variación
       turbulence.setAttribute('baseFrequency', String(dynamicFreq));
       
       // Añade variación sutil en el tiempo
@@ -132,6 +132,8 @@ export function initLiquidSwirl(config: LiquidSwirlConfig): () => void {
       const seed = Math.floor(Math.sin(time * 0.5) * 100 + 100);
       turbulence.setAttribute('seed', String(seed));
     }
+    
+    console.log('Swirl intensity:', currentIntensity, 'at', mouseState.x, mouseState.y);
   };
 
   // Restaura estado cuando sale del mouse
@@ -205,6 +207,8 @@ export function initAllLiquidSwirls(): () => void {
 
   // Selecciona todas las tarjetas con el atributo data-liquid-swirl
   const cards = document.querySelectorAll('[data-liquid-swirl]') as NodeListOf<HTMLElement>;
+
+  console.log('LiquidSwirl: Found', cards.length, 'cards to initialize');
 
   if (cards.length === 0) {
     return () => {};

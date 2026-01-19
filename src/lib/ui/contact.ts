@@ -14,6 +14,8 @@ export function initContactUI() {
         },
       });
 
+      // LiquidSwirl effect is handled by inline script in component
+
       const copyBtn = root.querySelector('#copy-email-btn') as HTMLElement | null;
       const feedback = root.querySelector('#copy-feedback') as HTMLElement | null;
 

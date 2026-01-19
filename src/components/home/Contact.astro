@@ -23,7 +23,7 @@ const contactMethods = [
     color: '#6ee7b7',
     description: lang === 'es' ? 'Respuesta en 24h' : lang === 'fr' ? 'Réponse en 24h' : lang === 'pt' ? 'Resposta em 24h' : 'Response within 24h',
     swirlIntensity: 0.9,
-    swirlRadius: 200,
+    swirlRadius: 500,
     swirlFrequency: 0.4
   },
   {
@@ -35,8 +35,8 @@ const contactMethods = [
     color: '#93c5fd',
     description: lang === 'es' ? 'Conectemos profesionalmente' : lang === 'fr' ? 'Connectons-nous' : lang === 'pt' ? 'Vamos conectar' : 'Let\'s connect professionally',
     external: true,
-    swirlIntensity: 0.7,
-    swirlRadius: 180,
+    swirlIntensity: 0.75,
+    swirlRadius: 450,
     swirlFrequency: 0.3
   },
   {
@@ -47,8 +47,8 @@ const contactMethods = [
     value: 'CV / Resume',
     color: '#c4b5fd',
     description: lang === 'es' ? 'Ver experiencia completa' : lang === 'fr' ? 'Voir expérience complète' : lang === 'pt' ? 'Ver experiência completa' : 'View full experience',
-    swirlIntensity: 0.6,
-    swirlRadius: 150,
+    swirlIntensity: 0.65,
+    swirlRadius: 400,
     swirlFrequency: 0.25
   }
 ];
@@ -89,20 +89,23 @@ const contactMethods = [
     <!-- Contact Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
       {contactMethods.map((method, index) => (
-        <LiquidSwirl 
-          intensity={method.swirlIntensity} 
-          radius={method.swirlRadius}
-          color={method.color}
-          baseFrequency={method.swirlFrequency}
+        <div 
+          class="contact-card-wrapper reveal-element opacity-0 translate-y-6 transition-all duration-1000"
+          style={`transition-delay: ${(index + 1) * 200}ms;`}
         >
-          <a
-            href={method.href}
-            target={method.external ? '_blank' : undefined}
-            rel={method.external ? 'noopener noreferrer' : undefined}
-            class="contact-card group relative reveal-element opacity-0 translate-y-6 transition-all duration-1000"
-            style={`transition-delay: ${(index + 1) * 200}ms; --spot-color: ${method.color};`}
-            data-card-id={method.id}
+          <LiquidSwirl 
+            intensity={method.swirlIntensity} 
+            radius={method.swirlRadius}
+            color={`rgba(${parseInt(method.color.slice(1,3), 16)}, ${parseInt(method.color.slice(3,5), 16)}, ${parseInt(method.color.slice(5,7), 16)}, 0.5)`}
           >
+            <a
+              href={method.href}
+              target={method.external ? '_blank' : undefined}
+              rel={method.external ? 'noopener noreferrer' : undefined}
+              class="contact-card group relative block h-full"
+              style={`--spot-color: ${method.color};`}
+              data-card-id={method.id}
+            >
 
           <!-- Gradient border on hover -->
           <div
@@ -169,8 +172,9 @@ const contactMethods = [
               style={`background: radial-gradient(circle, ${method.color}40, transparent 70%)`}
             ></div>
           </div>
-          </a>
-        </LiquidSwirl>
+            </a>
+          </LiquidSwirl>
+        </div>
       ))}
     </div>
 
@@ -255,10 +259,16 @@ const contactMethods = [
 </section>
 
 <style>
-  .contact-card {
+  .contact-card-wrapper {
     perspective: 1000px;
+    height: 100%;
+  }
+
+  .contact-card {
     display: block;
     text-decoration: none;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .contact-card:hover {
@@ -316,42 +326,62 @@ const contactMethods = [
   /* Text tint on hover aligned to card color */
   .contact-card:hover h3 {
     color: var(--spot-color);
+    text-shadow: 0 0 20px color-mix(in srgb, var(--spot-color) 30%, transparent);
   }
 
   .contact-card:hover p {
     color: color-mix(in srgb, var(--spot-color) 45%, var(--color-foreground, #111827) 55%);
   }
 
-  /* Add glow effect on card border when hovering */
+  /* Enhanced border glow on hover */
   .contact-card::after {
     content: '';
     position: absolute;
-    inset: -1px;
+    inset: -2px;
     border-radius: 1rem;
-    padding: 1px;
+    padding: 2px;
     background: linear-gradient(
       135deg,
-      transparent,
-      color-mix(in srgb, var(--spot-color) 60%, transparent) 50%,
-      transparent
+      transparent 20%,
+      color-mix(in srgb, var(--spot-color) 70%, transparent) 50%,
+      transparent 80%
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.5s ease;
     pointer-events: none;
+    filter: blur(1px);
   }
 
   .contact-card:hover::after {
     opacity: 1;
+    animation: borderPulse 2s ease-in-out infinite;
   }
 
-  /* Subtle glow on hover */
-  .contact-card:hover .group-hover\:shadow-2xl {
+  @keyframes borderPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* Enhanced shadow on hover */
+  .contact-card:hover .contact-card-inner {
     box-shadow:
       0 25px 50px -12px rgba(0, 0, 0, 0.15),
-      0 0 40px -15px var(--color-accent);
+      0 0 60px -15px var(--spot-color);
+  }
+
+  /* Focus state for accessibility */
+  .contact-card:focus-visible {
+    outline: 2px solid var(--spot-color);
+    outline-offset: 4px;
+    transform: translateY(-8px);
+  }
+
+  .contact-card:focus-visible::after {
+    opacity: 1;
+    animation: borderPulse 1s ease-in-out infinite;
   }
 
   /* Reduced motion */
@@ -362,81 +392,59 @@ const contactMethods = [
     .animate-ping {
       animation: none;
     }
-    .contact-spotlight {
+    .ripple {
+      display: none;
+    }
+    .card-glow {
       display: none;
     }
   }
 </style>
 
 <script>
-  // Copy Email + Ripple Effect Functionality
-  function initContactCards() {
+  // Ripple Effect on Click
+  function initRippleEffect() {
     const cards = document.querySelectorAll('.contact-card');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Add ripple effect on click
-    if (!prefersReducedMotion) {
-      cards.forEach((card) => {
-        card.addEventListener('click', (e) => {
-          const rippleContainer = card.querySelector('.ripple-container');
-          if (!rippleContainer) return;
+    if (prefersReducedMotion) return;
 
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
+    cards.forEach((card) => {
+      card.addEventListener('click', (e) => {
+        const rippleContainer = card.querySelector('.ripple-container');
+        if (!rippleContainer) return;
 
-          const ripple = document.createElement('div');
-          ripple.className = 'ripple';
-          ripple.style.left = `${x}px`;
-          ripple.style.top = `${y}px`;
-          ripple.style.width = '20px';
-          ripple.style.height = '20px';
-          ripple.style.marginLeft = '-10px';
-          ripple.style.marginTop = '-10px';
+        const rect = card.getBoundingClientRect();
+        const x = (e as MouseEvent).clientX - rect.left;
+        const y = (e as MouseEvent).clientY - rect.top;
 
-          rippleContainer.appendChild(ripple);
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        ripple.style.width = '20px';
+        ripple.style.height = '20px';
+        ripple.style.marginLeft = '-10px';
+        ripple.style.marginTop = '-10px';
 
-          // Remove ripple after animation
-          setTimeout(() => {
-            ripple.remove();
-          }, 800);
-        });
+        rippleContainer.appendChild(ripple);
+
+        setTimeout(() => {
+          ripple.remove();
+        }, 800);
       });
-    }
-
-    // Copy email functionality
-    const copyBtn = document.getElementById('copy-email-btn') as HTMLButtonElement | null;
-    if (copyBtn) {
-      copyBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const email = copyBtn.dataset.email;
-        if (!email) return;
-
-        try {
-          await navigator.clipboard.writeText(email);
-          const feedback = document.getElementById('copy-feedback') as HTMLElement | null;
-          if (feedback) {
-            feedback.style.opacity = '1';
-            setTimeout(() => {
-              feedback.style.opacity = '0';
-            }, 2000);
-          }
-        } catch (err) {
-          console.error('Failed to copy email:', err);
-        }
-      });
-    }
+    });
   }
 
   // Initialize on load
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initContactCards);
+      document.addEventListener('DOMContentLoaded', initRippleEffect);
     } else {
-      initContactCards();
+      initRippleEffect();
     }
 
     // Reinitialize after view transitions
-    document.addEventListener('astro:page-load', initContactCards);
+    document.addEventListener('astro:page-load', initRippleEffect);
   }
 </script>

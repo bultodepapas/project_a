@@ -44,11 +44,11 @@ This codebase represents a modern, high-quality static site built with **Astro 5
 
 | Severity | Issue | Impact | Evidence | Fix (Minimal) | Effort | Risk |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **High** | **Missing XML Sitemap** | SEO disaster; search engines won't find deep pages. | `public/sitemap.xml` not found; no integration in `astro.config.mjs`. | Install `@astrojs/sitemap` | Low | Low |
+| **Fixed** | ~~**Missing XML Sitemap**~~ | Resolved: Sitemap generated at build. | `dist/sitemap-index.xml` generated. | Integrated `@astrojs/sitemap` | Done | Low |
 | **High** | **No Automated Tests** | High risk of regression in routing/PDF logic. | No `*.test.ts` or `*.spec.ts` files. | Add `vitest` + 1 smoke test for routing. | Med | Low |
-| **Medium** | **Google Fonts Blocking** | FOUT/FOIT and performance penalty. | `Base.astro` links to `fonts.googleapis.com`. | Use `@fontsource` for local self-hosting. | Low | Low |
-| **Medium** | **Inaccessible Counters** | Screen readers announce "1, 2, 3..." rapidly. | `src/lib/ui/animations.ts` updates text directly. | Add `aria-hidden` to counter, hidden span for result. | Med | Low |
-| **Medium** | **Monolithic Validator** | Hard to read/maintain validation logic. | `scripts/validate-content.ts` is huge. | Split into `validators/*.ts` modules. | Med | Med |
+| **Fixed** | ~~**Google Fonts Blocking**~~ | Resolved: Fonts self-hosted via `@fontsource`. | `src/styles/global.css` imports fonts. | Use `@fontsource` for local self-hosting. | Done | Low |
+| **Fixed** | ~~**Inaccessible Counters**~~ | Resolved: Uses `sr-only` for values. | `ProofStrip.astro` & `Languages.astro` updated. | Add `aria-hidden` to counter, hidden span for result. | Done | Low |
+| **Fixed** | ~~**Monolithic Validator**~~ | Resolved: Split into modular validators. | `scripts/validators/*.ts` created. | Split into `validators/*.ts` modules. | Done | Med |
 
 ---
 
