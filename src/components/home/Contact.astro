@@ -84,8 +84,11 @@ const contactMethods = [
           target={method.external ? '_blank' : undefined}
           rel={method.external ? 'noopener noreferrer' : undefined}
           class="contact-card group relative reveal-element opacity-0 translate-y-6 transition-all duration-1000"
-          style={`transition-delay: ${(index + 1) * 200}ms`}
+          style={`transition-delay: ${(index + 1) * 200}ms; --mouse-x: 50%; --mouse-y: 50%; --spot-color: ${method.color};`}
         >
+          <!-- Liquid Swirl Spotlight Effect -->
+          <div class="contact-spotlight absolute inset-0 rounded-2xl pointer-events-none opacity-0 transition-opacity duration-300"></div>
+
           <!-- Gradient border on hover -->
           <div
             class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[1px]"
@@ -235,6 +238,69 @@ const contactMethods = [
     transform: translateY(-8px);
   }
 
+  /* Spotlight Effect */
+  .contact-spotlight {
+    background: radial-gradient(
+      380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      color-mix(in srgb, var(--spot-color) 95%, transparent) 0%,
+      color-mix(in srgb, var(--spot-color) 72%, transparent) 24%,
+      color-mix(in srgb, var(--spot-color) 50%, transparent) 48%,
+      color-mix(in srgb, var(--spot-color) 24%, transparent) 68%,
+      color-mix(in srgb, var(--spot-color) 7%, transparent) 86%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 10;
+    filter: blur(1.5px);
+    mix-blend-mode: normal;
+    opacity: 0;
+    transition: opacity 0.28s ease-out, transform 0.28s ease-out;
+  }
+
+  /* In dark themes let it blend a bit for richer glow */
+  :global(:root.dark) .contact-spotlight {
+    mix-blend-mode: screen;
+  }
+
+  .contact-card:hover .contact-spotlight {
+    opacity: 0.95 !important;
+    transform: scale(1.01);
+  }
+
+  /* Text tint on hover aligned to card color */
+  .contact-card:hover h3 {
+    color: var(--spot-color);
+  }
+
+  .contact-card:hover p {
+    color: color-mix(in srgb, var(--spot-color) 45%, var(--color-foreground, #111827) 55%);
+  }
+
+  /* Add glow effect on card border when hovering */
+  .contact-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 1rem;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      transparent,
+      color-mix(in srgb, var(--spot-color) 60%, transparent) 50%,
+      transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .contact-card:hover::after {
+    opacity: 1;
+  }
+
   /* Subtle glow on hover */
   .contact-card:hover .group-hover\:shadow-2xl {
     box-shadow:
@@ -250,5 +316,100 @@ const contactMethods = [
     .animate-ping {
       animation: none;
     }
+    .contact-spotlight {
+      display: none;
+    }
   }
 </style>
+
+<script>
+  // Liquid Swirl Effect + Copy Email Functionality
+  function initContactCards() {
+    const cards = document.querySelectorAll('.contact-card');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Initialize Liquid Swirl effect if motion is allowed
+    if (!prefersReducedMotion) {
+      cards.forEach((card, index) => {
+        const spotlight = card.querySelector('.contact-spotlight');
+        if (!spotlight) return;
+
+        // Smoothed follow (lerp) for liquid feel
+        let lastUpdate = 0;
+        const throttle = 16; // ~60fps
+        let targetX = 50;
+        let targetY = 50;
+        let currentX = 50;
+        let currentY = 50;
+        let rafId = 0;
+
+        const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+        const animate = () => {
+          currentX = lerp(currentX, targetX, 0.22);
+          currentY = lerp(currentY, targetY, 0.22);
+          (card as HTMLElement).style.setProperty('--mouse-x', `${currentX}%`);
+          (card as HTMLElement).style.setProperty('--mouse-y', `${currentY}%`);
+          rafId = requestAnimationFrame(animate);
+        };
+        rafId = requestAnimationFrame(animate);
+
+        card.addEventListener('mousemove', (e) => {
+          const now = Date.now();
+          if (now - lastUpdate < throttle) return;
+          lastUpdate = now;
+
+          const rect = card.getBoundingClientRect();
+          targetX = ((e.clientX - rect.left) / rect.width) * 100;
+          targetY = ((e.clientY - rect.top) / rect.height) * 100;
+          
+          // Make spotlight visible
+          (spotlight as HTMLElement).style.opacity = '1';
+        });
+
+        card.addEventListener('mouseleave', () => {
+          (spotlight as HTMLElement).style.opacity = '0';
+          targetX = 50;
+          targetY = 50;
+          currentX = 50;
+          currentY = 50;
+        });
+      });
+    }
+
+    // Copy email functionality
+    const copyBtn = document.getElementById('copy-email-btn') as HTMLButtonElement | null;
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const email = copyBtn.dataset.email;
+        if (!email) return;
+
+        try {
+          await navigator.clipboard.writeText(email);
+          const feedback = document.getElementById('copy-feedback') as HTMLElement | null;
+          if (feedback) {
+            feedback.style.opacity = '1';
+            setTimeout(() => {
+              feedback.style.opacity = '0';
+            }, 2000);
+          }
+        } catch (err) {
+          console.error('Failed to copy email:', err);
+        }
+      });
+    }
+  }
+
+  // Initialize on load
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initContactCards);
+    } else {
+      initContactCards();
+    }
+
+    // Reinitialize after view transitions
+    document.addEventListener('astro:page-load', initContactCards);
+  }
+</script>

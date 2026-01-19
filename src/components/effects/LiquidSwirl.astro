@@ -1,0 +1,199 @@
+---
+/**
+ * LiquidSwirl Component
+ * 
+ * Envuelve una tarjeta con efecto de vórtice líquido interactivo.
+ * Proporciona:
+ * - SVG filter con feTurbulence dinámico
+ * - Clip-path que se distorsiona según posición del mouse
+ * - Variables CSS para control desde liquid-swirl.ts
+ * 
+ * Props:
+ * - intensity: número 0-1, qué tan intenso es el efecto
+ * - radius: radio del vórtice en px
+ * - color: color base del efecto (opcional, por defecto usa CSS)
+ */
+
+interface Props {
+  intensity?: number;
+  radius?: number;
+  color?: string;
+}
+
+const { intensity = 0.8, radius = 150, color } = Astro.props;
+---
+
+<div
+  class="liquid-swirl-wrapper"
+  data-liquid-swirl
+  data-swirl-intensity={intensity}
+  data-swirl-radius={radius}
+  data-swirl-color={color || 'inherit'}
+>
+  {/* SVG Filter Container - Definiciones de filtros reutilizables */}
+  <svg
+    class="liquid-swirl-filters"
+    data-liquid-filter
+    viewBox="0 0 400 400"
+    width="0"
+    height="0"
+    aria-hidden="true"
+  >
+    <defs>
+      {/* Filtro principal con turbulencia dinámica */}
+      <filter id="liquidSwirl" x="-50%" y="-50%" width="200%" height="200%">
+        {/* feTurbulence: crea el patrón de fluido */}
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.3"
+          numOctaves="4"
+          result="turbulence"
+          seed="1"
+        />
+
+        {/* feDisplacementMap: distorsiona usando el turbulence */}
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="turbulence"
+          scale="15"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
+
+        {/* feGaussianBlur: suaviza los bordes */}
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" />
+
+        {/* feColorMatrix: controla opacidad basado en intensidad */}
+        <feComponentTransfer>
+          <feFuncA type="linear" slope="var(--swirl-intensity, 0)" />
+        </feComponentTransfer>
+      </filter>
+
+      {/* Filtro secundario para efecto de "absorción" */}
+      <filter id="liquidSwirlAbsorption">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.5"
+          numOctaves="3"
+          result="turbulence"
+        />
+
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="turbulence"
+          scale="8"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
+      </filter>
+
+      {/* Radial gradient para efecto de vórtice */}
+      <radialGradient id="swirlGradient" cx="50%" cy="50%" r="60%">
+        <stop offset="0%" style="stop-color: currentColor; stop-opacity: 0.3;" />
+        <stop offset="60%" style="stop-color: currentColor; stop-opacity: 0.1;" />
+        <stop offset="100%" style="stop-color: currentColor; stop-opacity: 0;" />
+      </radialGradient>
+    </defs>
+  </svg>
+
+  {/* Elemento decorativo del vórtice */}
+  <div
+    class="liquid-swirl-effect"
+    data-swirl-clip
+    style={{
+      '--swirl-x': '50%',
+      '--swirl-y': '50%',
+      '--swirl-intensity': '0',
+      '--swirl-angle': '0rad',
+      '--swirl-distance': '0px',
+    } as Record<string, any>}
+  />
+
+  {/* Slot para contenido (la tarjeta real) */}
+  <div class="liquid-swirl-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .liquid-swirl-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: inherit;
+
+    /* Inicializa variables CSS para animación */
+    --swirl-x: 50%;
+    --swirl-y: 50%;
+    --swirl-intensity: 0;
+    --swirl-angle: 0rad;
+    --swirl-distance: 0px;
+    --swirl-color: currentColor;
+
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .liquid-swirl-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .liquid-swirl-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+
+    /* Usa clip-path dinámico para simular vórtice */
+    clip-path: radial-gradient(
+      circle at calc(var(--swirl-x)) calc(var(--swirl-y)),
+      transparent 0%,
+      transparent calc(40px * (1 - var(--swirl-intensity))),
+      rgba(255, 255, 255, calc(0.1 * var(--swirl-intensity)))
+        calc(80px * (1 - var(--swirl-intensity))),
+      rgba(255, 255, 255, 0) 100%
+    );
+
+    /* Fondo con gradiente radial */
+    background: radial-gradient(
+      circle at calc(var(--swirl-x)) calc(var(--swirl-y)),
+      rgba(255, 255, 255, calc(0.15 * var(--swirl-intensity))),
+      transparent 70%
+    );
+
+    /* Filter SVG para efecto de turbulencia */
+    filter: url(#liquidSwirl);
+
+    /* Rotación sutil basada en posición del mouse */
+    transform: rotate(var(--swirl-angle)) scale(1 + var(--swirl-intensity) * 0.1);
+  }
+
+  /* Cuando el mouse está dentro, aumenta opacidad */
+  .liquid-swirl-wrapper:hover .liquid-swirl-effect {
+    opacity: 1;
+  }
+
+  .liquid-swirl-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Soporte para reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .liquid-swirl-wrapper {
+      --swirl-intensity: 0 !important;
+    }
+
+    .liquid-swirl-effect {
+      display: none;
+    }
+  }
+</style>
