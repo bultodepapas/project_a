@@ -1,9 +1,9 @@
 ---
 /**
- * LiquidSwirl Component - SIMPLIFIED VERSION
+ * LiquidSwirl Component - TRUE LIQUID EFFECT
  * 
- * Efecto de spotlight líquido que sigue el cursor
- * Basado en el patrón exitoso de ChapterDeck y Education
+ * Efecto de distorsión líquida real usando SVG filters
+ * Con turbulencia animada y displacement map
  * 
  * Props:
  * - intensity: número 0-1, qué tan intenso es el efecto
@@ -18,29 +18,74 @@ interface Props {
 }
 
 const { intensity = 0.8, radius = 600, color = 'rgba(255,255,255,0.25)' } = Astro.props;
+const filterId = `liquid-swirl-${Math.random().toString(36).substr(2, 9)}`;
 ---
 
 <div class="liquid-swirl-wrapper" data-liquid-card>
-  {/* Primary spotlight layer (fast) */}
+  {/* SVG Filter Definition - REAL LIQUID EFFECT */}
+  <svg width="0" height="0" style="position: absolute;">
+    <defs>
+      <filter id={filterId}>
+        {/* Turbulence for organic distortion */}
+        <feTurbulence 
+          type="fractalNoise" 
+          baseFrequency="0.012 0.015"
+          numOctaves="3"
+          seed="2"
+          result="turbulence"
+        >
+          <animate 
+            attributeName="baseFrequency" 
+            dur="20s" 
+            values="0.012 0.015; 0.015 0.018; 0.012 0.015" 
+            repeatCount="indefinite"
+          />
+        </feTurbulence>
+        
+        {/* Displacement Map for liquid warping */}
+        <feDisplacementMap 
+          in="SourceGraphic" 
+          in2="turbulence" 
+          scale="0"
+          xChannelSelector="R" 
+          yChannelSelector="G"
+          result="displace"
+        />
+        
+        {/* Glow effect */}
+        <feGaussianBlur stdDeviation="8" result="blur"/>
+        <feColorMatrix 
+          in="blur"
+          type="matrix"
+          values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
+                  0 0 0 2 0"
+          result="glow"
+        />
+        
+        {/* Composite */}
+        <feComposite in="SourceGraphic" in2="glow" operator="over"/>
+      </filter>
+    </defs>
+  </svg>
+
+  {/* Glow layer with color */}
   <div 
-    class="liquid-spotlight liquid-spotlight-primary" 
-    data-spotlight-primary
+    class="liquid-glow" 
+    data-liquid-glow
     style={`
       --intensity: ${intensity};
       --radius: ${radius}px;
       --spot-color: ${color};
     `}
   ></div>
-  
-  {/* Secondary spotlight layer (slow, creates depth) */}
+
+  {/* Distorted overlay with SVG filter */}
   <div 
-    class="liquid-spotlight liquid-spotlight-secondary" 
-    data-spotlight-secondary
-    style={`
-      --intensity: ${intensity};
-      --radius: ${radius * 1.3}px;
-      --spot-color: ${color};
-    `}
+    class="liquid-distortion" 
+    data-liquid-distortion
+    style={`filter: url(#${filterId}); --spot-color: ${color};`}
   ></div>
 
   {/* Slot para contenido (la tarjeta real) */}
@@ -59,48 +104,47 @@ const { intensity = 0.8, radius = 600, color = 'rgba(255,255,255,0.25)' } = Astr
     position: absolute;
     inset: 0;
     opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.3s ease;
     pointer-events: none;
     border-radius: inherit;
-    z-index: 50;
+    z-index: 1;
     
-    /* Gradiente radial MUY INTENSO - mucho más visible */
+    /* Multi-stop gradient para efecto WOW más visible */
     background: radial-gradient(
       var(--radius, 600px) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
       var(--spot-color) 0%,
-      color-mix(in srgb, var(--spot-color) 90%, transparent) 15%,
-      color-mix(in srgb, var(--spot-color) 65%, transparent) 35%,
-      color-mix(in srgb, var(--spot-color) 30%, transparent) 55%,
-      transparent 75%
+      color-mix(in srgb, var(--spot-color) 70%, transparent) 15%,
+      color-mix(in srgb, var(--spot-color) 40%, transparent) 30%,
+      color-mix(in srgb, var(--spot-color) 15%, transparent) 50%,
+      transparent 70%
     );
-    
-    /* Light mode: screen para glow effect visible */
-    filter: blur(1px);
-    mix-blend-mode: screen;
+    filter: blur(2px);
   }
 
-  /* Primary layer - fast response, sharp */
+  /* Primary layer - fast response, sharp with breathing */
   .liquid-spotlight-primary {
-    z-index: 51;
+    z-index: 2;
     filter: blur(0px);
-    animation: pulse-glow 3s ease-in-out infinite;
+    animation: spotlight-breathe 3s ease-in-out infinite;
+  }
+
+  @keyframes spotlight-breathe {
+    0%, 100% { 
+      filter: blur(0px) brightness(1); 
+      opacity: 1;
+    }
+    50% { 
+      filter: blur(1px) brightness(1.2); 
+      opacity: 0.95;
+    }
   }
 
   /* Secondary layer - slower, more diffuse (depth effect) */
   .liquid-spotlight-secondary {
-    z-index: 50;
-    filter: blur(3px);
+    z-index: 1;
+    filter: blur(12px);
     opacity: 0;
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% { 
-      filter: blur(0px) brightness(1); 
-    }
-    50% { 
-      filter: blur(1px) brightness(1.15); 
-    }
+    transition: opacity 0.5s ease;
   }
 
   /* Show on hover - MUY VISIBLE */
@@ -109,33 +153,20 @@ const { intensity = 0.8, radius = 600, color = 'rgba(255,255,255,0.25)' } = Astr
   }
 
   .liquid-swirl-wrapper:hover .liquid-spotlight-secondary {
-    opacity: 0.75;
+    opacity: 0.85;
   }
 
-  /* Dark mode - screen mode + brillo blanco adicional */
+  /* Dark mode - más intenso y visible */
   :global(:root.dark) .liquid-spotlight {
-    background: radial-gradient(
-      var(--radius, 600px) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      color-mix(in srgb, var(--spot-color) 85%, white 15%) 0%,
-      color-mix(in srgb, var(--spot-color) 60%, white 10%) 20%,
-      color-mix(in srgb, var(--spot-color) 35%, transparent) 40%,
-      color-mix(in srgb, var(--spot-color) 12%, transparent) 60%,
-      transparent 80%
-    );
-    mix-blend-mode: screen;
+    opacity: 0;
   }
-
-  :global(:root.dark) .liquid-spotlight-primary {
-    animation: pulse-glow-dark 3s ease-in-out infinite;
+  
+  :global(:root.dark) .liquid-swirl-wrapper:hover .liquid-spotlight-primary {
+    opacity: 1;
   }
-
-  @keyframes pulse-glow-dark {
-    0%, 100% { 
-      filter: blur(0px) brightness(1); 
-    }
-    50% { 
-      filter: blur(1px) brightness(1.25); 
-    }
+  
+  :global(:root.dark) .liquid-swirl-wrapper:hover .liquid-spotlight-secondary {
+    opacity: 0.9;
   }
 
   /* Reduced motion */
