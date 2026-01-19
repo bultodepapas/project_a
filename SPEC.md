@@ -1389,7 +1389,20 @@ src/i18n/
 └── es.json           # UI strings ES
 ```
 
-### 11.3 UI Strings (ejemplo)
+### 11.3 Fuente de verdad de locales
+
+- **Fuente única**: `config/locales.mjs`
+- **Uso obligatorio**: routing (`astro.config.mjs`), scripts (`scripts/*.ts`) y helpers i18n (`src/i18n/config.ts`)
+- **Regla**: no se permiten listas de locales hardcodeadas fuera de `config/locales.mjs`
+
+### 11.4 Checklist para agregar un nuevo idioma
+
+1. Añadir el locale a `config/locales.mjs`.
+2. Crear `src/i18n/{locale}.json` con todas las keys (paridad con EN).
+3. Completar campos localizados en `src/data/*.json` (todas las claves por locale).
+4. Verificar con `npm run validate` y `npm run check`.
+
+### 11.5 UI Strings (ejemplo)
 
 ```json
 // src/i18n/en.json

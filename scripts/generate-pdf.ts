@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { supportedLocales } from '../config/locales.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,8 +42,7 @@ async function generatePDFs() {
   });
   const page = await browser.newPage();
 
-  // Expanded language list
-  const langs = ['en', 'es', 'fr', 'pt'];
+  const langs = supportedLocales;
 
   for (const lang of langs) {
     const url = `${BASE_URL}/${lang}/resume`;

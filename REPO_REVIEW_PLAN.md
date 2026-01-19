@@ -176,6 +176,32 @@
   - Extract shared helpers for `getStaticPaths` and lang validation.
   - Scope `useFilters` to the root container to avoid cross-page coupling.
   - Document the PDF generation flow in `SPEC.md` or `README`.
+- Detailed plan (step-by-step)
+  1) Lang routing helpers (shared, minimal)
+     - Target files: `src/pages/[lang]/index.astro`, `src/pages/[lang]/resume.astro`, `src/pages/[lang]/case-studies/index.astro`, `src/pages/[lang]/perspectives/index.astro`.
+     - Create helper module (likely `src/lib/i18n-routing.ts`):
+       - `getLangStaticPaths()` -> returns `supportedLangs.map((lang) => ({ params: { lang } }))`.
+       - `requireValidLang(lang: string | undefined, fallbackPath: string)` -> returns typed `Lang` or redirects.
+     - Replace inline `getStaticPaths` + `isValidLang` checks with shared helpers (no behavior change).
+     - Acceptance: identical routes built, same redirects for invalid lang.
+  2) Filter scoping (avoid global coupling)
+     - Target files: `src/lib/ui/filters.ts`, `src/components/cases/CaseFilters.astro`, `src/components/perspectives/ArticleFilters.astro`.
+     - Change `useFilters` to query cards from a root container (pass explicit container for cards or query within a scoped parent).
+     - Ensure `noResults` logic still applies for the current list only.
+     - Acceptance: filters behave the same on both pages; no interference if multiple filter lists exist.
+  3) PDF workflow documentation
+     - Target file: `SPEC.md` (or `README.md` if preferred).
+     - Add a short "PDF generation" section:
+       - Requires running `npm run dev` or `npm run preview`.
+       - Run `npm run gen:pdf`.
+       - Output location: `public/pdf/*`.
+     - Acceptance: anyone can regenerate PDFs using documented steps.
+- Files & scope (explicit)
+  - Helpers: `src/lib/i18n-routing.ts` (new).
+  - Call sites: `src/pages/[lang]/*`.
+  - Filter utility: `src/lib/ui/filters.ts`.
+  - Filter components: `src/components/cases/CaseFilters.astro`, `src/components/perspectives/ArticleFilters.astro`.
+  - Docs: `SPEC.md` or `README.md`.
 - Acceptance criteria
   - All localized pages use the same helper utilities.
   - Filtering works identically on case studies and perspectives pages.

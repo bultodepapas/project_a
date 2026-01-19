@@ -3,10 +3,18 @@
  * Central configuration for internationalization
  */
 
-export const defaultLang = 'en' as const;
-export const supportedLangs = ['en', 'es', 'fr', 'pt'] as const;
+import { defaultLocale, supportedLocales } from '../../config/locales.mjs';
+
+export const supportedLangs = supportedLocales as unknown as readonly [
+  'en',
+  'es',
+  'fr',
+  'pt'
+];
 
 export type Lang = (typeof supportedLangs)[number];
+
+export const defaultLang = defaultLocale as Lang;
 
 export const langNames: Record<Lang, string> = {
   en: 'English',

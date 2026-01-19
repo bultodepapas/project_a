@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
+import { defaultLocale, supportedLocales } from './config/locales.mjs';
 
 export default defineConfig({
   site: 'https://angelaparra.com',
@@ -12,8 +13,8 @@ export default defineConfig({
     },
   },
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en', 'es', 'fr', 'pt'],
+    defaultLocale,
+    locales: supportedLocales,
     routing: {
       prefixDefaultLocale: true,
     },
