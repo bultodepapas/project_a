@@ -1,4 +1,4 @@
-import { initGlobal, initOnce } from '@/lib/lifecycle';
+import { initSection, initOnce } from '@/lib/lifecycle';
 
 export function initHeaderUI() {
   function initHeader() {
@@ -150,5 +150,7 @@ export function initHeaderUI() {
     });
   }
 
-  initGlobal('header-init', initHeader);
+  // Use initSection to ensure header re-initializes on every page load
+  // Header elements get recreated during View Transitions and need fresh event listeners
+  initSection('header-init', initHeader);
 }

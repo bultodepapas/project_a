@@ -1,4 +1,4 @@
-import { initGlobal, initOnce } from '@/lib/lifecycle';
+import { initSection, initOnce } from '@/lib/lifecycle';
 
 export function initLangSwitchUI() {
   function initLangSwitch() {
@@ -101,5 +101,7 @@ export function initLangSwitchUI() {
     });
   }
 
-  initGlobal('lang-switch-init', initLangSwitch);
+  // Use initSection instead of initGlobal so LangSwitch re-initializes on every page load
+  // This ensures the dropdown listeners are properly set up even after navigation
+  initSection('lang-switch-init', initLangSwitch);
 }

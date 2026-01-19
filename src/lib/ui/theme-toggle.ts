@@ -1,4 +1,4 @@
-import { initGlobal, initOnce } from '@/lib/lifecycle';
+import { initSection, initOnce } from '@/lib/lifecycle';
 
 export function initThemeToggleUI() {
   function initThemeToggle() {
@@ -42,5 +42,7 @@ export function initThemeToggleUI() {
     });
   }
 
-  initGlobal('theme-toggle-init', initThemeToggle);
+  // Use initSection to ensure theme toggle re-initializes on every page load
+  // This is critical because the toggle button element gets recreated during View Transitions
+  initSection('theme-toggle-init', initThemeToggle);
 }

@@ -631,13 +631,15 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
 
       // Reset filter button handler
       const resetBtn = document.querySelector('.reset-filter-btn');
-      resetBtn?.addEventListener('click', () => {
+      const resetHandler = () => {
         const allBtn = document.querySelector('.article-filters .filter-btn[data-filter="all"]') as HTMLElement;
         allBtn?.click();
-      });
+      };
+      resetBtn?.addEventListener('click', resetHandler);
 
       return () => {
         cardObserver.disconnect();
+        resetBtn?.removeEventListener('click', resetHandler);
       };
     });
   }

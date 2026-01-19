@@ -167,8 +167,7 @@ export function initEducationUI() {
 
               const handleFlip = () => {
                 isFlipped = !isFlipped;
-                // Disable transition for instant flip
-                card.style.transition = 'none';
+                // Simply toggle the transform - CSS transition handles animation
                 if (isFlipped) {
                   card.style.transform = 'rotateY(180deg)';
                 } else {
@@ -176,7 +175,15 @@ export function initEducationUI() {
                 }
               };
 
+              const handleLeave = () => {
+                // Reset spotlight on mouse leave
+                if (spotlight) {
+                  spotlight.style.opacity = '0';
+                }
+              };
+
               on(card, 'click', handleFlip);
+              on(wrapper, 'mouseleave', handleLeave);
             }
           }
 
