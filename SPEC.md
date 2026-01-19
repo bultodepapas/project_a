@@ -2407,4 +2407,15 @@ NODE_ENV=production
 *Documento generado: 2026-01-17*
 *Próxima revisión: Después de Sprint 0*
 
-go to effect_library.for inspiration for the design and tools and effects
+## Apéndice E: Librería de Efectos y Referencias Visuales
+
+Para detalles de implementación visual, herramientas de animación y referencias de diseño "cinemático", consultar el archivo dedicado:
+
+> **📄 `effect_library.md`**
+
+Este archivo contiene:
+1. **Efectos Implementados**: Catálogo de animaciones actuales (View Transitions, ChapterDeck, Aurora Background, etc.) y su ubicación en el código.
+2. **Catálogo de Tecnologías**: Referencias para Scroll-Driven Animations, WebGL ligero, micro-interacciones y más.
+3. **Inspiración de Diseño**: Estrategias para lograr el look "premium" y "cinemático" (Motion Tiers, texturas, tipografía 2026).
+
+**Uso:** Consultar este archivo antes de implementar nuevas animaciones o decidir sobre librerías visuales adicionales.
