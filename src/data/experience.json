@@ -10,7 +10,13 @@
         "pt": "Estrategista de Dados & Insights de Audiência"
       },
       "period": "2021 - Present",
+      "startYear": 2021,
+      "endYear": null,
       "location": "Remote",
+      "icon": "globe",
+      "color": "#6ee7b7",
+      "gradient": "from-emerald-400 to-teal-500",
+      "metric": { "value": "8", "label": { "en": "Regional Teams", "es": "Equipos Regionales", "fr": "Équipes Régionales", "pt": "Equipes Regionais" } },
       "bullets": {
         "en": [
           "Led analytical design for international climate programmes",
@@ -18,9 +24,9 @@
           "Collaborated with EU partners and philanthropic consortia"
         ],
         "es": [
-          "Lidero diseno analitico para programas climaticos internacionales",
-          "Diseno 3 frameworks de evaluacion de impacto",
-          "Colaboro con socios UE y consorcios filantropicos"
+          "Lidero diseño analítico para programas climáticos internacionales",
+          "Diseñó 3 frameworks de evaluación de impacto",
+          "Colaboró con socios UE y consorcios filantrópicos"
         ],
         "fr": [
           "Direction de la conception analytique pour programmes climatiques internationaux",
@@ -33,7 +39,8 @@
           "Colaboração com parceiros da UE e consórcios filantrópicos"
         ]
       },
-      "tags": ["Climate", "M&E", "International"]
+      "tags": ["Climate", "M&E", "International"],
+      "skills": ["BigQuery", "Power BI", "Brandwatch"]
     },
     {
       "id": "fidelizador",
@@ -45,7 +52,13 @@
         "pt": "Gerente de Marketing & Comunicação"
       },
       "period": "2018 - 2021",
+      "startYear": 2018,
+      "endYear": 2021,
       "location": "Santiago, Chile",
+      "icon": "megaphone",
+      "color": "#93c5fd",
+      "gradient": "from-blue-400 to-indigo-500",
+      "metric": { "value": "0→1", "label": { "en": "Dept Built", "es": "Depto Creado", "fr": "Dept Créé", "pt": "Dept Criado" } },
       "bullets": {
         "en": [
           "Established Marketing Department from scratch",
@@ -53,9 +66,9 @@
           "Coordinated multidisciplinary team"
         ],
         "es": [
-          "Establecio el Departamento de Marketing desde cero",
-          "Diseno herramientas de monitoreo para resultados de campanas",
-          "Coordino equipo multidisciplinario"
+          "Estableció el Departamento de Marketing desde cero",
+          "Diseñó herramientas de monitoreo para resultados de campañas",
+          "Coordinó equipo multidisciplinario"
         ],
         "fr": [
           "Création du département Marketing à partir de zéro",
@@ -68,7 +81,8 @@
           "Coordenação de equipe multidisciplinar"
         ]
       },
-      "tags": ["Marketing", "Operations"]
+      "tags": ["Marketing", "Operations"],
+      "skills": ["HubSpot", "Google Analytics", "Mailchimp"]
     },
     {
       "id": "eadbox",
@@ -80,15 +94,21 @@
         "pt": "Especialista em Educação Digital e Marketing"
       },
       "period": "2017 - 2018",
+      "startYear": 2017,
+      "endYear": 2018,
       "location": "Sao Paulo, Brazil",
+      "icon": "academic",
+      "color": "#c4b5fd",
+      "gradient": "from-violet-400 to-purple-500",
+      "metric": { "value": "50K+", "label": { "en": "Learners", "es": "Estudiantes", "fr": "Apprenants", "pt": "Alunos" } },
       "bullets": {
         "en": [
           "Supported digital learning programmes",
           "Data analysis on learner participation"
         ],
         "es": [
-          "Apoyo a programas de aprendizaje digital",
-          "Analisis de datos sobre participacion de estudiantes"
+          "Apoyó programas de aprendizaje digital",
+          "Análisis de datos sobre participación de estudiantes"
         ],
         "fr": [
           "Soutien aux programmes d'apprentissage numérique",
@@ -99,7 +119,8 @@
           "Análise de dados sobre participação de alunos"
         ]
       },
-      "tags": ["Education", "Data"]
+      "tags": ["Education", "Data"],
+      "skills": ["LMS", "SQL", "Tableau"]
     }
   ]
 }

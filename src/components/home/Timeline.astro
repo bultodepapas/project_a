@@ -2,67 +2,512 @@
 import { t } from '@/i18n';
 import type { Lang } from '@/i18n/config';
 
+interface Role {
+  id: string;
+  org: string;
+  title: { [key: string]: string } | string;
+  period: string;
+  startYear: number;
+  endYear: number | null;
+  location: string;
+  icon: string;
+  color: string;
+  gradient: string;
+  metric: { value: string; label: { [key: string]: string } };
+  bullets: { [key: string]: string[] } | string[];
+  tags: string[];
+  skills: string[];
+}
+
 interface Props {
   lang: Lang;
-  roles: Array<{
-    title: { [key: string]: string } | string;
-    period: string;
-    org: string;
-    location: string;
-    bullets: { [key: string]: string[] } | string[];
-  }>;
+  roles: Role[];
 }
 
 const { lang, roles } = Astro.props;
 
 // Helper to get localized string/array
-const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
-const getArr = (obj: any) => (Array.isArray(obj) ? obj : obj[lang]);
+const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang] || obj.en);
+const getArr = (obj: any) => (Array.isArray(obj) ? obj : obj[lang] || obj.en);
+
+// Icon SVG paths
+const iconPaths: Record<string, string> = {
+  globe: 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z',
+  megaphone: 'M3 11l18-5v12L3 13v-2z M11.6 16.8a3 3 0 11-5.8-1.6',
+  academic: 'M22 10v6M2 10l10-5 10 5-10 5z M6 12v5c3 3 9 3 12 0v-5'
+};
+
+// Calculate timeline span
+const minYear = Math.min(...roles.map(r => r.startYear));
+const maxYear = new Date().getFullYear();
+const yearSpan = maxYear - minYear + 1;
 ---
 
-<section class="section" id="timeline">
-  <div class="container">
-    <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-12 reveal-element opacity-0 translate-y-4 transition-all">
-      {t(lang, 'timeline.title')}
-    </h2>
+<section class="relative py-24 md:py-32 overflow-hidden" id="timeline">
+  <!-- Animated Background -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-background-alt/20 to-background"></div>
 
-    <div class="space-y-12">
-      {roles.map((role, index) => (
-        <div 
-          class="relative pl-8 border-l-2 border-border reveal-element opacity-0 translate-y-4 transition-all"
-          style={`transition-delay: ${index * 100}ms`}
-        >
-          <div class:list={[
-            'absolute -left-[9px] top-0 w-4 h-4 rounded-full border-2 border-background',
-            index === 0 ? 'bg-accent' : 'bg-border',
-          ]}>
-          </div>
-          <div class="mb-2">
-            <span class:list={['text-sm font-medium', index === 0 ? 'text-accent' : 'text-muted']}>
-              {role.period.replace('Present', t(lang, 'timeline.present'))}
+    <!-- Animated grid -->
+    <svg class="absolute inset-0 w-full h-full opacity-[0.02]" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="tl-grid" width="80" height="80" patternUnits="userSpaceOnUse">
+          <path d="M 80 0 L 0 0 0 80" fill="none" stroke="currentColor" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#tl-grid)" />
+    </svg>
+
+    <!-- Floating orbs based on role colors -->
+    {roles.map((role, i) => (
+      <div
+        class="tl-orb absolute rounded-full blur-3xl"
+        style={`
+          background: radial-gradient(circle, ${role.color} 0%, transparent 70%);
+          width: ${350 + i * 50}px;
+          height: ${350 + i * 50}px;
+          opacity: ${0.15 - i * 0.03};
+          top: ${20 + i * 25}%;
+          ${i % 2 === 0 ? 'left: 5%' : 'right: 5%'};
+          animation: tl-orb-float-${i + 1} ${18 + i * 4}s ease-in-out infinite;
+        `}
+      />
+    ))}
+
+    <!-- Sparkle particles -->
+    {Array.from({ length: 30 }).map((_, i) => (
+      <div
+        class="absolute w-1 h-1 rounded-full bg-accent/40 tl-sparkle"
+        style={`
+          left: ${5 + (i * 3) % 90}%;
+          top: ${10 + (i * 7) % 80}%;
+          animation: tl-sparkle ${3 + (i % 4)}s ease-in-out infinite;
+          animation-delay: ${(i % 5) * 0.5}s;
+        `}
+      />
+    ))}
+  </div>
+
+  <div class="container relative z-10">
+    <!-- Premium Header -->
+    <div class="text-center mb-20 tl-reveal">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6">
+        <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span class="text-sm font-medium text-accent">
+          {lang === 'es' ? 'Trayectoria' : lang === 'fr' ? 'Parcours' : lang === 'pt' ? 'Trajetória' : 'Journey'}
+        </span>
+      </div>
+
+      <h2 class="text-4xl md:text-6xl font-bold text-foreground mb-4">
+        {t(lang, 'timeline.title')}
+      </h2>
+      <p class="text-lg text-muted max-w-2xl mx-auto">
+        {lang === 'es' ? 'Una década transformando datos en decisiones estratégicas' :
+         lang === 'fr' ? 'Une décennie à transformer les données en décisions stratégiques' :
+         lang === 'pt' ? 'Uma década transformando dados em decisões estratégicas' :
+         'A decade of transforming data into strategic decisions'}
+      </p>
+
+      <!-- Year range indicator -->
+      <div class="flex items-center justify-center gap-4 mt-8">
+        <span class="text-2xl font-bold text-accent">{minYear}</span>
+        <div class="relative h-1 w-32 md:w-48 rounded-full bg-border/30 overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-r from-emerald-400 via-blue-400 to-violet-400 tl-year-progress"></div>
+        </div>
+        <span class="text-2xl font-bold text-accent">{maxYear}</span>
+      </div>
+    </div>
+
+    <!-- Timeline Container -->
+    <div class="relative max-w-5xl mx-auto">
+
+      <!-- Central Timeline Line (Desktop) -->
+      <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2">
+        <!-- Neon glow line -->
+        <div class="absolute inset-0 w-1 -translate-x-1/2 bg-gradient-to-b from-emerald-400 via-blue-400 to-violet-400 blur-sm opacity-50"></div>
+        <!-- Main line -->
+        <div class="absolute inset-0 w-px bg-gradient-to-b from-emerald-400 via-blue-400 to-violet-400 tl-line-draw"></div>
+        <!-- Animated pulse -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-accent tl-line-pulse"></div>
+      </div>
+
+      <!-- Mobile Timeline Line -->
+      <div class="md:hidden absolute left-6 top-0 bottom-0 w-px">
+        <div class="absolute inset-0 w-0.5 bg-gradient-to-b from-emerald-400 via-blue-400 to-violet-400 blur-sm opacity-50"></div>
+        <div class="absolute inset-0 w-px bg-gradient-to-b from-emerald-400 via-blue-400 to-violet-400"></div>
+      </div>
+
+      <!-- Role Cards -->
+      <div class="relative space-y-16 md:space-y-24">
+        {roles.map((role, index) => {
+          const iconPath = iconPaths[role.icon] || iconPaths.globe;
+          const isLeft = index % 2 === 0;
+          const isCurrent = role.endYear === null;
+
+          return (
+            <div
+              class={`tl-role-wrapper relative tl-reveal`}
+              data-side={isLeft ? 'left' : 'right'}
+              style={`--role-color: ${role.color};`}
+            >
+              <!-- Timeline Node -->
+              <div class={`
+                absolute z-20 hidden md:flex
+                left-1/2 -translate-x-1/2 top-8
+                w-12 h-12 rounded-full
+                items-center justify-center
+                transition-all duration-500
+              `}>
+                <!-- Outer glow ring -->
+                <div
+                  class="absolute inset-0 rounded-full tl-node-glow"
+                  style={`background: ${role.color}40; filter: blur(8px);`}
+                ></div>
+                <!-- Pulsing ring -->
+                {isCurrent && (
+                  <div
+                    class="absolute inset-[-4px] rounded-full border-2 tl-pulse-ring"
+                    style={`border-color: ${role.color};`}
+                  ></div>
+                )}
+                <!-- Inner circle -->
+                <div
+                  class="relative w-full h-full rounded-full border-2 flex items-center justify-center bg-background/90 backdrop-blur-sm transition-all duration-300"
+                  style={`border-color: ${role.color};`}
+                >
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke={role.color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d={iconPath}/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Mobile Node -->
+              <div class="md:hidden absolute left-6 top-0 -translate-x-1/2 z-20">
+                <div
+                  class="w-10 h-10 rounded-full border-2 flex items-center justify-center bg-background/90 backdrop-blur-sm"
+                  style={`border-color: ${role.color};`}
+                >
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke={role.color} stroke-width="1.5">
+                    <path d={iconPath}/>
+                  </svg>
+                </div>
+                {isCurrent && (
+                  <div
+                    class="absolute inset-[-4px] rounded-full border-2 tl-pulse-ring"
+                    style={`border-color: ${role.color};`}
+                  ></div>
+                )}
+              </div>
+
+              <!-- Card Container -->
+              <div class={`
+                md:w-[calc(50%-40px)]
+                ${isLeft ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}
+                ml-16 md:ml-0
+              `}>
+                <!-- 3D Card with Perspective -->
+                <div
+                  class="tl-card group relative"
+                  data-tilt
+                >
+                  <!-- Card glow effect -->
+                  <div
+                    class="absolute -inset-1 rounded-3xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-700"
+                    style={`background: linear-gradient(135deg, ${role.color}30, transparent);`}
+                  ></div>
+
+                  <!-- Main Card -->
+                  <div class="relative bg-surface/60 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-500 group-hover:border-white/20 group-hover:bg-surface/80">
+
+                    <!-- Top gradient accent -->
+                    <div
+                      class="absolute top-0 left-0 right-0 h-1 opacity-80"
+                      style={`background: linear-gradient(to right, ${role.color}, transparent);`}
+                    ></div>
+
+                    <!-- Spotlight effect -->
+                    <div class="tl-spotlight absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div class="relative p-6 md:p-8">
+                      <!-- Header Row -->
+                      <div class="flex items-start justify-between gap-4 mb-4">
+                        <div class="flex-1">
+                          <!-- Period Badge -->
+                          <div
+                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold mb-3"
+                            style={`background: ${role.color}20; color: ${role.color};`}
+                          >
+                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <circle cx="12" cy="12" r="10"/>
+                              <polyline points="12,6 12,12 16,14"/>
+                            </svg>
+                            {role.period.replace('Present', t(lang, 'timeline.present'))}
+                            {isCurrent && (
+                              <span class="flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full opacity-75" style={`background: ${role.color};`}></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2" style={`background: ${role.color};`}></span>
+                              </span>
+                            )}
+                          </div>
+
+                          <!-- Title -->
+                          <h3 class="text-xl md:text-2xl font-bold text-foreground mb-1 group-hover:text-accent transition-colors">
+                            {getStr(role.title)}
+                          </h3>
+
+                          <!-- Org & Location -->
+                          <div class="flex items-center gap-2 text-muted">
+                            <span class="font-medium">{role.org}</span>
+                            <span class="w-1 h-1 rounded-full bg-muted/50"></span>
+                            <span class="flex items-center gap-1 text-sm">
+                              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                              </svg>
+                              {role.location}
+                            </span>
+                          </div>
+                        </div>
+
+                        <!-- Metric Badge -->
+                        <div
+                          class="flex-shrink-0 text-center p-3 rounded-xl border transition-all duration-300 group-hover:scale-110"
+                          style={`background: ${role.color}10; border-color: ${role.color}30;`}
+                        >
+                          <div class="text-2xl font-bold" style={`color: ${role.color};`}>
+                            {role.metric.value}
+                          </div>
+                          <div class="text-xs text-muted">
+                            {getStr(role.metric.label)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Bullets with animated check marks -->
+                      <ul class="space-y-3 mb-5">
+                        {getArr(role.bullets).map((bullet: string, bulletIdx: number) => (
+                          <li
+                            class="flex items-start gap-3 tl-bullet"
+                            style={`animation-delay: ${bulletIdx * 100}ms;`}
+                          >
+                            <span
+                              class="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5"
+                              style={`background: ${role.color}20;`}
+                            >
+                              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke={role.color} stroke-width="3">
+                                <polyline points="20,6 9,17 4,12"/>
+                              </svg>
+                            </span>
+                            <span class="text-muted group-hover:text-foreground/80 transition-colors">
+                              {bullet}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <!-- Footer: Tags & Skills -->
+                      <div class="flex flex-wrap items-center gap-2 pt-4 border-t border-white/5">
+                        <!-- Tags -->
+                        {role.tags.map((tag) => (
+                          <span
+                            class="px-2 py-1 text-xs font-medium rounded-md transition-all duration-300 hover:scale-105"
+                            style={`background: ${role.color}15; color: ${role.color};`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+
+                        <span class="w-px h-4 bg-border/30 mx-1 hidden sm:block"></span>
+
+                        <!-- Skills -->
+                        {role.skills.map((skill) => (
+                          <span class="px-2 py-1 text-xs text-muted bg-background/50 rounded-md border border-white/5">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Connection line to node (Desktop) -->
+                  <div
+                    class={`
+                      hidden md:block absolute top-10 w-8 h-px
+                      ${isLeft ? 'right-0 translate-x-full' : 'left-0 -translate-x-full'}
+                    `}
+                    style={`background: linear-gradient(${isLeft ? 'to right' : 'to left'}, ${role.color}60, transparent);`}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Timeline End Marker -->
+      <div class="flex justify-center mt-16 tl-reveal">
+        <div class="relative">
+          <div class="absolute inset-0 bg-accent/30 blur-xl rounded-full"></div>
+          <div class="relative flex items-center gap-3 px-6 py-3 rounded-full bg-surface/80 border border-accent/30 backdrop-blur-sm">
+            <svg class="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            <span class="text-sm font-medium text-foreground">
+              {lang === 'es' ? 'El viaje continúa...' :
+               lang === 'fr' ? 'Le voyage continue...' :
+               lang === 'pt' ? 'A jornada continua...' :
+               'The journey continues...'}
             </span>
           </div>
-          <h3 class="text-xl font-semibold text-foreground">{getStr(role.title)}</h3>
-          <p class="text-muted">{role.org} | {role.location}</p>
-          <ul class="mt-4 space-y-2 text-sm text-muted">
-            {getArr(role.bullets).map((bullet: string) => (
-              <li>- {bullet}</li>
-            ))}
-          </ul>
         </div>
-      ))}
+      </div>
     </div>
   </div>
 </section>
 
+<style>
+  /* Orb float animations */
+  @keyframes tl-orb-float-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, -20px) scale(1.1); }
+  }
+  @keyframes tl-orb-float-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-25px, 15px) scale(1.05); }
+  }
+  @keyframes tl-orb-float-3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(20px, 25px) scale(1.08); }
+  }
+
+  /* Sparkle animation */
+  @keyframes tl-sparkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Year progress animation */
+  .tl-year-progress {
+    animation: tl-progress 2s ease-out forwards;
+    transform-origin: left;
+  }
+  @keyframes tl-progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  /* Line draw animation */
+  .tl-line-draw {
+    animation: tl-draw 2s ease-out forwards;
+    transform-origin: top;
+  }
+  @keyframes tl-draw {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+
+  /* Line pulse */
+  .tl-line-pulse {
+    animation: tl-pulse-move 3s ease-in-out infinite;
+  }
+  @keyframes tl-pulse-move {
+    0% { top: 0; opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Node glow pulse */
+  .tl-node-glow {
+    animation: tl-glow-pulse 2s ease-in-out infinite;
+  }
+  @keyframes tl-glow-pulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.2); }
+  }
+
+  /* Pulse ring for current job */
+  .tl-pulse-ring {
+    animation: tl-ring-pulse 2s ease-out infinite;
+  }
+  @keyframes tl-ring-pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+  /* Card 3D tilt */
+  .tl-card {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* Spotlight effect */
+  .tl-spotlight {
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 255, 255, 0.06),
+      transparent 40%
+    );
+  }
+
+  /* Reveal animation */
+  .tl-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .tl-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Role wrapper alternating animation */
+  .tl-role-wrapper[data-side="left"] .tl-card {
+    transform-origin: right center;
+  }
+  .tl-role-wrapper[data-side="right"] .tl-card {
+    transform-origin: left center;
+  }
+
+  /* Bullet animation */
+  .tl-bullet {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .tl-reveal.is-visible .tl-bullet {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .tl-orb, .tl-sparkle, .tl-year-progress, .tl-line-draw,
+    .tl-line-pulse, .tl-node-glow, .tl-pulse-ring {
+      animation: none;
+    }
+    .tl-year-progress, .tl-line-draw {
+      transform: scaleX(1) scaleY(1);
+    }
+    .tl-reveal {
+      opacity: 1;
+      transform: none;
+    }
+    .tl-bullet {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
 <script>
   function initTimeline() {
-    const observer = new IntersectionObserver((entries) => {
+    // Reveal animation observer
+    const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.remove('opacity-0', 'translate-y-4');
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          observer.unobserve(entry.target);
+          entry.target.classList.add('is-visible');
         }
       });
     }, {
@@ -70,13 +515,51 @@ const getArr = (obj: any) => (Array.isArray(obj) ? obj : obj[lang]);
       rootMargin: '50px'
     });
 
-    document.querySelectorAll('#timeline .reveal-element').forEach((el) => {
-      observer.observe(el);
+    document.querySelectorAll('#timeline .tl-reveal').forEach((el) => {
+      revealObserver.observe(el);
+    });
+
+    // 3D tilt effect on cards
+    const cards = document.querySelectorAll('.tl-card');
+
+    cards.forEach((card) => {
+      const cardEl = card as HTMLElement;
+
+      cardEl.addEventListener('mousemove', (e: MouseEvent) => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const rect = cardEl.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+
+        cardEl.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+        // Update spotlight position
+        const spotlight = cardEl.querySelector('.tl-spotlight') as HTMLElement;
+        if (spotlight) {
+          spotlight.style.setProperty('--mouse-x', `${x}px`);
+          spotlight.style.setProperty('--mouse-y', `${y}px`);
+        }
+      });
+
+      cardEl.addEventListener('mouseleave', () => {
+        cardEl.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+      });
     });
   }
 
   // Initialize on load
-  initTimeline();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTimeline);
+  } else {
+    initTimeline();
+  }
 
   // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initTimeline);

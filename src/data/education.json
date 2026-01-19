@@ -4,13 +4,13 @@
       "id": "msc-analytics",
       "degree": {
         "en": "Master's in Business Analytics",
-        "es": "Maestria en Analitica de Negocios",
+        "es": "Maestría en Analítica de Negocios",
         "fr": "Master en Business Analytics",
         "pt": "Mestrado em Business Analytics"
       },
       "field": {
         "en": "Data Science & Analytics",
-        "es": "Ciencia de Datos y Analitica",
+        "es": "Ciencia de Datos y Analítica",
         "fr": "Science des Données et Analytique",
         "pt": "Ciência de Dados e Análise"
       },
@@ -19,24 +19,39 @@
       "country": "uk",
       "year": "2026",
       "status": "inProgress",
+      "icon": "brain",
+      "color": "#6ee7b7",
+      "gradient": "from-emerald-400 via-teal-500 to-cyan-500",
+      "accentHue": 160,
       "highlights": {
         "en": ["Advanced Analytics", "Machine Learning", "Business Intelligence"],
-        "es": ["Analitica Avanzada", "Machine Learning", "Inteligencia de Negocios"],
+        "es": ["Analítica Avanzada", "Machine Learning", "Inteligencia de Negocios"],
         "fr": ["Analytique Avancée", "Machine Learning", "Business Intelligence"],
         "pt": ["Análise Avançada", "Machine Learning", "Business Intelligence"]
+      },
+      "skills": ["Python", "R", "SQL", "TensorFlow", "Power BI"],
+      "achievement": {
+        "value": "35%",
+        "label": { "en": "Complete", "es": "Completado", "fr": "Complété", "pt": "Completo" }
+      },
+      "backContent": {
+        "en": "Developing advanced skills in predictive modeling, data visualization, and AI-driven business solutions.",
+        "es": "Desarrollando habilidades avanzadas en modelado predictivo, visualización de datos y soluciones empresariales impulsadas por IA.",
+        "fr": "Développement de compétences avancées en modélisation prédictive, visualisation de données et solutions d'affaires basées sur l'IA.",
+        "pt": "Desenvolvendo habilidades avançadas em modelagem preditiva, visualização de dados e soluções de negócios orientadas por IA."
       }
     },
     {
       "id": "msc-global",
       "degree": {
         "en": "Master's in Global Business Management",
-        "es": "Maestria en Gestion de Negocios Globales",
+        "es": "Maestría en Gestión de Negocios Globales",
         "fr": "Master en Gestion des Affaires Mondiales",
         "pt": "Mestrado em Gestão de Negócios Globais"
       },
       "field": {
         "en": "International Strategy & Management",
-        "es": "Estrategia y Gestion Internacional",
+        "es": "Estrategia y Gestión Internacional",
         "fr": "Stratégie et Gestion Internationale",
         "pt": "Estratégia e Gestão Internacional"
       },
@@ -44,11 +59,26 @@
       "location": "Rennes, France",
       "country": "fr",
       "year": "2016",
+      "icon": "globe",
+      "color": "#93c5fd",
+      "gradient": "from-blue-400 via-indigo-500 to-violet-500",
+      "accentHue": 220,
       "highlights": {
         "en": ["Cross-cultural Management", "Global Strategy", "International Marketing"],
-        "es": ["Gestion Intercultural", "Estrategia Global", "Marketing Internacional"],
+        "es": ["Gestión Intercultural", "Estrategia Global", "Marketing Internacional"],
         "fr": ["Gestion Interculturelle", "Stratégie Globale", "Marketing International"],
         "pt": ["Gestão Intercultural", "Estratégia Global", "Marketing Internacional"]
+      },
+      "skills": ["Strategy", "Leadership", "Negotiation", "Market Analysis"],
+      "achievement": {
+        "value": "AACSB",
+        "label": { "en": "Accredited", "es": "Acreditado", "fr": "Accrédité", "pt": "Acreditado" }
+      },
+      "backContent": {
+        "en": "Graduated with distinction. Specialized in cross-cultural management and global market expansion strategies.",
+        "es": "Graduada con distinción. Especializada en gestión intercultural y estrategias de expansión de mercados globales.",
+        "fr": "Diplômée avec distinction. Spécialisée en gestion interculturelle et stratégies d'expansion de marché mondial.",
+        "pt": "Graduada com distinção. Especializada em gestão intercultural e estratégias de expansão de mercado global."
       }
     },
     {
@@ -61,19 +91,34 @@
       },
       "field": {
         "en": "Business Administration",
-        "es": "Administracion de Empresas",
+        "es": "Administración de Empresas",
         "fr": "Administration des Affaires",
         "pt": "Administração de Empresas"
       },
       "org": "Universidad de La Salle",
-      "location": "Bogota, Colombia",
+      "location": "Bogotá, Colombia",
       "country": "co",
       "year": "2016",
+      "icon": "rocket",
+      "color": "#fcd34d",
+      "gradient": "from-yellow-400 via-orange-500 to-red-500",
+      "accentHue": 45,
       "highlights": {
         "en": ["International Trade", "Economics", "Business Development"],
-        "es": ["Comercio Internacional", "Economia", "Desarrollo Empresarial"],
+        "es": ["Comercio Internacional", "Economía", "Desarrollo Empresarial"],
         "fr": ["Commerce International", "Économie", "Développement Commercial"],
         "pt": ["Comércio Internacional", "Economia", "Desenvolvimento Empresarial"]
+      },
+      "skills": ["Finance", "Economics", "Trade", "Business Dev"],
+      "achievement": {
+        "value": "Top 10%",
+        "label": { "en": "of Class", "es": "de la Clase", "fr": "de la Promo", "pt": "da Turma" }
+      },
+      "backContent": {
+        "en": "Foundation in international commerce, finance, and strategic business planning. Exchange program in Latin America.",
+        "es": "Fundamentos en comercio internacional, finanzas y planificación estratégica de negocios. Programa de intercambio en Latinoamérica.",
+        "fr": "Fondations en commerce international, finance et planification stratégique d'entreprise. Programme d'échange en Amérique latine.",
+        "pt": "Fundamentos em comércio internacional, finanças e planejamento estratégico de negócios. Programa de intercâmbio na América Latina."
       }
     }
   ]
