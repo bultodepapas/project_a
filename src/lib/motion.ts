@@ -13,8 +13,12 @@ export function prefersReducedMotion(): boolean {
 export function initChapterDeck(section: HTMLElement) {
   const pinWrapper = section.querySelector('.chapter-pin-wrapper') as HTMLElement;
   const cards = section.querySelectorAll('.chapter-card');
-  const dots = section.querySelectorAll('.chapter-dot');
+  const navDots = section.querySelectorAll('.chapter-nav-dot');
+  const progressBar = section.querySelector('.scroll-progress') as HTMLElement;
+  const progressGlow = section.querySelector('.scroll-progress-glow') as HTMLElement;
   const accordion = section.querySelector('.chapter-accordion') as HTMLElement;
+  const orbPrimary = section.querySelector('.orb-primary') as HTMLElement;
+  const orbSecondary = section.querySelector('.orb-secondary') as HTMLElement;
 
   if (!pinWrapper || !cards || cards.length === 0) return;
 
@@ -43,6 +47,24 @@ export function initChapterDeck(section: HTMLElement) {
   }
 
   const cardElements = Array.from(cards) as HTMLElement[];
+  const cardColors = cardElements.map(card => card.dataset.color || '#6ee7b7');
+
+  /**
+   * Update background orbs color based on active card
+   */
+  function updateOrbColors(activeIndex: number) {
+    const color = cardColors[activeIndex] || cardColors[0];
+    const nextColor = cardColors[Math.min(activeIndex + 1, cardColors.length - 1)] || color;
+
+    if (orbPrimary) {
+      orbPrimary.style.setProperty('--orb-color', color);
+      orbPrimary.style.opacity = '0.15';
+    }
+    if (orbSecondary) {
+      orbSecondary.style.setProperty('--orb-color-secondary', nextColor);
+      orbSecondary.style.opacity = '0.1';
+    }
+  }
 
   /**
    * Update card stack visibility for "peek" effect
@@ -50,25 +72,72 @@ export function initChapterDeck(section: HTMLElement) {
    */
   function updateCardStack(activeIndex: number) {
     cardElements.forEach((htmlCard, i) => {
+      const cardGlow = htmlCard.querySelector('.card-glow') as HTMLElement;
 
       if (i === activeIndex) {
         // Active card: fully visible, highest z-index
         htmlCard.style.zIndex = '30';
         htmlCard.style.pointerEvents = 'auto';
+        if (cardGlow) cardGlow.style.opacity = '0.4';
       } else if (i === activeIndex + 1) {
         // Next card: peek behind (20% opacity, slight offset)
         htmlCard.style.zIndex = '20';
         htmlCard.style.pointerEvents = 'none';
+        if (cardGlow) cardGlow.style.opacity = '0';
       } else if (i === activeIndex + 2) {
         // Second next card: barely visible peek (10% opacity, more offset)
         htmlCard.style.zIndex = '10';
         htmlCard.style.pointerEvents = 'none';
+        if (cardGlow) cardGlow.style.opacity = '0';
       } else {
         // All other cards: hidden
         htmlCard.style.zIndex = '0';
         htmlCard.style.pointerEvents = 'none';
+        if (cardGlow) cardGlow.style.opacity = '0';
       }
     });
+  }
+
+  /**
+   * Update navigation dots with progress ring animation
+   */
+  function updateNavigation(activeIndex: number, progress: number) {
+    const circumference = 100.5; // 2 * PI * 16
+
+    navDots.forEach((dot, i) => {
+      const progressRing = dot.querySelector('.progress-ring') as SVGCircleElement;
+
+      if (i === activeIndex) {
+        dot.classList.add('active');
+        // Animate progress ring fill
+        if (progressRing) {
+          progressRing.style.strokeDashoffset = '0';
+          progressRing.style.opacity = '1';
+        }
+      } else if (i < activeIndex) {
+        // Completed cards - full ring
+        dot.classList.remove('active');
+        if (progressRing) {
+          progressRing.style.strokeDashoffset = '0';
+          progressRing.style.opacity = '0.5';
+        }
+      } else {
+        dot.classList.remove('active');
+        if (progressRing) {
+          progressRing.style.strokeDashoffset = String(circumference);
+          progressRing.style.opacity = '0';
+        }
+      }
+    });
+
+    // Update linear progress bar
+    const totalProgress = progress * 100;
+    if (progressBar) {
+      progressBar.style.width = `${totalProgress}%`;
+    }
+    if (progressGlow) {
+      progressGlow.style.width = `${totalProgress}%`;
+    }
   }
 
   function setInitialCardStates() {
@@ -76,16 +145,17 @@ export function initChapterDeck(section: HTMLElement) {
       if (i === 0) {
         gsap.set(card, { opacity: 1, y: 0, scale: 1 });
       } else if (i === 1) {
-        gsap.set(card, { opacity: 0.2, y: 12, scale: 0.97 });
+        gsap.set(card, { opacity: 0.2, y: 16, scale: 0.96 });
       } else if (i === 2) {
-        gsap.set(card, { opacity: 0.1, y: 24, scale: 0.94 });
+        gsap.set(card, { opacity: 0.1, y: 32, scale: 0.92 });
       } else {
         gsap.set(card, { opacity: 0, y: 0, scale: 1 });
       }
     });
 
-    updateDots(0);
+    updateNavigation(0, 0);
     updateCardStack(0);
+    updateOrbColors(0);
   }
 
   // GSAP Timeline with enhanced scrub for smoother feel
@@ -95,7 +165,7 @@ export function initChapterDeck(section: HTMLElement) {
       start: 'top top',
       end: `+=${cards.length * 100}%`,
       pin: true,
-      scrub: 0.8, // Slightly increased for more luxurious feel
+      scrub: 1, // Smoother scrub for premium feel
       anticipatePin: 1,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
@@ -106,6 +176,8 @@ export function initChapterDeck(section: HTMLElement) {
           cards.length - 1
         );
         updateCardStack(currentIndex);
+        updateNavigation(currentIndex, progress);
+        updateOrbColors(currentIndex);
       }
     }
   });
@@ -120,8 +192,8 @@ export function initChapterDeck(section: HTMLElement) {
     if (i > 0) {
       gsap.set(card, {
         opacity: i === 1 ? 0.2 : i === 2 ? 0.1 : 0,
-        y: i === 1 ? 12 : i === 2 ? 24 : 0,
-        scale: i === 1 ? 0.97 : i === 2 ? 0.94 : 1,
+        y: i === 1 ? 16 : i === 2 ? 32 : 0,
+        scale: i === 1 ? 0.96 : i === 2 ? 0.92 : 1,
       });
     }
 
@@ -133,17 +205,17 @@ export function initChapterDeck(section: HTMLElement) {
       duration: 1,
       ease: 'power2.out',
       onStart: () => {
-        updateDots(i);
         updateCardStack(i);
+        updateOrbColors(i);
       },
       onReverseComplete: () => {
-        updateDots(i - 1);
         updateCardStack(i - 1);
+        updateOrbColors(i - 1);
       }
     });
 
     // 2. Hold (card is fully visible)
-    tl.to(card, { duration: 0.5 });
+    tl.to(card, { duration: 0.6 });
 
     // 3. Exit to peek position (if not last card)
     if (!isLast) {
@@ -153,8 +225,8 @@ export function initChapterDeck(section: HTMLElement) {
 
       tl.to(card, {
         opacity: 0,
-        y: -50,
-        scale: 0.95,
+        y: -60,
+        scale: 0.94,
         duration: 1,
         ease: 'power2.in'
       });
@@ -165,9 +237,9 @@ export function initChapterDeck(section: HTMLElement) {
           cards[i + 1],
           {
             opacity: 0.2,
-            y: 12,
-            scale: 0.97,
-            duration: 0.8,
+            y: 16,
+            scale: 0.96,
+            duration: 0.9,
             ease: 'power2.out'
           },
           '<' // Start with previous animation
@@ -179,9 +251,9 @@ export function initChapterDeck(section: HTMLElement) {
           cards[i + 2],
           {
             opacity: 0.1,
-            y: 24,
-            scale: 0.94,
-            duration: 0.8,
+            y: 32,
+            scale: 0.92,
+            duration: 0.9,
             ease: 'power2.out'
           },
           '<'
@@ -190,21 +262,9 @@ export function initChapterDeck(section: HTMLElement) {
     }
   });
 
-  function updateDots(activeParam: number) {
-    const activeIndex = Math.max(0, Math.min(activeParam, dots.length ? dots.length - 1 : 0));
-    dots.forEach((dot, i) => {
-      if (i === activeIndex) {
-        dot.classList.add('bg-accent');
-        dot.classList.remove('bg-border/60');
-      } else {
-        dot.classList.remove('bg-accent');
-        dot.classList.add('bg-border/60');
-      }
-    });
-  }
-
   // Initialize stack on first load
   updateCardStack(0);
+  updateOrbColors(0);
 }
 
 // Global cleanup function for Astro View Transitions

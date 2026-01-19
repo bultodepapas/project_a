@@ -27,7 +27,7 @@ const { lang, chapters } = Astro.props;
 // Helper to get localized string
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang] || obj.en);
 
-// Icon SVG paths
+// Icon SVG paths (enhanced with more icons)
 const iconPaths: Record<string, string> = {
   users: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
   chart: 'M18 20V10M12 20V4M6 20v-6',
@@ -35,225 +35,288 @@ const iconPaths: Record<string, string> = {
 };
 ---
 
-<section id="systems" class="relative z-10 py-20 md:py-28 overflow-hidden transition-colors duration-700" data-systems-section>
-  <!-- Animated Background -->
-  <div class="absolute inset-0 pointer-events-none">
-    <!-- Base gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-background via-background-alt/50 to-background"></div>
+<section id="systems" class="relative z-10 overflow-hidden transition-colors duration-700" data-systems-section>
+  <!-- Premium Animated Background -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <!-- Deep gradient base -->
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-background-alt/30 to-background"></div>
 
-    <!-- Animated orbs that change based on active card -->
-    <div class="system-orb orb-1 absolute w-[500px] h-[500px] rounded-full blur-3xl opacity-0 transition-all duration-1000"
-         style="top: 10%; left: -10%;"></div>
-    <div class="system-orb orb-2 absolute w-[400px] h-[400px] rounded-full blur-3xl opacity-0 transition-all duration-1000"
-         style="bottom: 10%; right: -10%;"></div>
+    <!-- Animated mesh gradient orbs -->
+    <div class="system-orb orb-primary absolute w-[800px] h-[800px] rounded-full blur-[120px] opacity-0 transition-all duration-1000"
+         style="top: -20%; left: -15%; background: radial-gradient(circle, var(--orb-color, #6ee7b7) 0%, transparent 70%);"></div>
+    <div class="system-orb orb-secondary absolute w-[600px] h-[600px] rounded-full blur-[100px] opacity-0 transition-all duration-1000"
+         style="bottom: -10%; right: -10%; background: radial-gradient(circle, var(--orb-color-secondary, #93c5fd) 0%, transparent 70%);"></div>
 
-    <!-- Grid pattern -->
-    <svg class="absolute inset-0 w-full h-full opacity-[0.02]" xmlns="http://www.w3.org/2000/svg">
+    <!-- Constellation grid pattern -->
+    <svg class="absolute inset-0 w-full h-full opacity-[0.015]" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <pattern id="systems-grid" width="80" height="80" patternUnits="userSpaceOnUse">
-          <path d="M 80 0 L 0 0 0 80" fill="none" stroke="currentColor" stroke-width="1"/>
+        <pattern id="systems-constellation" width="100" height="100" patternUnits="userSpaceOnUse">
+          <circle cx="50" cy="50" r="1" fill="currentColor" class="text-foreground"/>
+          <circle cx="0" cy="0" r="0.5" fill="currentColor" class="text-foreground"/>
+          <circle cx="100" cy="0" r="0.5" fill="currentColor" class="text-foreground"/>
+          <circle cx="0" cy="100" r="0.5" fill="currentColor" class="text-foreground"/>
+          <circle cx="100" cy="100" r="0.5" fill="currentColor" class="text-foreground"/>
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#systems-grid)" />
+      <rect width="100%" height="100%" fill="url(#systems-constellation)" />
     </svg>
 
-    <!-- Floating particles -->
-    {Array.from({ length: 20 }).map(() => (
-      <div
-        class="absolute w-1 h-1 rounded-full bg-accent/30 system-particle"
-        style={`
-          left: ${10 + Math.random() * 80}%;
-          top: ${10 + Math.random() * 80}%;
-          animation: system-float ${6 + Math.random() * 4}s ease-in-out infinite;
-          animation-delay: ${Math.random() * 3}s;
-        `}
-      />
-    ))}
+    <!-- Floating light particles (Canvas rendered) -->
+    <canvas id="systems-particles" class="absolute inset-0 w-full h-full opacity-60"></canvas>
   </div>
 
-  <div class="absolute left-0 top-0 h-full w-[32%] bg-gradient-to-r from-background/90 to-transparent pointer-events-none hidden md:block z-10"></div>
+  <!-- Left fade gradient for depth -->
+  <div class="absolute left-0 top-0 h-full w-[35%] bg-gradient-to-r from-background via-background/60 to-transparent pointer-events-none hidden md:block z-10"></div>
 
   <!-- Pinned Container -->
-  <div class="chapter-pin-wrapper relative h-[90vh] flex items-center">
-    <div class="container relative h-full flex flex-col justify-center">
-      <div class="grid md:grid-cols-[minmax(280px,380px)_1fr] md:gap-12 items-center">
-        <!-- Static Header with premium design -->
-        <div class="mb-10 md:mb-0 max-w-md relative z-20">
-          <!-- Eyebrow badge -->
-          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6 reveal-header opacity-0 translate-y-4">
-            <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-            <span class="text-sm font-medium text-accent">
+  <div class="chapter-pin-wrapper relative min-h-screen flex items-center py-16 md:py-20">
+    <div class="container relative flex flex-col justify-center">
+      <div class="grid md:grid-cols-[minmax(280px,380px)_1fr] md:gap-12 lg:gap-16 items-start">
+
+        <!-- Static Header - Premium Design -->
+        <div class="mb-12 md:mb-0 max-w-md relative z-20">
+          <!-- Floating eyebrow badge -->
+          <div class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-accent/15 to-accent/5 border border-accent/25 mb-8 reveal-header opacity-0 translate-y-4 backdrop-blur-sm">
+            <div class="relative">
+              <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+              <div class="absolute inset-0 animate-ping opacity-30">
+                <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                </svg>
+              </div>
+            </div>
+            <span class="text-sm font-semibold text-accent tracking-wide">
               {lang === 'es' ? 'Sistemas de Impacto' : lang === 'fr' ? 'Systèmes d\'Impact' : lang === 'pt' ? 'Sistemas de Impacto' : 'Impact Systems'}
             </span>
           </div>
 
-          <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-4 reveal-header opacity-0 translate-y-4" style="transition-delay: 100ms;">
-            {t(lang, 'systems.title')}
+          <!-- Main title with gradient text -->
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-5 reveal-header opacity-0 translate-y-4 leading-[1.1]" style="transition-delay: 100ms;">
+            <span class="bg-gradient-to-br from-foreground via-foreground to-muted bg-clip-text text-transparent">
+              {t(lang, 'systems.title')}
+            </span>
           </h2>
-          <p class="text-lg text-muted mb-8 reveal-header opacity-0 translate-y-4" style="transition-delay: 200ms;">
+
+          <p class="text-lg md:text-xl text-muted mb-10 reveal-header opacity-0 translate-y-4 leading-relaxed" style="transition-delay: 200ms;">
             {t(lang, 'systems.subtitle')}
           </p>
 
-          <!-- Progress Indicator - Enhanced -->
+          <!-- Premium Progress Indicator -->
           <div class="hidden md:block reveal-header opacity-0 translate-y-4" style="transition-delay: 300ms;">
-            <div class="flex items-center gap-4">
+            <!-- Navigation dots with labels -->
+            <div class="flex items-center gap-4 mb-5">
               {chapters.map((chapter, i) => (
                 <button
-                  class="chapter-dot group relative flex items-center gap-2 transition-all duration-500"
+                  class="chapter-nav-dot group relative flex flex-col items-center gap-2 transition-all duration-500"
                   data-index={i}
                   data-color={chapter.color}
                 >
-                  <!-- Dot with ring -->
-                  <div class="relative">
-                    <div class="w-3 h-3 rounded-full bg-border/60 transition-all duration-500 group-hover:scale-125"
-                         style={`--dot-color: ${chapter.color};`}></div>
-                    <div class="absolute inset-0 rounded-full opacity-0 scale-150 transition-all duration-500"
-                         style={`background: ${chapter.color}; filter: blur(4px);`}></div>
+                  <!-- Progress ring -->
+                  <div class="relative w-10 h-10">
+                    <svg class="w-10 h-10 -rotate-90" viewBox="0 0 40 40">
+                      <circle
+                        cx="20" cy="20" r="16"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        class="text-border/30"
+                      />
+                      <circle
+                        cx="20" cy="20" r="16"
+                        fill="none"
+                        stroke={chapter.color}
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        class="progress-ring opacity-0 transition-all duration-700"
+                        style="stroke-dasharray: 100.5; stroke-dashoffset: 100.5;"
+                      />
+                    </svg>
+                    <!-- Center number -->
+                    <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-muted transition-colors duration-300"
+                          style={`--active-color: ${chapter.color};`}>
+                      0{i + 1}
+                    </span>
                   </div>
-                  <!-- Label on hover -->
-                  <span class="text-xs text-muted opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap">
+
+                  <!-- Label -->
+                  <span class="text-[10px] font-medium text-muted/60 opacity-0 transition-all duration-300 group-hover:opacity-100 uppercase tracking-wider">
                     {chapter.eyebrow}
                   </span>
                 </button>
               ))}
             </div>
 
-            <!-- Progress bar -->
-            <div class="mt-4 h-0.5 w-full bg-border/30 rounded-full overflow-hidden">
-              <div class="scroll-progress h-full bg-accent rounded-full transition-all duration-300" style="width: 0%;"></div>
+            <!-- Linear progress bar -->
+            <div class="relative h-0.5 w-full bg-border/20 rounded-full overflow-hidden">
+              <div class="scroll-progress absolute inset-y-0 left-0 rounded-full transition-all duration-150 ease-out"
+                   style="width: 0%; background: linear-gradient(90deg, #6ee7b7, #93c5fd, #c4b5fd);"></div>
+              <!-- Glow effect -->
+              <div class="scroll-progress-glow absolute inset-y-0 left-0 rounded-full blur-sm opacity-50 transition-all duration-150 ease-out"
+                   style="width: 0%; background: linear-gradient(90deg, #6ee7b7, #93c5fd, #c4b5fd);"></div>
             </div>
           </div>
         </div>
 
-        <!-- Chapters Stack - Enhanced -->
-        <div class="chapters-stack relative w-full max-w-4xl h-[60vh] md:h-[520px]" style="perspective: 1200px;">
+        <!-- Premium Cards Stack -->
+        <div class="chapters-stack relative w-full max-w-4xl h-[500px] md:h-[540px] lg:h-[560px]" style="perspective: 1500px;">
           {chapters.map((chapter, index) => {
             const iconPath = iconPaths[chapter.icon] || iconPaths.users;
 
             return (
-              <div
-                class="chapter-card absolute inset-0 w-full h-full rounded-3xl opacity-0 translate-y-8"
+              <article
+                class="chapter-card absolute inset-0 w-full h-full rounded-[2rem] opacity-0 translate-y-8"
                 data-index={index}
                 data-color={chapter.color}
-                style={`--card-color: ${chapter.color};`}
+                style={`--card-color: ${chapter.color}; --card-index: ${index};`}
               >
-                <!-- Card glow -->
-                <div class="absolute -inset-2 rounded-3xl opacity-0 blur-2xl transition-opacity duration-700"
-                     style={`background: ${chapter.color}30;`}></div>
+                <!-- Outer glow layer -->
+                <div class="card-glow absolute -inset-4 rounded-[2.5rem] opacity-0 blur-3xl transition-opacity duration-1000"
+                     style={`background: ${chapter.color}25;`}></div>
 
-                <!-- Main card -->
-                <div class="card-content relative h-full bg-surface/90 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
-                  <!-- Top accent bar -->
-                  <div class="absolute top-0 inset-x-0 h-1 opacity-80"
-                       style={`background: linear-gradient(90deg, ${chapter.color}, ${chapter.color}60);`}></div>
+                <!-- Holographic border effect -->
+                <div class="card-holographic absolute -inset-[1px] rounded-[2rem] opacity-0 transition-opacity duration-500"
+                     style={`background: linear-gradient(135deg, ${chapter.color}40, transparent 40%, transparent 60%, ${chapter.color}40);`}></div>
 
-                  <!-- Background pattern -->
-                  <div class="absolute inset-0 opacity-[0.03]">
-                    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <pattern id={`card-pattern-${index}`} width="40" height="40" patternUnits="userSpaceOnUse">
-                          <circle cx="20" cy="20" r="1" fill="currentColor"/>
-                        </pattern>
-                      </defs>
-                      <rect width="100%" height="100%" fill={`url(#card-pattern-${index})`} />
-                    </svg>
-                  </div>
+                <!-- Main card body -->
+                <div class="card-body relative h-full rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
+                  <!-- Glassmorphism background -->
+                  <div class="absolute inset-0 bg-surface/85 backdrop-blur-2xl"></div>
 
-                  <!-- Content -->
-                  <div class="relative h-full flex flex-col p-8 md:p-12">
+                  <!-- Top accent bar with gradient -->
+                  <div class="absolute top-0 inset-x-0 h-1.5"
+                       style={`background: linear-gradient(90deg, transparent, ${chapter.color}, ${chapter.color}80, transparent);`}></div>
+
+                  <!-- Spotlight effect (follows cursor) -->
+                  <div class="card-spotlight absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none"
+                       style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.06), transparent 40%);"></div>
+
+                  <!-- Subtle pattern overlay -->
+                  <div class="absolute inset-0 opacity-[0.02]" style="background-image: radial-gradient(circle at 1px 1px, currentColor 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+                  <!-- Content container -->
+                  <div class="relative h-full flex flex-col p-6 md:p-8 lg:p-10">
+
                     <!-- Header row -->
-                    <div class="flex items-start justify-between mb-8">
-                      <!-- Eyebrow and number -->
+                    <div class="flex items-start justify-between mb-5 md:mb-6">
+                      <!-- Eyebrow and chapter number -->
                       <div class="flex items-center gap-4">
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider"
-                              style={`background: ${chapter.color}20; color: ${chapter.color};`}>
+                        <span class="px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest border"
+                              style={`background: ${chapter.color}15; color: ${chapter.color}; border-color: ${chapter.color}30;`}>
                           {chapter.eyebrow}
                         </span>
-                        <span class="text-6xl font-black text-foreground/5">
+                        <!-- Large watermark number -->
+                        <span class="text-5xl md:text-6xl font-black text-foreground/[0.04] leading-none select-none"
+                              style="font-feature-settings: 'tnum';">
                           0{index + 1}
                         </span>
                       </div>
 
-                      <!-- Animated icon -->
-                      <div class="icon-wrapper relative">
-                        <!-- Rotating ring -->
-                        <svg class="absolute -inset-3 w-20 h-20 opacity-30" viewBox="0 0 80 80">
+                      <!-- Animated icon with orbital ring -->
+                      <div class="icon-container relative flex-shrink-0">
+                        <!-- Orbital ring -->
+                        <svg class="absolute -inset-3 w-18 h-18 md:w-20 md:h-20" viewBox="0 0 80 80">
+                          <defs>
+                            <linearGradient id={`icon-gradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" style={`stop-color: ${chapter.color}; stop-opacity: 0.6`}/>
+                              <stop offset="100%" style={`stop-color: ${chapter.color}; stop-opacity: 0.1`}/>
+                            </linearGradient>
+                          </defs>
                           <circle
                             cx="40" cy="40" r="36"
                             fill="none"
-                            stroke={chapter.color}
+                            stroke={`url(#icon-gradient-${index})`}
                             stroke-width="1"
-                            stroke-dasharray="6 4"
-                            class="animate-spin-slow"
+                            stroke-dasharray="6 5"
+                            class="animate-spin-slow origin-center"
                           />
                         </svg>
 
-                        <!-- Icon container -->
-                        <div class="relative w-14 h-14 rounded-2xl flex items-center justify-center"
-                             style={`background: linear-gradient(135deg, ${chapter.color}30, ${chapter.color}10);`}>
-                          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke={chapter.color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Icon background with glass effect -->
+                        <div class="relative w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center overflow-hidden"
+                             style={`background: linear-gradient(135deg, ${chapter.color}25, ${chapter.color}10);`}>
+                          <!-- Inner glow -->
+                          <div class="absolute inset-0 opacity-50"
+                               style={`background: radial-gradient(circle at 30% 30%, ${chapter.color}30, transparent 60%);`}></div>
+
+                          <svg class="relative w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none" stroke={chapter.color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d={iconPath}/>
                           </svg>
                         </div>
                       </div>
                     </div>
 
-                    <!-- Title -->
-                    <h3 class="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
-                      {getStr(chapter.title)}
+                    <!-- Title with shine effect -->
+                    <h3 class="card-title relative text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 leading-tight overflow-hidden">
+                      <span class="relative z-10">{getStr(chapter.title)}</span>
+                      <!-- Shine sweep -->
+                      <span class="title-shine absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"></span>
                     </h3>
 
                     <!-- Description -->
-                    <p class="text-lg md:text-xl text-muted mb-8 max-w-2xl">
+                    <p class="text-base md:text-lg text-muted mb-6 max-w-2xl leading-relaxed">
                       {getStr(chapter.description)}
                     </p>
 
-                    <!-- Features grid -->
-                    <div class="flex flex-wrap gap-3 mb-8">
+                    <!-- Features with staggered reveal -->
+                    <div class="flex flex-wrap gap-2.5 mb-6">
                       {chapter.features.map((feature, fIndex) => (
-                        <div class="feature-tag flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10"
-                             style={`transition-delay: ${fIndex * 50}ms;`}>
-                          <svg class="w-4 h-4" viewBox="0 0 20 20" fill={chapter.color}>
+                        <div
+                          class="feature-pill flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 cursor-default"
+                          style={`
+                            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+                            border: 1px solid rgba(255,255,255,0.1);
+                            transition-delay: ${fIndex * 80}ms;
+                          `}
+                        >
+                          <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 20 20" fill={chapter.color}>
                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                           </svg>
-                          <span class="text-sm text-muted">{getStr(feature)}</span>
+                          <span class="text-xs md:text-sm font-medium text-foreground/80">{getStr(feature)}</span>
                         </div>
                       ))}
                     </div>
 
                     <!-- Bottom row: Stats and CTA -->
-                    <div class="mt-auto flex items-end justify-between">
-                      <!-- Stats box -->
-                      <div class="stats-box p-4 rounded-xl bg-gradient-to-br from-background/80 to-background/40 border border-white/5">
-                        <div class="flex items-baseline gap-2">
-                          <span class="text-4xl font-black" style={`color: ${chapter.color};`}>
+                    <div class="mt-auto flex items-end justify-between gap-4">
+                      <!-- Animated stat box -->
+                      <div class="stats-display relative p-4 rounded-xl overflow-hidden"
+                           style="background: linear-gradient(135deg, rgba(0,0,0,0.12), rgba(0,0,0,0.04));">
+                        <!-- Subtle border -->
+                        <div class="absolute inset-0 rounded-xl border border-white/5"></div>
+
+                        <div class="relative flex items-baseline gap-2">
+                          <!-- Animated counter -->
+                          <span class="stat-value text-4xl md:text-5xl font-black tabular-nums"
+                                style={`color: ${chapter.color};`}
+                                data-value={chapter.stats.value}>
                             {chapter.stats.value}
                           </span>
-                          <span class="text-sm text-muted">
+                          <span class="text-xs md:text-sm text-muted font-medium">
                             {getStr(chapter.stats.label)}
                           </span>
                         </div>
                       </div>
 
-                      <!-- CTA -->
+                      <!-- Premium CTA button -->
                       <a
                         href={`/${lang}/case-studies/${chapter.slug}`}
-                        class="group inline-flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-300 hover:scale-105"
-                        style={`background: ${chapter.color}; color: #1a1a2e;`}
+                        class="cta-button group relative inline-flex items-center gap-2.5 px-5 py-3 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden"
+                        style={`background: ${chapter.color}; color: #0f172a;`}
                       >
-                        <span class="font-semibold">
-                          {t(lang, 'systems.viewCase')}
-                        </span>
-                        <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <!-- Shine sweep on hover -->
+                        <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+
+                        <span class="relative">{t(lang, 'systems.viewCase')}</span>
+                        <svg class="relative w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>
                       </a>
                     </div>
                   </div>
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>
@@ -262,53 +325,69 @@ const iconPaths: Record<string, string> = {
   </div>
 
   <!-- Mobile Fallback / Reduced Motion (Premium Accordion) -->
-  <div class="chapter-accordion hidden flex-col gap-6 container pb-12">
+  <div class="chapter-accordion hidden flex-col gap-5 container pb-12">
     {chapters.map((chapter, index) => {
       const iconPath = iconPaths[chapter.icon] || iconPaths.users;
 
       return (
-        <div class="group bg-surface/80 backdrop-blur-sm border border-white/10 rounded-2xl p-6 transition-all duration-300 hover:border-white/20"
-             style={`--card-color: ${chapter.color};`}>
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                   style={`background: ${chapter.color}20;`}>
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke={chapter.color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d={iconPath}/>
-                </svg>
+        <article
+          class="mobile-card group relative rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02]"
+          style={`--card-color: ${chapter.color};`}
+        >
+          <!-- Glassmorphism background -->
+          <div class="absolute inset-0 bg-surface/90 backdrop-blur-xl"></div>
+
+          <!-- Top accent -->
+          <div class="absolute top-0 inset-x-0 h-1" style={`background: ${chapter.color};`}></div>
+
+          <!-- Border -->
+          <div class="absolute inset-0 rounded-2xl border border-white/10"></div>
+
+          <div class="relative p-6">
+            <!-- Header -->
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                     style={`background: ${chapter.color}20;`}>
+                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke={chapter.color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d={iconPath}/>
+                  </svg>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+                      style={`background: ${chapter.color}15; color: ${chapter.color};`}>
+                  {chapter.eyebrow}
+                </span>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-xs font-semibold uppercase"
-                    style={`background: ${chapter.color}20; color: ${chapter.color};`}>
-                {chapter.eyebrow}
-              </span>
+              <span class="text-4xl font-black text-foreground/5">0{index + 1}</span>
             </div>
-            <span class="text-3xl font-black text-foreground/10">0{index + 1}</span>
-          </div>
 
-          <h3 class="text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors">
-            {getStr(chapter.title)}
-          </h3>
-          <p class="text-muted mb-4">
-            {getStr(chapter.description)}
-          </p>
+            <!-- Content -->
+            <h3 class="text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors">
+              {getStr(chapter.title)}
+            </h3>
+            <p class="text-muted mb-5 text-sm leading-relaxed">
+              {getStr(chapter.description)}
+            </p>
 
-          <div class="flex items-center justify-between">
-            <div class="flex items-baseline gap-1">
-              <span class="text-2xl font-bold" style={`color: ${chapter.color};`}>{chapter.stats.value}</span>
-              <span class="text-xs text-muted">{getStr(chapter.stats.label)}</span>
+            <!-- Footer -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-bold" style={`color: ${chapter.color};`}>{chapter.stats.value}</span>
+                <span class="text-xs text-muted">{getStr(chapter.stats.label)}</span>
+              </div>
+              <a
+                href={`/${lang}/case-studies/${chapter.slug}`}
+                class="inline-flex items-center gap-2 text-sm font-semibold transition-all duration-300 hover:gap-3"
+                style={`color: ${chapter.color};`}
+              >
+                {t(lang, 'systems.viewCase')}
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </a>
             </div>
-            <a
-              href={`/${lang}/case-studies/${chapter.slug}`}
-              class="inline-flex items-center gap-2 text-sm font-medium transition-colors"
-              style={`color: ${chapter.color};`}
-            >
-              {t(lang, 'systems.viewCase')}
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </a>
           </div>
-        </div>
+        </article>
       );
     })}
   </div>
@@ -319,13 +398,153 @@ const iconPaths: Record<string, string> = {
   import { initOnce } from '@/lib/lifecycle';
   import { createRevealObserver } from '@/lib/ui/animations';
 
+  function initParticleSystem(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return () => {};
+
+    let animationId: number;
+    const particles: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+      opacity: number;
+      color: string;
+    }> = [];
+
+    const colors = ['#6ee7b7', '#93c5fd', '#c4b5fd'];
+
+    function resize() {
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      ctx!.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+
+    function createParticle() {
+      return {
+        x: Math.random() * canvas.offsetWidth,
+        y: Math.random() * canvas.offsetHeight,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        radius: Math.random() * 2 + 0.5,
+        opacity: Math.random() * 0.5 + 0.1,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function init() {
+      resize();
+      particles.length = 0;
+      const count = Math.min(40, Math.floor((canvas.offsetWidth * canvas.offsetHeight) / 25000));
+      for (let i = 0; i < count; i++) {
+        particles.push(createParticle());
+      }
+    }
+
+    function animate() {
+      ctx!.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.offsetWidth) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.offsetHeight) p.vy *= -1;
+
+        ctx!.beginPath();
+        ctx!.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx!.fillStyle = p.color;
+        ctx!.globalAlpha = p.opacity;
+        ctx!.fill();
+      });
+
+      ctx!.globalAlpha = 1;
+      animationId = requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+    window.addEventListener('resize', init);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', init);
+    };
+  }
+
+  function initSpotlightEffect(section: HTMLElement) {
+    const cards = section.querySelectorAll('.chapter-card');
+
+    cards.forEach(card => {
+      const cardBody = card.querySelector('.card-body') as HTMLElement;
+      if (!cardBody) return;
+
+      cardBody.addEventListener('mousemove', (e) => {
+        const rect = cardBody.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        cardBody.style.setProperty('--mouse-x', `${x}%`);
+        cardBody.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      cardBody.addEventListener('mouseenter', () => {
+        const spotlight = cardBody.querySelector('.card-spotlight') as HTMLElement;
+        const holographic = card.querySelector('.card-holographic') as HTMLElement;
+        if (spotlight) spotlight.style.opacity = '1';
+        if (holographic) holographic.style.opacity = '1';
+      });
+
+      cardBody.addEventListener('mouseleave', () => {
+        const spotlight = cardBody.querySelector('.card-spotlight') as HTMLElement;
+        const holographic = card.querySelector('.card-holographic') as HTMLElement;
+        if (spotlight) spotlight.style.opacity = '0';
+        if (holographic) holographic.style.opacity = '0';
+      });
+    });
+  }
+
+  function initTitleShine(section: HTMLElement) {
+    const cards = section.querySelectorAll('.chapter-card');
+
+    cards.forEach(card => {
+      const shine = card.querySelector('.title-shine') as HTMLElement;
+      if (!shine) return;
+
+      card.addEventListener('mouseenter', () => {
+        shine.style.transition = 'transform 0.8s ease';
+        shine.style.transform = 'translateX(200%)';
+      });
+
+      card.addEventListener('mouseleave', () => {
+        shine.style.transition = 'none';
+        shine.style.transform = 'translateX(-100%)';
+      });
+    });
+  }
+
   function initSystems() {
     const section = document.getElementById('systems');
     initOnce(section, 'systems', (root) => {
       let bodyObserver: IntersectionObserver | null = null;
+      let cleanupParticles = () => {};
 
+      // Initialize chapter deck animation
       initChapterDeck(root as HTMLElement);
 
+      // Initialize particle system
+      const canvas = root.querySelector('#systems-particles') as HTMLCanvasElement;
+      if (canvas && window.innerWidth >= 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        cleanupParticles = initParticleSystem(canvas);
+      }
+
+      // Initialize spotlight effect
+      initSpotlightEffect(root);
+
+      // Initialize title shine effect
+      initTitleShine(root);
+
+      // Reveal animations
       const cleanupReveal = createRevealObserver(root, {
         selector: '.reveal-header',
         threshold: 0.2,
@@ -335,6 +554,7 @@ const iconPaths: Record<string, string> = {
         },
       });
 
+      // Body class observer
       bodyObserver = new IntersectionObserver(
         ([entry]) => {
           document.body.classList.toggle('section-systems', entry.isIntersecting);
@@ -345,6 +565,7 @@ const iconPaths: Record<string, string> = {
 
       return () => {
         cleanupReveal();
+        cleanupParticles();
         bodyObserver?.disconnect();
         document.body.classList.remove('section-systems');
       };
@@ -356,21 +577,9 @@ const iconPaths: Record<string, string> = {
 </script>
 
 <style>
-  /* Particle animation */
-  @keyframes system-float {
-    0%, 100% {
-      transform: translateY(0) translateX(0);
-      opacity: 0.3;
-    }
-    50% {
-      transform: translateY(-20px) translateX(10px);
-      opacity: 0.6;
-    }
-  }
-
-  /* Spin animation for icon rings */
+  /* Spin animation for orbital rings */
   .animate-spin-slow {
-    animation: spin 25s linear infinite;
+    animation: spin 30s linear infinite;
   }
 
   @keyframes spin {
@@ -378,62 +587,112 @@ const iconPaths: Record<string, string> = {
     to { transform: rotate(360deg); }
   }
 
-  /* Card Stack Styles */
+  /* Card stack base styles */
   .chapter-card {
     transform-origin: center center;
-    will-change: transform, opacity, z-index;
-    transition: box-shadow 0.5s ease;
+    will-change: transform, opacity;
     transform-style: preserve-3d;
   }
 
   .chapters-stack .chapter-card {
-    box-shadow: var(--shadow-xl);
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
   }
 
-  /* Active card glow */
-  .chapter-card[style*="opacity: 1"] > div:first-child {
-    opacity: 0.3 !important;
+  /* Active card glow enhancement */
+  .chapter-card[style*="opacity: 1"] .card-glow {
+    opacity: 0.4 !important;
   }
 
-  /* Card content glassmorphism */
-  .card-content {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.05) 0%,
-      rgba(255, 255, 255, 0.02) 100%
-    );
+  /* Progress ring animation for active dot */
+  .chapter-nav-dot.active .progress-ring {
+    opacity: 1 !important;
+    stroke-dashoffset: 0 !important;
   }
 
-  /* Dot active state */
-  .chapter-dot.active > div > div:first-child {
-    background: var(--dot-color) !important;
-    transform: scale(1.25);
+  .chapter-nav-dot.active span {
+    color: var(--active-color) !important;
+    font-weight: 800;
   }
 
-  .chapter-dot.active > div > div:last-child {
-    opacity: 0.5 !important;
-  }
-
-  /* Feature tags hover */
-  .feature-tag:hover {
-    transform: translateY(-2px);
+  .chapter-nav-dot.active .text-muted\/60 {
+    opacity: 1 !important;
+    color: var(--active-color) !important;
   }
 
   /* Header reveal transitions */
   .reveal-header {
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Progress bar animation */
-  .scroll-progress {
+  /* Feature pills hover glow */
+  .feature-pill:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* CTA button pulse on active card */
+  .chapter-card[style*="opacity: 1"] .cta-button {
+    box-shadow: 0 0 30px color-mix(in srgb, var(--card-color) 40%, transparent);
+  }
+
+  /* Stats value glow */
+  .stat-value {
+    text-shadow: 0 0 40px currentColor;
+  }
+
+  /* Mobile card hover effects */
+  .mobile-card:hover {
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.2);
+  }
+
+  .mobile-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 50%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .mobile-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Progress bar glow sync */
+  .scroll-progress,
+  .scroll-progress-glow {
     transition: width 0.1s linear;
+  }
+
+  /* Dark mode enhancements */
+  :root.dark .card-body {
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  :root.dark .chapter-card {
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.03);
+  }
+
+  :root.dark .mobile-card {
+    background: rgba(15, 23, 42, 0.85);
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .chapter-card,
-    .system-particle,
-    .animate-spin-slow {
+    .animate-spin-slow,
+    .title-shine,
+    .card-spotlight,
+    .card-holographic {
       animation: none !important;
       transition: opacity 0.3s ease !important;
     }
@@ -441,6 +700,10 @@ const iconPaths: Record<string, string> = {
     .reveal-header {
       opacity: 1 !important;
       transform: none !important;
+    }
+
+    #systems-particles {
+      display: none;
     }
   }
 </style>

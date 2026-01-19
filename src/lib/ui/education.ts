@@ -130,68 +130,7 @@ export function initEducationUI() {
         }
       }
 
-      // === MAGNETIC CARD TILT ===
-      root.querySelectorAll('.edu-card-wrapper').forEach((wrapper) => {
-        const card = wrapper.querySelector('.edu-card') as HTMLElement | null;
-        const spotlight = wrapper.querySelector('.edu-spotlight') as HTMLElement | null;
-        const holographic = wrapper.querySelector('.edu-holographic') as HTMLElement | null;
-        if (!card) return;
-
-        let isFlipped = false;
-
-        const handleMove = (e: Event) => {
-          if (isFlipped) return;
-          const mouseEvent = e as MouseEvent;
-          const rect = (wrapper as HTMLElement).getBoundingClientRect();
-          const x = mouseEvent.clientX - rect.left;
-          const y = mouseEvent.clientY - rect.top;
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-
-          const rotateX = (y - centerY) / 15;
-          const rotateY = (centerX - x) / 15;
-
-          card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-
-          if (spotlight) {
-            spotlight.style.opacity = '1';
-            spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.15) 0%, transparent 60%)`;
-          }
-
-          if (holographic) {
-            holographic.style.background = `
-              linear-gradient(
-                ${110 + (x / rect.width) * 40}deg,
-                transparent 0%,
-                hsla(${(x / rect.width) * 360}, 100%, 70%, 0.1) 30%,
-                hsla(${((x / rect.width) * 360 + 60) % 360}, 100%, 70%, 0.15) 50%,
-                hsla(${((x / rect.width) * 360 + 120) % 360}, 100%, 70%, 0.1) 70%,
-                transparent 100%
-              )
-            `;
-          }
-        };
-
-        const handleLeave = () => {
-          if (!isFlipped) {
-            card.style.transform = 'rotateX(0) rotateY(0)';
-          }
-          if (spotlight) spotlight.style.opacity = '0';
-        };
-
-        const handleFlip = () => {
-          isFlipped = !isFlipped;
-          if (isFlipped) {
-            card.style.transform = 'rotateY(180deg)';
-          } else {
-            card.style.transform = 'rotateY(0deg)';
-          }
-        };
-
-        on(wrapper, 'mousemove', handleMove);
-        on(wrapper, 'mouseleave', handleLeave);
-        on(card, 'click', handleFlip);
-      });
+      // === MAGNETIC CARD TILT (deferred until reveal) ===
 
       // === FLAG 3D ROTATION ===
       root.querySelectorAll('.edu-flag-3d').forEach((flag) => {
@@ -212,9 +151,82 @@ export function initEducationUI() {
       // === REVEAL ANIMATIONS ===
       const revealCleanup = createRevealObserver(root, {
         selector: '.edu-reveal',
-        threshold: 0.4,
-        rootMargin: '-50px 0px -50px 0px',
+        threshold: 0.1,
+        rootMargin: '0px 0px -80px 0px',
         onReveal: (el) => {
+          // Initialize card tilt after reveal
+          const wrapper = el.querySelector('.edu-card-wrapper') === el ? el : el.closest('.edu-card-wrapper');
+          if (wrapper) {
+            const card = wrapper.querySelector('.edu-card') as HTMLElement | null;
+            const spotlight = wrapper.querySelector('.edu-spotlight') as HTMLElement | null;
+            const holographic = wrapper.querySelector('.edu-holographic') as HTMLElement | null;
+
+            if (card) {
+              let isFlipped = false;
+
+              const handleMove = (e: Event) => {
+                if (isFlipped) return;
+                const mouseEvent = e as MouseEvent;
+                const rect = (wrapper as HTMLElement).getBoundingClientRect();
+                const x = mouseEvent.clientX - rect.left;
+                const y = mouseEvent.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                // Disable transition for smooth tilt movement
+                card.style.transition = 'none';
+
+                const rotateX = (y - centerY) / 15;
+                const rotateY = (centerX - x) / 15;
+
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+                if (spotlight) {
+                  spotlight.style.opacity = '1';
+                  spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.15) 0%, transparent 60%)`;
+                }
+
+                if (holographic) {
+                  holographic.style.background = `
+                    linear-gradient(
+                      ${110 + (x / rect.width) * 40}deg,
+                      transparent 0%,
+                      hsla(${(x / rect.width) * 360}, 100%, 70%, 0.1) 30%,
+                      hsla(${((x / rect.width) * 360 + 60) % 360}, 100%, 70%, 0.15) 50%,
+                      hsla(${((x / rect.width) * 360 + 120) % 360}, 100%, 70%, 0.1) 70%,
+                      transparent 100%
+                    )
+                  `;
+                }
+              };
+
+              const handleLeave = () => {
+                // Re-enable transition and reset
+                card.style.transition = '';
+                if (!isFlipped) {
+                  card.style.transform = 'rotateX(0) rotateY(0)';
+                }
+                if (spotlight) spotlight.style.opacity = '0';
+              };
+
+              const handleFlip = () => {
+                isFlipped = !isFlipped;
+                // Disable transition for instant flip
+                card.style.transition = 'none';
+                if (isFlipped) {
+                  card.style.transform = 'rotateY(180deg)';
+                } else {
+                  card.style.transform = 'rotateY(0deg)';
+                }
+              };
+
+              on(wrapper, 'mousemove', handleMove);
+              on(wrapper, 'mouseleave', handleLeave);
+              on(card, 'click', handleFlip);
+            }
+          }
+
+          // Progress bar animation
           el.querySelectorAll('.edu-progress-bar').forEach((bar) => {
             cleanups.push(animateWaveBar(bar as HTMLElement, { delay: 600 }));
           });

@@ -551,7 +551,9 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
    * ============================================ */
   @media (prefers-reduced-motion: reduce) {
     .aurora-orb,
-    .particle,
+    .neural-line,
+    .neural-node,
+    .neural-pulse,
     .title-word,
     .perspectives-subtitle,
     .stats-row,
@@ -560,6 +562,15 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
       animation: none !important;
       opacity: 1 !important;
       transform: none !important;
+    }
+
+    .neural-line {
+      stroke-dashoffset: 0 !important;
+      opacity: 0.15 !important;
+    }
+
+    .neural-node {
+      opacity: 0.4 !important;
     }
 
     .perspectives-title {
