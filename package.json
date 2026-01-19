@@ -5,13 +5,14 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
+    "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check && tsc --noEmit",
+    "astro": "astro",
     "validate": "tsx scripts/validate-content.ts",
     "gen:pdf": "tsx scripts/generate-pdf.ts",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "check": "astro check",
+    "test": "vitest"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.0.0",

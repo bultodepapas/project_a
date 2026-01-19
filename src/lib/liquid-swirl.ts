@@ -9,6 +9,7 @@ interface LiquidSwirlConfig {
   intensity: number; // 0-1, qué tan intenso es el efecto
   radius: number; // radio del vórtice en px
   throttle: number; // ms entre actualizaciones de mouse
+  baseFrequency: number; // frecuencia base para turbulencia
 }
 
 interface MouseState {
@@ -21,7 +22,7 @@ interface MouseState {
  * Inicializa el efecto Liquid Swirl para una tarjeta
  */
 export function initLiquidSwirl(config: LiquidSwirlConfig): () => void {
-  const { container, intensity = 0.8, radius = 150, throttle = 16 } = config;
+  const { container, intensity = 0.8, radius = 150, throttle = 16, baseFrequency = 0.3 } = config;
 
   // Referencias a elementos clave
   const card = container as HTMLElement;
@@ -40,6 +41,11 @@ export function initLiquidSwirl(config: LiquidSwirlConfig): () => void {
     isInside: false,
   };
 
+  // RAF control
+  let rafId: number | null = null;
+  let idleTimer: number | null = null;
+  let idleIntensityBoost = 0;
+
   // Variables CSS para animación
   const setCSSVar = (name: string, value: string | number) => {
     card.style.setProperty(name, String(value));
@@ -56,6 +62,33 @@ export function initLiquidSwirl(config: LiquidSwirlConfig): () => void {
     mouseState.x = e.clientX - rect.left;
     mouseState.y = e.clientY - rect.top;
     mouseState.isInside = true;
+
+    // Reset idle boost when mouse moves
+    idleIntensityBoost = 0;
+    if (idleTimer) clearTimeout(idleTimer);
+    
+    // Start idle timer (increase intensity if mouse stays still)
+    idleTimer = window.setTimeout(() => {
+      let boostProgress = 0;
+      const boostDuration = 500;
+      const startTime = Date.now();
+      
+      const animateBoost = () => {
+        if (!mouseState.isInside) return;
+        
+        const elapsed = Date.now() - startTime;
+        boostProgress = Math.min(elapsed / boostDuration, 1);
+        idleIntensityBoost = boostProgress * 0.2; // Max 0.2 boost
+        
+        updateSwirlEffect();
+        
+        if (boostProgress < 1) {
+          requestAnimationFrame(animateBoost);
+        }
+      };
+      
+      animateBoost();
+    }, 500);
 
     updateSwirlEffect();
   };
@@ -76,51 +109,66 @@ export function initLiquidSwirl(config: LiquidSwirlConfig): () => void {
     // Intensidad decrece con distancia
     const maxDistance = Math.sqrt(centerX * centerX + centerY * centerY);
     const distanceRatio = Math.max(0, 1 - distance / maxDistance);
-    const currentIntensity = distanceRatio * intensity;
+    const currentIntensity = (distanceRatio * intensity) + idleIntensityBoost;
 
     // Ángulo hacia el cursor para rotación del vórtice
     const angle = Math.atan2(dy, dx);
 
     // Actualiza variables CSS para clip-path y filtro
-    setCSSVar('--swirl-x', mouseState.x);
-    setCSSVar('--swirl-y', mouseState.y);
+    setCSSVar('--swirl-x', `${mouseState.x}px`);
+    setCSSVar('--swirl-y', `${mouseState.y}px`);
     setCSSVar('--swirl-intensity', currentIntensity);
     setCSSVar('--swirl-angle', `${angle}rad`);
-    setCSSVar('--swirl-distance', distance);
+    setCSSVar('--swirl-distance', `${distance}px`);
 
     // Actualiza el filtro SVG feTurbulence
     const turbulence = svgFilter.querySelector('feTurbulence') as SVGElement;
     if (turbulence) {
-      const baseFreq = 0.3 + currentIntensity * 0.5; // Aumenta frecuencia con intensidad
-      turbulence.setAttribute('baseFrequency', String(baseFreq));
+      const dynamicFreq = baseFrequency + currentIntensity * 0.3;
+      turbulence.setAttribute('baseFrequency', String(dynamicFreq));
+      
+      // Añade variación sutil en el tiempo
+      const time = Date.now() / 1000;
+      const seed = Math.floor(Math.sin(time * 0.5) * 100 + 100);
+      turbulence.setAttribute('seed', String(seed));
     }
   };
 
   // Restaura estado cuando sale del mouse
   const resetSwirlEffect = () => {
     mouseState.isInside = false;
+    idleIntensityBoost = 0;
+    
+    // Clear timers
+    if (idleTimer) {
+      clearTimeout(idleTimer);
+      idleTimer = null;
+    }
 
     // Anima la salida del efecto
     let transitionProgress = 0;
-    const transitionDuration = 300; // ms
+    const transitionDuration = 400; // ms
     const startTime = Date.now();
 
     const animateExit = () => {
       const elapsed = Date.now() - startTime;
       transitionProgress = Math.min(elapsed / transitionDuration, 1);
 
-      // Easing out
-      const eased = 1 - (1 - transitionProgress) ** 2;
+      // Easing out cubic
+      const eased = 1 - Math.pow(1 - transitionProgress, 3);
       const currentIntensity = (1 - eased) * parseFloat(getComputedStyle(card).getPropertyValue('--swirl-intensity') || '0');
 
       setCSSVar('--swirl-intensity', currentIntensity);
 
       if (transitionProgress < 1) {
-        requestAnimationFrame(animateExit);
+        rafId = requestAnimationFrame(animateExit);
+      } else {
+        rafId = null;
       }
     };
 
-    animateExit();
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(animateExit);
   };
 
   // Event listeners
@@ -135,6 +183,10 @@ export function initLiquidSwirl(config: LiquidSwirlConfig): () => void {
     card.removeEventListener('mousemove', updateMouse);
     card.removeEventListener('mouseleave', resetSwirlEffect);
     card.removeEventListener('mouseenter', () => {});
+    
+    // Clear any pending timers/rafs
+    if (idleTimer) clearTimeout(idleTimer);
+    if (rafId) cancelAnimationFrame(rafId);
   };
 }
 
@@ -167,6 +219,7 @@ export function initAllLiquidSwirls(): () => void {
       intensity: parseFloat(card.dataset.swirlIntensity || '0.8'),
       radius: parseInt(card.dataset.swirlRadius || '150', 10),
       throttle: 16, // ~60fps
+      baseFrequency: parseFloat(card.dataset.swirlBaseFrequency || '0.3'),
     };
 
     const cleanup = initLiquidSwirl(config);

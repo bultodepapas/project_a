@@ -197,11 +197,13 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
                   <div class="text-center mb-3">
                     {hasMetric ? (
                       <div class="text-4xl md:text-5xl font-bold tabular-nums" style={`color: ${color}`}>
+                        <span class="sr-only">{item.metric}</span>
                         <span
                           class="proof-number"
+                          aria-hidden="true"
                           data-target={item.metric}
                           data-card-index={index}
-                        >{item.metric}</span>{item.suffix}
+                        >0</span>{item.suffix}
                       </div>
                     ) : (
                       <div class="w-10 h-10 mx-auto rounded-full flex items-center justify-center" style={`background: ${color}20`}>

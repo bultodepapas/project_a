@@ -18,9 +18,10 @@ interface Props {
   intensity?: number;
   radius?: number;
   color?: string;
+  baseFrequency?: number;
 }
 
-const { intensity = 0.8, radius = 150, color } = Astro.props;
+const { intensity = 0.8, radius = 150, color, baseFrequency = 0.3 } = Astro.props;
 ---
 
 <div
@@ -29,6 +30,7 @@ const { intensity = 0.8, radius = 150, color } = Astro.props;
   data-swirl-intensity={intensity}
   data-swirl-radius={radius}
   data-swirl-color={color || 'inherit'}
+  data-swirl-base-frequency={baseFrequency}
 >
   {/* SVG Filter Container - Definiciones de filtros reutilizables */}
   <svg
@@ -45,7 +47,7 @@ const { intensity = 0.8, radius = 150, color } = Astro.props;
         {/* feTurbulence: crea el patrón de fluido */}
         <feTurbulence
           type="fractalNoise"
-          baseFrequency="0.3"
+          baseFrequency={baseFrequency}
           numOctaves="4"
           result="turbulence"
           seed="1"
@@ -55,7 +57,7 @@ const { intensity = 0.8, radius = 150, color } = Astro.props;
         <feDisplacementMap
           in="SourceGraphic"
           in2="turbulence"
-          scale="15"
+          scale="25"
           xChannelSelector="R"
           yChannelSelector="G"
         />
@@ -150,40 +152,37 @@ const { intensity = 0.8, radius = 150, color } = Astro.props;
     height: 100%;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.3s ease-out;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Usa clip-path dinámico para simular vórtice */
-    clip-path: radial-gradient(
-      circle at calc(var(--swirl-x)) calc(var(--swirl-y)),
-      transparent 0%,
-      transparent calc(40px * (1 - var(--swirl-intensity))),
-      rgba(255, 255, 255, calc(0.1 * var(--swirl-intensity)))
-        calc(80px * (1 - var(--swirl-intensity))),
-      rgba(255, 255, 255, 0) 100%
-    );
-
-    /* Fondo con gradiente radial */
+    /* Fondo con gradiente radial mejorado */
     background: radial-gradient(
       circle at calc(var(--swirl-x)) calc(var(--swirl-y)),
-      rgba(255, 255, 255, calc(0.15 * var(--swirl-intensity))),
-      transparent 70%
+      rgba(255, 255, 255, calc(0.2 * var(--swirl-intensity))),
+      rgba(255, 255, 255, calc(0.1 * var(--swirl-intensity))) 40%,
+      transparent 75%
     );
 
     /* Filter SVG para efecto de turbulencia */
     filter: url(#liquidSwirl);
 
     /* Rotación sutil basada en posición del mouse */
-    transform: rotate(var(--swirl-angle)) scale(1 + var(--swirl-intensity) * 0.1);
+    transform: rotate(calc(var(--swirl-angle) * 0.5)) scale(calc(1 + var(--swirl-intensity) * 0.15));
+    transform-origin: calc(var(--swirl-x)) calc(var(--swirl-y));
   }
 
   /* Cuando el mouse está dentro, aumenta opacidad */
   .liquid-swirl-wrapper:hover .liquid-swirl-effect {
-    opacity: 1;
+    opacity: 0.9;
   }
 
   .liquid-swirl-content {
     position: relative;
     z-index: 1;
+  }
+
+  /* GPU acceleration only on hover */
+  .liquid-swirl-wrapper:hover {
+    will-change: transform, filter;
   }
 
   /* Soporte para reduced motion */

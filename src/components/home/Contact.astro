@@ -1,6 +1,7 @@
 ---
 import { t } from '@/i18n';
 import type { Lang } from '@/i18n/config';
+import LiquidSwirl from '@/components/effects/LiquidSwirl.astro';
 
 interface Props {
   lang: Lang;
@@ -20,7 +21,10 @@ const contactMethods = [
     label: t(lang, 'contact.email'),
     value: email,
     color: '#6ee7b7',
-    description: lang === 'es' ? 'Respuesta en 24h' : lang === 'fr' ? 'Réponse en 24h' : lang === 'pt' ? 'Resposta em 24h' : 'Response within 24h'
+    description: lang === 'es' ? 'Respuesta en 24h' : lang === 'fr' ? 'Réponse en 24h' : lang === 'pt' ? 'Resposta em 24h' : 'Response within 24h',
+    swirlIntensity: 0.9,
+    swirlRadius: 200,
+    swirlFrequency: 0.4
   },
   {
     id: 'linkedin',
@@ -30,7 +34,10 @@ const contactMethods = [
     value: 'Angela Parra',
     color: '#93c5fd',
     description: lang === 'es' ? 'Conectemos profesionalmente' : lang === 'fr' ? 'Connectons-nous' : lang === 'pt' ? 'Vamos conectar' : 'Let\'s connect professionally',
-    external: true
+    external: true,
+    swirlIntensity: 0.7,
+    swirlRadius: 180,
+    swirlFrequency: 0.3
   },
   {
     id: 'resume',
@@ -39,7 +46,10 @@ const contactMethods = [
     label: t(lang, 'contact.downloadPdf'),
     value: 'CV / Resume',
     color: '#c4b5fd',
-    description: lang === 'es' ? 'Ver experiencia completa' : lang === 'fr' ? 'Voir expérience complète' : lang === 'pt' ? 'Ver experiência completa' : 'View full experience'
+    description: lang === 'es' ? 'Ver experiencia completa' : lang === 'fr' ? 'Voir expérience complète' : lang === 'pt' ? 'Ver experiência completa' : 'View full experience',
+    swirlIntensity: 0.6,
+    swirlRadius: 150,
+    swirlFrequency: 0.25
   }
 ];
 ---
@@ -79,15 +89,20 @@ const contactMethods = [
     <!-- Contact Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
       {contactMethods.map((method, index) => (
-        <a
-          href={method.href}
-          target={method.external ? '_blank' : undefined}
-          rel={method.external ? 'noopener noreferrer' : undefined}
-          class="contact-card group relative reveal-element opacity-0 translate-y-6 transition-all duration-1000"
-          style={`transition-delay: ${(index + 1) * 200}ms; --mouse-x: 50%; --mouse-y: 50%; --spot-color: ${method.color};`}
+        <LiquidSwirl 
+          intensity={method.swirlIntensity} 
+          radius={method.swirlRadius}
+          color={method.color}
+          baseFrequency={method.swirlFrequency}
         >
-          <!-- Liquid Swirl Spotlight Effect -->
-          <div class="contact-spotlight absolute inset-0 rounded-2xl pointer-events-none opacity-0 transition-opacity duration-300"></div>
+          <a
+            href={method.href}
+            target={method.external ? '_blank' : undefined}
+            rel={method.external ? 'noopener noreferrer' : undefined}
+            class="contact-card group relative reveal-element opacity-0 translate-y-6 transition-all duration-1000"
+            style={`transition-delay: ${(index + 1) * 200}ms; --spot-color: ${method.color};`}
+            data-card-id={method.id}
+          >
 
           <!-- Gradient border on hover -->
           <div
@@ -98,10 +113,13 @@ const contactMethods = [
           </div>
 
           <!-- Card content -->
-          <div class="relative p-8 rounded-2xl bg-surface border border-border group-hover:border-transparent transition-all duration-500 group-hover:shadow-2xl h-full">
+          <div class="contact-card-inner relative p-8 rounded-2xl bg-surface border border-border group-hover:border-transparent transition-all duration-500 group-hover:shadow-2xl h-full">
+            <!-- Ripple container -->
+            <div class="ripple-container absolute inset-0 rounded-2xl overflow-hidden pointer-events-none"></div>
+            
             <!-- Icon -->
             <div
-              class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110"
+              class="contact-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3"
               style={`background: linear-gradient(135deg, ${method.color}30, ${method.color}10)`}
             >
               {method.icon === 'mail' && (
@@ -144,8 +162,15 @@ const contactMethods = [
               class="absolute top-0 right-0 w-24 h-24 opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-tr-2xl"
               style={`background: radial-gradient(circle at top right, ${method.color}, transparent 70%)`}
             ></div>
+            
+            <!-- Ambient glow -->
+            <div
+              class="card-glow absolute -inset-4 rounded-3xl opacity-0 group-hover:opacity-30 blur-2xl transition-opacity duration-700 pointer-events-none -z-10"
+              style={`background: radial-gradient(circle, ${method.color}40, transparent 70%)`}
+            ></div>
           </div>
-        </a>
+          </a>
+        </LiquidSwirl>
       ))}
     </div>
 
@@ -232,39 +257,60 @@ const contactMethods = [
 <style>
   .contact-card {
     perspective: 1000px;
+    display: block;
+    text-decoration: none;
   }
 
   .contact-card:hover {
     transform: translateY(-8px);
   }
 
-  /* Spotlight Effect */
-  .contact-spotlight {
-    background: radial-gradient(
-      380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      color-mix(in srgb, var(--spot-color) 95%, transparent) 0%,
-      color-mix(in srgb, var(--spot-color) 72%, transparent) 24%,
-      color-mix(in srgb, var(--spot-color) 50%, transparent) 48%,
-      color-mix(in srgb, var(--spot-color) 24%, transparent) 68%,
-      color-mix(in srgb, var(--spot-color) 7%, transparent) 86%,
-      transparent 100%
-    );
+  /* Icon animation */
+  .contact-icon {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-icon::after {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+
+  .contact-card:hover .contact-icon::after {
+    transform: translateX(100%);
+  }
+
+  /* Ripple effect */
+  .ripple-container {
+    z-index: 0;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--spot-color), transparent);
     pointer-events: none;
-    z-index: 10;
-    filter: blur(1.5px);
-    mix-blend-mode: normal;
-    opacity: 0;
-    transition: opacity 0.28s ease-out, transform 0.28s ease-out;
+    animation: ripple 0.8s ease-out;
   }
 
-  /* In dark themes let it blend a bit for richer glow */
-  :global(:root.dark) .contact-spotlight {
-    mix-blend-mode: screen;
-  }
-
-  .contact-card:hover .contact-spotlight {
-    opacity: 0.95 !important;
-    transform: scale(1.01);
+  /* Ambient glow */
+  .card-glow {
+    transition: opacity 0.7s ease;
   }
 
   /* Text tint on hover aligned to card color */
@@ -323,56 +369,37 @@ const contactMethods = [
 </style>
 
 <script>
-  // Liquid Swirl Effect + Copy Email Functionality
+  // Copy Email + Ripple Effect Functionality
   function initContactCards() {
     const cards = document.querySelectorAll('.contact-card');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Initialize Liquid Swirl effect if motion is allowed
+    // Add ripple effect on click
     if (!prefersReducedMotion) {
-      cards.forEach((card, index) => {
-        const spotlight = card.querySelector('.contact-spotlight');
-        if (!spotlight) return;
-
-        // Smoothed follow (lerp) for liquid feel
-        let lastUpdate = 0;
-        const throttle = 16; // ~60fps
-        let targetX = 50;
-        let targetY = 50;
-        let currentX = 50;
-        let currentY = 50;
-        let rafId = 0;
-
-        const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-
-        const animate = () => {
-          currentX = lerp(currentX, targetX, 0.22);
-          currentY = lerp(currentY, targetY, 0.22);
-          (card as HTMLElement).style.setProperty('--mouse-x', `${currentX}%`);
-          (card as HTMLElement).style.setProperty('--mouse-y', `${currentY}%`);
-          rafId = requestAnimationFrame(animate);
-        };
-        rafId = requestAnimationFrame(animate);
-
-        card.addEventListener('mousemove', (e) => {
-          const now = Date.now();
-          if (now - lastUpdate < throttle) return;
-          lastUpdate = now;
+      cards.forEach((card) => {
+        card.addEventListener('click', (e) => {
+          const rippleContainer = card.querySelector('.ripple-container');
+          if (!rippleContainer) return;
 
           const rect = card.getBoundingClientRect();
-          targetX = ((e.clientX - rect.left) / rect.width) * 100;
-          targetY = ((e.clientY - rect.top) / rect.height) * 100;
-          
-          // Make spotlight visible
-          (spotlight as HTMLElement).style.opacity = '1';
-        });
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
 
-        card.addEventListener('mouseleave', () => {
-          (spotlight as HTMLElement).style.opacity = '0';
-          targetX = 50;
-          targetY = 50;
-          currentX = 50;
-          currentY = 50;
+          const ripple = document.createElement('div');
+          ripple.className = 'ripple';
+          ripple.style.left = `${x}px`;
+          ripple.style.top = `${y}px`;
+          ripple.style.width = '20px';
+          ripple.style.height = '20px';
+          ripple.style.marginLeft = '-10px';
+          ripple.style.marginTop = '-10px';
+
+          rippleContainer.appendChild(ripple);
+
+          // Remove ripple after animation
+          setTimeout(() => {
+            ripple.remove();
+          }, 800);
         });
       });
     }
