@@ -215,6 +215,44 @@
   - Move shared UI behavior to `src/lib/ui` and register from pages/layouts.
   - Introduce JSON schema validation (zod or similar) for `src/data` files.
   - Establish a single content boundary: MDX for narrative content, JSON for structured data only.
+- Detailed plan (step-by-step)
+  1) Client behavior consolidation
+     - Target files: `src/components/**` (scripts), `src/lib/ui/*`, `src/lib/lifecycle.ts`, `src/layouts/Base.astro`.
+     - Inventory all inline `<script>` blocks; group by behavior (nav, language switch, theme toggle, reveal, counters).
+     - Create dedicated modules in `src/lib/ui`:
+       - `ui/header.ts` (nav scroll, mobile menu, hover indicator).
+       - `ui/lang-switch.ts` (dropdown toggle, keyboard).
+       - `ui/theme-toggle.ts` (theme state, animation).
+       - `ui/reveal.ts` (wrapper around `createRevealObserver`).
+     - Replace inline scripts with imports + `initGlobal`/`initSection`.
+     - Acceptance: identical behavior, no script duplication per page.
+  2) JSON schema validation for `src/data`
+     - Decide validation strategy:
+       - Option A: Use `zod` in `scripts/validate-content.ts`.
+       - Option B: Keep custom type checks (current).
+     - Define schemas for each data file:
+       - `site.json`, `home.json`, `experience.json`, `skills.json`, `education.json`, `languages.json`, `awards.json`, `proof.json`.
+     - Add localized field helpers (locale object validation using `supportedLocales`).
+     - Acceptance: schema validation fails fast on missing/invalid fields; warnings for soft constraints remain.
+  3) Content boundary enforcement
+     - Audit usage:
+       - Identify narrative text stored in JSON that should move to MDX or i18n keys.
+     - Define rule set:
+       - Narrative paragraphs and long-form text → MDX or i18n.
+       - Structured data (lists, numeric metrics, tags) → JSON.
+     - Create a migration checklist (no implementation yet unless required).
+     - Acceptance: documented boundary and migration plan; no UI change.
+  4) Registration wiring
+     - Create a single `src/lib/ui/init.ts` that imports all modules and registers them.
+     - Call `initGlobal`/`initSection` from layout or page once.
+     - Acceptance: all UI behaviors initialized from one place.
+- Files & scope (explicit)
+  - Modules: `src/lib/ui/*` (new or expanded).
+  - Lifecycle: `src/lib/lifecycle.ts` (only if needed for new init patterns).
+  - Layout entry: `src/layouts/Base.astro` or a dedicated init module.
+  - Validation: `scripts/validate-content.ts`.
+  - Data sources: `src/data/*.json`.
+  - Documentation: `REPO_REVIEW_PLAN.md` + `SPEC.md` (if boundary rules added).
 - Acceptance criteria
   - Client scripts are imported from shared modules and initialized in one place.
   - Data validation covers all `src/data` files and fails fast on errors.
