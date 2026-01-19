@@ -503,7 +503,8 @@ const yearSpan = maxYear - minYear + 1;
 
 <script>
   function initTimeline() {
-    // Reveal animation observer
+    // Reveal animation observer - using higher threshold and negative rootMargin
+    // This ensures elements are well within the viewport before animating
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -511,8 +512,8 @@ const yearSpan = maxYear - minYear + 1;
         }
       });
     }, {
-      threshold: 0.1,
-      rootMargin: '50px'
+      threshold: 0.35, // Trigger when 35% visible (was 10%)
+      rootMargin: '-60px 0px -60px 0px' // Negative margin ensures element is clearly visible
     });
 
     document.querySelectorAll('#timeline .tl-reveal').forEach((el) => {

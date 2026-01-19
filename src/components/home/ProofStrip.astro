@@ -472,31 +472,33 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
       headerObserver.observe(el);
     });
 
-    // Cards observer
+    // Cards observer - triggers when card is 50% visible and well within viewport
+    // Using negative rootMargin ensures user has scrolled enough to see the animation
     const cardObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const card = entry.target as HTMLElement;
             const cardIndex = parseInt(card.dataset.index || '0', 10);
-            const baseDelay = cardIndex * 150;
+            const baseDelay = cardIndex * 100; // Slightly faster stagger
 
-            // Reveal card
+            // Reveal card first
             card.classList.remove('opacity-0', 'translate-y-8');
             card.classList.add('opacity-100', 'translate-y-0');
 
             if (!reduced) {
-              // Animate progress ring
+              // Animate progress ring after card is visible
               const progressRing = card.querySelector('.progress-ring') as SVGCircleElement;
               if (progressRing) {
-                animateProgressRing(progressRing, baseDelay + 300);
+                animateProgressRing(progressRing, baseDelay + 400);
               }
 
-              // Animate number
+              // Animate number with extra delay so it's clearly visible
               const numberEl = card.querySelector('.proof-number');
               if (numberEl) {
                 const target = parseInt(numberEl.getAttribute('data-target') || '0', 10);
-                animateNumber(numberEl, target, 2000, baseDelay + 500);
+                // Longer delay (600ms) ensures the card is fully visible before number animates
+                animateNumber(numberEl, target, 2000, baseDelay + 600);
               }
             } else {
               // Reduced motion: Show final state immediately
@@ -518,8 +520,8 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
         });
       },
       {
-        threshold: 0.15,
-        rootMargin: '50px',
+        threshold: 0.5, // Trigger when 50% visible (was 15%)
+        rootMargin: '-80px 0px -80px 0px', // Negative margin ensures element is well within viewport
       }
     );
 

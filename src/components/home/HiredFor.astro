@@ -425,18 +425,22 @@ const iconPaths: Record<string, string> = {
 
 <script>
   function initHiredFor() {
-    // Reveal animation observer
+    // Reveal animation observer - triggers when element is 40% visible
+    // Using negative rootMargin to ensure elements are well within viewport
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.remove('opacity-0', 'translate-y-8', 'translate-y-12');
           entry.target.classList.add('opacity-100', 'translate-y-0');
 
-          // Animate metrics if card
+          // Animate metrics if card - with a slight delay for better visual impact
           if (entry.target.classList.contains('hired-card')) {
             const metricEl = entry.target.querySelector('.metric-value') as HTMLElement;
             if (metricEl) {
-              animateMetric(metricEl);
+              // Delay metric animation so card is fully visible first
+              setTimeout(() => {
+                animateMetric(metricEl);
+              }, 400);
             }
           }
 
@@ -444,8 +448,8 @@ const iconPaths: Record<string, string> = {
         }
       });
     }, {
-      threshold: 0.15,
-      rootMargin: '50px'
+      threshold: 0.4,
+      rootMargin: '-50px 0px -50px 0px'
     });
 
     document.querySelectorAll('#hired-for .reveal-element').forEach((el) => {

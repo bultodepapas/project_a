@@ -1,4 +1,13 @@
 ---
+/**
+ * LangSwitch Component - PREMIUM EDITION
+ * Features:
+ * - Dropdown with glassmorphism
+ * - Globe icon with rotation on hover
+ * - Animated dropdown reveal
+ * - Flag emojis with bounce
+ * - Hover glow effects
+ */
 import { type Lang, getLocalizedPath, langNamesShort, supportedLangs } from '@/i18n/config';
 
 interface Props {
@@ -7,34 +16,402 @@ interface Props {
 }
 
 const { currentLang, currentPath } = Astro.props;
+
+// Language metadata with flags
+const langMeta: Record<Lang, { flag: string; name: string }> = {
+  en: { flag: '🇺🇸', name: 'English' },
+  es: { flag: '🇪🇸', name: 'Español' },
+  fr: { flag: '🇫🇷', name: 'Français' },
+  pt: { flag: '🇧🇷', name: 'Português' },
+};
+
+const currentMeta = langMeta[currentLang];
+const otherLangs = supportedLangs.filter(lang => lang !== currentLang);
 ---
 
-<div class="flex items-center gap-2 text-sm">
-  {
-    supportedLangs.map((lang, index) => {
-      const isCurrent = lang === currentLang;
+<div class="lang-switch-wrapper relative" data-lang-switch>
+  <!-- Trigger button -->
+  <button
+    class="lang-trigger group relative flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300"
+    aria-expanded="false"
+    aria-haspopup="listbox"
+    aria-label="Select language"
+  >
+    <!-- Background -->
+    <div class="lang-trigger-bg absolute inset-0 rounded-xl transition-all duration-300"></div>
+
+    <!-- Glow effect -->
+    <div class="lang-trigger-glow absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Globe icon -->
+    <div class="lang-globe relative z-10">
+      <svg
+        class="w-4 h-4 text-current transition-transform duration-500"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M2 12h20" />
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+      </svg>
+    </div>
+
+    <!-- Current language -->
+    <span class="lang-current relative z-10 flex items-center gap-1.5">
+      <span class="lang-flag text-sm">{currentMeta.flag}</span>
+      <span class="lang-code font-medium text-xs uppercase tracking-wider">{langNamesShort[currentLang]}</span>
+    </span>
+
+    <!-- Chevron -->
+    <svg
+      class="lang-chevron relative z-10 w-3 h-3 text-current transition-transform duration-300"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  </button>
+
+  <!-- Dropdown -->
+  <div class="lang-dropdown absolute top-full right-0 mt-2 py-1 rounded-xl opacity-0 invisible transition-all duration-300 transform translate-y-2" role="listbox">
+    <!-- Dropdown glow -->
+    <div class="lang-dropdown-glow absolute -inset-1 rounded-xl opacity-0"></div>
+
+    <!-- Dropdown background -->
+    <div class="lang-dropdown-bg absolute inset-0 rounded-xl"></div>
+
+    <!-- Language options -->
+    {otherLangs.map((lang, index) => {
+      const meta = langMeta[lang];
       const href = getLocalizedPath(currentPath, lang);
-      const label = langNamesShort[lang];
 
       return (
-        <>
-          {index > 0 && <span class="text-muted/40" aria-hidden="true">|</span>}
-          {isCurrent ? (
-            <span class="font-medium text-foreground cursor-default" aria-current="page">
-              {label}
-            </span>
-          ) : (
-            <a
-              href={href}
-              class="text-muted hover:text-foreground transition-colors"
-              aria-label={`Switch to ${label}`}
-              hreflang={lang}
-            >
-              {label}
-            </a>
-          )}
-        </>
+        <a
+          href={href}
+          class="lang-option relative z-10 flex items-center gap-2 px-4 py-2 transition-all duration-200"
+          role="option"
+          aria-label={`Switch to ${meta.name}`}
+          hreflang={lang}
+          data-lang={lang}
+          style={`--item-index: ${index};`}
+        >
+          <span class="lang-flag text-sm transition-transform duration-200">{meta.flag}</span>
+          <span class="lang-name text-sm">{meta.name}</span>
+          <span class="lang-code-small text-xs uppercase tracking-wider opacity-50 ml-auto">{langNamesShort[lang]}</span>
+        </a>
       );
-    })
-  }
+    })}
+  </div>
+
+  <!-- Switch particles -->
+  <div class="lang-particles absolute inset-0 pointer-events-none overflow-visible">
+    {Array.from({ length: 8 }).map((_, i) => (
+      <div
+        class="lang-particle absolute w-1 h-1 rounded-full"
+        style={`--particle-index: ${i}; --particle-angle: ${i * 45}deg;`}
+      />
+    ))}
+  </div>
 </div>
+
+<style>
+  /* === WRAPPER === */
+  .lang-switch-wrapper {
+    --switch-accent: var(--color-accent, #3b82f6);
+    --switch-accent-rgb: 59, 130, 246;
+  }
+
+  /* === TRIGGER BUTTON === */
+  .lang-trigger {
+    color: var(--color-muted, #6b7280);
+  }
+
+  .lang-trigger:hover {
+    color: var(--color-foreground, #111827);
+  }
+
+  :global(.dark) .lang-trigger:hover {
+    color: var(--color-foreground, #f9fafb);
+  }
+
+  .lang-trigger-bg {
+    background: transparent;
+    border: 1px solid transparent;
+  }
+
+  .lang-trigger:hover .lang-trigger-bg {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.06);
+  }
+
+  :global(.dark) .lang-trigger:hover .lang-trigger-bg {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .lang-trigger-glow {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(var(--switch-accent-rgb), 0.15) 0%,
+      transparent 70%
+    );
+    filter: blur(8px);
+  }
+
+  .lang-trigger:hover .lang-trigger-glow {
+    opacity: 0.5;
+  }
+
+  /* Globe rotation */
+  .lang-trigger:hover .lang-globe svg {
+    transform: rotate(360deg);
+  }
+
+  /* Chevron rotation when open */
+  .lang-switch-wrapper.is-open .lang-chevron {
+    transform: rotate(180deg);
+  }
+
+  /* === DROPDOWN === */
+  .lang-dropdown {
+    min-width: 160px;
+    z-index: 100;
+  }
+
+  .lang-dropdown-bg {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 10px 40px rgba(0, 0, 0, 0.1),
+      0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  :global(.dark) .lang-dropdown-bg {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 10px 40px rgba(0, 0, 0, 0.4),
+      0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .lang-dropdown-glow {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--switch-accent-rgb), 0.1) 0%,
+      rgba(var(--switch-accent-rgb), 0.05) 50%,
+      transparent 100%
+    );
+    filter: blur(10px);
+    transition: opacity 0.3s ease;
+  }
+
+  /* Open state */
+  .lang-switch-wrapper.is-open .lang-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .lang-switch-wrapper.is-open .lang-dropdown-glow {
+    opacity: 1;
+  }
+
+  /* === LANGUAGE OPTIONS === */
+  .lang-option {
+    color: var(--color-muted, #6b7280);
+  }
+
+  .lang-option:hover {
+    color: var(--color-foreground, #111827);
+    background: rgba(var(--switch-accent-rgb), 0.08);
+  }
+
+  :global(.dark) .lang-option:hover {
+    color: var(--color-foreground, #f9fafb);
+    background: rgba(var(--switch-accent-rgb), 0.15);
+  }
+
+  .lang-option:hover .lang-flag {
+    transform: scale(1.2);
+  }
+
+  /* Staggered reveal animation */
+  .lang-switch-wrapper.is-open .lang-option {
+    animation: option-reveal 0.3s ease forwards;
+    animation-delay: calc(var(--item-index) * 0.05s);
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  @keyframes option-reveal {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* === PARTICLES === */
+  .lang-particle {
+    opacity: 0;
+    background: var(--switch-accent);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  .lang-switch-wrapper.is-switching .lang-particle {
+    animation: lang-particle-burst 0.6s ease-out forwards;
+    animation-delay: calc(var(--particle-index) * 0.03s);
+  }
+
+  @keyframes lang-particle-burst {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform:
+        translate(
+          calc(-50% + cos(var(--particle-angle)) * 30px),
+          calc(-50% + sin(var(--particle-angle)) * 30px)
+        )
+        scale(0);
+    }
+  }
+
+  /* === FLAG ANIMATION === */
+  .lang-current .lang-flag {
+    display: inline-block;
+  }
+
+  .lang-trigger:hover .lang-current .lang-flag {
+    animation: flag-wiggle 0.4s ease-in-out;
+  }
+
+  @keyframes flag-wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+  }
+
+  /* === FOCUS STYLES === */
+  .lang-trigger:focus-visible {
+    outline: none;
+  }
+
+  .lang-trigger:focus-visible .lang-trigger-bg {
+    box-shadow: 0 0 0 2px rgba(var(--switch-accent-rgb), 0.5);
+  }
+
+  .lang-option:focus-visible {
+    outline: none;
+    background: rgba(var(--switch-accent-rgb), 0.1);
+  }
+
+  /* === REDUCED MOTION === */
+  @media (prefers-reduced-motion: reduce) {
+    .lang-globe svg,
+    .lang-chevron,
+    .lang-dropdown,
+    .lang-option,
+    .lang-flag,
+    .lang-particle {
+      animation: none !important;
+      transition: opacity 0.2s ease !important;
+    }
+  }
+</style>
+
+<script>
+  function initLangSwitch() {
+    const switches = document.querySelectorAll('[data-lang-switch]');
+
+    switches.forEach(wrapper => {
+      const trigger = wrapper.querySelector('.lang-trigger');
+      const dropdown = wrapper.querySelector('.lang-dropdown');
+      const options = wrapper.querySelectorAll('.lang-option');
+
+      if (!trigger || !dropdown) return;
+
+      // Toggle dropdown
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = wrapper.classList.contains('is-open');
+
+        // Close all other dropdowns
+        document.querySelectorAll('[data-lang-switch].is-open').forEach(other => {
+          if (other !== wrapper) {
+            other.classList.remove('is-open');
+            other.querySelector('.lang-trigger')?.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Toggle current
+        wrapper.classList.toggle('is-open');
+        trigger.setAttribute('aria-expanded', String(!isOpen));
+      });
+
+      // Language selection with particle effect
+      options.forEach(option => {
+        option.addEventListener('click', () => {
+          wrapper.classList.add('is-switching');
+          setTimeout(() => {
+            wrapper.classList.remove('is-switching');
+          }, 600);
+        });
+      });
+
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target as Node)) {
+          wrapper.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Keyboard navigation
+      trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          wrapper.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+          trigger.focus();
+        }
+        if (e.key === 'ArrowDown' && wrapper.classList.contains('is-open')) {
+          e.preventDefault();
+          (options[0] as HTMLElement)?.focus();
+        }
+      });
+
+      options.forEach((option, index) => {
+        option.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            wrapper.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+            trigger.focus();
+          }
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            (options[index + 1] as HTMLElement)?.focus();
+          }
+          if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (index === 0) {
+              trigger.focus();
+            } else {
+              (options[index - 1] as HTMLElement)?.focus();
+            }
+          }
+        });
+      });
+    });
+  }
+
+  // Initialize on page load and view transitions
+  document.addEventListener('astro:page-load', initLangSwitch);
+</script>

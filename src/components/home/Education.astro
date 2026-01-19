@@ -70,7 +70,7 @@ const icons: Record<string, string> = {
 };
 ---
 
-<section class="edu-section relative py-24 md:py-32 overflow-hidden" id="education">
+<section class="edu-section section relative overflow-hidden" id="education">
   <!-- Aurora Borealis Background -->
   <div class="edu-aurora absolute inset-0 pointer-events-none">
     <div class="edu-aurora-layer edu-aurora-1"></div>
@@ -85,7 +85,7 @@ const icons: Record<string, string> = {
   <div class="edu-parallax-container absolute inset-0 pointer-events-none overflow-hidden">
     {items.map((item, i) => (
       <div
-        class="edu-orb absolute rounded-full blur-3xl opacity-30"
+        class="edu-orb absolute rounded-full blur-3xl"
         style={`
           background: ${item.color};
           width: ${200 + i * 50}px;
@@ -100,7 +100,7 @@ const icons: Record<string, string> = {
   </div>
 
   <!-- Morphing Blob -->
-  <div class="edu-morph-blob absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-10 pointer-events-none">
+  <div class="edu-morph-blob absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] pointer-events-none">
     <svg viewBox="0 0 200 200" class="w-full h-full">
       <defs>
         <linearGradient id="edu-blob-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -126,24 +126,24 @@ const icons: Record<string, string> = {
 
   <div class="container relative z-10">
     <!-- Epic Header with Glitch Effect -->
-    <div class="edu-header text-center mb-20 edu-reveal">
-      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 mb-8">
+    <div class="edu-header text-center mb-16 edu-reveal">
+      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full edu-badge backdrop-blur-xl mb-8">
         <span class="edu-globe-spin text-3xl">🎓</span>
-        <span class="text-sm font-medium text-white/70 tracking-widest uppercase">
+        <span class="text-sm font-medium edu-badge-text tracking-widest uppercase">
           {t(lang, 'education.subtitle') || 'Academic Journey'}
         </span>
       </div>
 
-      <h2 class="edu-title-glitch text-5xl md:text-7xl font-black text-white mb-6" data-text={t(lang, 'education.title')}>
+      <h2 class="edu-title-glitch text-4xl md:text-6xl font-black edu-title mb-6" data-text={t(lang, 'education.title')}>
         {t(lang, 'education.title')}
       </h2>
 
-      <p class="edu-subtitle text-xl text-white/60 max-w-2xl mx-auto">
+      <p class="edu-subtitle text-lg md:text-xl edu-subtitle-text max-w-2xl mx-auto">
         Three countries. Three degrees. One global perspective.
       </p>
 
       <!-- World Map Path -->
-      <div class="edu-world-path mt-12 flex items-center justify-center gap-4 md:gap-8">
+      <div class="edu-world-path mt-10 flex items-center justify-center gap-4 md:gap-8">
         {items.map((item, i) => (
           <Fragment>
             <div
@@ -162,7 +162,7 @@ const icons: Record<string, string> = {
               <div class="edu-pulse-ring absolute inset-0 rounded-full border-2 opacity-0" style={`border-color: ${item.color}`}></div>
             </div>
             {i < items.length - 1 && (
-              <div class="edu-path-line flex-1 max-w-24 h-0.5 relative overflow-hidden rounded-full bg-white/10">
+              <div class="edu-path-line flex-1 max-w-24 h-0.5 relative overflow-hidden rounded-full edu-path-bg">
                 <div
                   class="edu-path-flow absolute inset-0 rounded-full"
                   style={`background: linear-gradient(90deg, ${items[i].color}, ${items[i+1].color}); animation-delay: ${i * 0.5}s`}
@@ -195,11 +195,11 @@ const icons: Record<string, string> = {
                 <div class="edu-holographic absolute inset-0 pointer-events-none"></div>
 
                 <!-- Glassmorphism Background -->
-                <div class="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-2xl"></div>
+                <div class="absolute inset-0 edu-card-glass backdrop-blur-2xl"></div>
 
                 <!-- Gradient Border -->
                 <div class={`absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-br ${item.gradient}`}>
-                  <div class="absolute inset-[1px] rounded-3xl bg-slate-900/90"></div>
+                  <div class="absolute inset-[1px] rounded-3xl edu-card-bg"></div>
                 </div>
 
                 <!-- Spotlight Effect -->
@@ -210,15 +210,15 @@ const icons: Record<string, string> = {
                   <!-- Top: Status & Year -->
                   <div class="flex items-start justify-between mb-6">
                     {item.status === 'inProgress' ? (
-                      <div class="edu-status-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-xl border border-white/20">
+                      <div class="edu-status-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full edu-status-bg backdrop-blur-xl">
                         <span class="edu-status-dot relative flex h-2.5 w-2.5">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={`background: ${item.color}`}></span>
                           <span class="relative inline-flex rounded-full h-2.5 w-2.5" style={`background: ${item.color}`}></span>
                         </span>
-                        <span class="text-xs font-semibold text-white/80">{t(lang, 'education.inProgress')}</span>
+                        <span class="text-xs font-semibold edu-card-text-secondary">{t(lang, 'education.inProgress')}</span>
                       </div>
                     ) : (
-                      <div class="edu-year-badge px-4 py-2 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10">
+                      <div class="edu-year-badge px-4 py-2 rounded-xl edu-year-bg backdrop-blur-xl">
                         <span class="text-lg font-bold" style={`color: ${item.color}`}>{item.year}</span>
                       </div>
                     )}
@@ -238,8 +238,8 @@ const icons: Record<string, string> = {
                     <div class="absolute inset-0 flex items-center justify-center">
                       <div class={`edu-icon-glow absolute inset-2 rounded-2xl bg-gradient-to-br ${item.gradient} blur-xl opacity-50`}></div>
                       <div class={`relative w-16 h-16 rounded-2xl bg-gradient-to-br ${item.gradient} p-0.5`}>
-                        <div class="w-full h-full rounded-2xl bg-slate-900 flex items-center justify-center">
-                          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-full h-full rounded-2xl edu-icon-bg flex items-center justify-center">
+                          <svg class="w-8 h-8 edu-icon-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <Fragment set:html={icons[item.icon] || icons.brain} />
                           </svg>
                         </div>
@@ -249,7 +249,7 @@ const icons: Record<string, string> = {
 
                   <!-- Degree Info -->
                   <div class="text-center flex-1 flex flex-col">
-                    <h3 class="text-xl md:text-2xl font-bold text-white mb-2 leading-tight">
+                    <h3 class="text-xl md:text-2xl font-bold edu-card-text mb-2 leading-tight">
                       {getStr(item.degree)}
                     </h3>
 
@@ -259,7 +259,7 @@ const icons: Record<string, string> = {
                       </p>
                     )}
 
-                    <div class="flex items-center justify-center gap-2 text-white/60 text-sm mb-4">
+                    <div class="flex items-center justify-center gap-2 edu-card-text-muted text-sm mb-4">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                       </svg>
@@ -271,7 +271,7 @@ const icons: Record<string, string> = {
                       <div class="edu-achievement mt-auto mb-4">
                         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full" style={`background: ${item.color}15`}>
                           <span class="text-2xl font-black" style={`color: ${item.color}`}>{item.achievement.value}</span>
-                          <span class="text-xs text-white/60">{achievementLabel}</span>
+                          <span class="text-xs edu-card-text-muted">{achievementLabel}</span>
                         </div>
                       </div>
                     )}
@@ -280,7 +280,7 @@ const icons: Record<string, string> = {
                     <div class="flex flex-wrap justify-center gap-2 mt-auto">
                       {skills.slice(0, 4).map((skill, si) => (
                         <span
-                          class="edu-skill-pill px-3 py-1 text-xs font-medium rounded-full bg-white/5 text-white/70 border border-white/10 transition-all hover:border-white/30 hover:text-white"
+                          class="edu-skill-pill px-3 py-1 text-xs font-medium rounded-full edu-pill-bg edu-card-text-secondary transition-all"
                           style={`animation-delay: ${si * 0.1}s`}
                         >
                           {skill}
@@ -290,7 +290,7 @@ const icons: Record<string, string> = {
                   </div>
 
                   <!-- Flip Hint -->
-                  <div class="edu-flip-hint absolute bottom-4 right-4 flex items-center gap-1 text-xs text-white/40">
+                  <div class="edu-flip-hint absolute bottom-4 right-4 flex items-center gap-1 text-xs edu-card-text-muted">
                     <span>Flip</span>
                     <svg class="w-4 h-4 edu-flip-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -305,38 +305,38 @@ const icons: Record<string, string> = {
               <!-- Back Side -->
               <div class="edu-card-back absolute inset-0 backface-hidden rounded-3xl overflow-hidden rotate-y-180">
                 <!-- Glassmorphism Background -->
-                <div class="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-2xl"></div>
+                <div class="absolute inset-0 edu-card-glass backdrop-blur-2xl"></div>
 
                 <!-- Gradient Border -->
                 <div class={`absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-br ${item.gradient}`}>
-                  <div class="absolute inset-[1px] rounded-3xl bg-slate-900/95"></div>
+                  <div class="absolute inset-[1px] rounded-3xl edu-card-bg-back"></div>
                 </div>
 
                 <!-- Back Content -->
                 <div class="relative h-full p-6 md:p-8 flex flex-col z-10">
                   <div class="flex items-center gap-3 mb-6">
                     <div class={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.gradient} p-0.5`}>
-                      <div class="w-full h-full rounded-xl bg-slate-900 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div class="w-full h-full rounded-xl edu-icon-bg flex items-center justify-center">
+                        <svg class="w-5 h-5 edu-icon-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <Fragment set:html={icons[item.icon] || icons.brain} />
                         </svg>
                       </div>
                     </div>
                     <div>
-                      <h4 class="text-lg font-bold text-white">{item.org}</h4>
-                      <p class="text-xs text-white/60">{item.location}</p>
+                      <h4 class="text-lg font-bold edu-card-text">{item.org}</h4>
+                      <p class="text-xs edu-card-text-muted">{item.location}</p>
                     </div>
                   </div>
 
-                  <p class="text-white/80 text-sm leading-relaxed mb-6 flex-1">
+                  <p class="edu-card-text-secondary text-sm leading-relaxed mb-6 flex-1">
                     {backContent}
                   </p>
 
                   <!-- Highlights -->
                   <div class="space-y-3 mb-6">
-                    <h5 class="text-xs font-semibold text-white/50 uppercase tracking-wider">Key Focus Areas</h5>
+                    <h5 class="text-xs font-semibold edu-card-text-muted uppercase tracking-wider">Key Focus Areas</h5>
                     {highlights.map((h, hi) => (
-                      <div class="flex items-center gap-3 text-sm text-white/70">
+                      <div class="flex items-center gap-3 text-sm edu-card-text-secondary">
                         <div class="edu-check-icon w-5 h-5 rounded-full flex items-center justify-center" style={`background: ${item.color}20`}>
                           <svg class="w-3 h-3" style={`color: ${item.color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
@@ -350,11 +350,11 @@ const icons: Record<string, string> = {
                   <!-- Progress bar for in-progress -->
                   {item.status === 'inProgress' && item.achievement && (
                     <div class="mt-auto">
-                      <div class="flex items-center justify-between text-xs text-white/50 mb-2">
+                      <div class="flex items-center justify-between text-xs edu-card-text-muted mb-2">
                         <span>Progress</span>
                         <span>Expected 2026</span>
                       </div>
-                      <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div class="h-2 edu-progress-track rounded-full overflow-hidden">
                         <div
                           class="edu-progress-bar h-full rounded-full transition-all duration-1000"
                           style={`width: 0%; background: linear-gradient(90deg, ${item.color}, ${item.color}80)`}
@@ -365,7 +365,7 @@ const icons: Record<string, string> = {
                   )}
 
                   <!-- Flip Back Hint -->
-                  <div class="edu-flip-hint absolute bottom-4 right-4 flex items-center gap-1 text-xs text-white/40">
+                  <div class="edu-flip-hint absolute bottom-4 right-4 flex items-center gap-1 text-xs edu-card-text-muted">
                     <span>Back</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
@@ -380,24 +380,24 @@ const icons: Record<string, string> = {
     </div>
 
     <!-- Bottom Stats Banner -->
-    <div class="edu-stats-banner mt-16 edu-reveal">
+    <div class="edu-stats-banner mt-12 edu-reveal">
       <div class="relative py-8 px-6 rounded-3xl overflow-hidden">
         <!-- Holographic Background -->
         <div class="edu-banner-holo absolute inset-0"></div>
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl"></div>
+        <div class="absolute inset-0 edu-banner-bg backdrop-blur-xl"></div>
 
         <div class="relative z-10 grid grid-cols-3 gap-8 text-center">
           <div class="edu-stat-item">
             <div class="edu-stat-value text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">3</div>
-            <div class="text-sm text-white/60 mt-1">{lang === 'es' ? 'Países' : lang === 'fr' ? 'Pays' : lang === 'pt' ? 'Países' : 'Countries'}</div>
+            <div class="text-sm edu-card-text-muted mt-1">{lang === 'es' ? 'Países' : lang === 'fr' ? 'Pays' : lang === 'pt' ? 'Países' : 'Countries'}</div>
           </div>
           <div class="edu-stat-item">
             <div class="edu-stat-value text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">2</div>
-            <div class="text-sm text-white/60 mt-1">{lang === 'es' ? 'Maestrías' : lang === 'fr' ? 'Masters' : lang === 'pt' ? 'Mestrados' : "Master's"}</div>
+            <div class="text-sm edu-card-text-muted mt-1">{lang === 'es' ? 'Maestrías' : lang === 'fr' ? 'Masters' : lang === 'pt' ? 'Mestrados' : "Master's"}</div>
           </div>
           <div class="edu-stat-item">
             <div class="edu-stat-value text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-400">10+</div>
-            <div class="text-sm text-white/60 mt-1">{lang === 'es' ? 'Años de Estudio' : lang === 'fr' ? 'Années d\'Études' : lang === 'pt' ? 'Anos de Estudo' : 'Years of Study'}</div>
+            <div class="text-sm edu-card-text-muted mt-1">{lang === 'es' ? 'Años de Estudio' : lang === 'fr' ? 'Années d\'Études' : lang === 'pt' ? 'Anos de Estudo' : 'Years of Study'}</div>
           </div>
         </div>
       </div>
@@ -442,6 +442,11 @@ const icons: Record<string, string> = {
         const animate = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+          // Check if dark mode
+          const isDark = document.documentElement.classList.contains('dark');
+          const baseOpacity = isDark ? 0.6 : 0.4;
+          const lineOpacity = isDark ? 0.3 : 0.15;
+
           particles.forEach((p, i) => {
             // Mouse attraction
             if (mouse.active) {
@@ -462,10 +467,10 @@ const icons: Record<string, string> = {
             if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
             if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
-            // Draw particle
+            // Draw particle with theme-aware colors
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(${p.hue}, 70%, 60%, 0.6)`;
+            ctx.fillStyle = `hsla(${p.hue}, ${isDark ? 70 : 60}%, ${isDark ? 60 : 45}%, ${baseOpacity})`;
             ctx.fill();
 
             // Draw connections
@@ -477,8 +482,8 @@ const icons: Record<string, string> = {
                 ctx.beginPath();
                 ctx.moveTo(p.x, p.y);
                 ctx.lineTo(p2.x, p2.y);
-                const alpha = (1 - dist / 120) * 0.3;
-                ctx.strokeStyle = `hsla(${(p.hue + p2.hue) / 2}, 60%, 50%, ${alpha})`;
+                const alpha = (1 - dist / 120) * lineOpacity;
+                ctx.strokeStyle = `hsla(${(p.hue + p2.hue) / 2}, ${isDark ? 60 : 50}%, ${isDark ? 50 : 40}%, ${alpha})`;
                 ctx.lineWidth = 0.5;
                 ctx.stroke();
               }
@@ -606,23 +611,24 @@ const icons: Record<string, string> = {
     });
 
     // === REVEAL ANIMATIONS ===
+    // Using higher threshold and negative rootMargin for better timing
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
 
-          // Animate progress bars
+          // Animate progress bars with delay so card is visible first
           entry.target.querySelectorAll('.edu-progress-bar').forEach((bar) => {
             const width = (bar as HTMLElement).dataset.width || '0';
             setTimeout(() => {
               (bar as HTMLElement).style.width = `${width}%`;
-            }, 500);
+            }, 600); // Increased delay
           });
 
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1, rootMargin: '50px' });
+    }, { threshold: 0.4, rootMargin: '-50px 0px -50px 0px' }); // Better timing
 
     document.querySelectorAll('.edu-reveal').forEach(el => observer.observe(el));
 
@@ -681,20 +687,223 @@ const icons: Record<string, string> = {
 </script>
 
 <style>
+  /* === SECTION BACKGROUND - THEME ADAPTIVE === */
   .edu-section {
     background: linear-gradient(180deg,
-      hsl(222 47% 8%) 0%,
-      hsl(222 47% 6%) 50%,
-      hsl(222 47% 8%) 100%
+      var(--color-bg) 0%,
+      var(--color-bg-alt) 50%,
+      var(--color-bg) 100%
     );
+  }
+
+  /* === HEADER ELEMENTS - THEME ADAPTIVE === */
+  .edu-badge {
+    background: rgba(74, 144, 164, 0.1);
+    border: 1px solid rgba(74, 144, 164, 0.2);
+  }
+
+  :global(.dark) .edu-badge {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .edu-badge-text {
+    color: var(--color-accent);
+  }
+
+  :global(.dark) .edu-badge-text {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .edu-title {
+    color: var(--color-text);
+  }
+
+  :global(.dark) .edu-title {
+    color: #ffffff;
+  }
+
+  .edu-subtitle-text {
+    color: var(--color-text-muted);
+  }
+
+  :global(.dark) .edu-subtitle-text {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .edu-path-bg {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.dark) .edu-path-bg {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* === CARD BACKGROUNDS - THEME ADAPTIVE === */
+  .edu-card-glass {
+    background: linear-gradient(135deg,
+      rgba(74, 144, 164, 0.05) 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(74, 144, 164, 0.03) 100%
+    );
+  }
+
+  :global(.dark) .edu-card-glass {
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 100%
+    );
+  }
+
+  .edu-card-bg {
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  :global(.dark) .edu-card-bg {
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  .edu-card-bg-back {
+    background: rgba(255, 255, 255, 0.98);
+  }
+
+  :global(.dark) .edu-card-bg-back {
+    background: rgba(15, 23, 42, 0.95);
+  }
+
+  .edu-icon-bg {
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  :global(.dark) .edu-icon-bg {
+    background: rgb(15, 23, 42);
+  }
+
+  .edu-icon-color {
+    color: var(--color-text);
+  }
+
+  :global(.dark) .edu-icon-color {
+    color: #ffffff;
+  }
+
+  /* === CARD TEXT COLORS - THEME ADAPTIVE === */
+  .edu-card-text {
+    color: var(--color-text);
+  }
+
+  :global(.dark) .edu-card-text {
+    color: #ffffff;
+  }
+
+  .edu-card-text-secondary {
+    color: var(--color-text);
+    opacity: 0.8;
+  }
+
+  :global(.dark) .edu-card-text-secondary {
+    color: rgba(255, 255, 255, 0.8);
+    opacity: 1;
+  }
+
+  .edu-card-text-muted {
+    color: var(--color-text-muted);
+  }
+
+  :global(.dark) .edu-card-text-muted {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* === STATUS & YEAR BADGES === */
+  .edu-status-bg {
+    background: rgba(74, 144, 164, 0.1);
+    border: 1px solid rgba(74, 144, 164, 0.2);
+  }
+
+  :global(.dark) .edu-status-bg {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .edu-year-bg {
+    background: rgba(74, 144, 164, 0.05);
+    border: 1px solid rgba(74, 144, 164, 0.1);
+  }
+
+  :global(.dark) .edu-year-bg {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* === PILLS & PROGRESS === */
+  .edu-pill-bg {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  :global(.dark) .edu-pill-bg {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .edu-pill-bg:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.15);
+  }
+
+  :global(.dark) .edu-pill-bg:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .edu-progress-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.dark) .edu-progress-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* === BANNER === */
+  .edu-banner-bg {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  :global(.dark) .edu-banner-bg {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: transparent;
+  }
+
+  /* === ORBS - THEME ADAPTIVE OPACITY === */
+  .edu-orb {
+    opacity: 0.15;
+  }
+
+  :global(.dark) .edu-orb {
+    opacity: 0.3;
+  }
+
+  /* === MORPHING BLOB === */
+  .edu-morph-blob {
+    opacity: 0.05;
+  }
+
+  :global(.dark) .edu-morph-blob {
+    opacity: 0.1;
   }
 
   /* === AURORA BOREALIS === */
   .edu-aurora-layer {
     position: absolute;
     inset: 0;
-    opacity: 0.3;
+    opacity: 0.15;
     filter: blur(80px);
+  }
+
+  :global(.dark) .edu-aurora-layer {
+    opacity: 0.3;
   }
 
   .edu-aurora-1 {
@@ -731,6 +940,10 @@ const icons: Record<string, string> = {
   /* === TITLE GLITCH === */
   .edu-title-glitch {
     position: relative;
+    text-shadow: 0 0 40px rgba(74, 144, 164, 0.2);
+  }
+
+  :global(.dark) .edu-title-glitch {
     text-shadow: 0 0 40px rgba(110, 231, 183, 0.3);
   }
 
@@ -744,16 +957,26 @@ const icons: Record<string, string> = {
 
   .edu-title-glitch:hover::before {
     animation: edu-glitch-1 0.3s ease-in-out;
+    color: #4a90a4;
+    text-shadow: -2px 0 #4a90a4;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  }
+
+  :global(.dark) .edu-title-glitch:hover::before {
     color: #6ee7b7;
     text-shadow: -2px 0 #6ee7b7;
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
   }
 
   .edu-title-glitch:hover::after {
     animation: edu-glitch-2 0.3s ease-in-out;
+    color: #6ab0c4;
+    text-shadow: 2px 0 #6ab0c4;
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  }
+
+  :global(.dark) .edu-title-glitch:hover::after {
     color: #93c5fd;
     text-shadow: 2px 0 #93c5fd;
-    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
   }
 
   @keyframes edu-glitch-1 {
@@ -831,6 +1054,12 @@ const icons: Record<string, string> = {
   }
 
   .edu-card-wrapper:hover .edu-card-front {
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.15),
+      0 0 60px -15px var(--accent);
+  }
+
+  :global(.dark) .edu-card-wrapper:hover .edu-card-front {
     box-shadow:
       0 25px 50px -12px rgba(0, 0, 0, 0.5),
       0 0 60px -15px var(--accent);

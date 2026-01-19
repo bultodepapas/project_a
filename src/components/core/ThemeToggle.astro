@@ -1,7 +1,11 @@
 ---
 /**
- * ThemeToggle Component
- * Button to toggle between Light and Dark mode
+ * ThemeToggle Component - PREMIUM EDITION
+ * Features:
+ * - Morphing sun/moon icons
+ * - Glow effects
+ * - Smooth state transitions
+ * - Particle burst on toggle
  */
 import { t } from '@/i18n';
 import type { Lang } from '@/i18n/config';
@@ -15,93 +19,277 @@ const { lang } = Astro.props;
 
 <button
   type="button"
-  class="theme-toggle-btn inline-flex items-center justify-center p-2 rounded-lg text-muted hover:bg-background-alt hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+  class="theme-toggle group relative w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden"
   aria-label={t(lang, 'a11y.toggleTheme')}
 >
-  <!-- Sun Icon (Light Mode) -->
-  <svg
-    class="theme-toggle-light-icon w-5 h-5 hidden"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-    ></path>
-  </svg>
+  <!-- Background -->
+  <div class="theme-toggle-bg absolute inset-0 rounded-xl transition-all duration-300"></div>
 
-  <!-- Moon Icon (Dark Mode) -->
-  <svg
-    class="theme-toggle-dark-icon w-5 h-5 hidden"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-    ></path>
-  </svg>
+  <!-- Glow effect -->
+  <div class="theme-toggle-glow absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+  <!-- Sun Icon (shown in dark mode to switch to light) -->
+  <div class="theme-icon theme-icon-sun absolute inset-0 flex items-center justify-center transition-all duration-500">
+    <!-- Sun rays -->
+    <div class="sun-rays absolute inset-0">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div
+          class="sun-ray absolute w-0.5 h-2 rounded-full left-1/2 -translate-x-1/2"
+          style={`transform: translateX(-50%) rotate(${i * 45}deg); transform-origin: center 20px;`}
+        />
+      ))}
+    </div>
+    <!-- Sun core -->
+    <div class="sun-core w-4 h-4 rounded-full relative z-10"></div>
+  </div>
+
+  <!-- Moon Icon (shown in light mode to switch to dark) -->
+  <div class="theme-icon theme-icon-moon absolute inset-0 flex items-center justify-center transition-all duration-500">
+    <div class="moon-body relative w-5 h-5">
+      <!-- Moon crescent -->
+      <div class="moon-crescent absolute inset-0 rounded-full"></div>
+      <!-- Moon cutout -->
+      <div class="moon-cutout absolute w-3.5 h-3.5 rounded-full -top-0.5 -right-0.5"></div>
+      <!-- Stars -->
+      <div class="moon-star moon-star-1 absolute w-1 h-1 rounded-full -top-1 -left-1"></div>
+      <div class="moon-star moon-star-2 absolute w-0.5 h-0.5 rounded-full -bottom-2 left-0"></div>
+    </div>
+  </div>
+
+  <!-- Toggle particles (burst effect) -->
+  <div class="toggle-particles absolute inset-0 pointer-events-none">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <div
+        class="toggle-particle absolute w-1 h-1 rounded-full left-1/2 top-1/2"
+        style={`--particle-angle: ${i * 60}deg`}
+      />
+    ))}
+  </div>
 </button>
+
+<style>
+  /* === BACKGROUND === */
+  .theme-toggle-bg {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  :global(.dark) .theme-toggle-bg {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .theme-toggle:hover .theme-toggle-bg {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.3);
+  }
+
+  :global(.dark) .theme-toggle:hover .theme-toggle-bg {
+    background: rgba(147, 197, 253, 0.1);
+    border-color: rgba(147, 197, 253, 0.3);
+  }
+
+  /* === GLOW === */
+  .theme-toggle-glow {
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, transparent 70%);
+  }
+
+  :global(.dark) .theme-toggle-glow {
+    background: radial-gradient(circle, rgba(147, 197, 253, 0.2) 0%, transparent 70%);
+  }
+
+  /* === ICON STATES === */
+  /* Light mode: show moon, hide sun */
+  .theme-icon-sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+
+  .theme-icon-moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  /* Dark mode: show sun, hide moon */
+  :global(.dark) .theme-icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  :global(.dark) .theme-icon-moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+  }
+
+  /* === SUN STYLES === */
+  .sun-core {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+  }
+
+  .sun-ray {
+    background: linear-gradient(180deg, #fbbf24 0%, transparent 100%);
+    opacity: 0;
+    transform-origin: center 20px;
+  }
+
+  :global(.dark) .sun-ray {
+    opacity: 0.8;
+    animation: sun-ray-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes sun-ray-pulse {
+    0%, 100% { opacity: 0.6; transform: translateX(-50%) rotate(var(--rotation, 0deg)) scaleY(1); }
+    50% { opacity: 1; transform: translateX(-50%) rotate(var(--rotation, 0deg)) scaleY(1.2); }
+  }
+
+  .sun-ray:nth-child(1) { --rotation: 0deg; animation-delay: 0s; }
+  .sun-ray:nth-child(2) { --rotation: 45deg; animation-delay: 0.1s; }
+  .sun-ray:nth-child(3) { --rotation: 90deg; animation-delay: 0.2s; }
+  .sun-ray:nth-child(4) { --rotation: 135deg; animation-delay: 0.3s; }
+  .sun-ray:nth-child(5) { --rotation: 180deg; animation-delay: 0.4s; }
+  .sun-ray:nth-child(6) { --rotation: 225deg; animation-delay: 0.5s; }
+  .sun-ray:nth-child(7) { --rotation: 270deg; animation-delay: 0.6s; }
+  .sun-ray:nth-child(8) { --rotation: 315deg; animation-delay: 0.7s; }
+
+  /* Hover animation for sun */
+  .theme-toggle:hover .sun-core {
+    animation: sun-wiggle 0.5s ease-in-out;
+  }
+
+  @keyframes sun-wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+  }
+
+  /* === MOON STYLES === */
+  .moon-crescent {
+    background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+    box-shadow: 0 0 20px rgba(147, 197, 253, 0.5);
+  }
+
+  .moon-cutout {
+    background: var(--color-surface);
+    transition: background 0.3s ease;
+  }
+
+  .moon-star {
+    background: #fcd34d;
+    box-shadow: 0 0 4px rgba(252, 211, 77, 0.8);
+    animation: star-twinkle 1.5s ease-in-out infinite;
+  }
+
+  .moon-star-2 {
+    animation-delay: 0.5s;
+  }
+
+  @keyframes star-twinkle {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* Hover animation for moon */
+  .theme-toggle:hover .moon-body {
+    animation: moon-wobble 0.6s ease-in-out;
+  }
+
+  @keyframes moon-wobble {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-15deg) scale(1.1); }
+    75% { transform: rotate(15deg) scale(1.1); }
+  }
+
+  /* === TOGGLE PARTICLES === */
+  .toggle-particle {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  .theme-toggle.is-animating .toggle-particle {
+    animation: particle-burst 0.6s ease-out forwards;
+  }
+
+  @keyframes particle-burst {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform:
+        translate(
+          calc(-50% + cos(var(--particle-angle)) * 20px),
+          calc(-50% + sin(var(--particle-angle)) * 20px)
+        )
+        scale(0);
+    }
+  }
+
+  .toggle-particle {
+    background: #fbbf24;
+  }
+
+  :global(.dark) .toggle-particle {
+    background: #93c5fd;
+  }
+
+  /* === REDUCED MOTION === */
+  @media (prefers-reduced-motion: reduce) {
+    .theme-icon-sun,
+    .theme-icon-moon,
+    .sun-ray,
+    .moon-star,
+    .toggle-particle {
+      animation: none !important;
+      transition: opacity 0.2s ease !important;
+    }
+
+    .theme-toggle:hover .sun-core,
+    .theme-toggle:hover .moon-body {
+      animation: none !important;
+    }
+  }
+</style>
 
 <script>
   function initThemeToggle() {
-    const toggleBtns = document.querySelectorAll('.theme-toggle-btn');
+    const toggleBtns = document.querySelectorAll('.theme-toggle');
     if (toggleBtns.length === 0) return;
 
-    // 1. Initialize UI state based on current theme
-    const isDark = document.documentElement.classList.contains('dark') || 
+    // Initialize UI state based on current theme
+    const isDark = document.documentElement.classList.contains('dark') ||
                    localStorage.getItem('theme') === 'dark' ||
                    (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-    // Ensure DOM matches state (in case of FOUC script mismatch)
+    // Ensure DOM matches state
     if (isDark) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
 
-    // Helper to update all buttons
-    const updateUI = (dark) => {
-      toggleBtns.forEach(btn => {
-        const lightIcon = btn.querySelector('.theme-toggle-light-icon');
-        const darkIcon = btn.querySelector('.theme-toggle-dark-icon');
-        
-        if (dark) {
-          lightIcon?.classList.remove('hidden');
-          darkIcon?.classList.add('hidden');
-        } else {
-          lightIcon?.classList.add('hidden');
-          darkIcon?.classList.remove('hidden');
-        }
-      });
-    };
-
-    // Set initial icon state
-    updateUI(isDark);
-
-    // 2. Attach Click Listeners
+    // Attach Click Listeners
     toggleBtns.forEach(btn => {
-      // Clone to remove existing listeners (if any) to be safe during transitions
-      const newBtn = btn.cloneNode(true);
+      // Clone to remove existing listeners
+      const newBtn = btn.cloneNode(true) as HTMLElement;
       if (btn.parentNode) {
         btn.parentNode.replaceChild(newBtn, btn);
       }
     });
 
     // Re-select fresh buttons
-    const freshBtns = document.querySelectorAll('.theme-toggle-btn');
+    const freshBtns = document.querySelectorAll('.theme-toggle');
     freshBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const isDarkNow = document.documentElement.classList.contains('dark');
         const nextIsDark = !isDarkNow;
+
+        // Trigger particle animation
+        btn.classList.add('is-animating');
+        setTimeout(() => {
+          btn.classList.remove('is-animating');
+        }, 600);
 
         // Update Theme
         if (nextIsDark) {
@@ -111,13 +299,10 @@ const { lang } = Astro.props;
           document.documentElement.classList.remove('dark');
           localStorage.setItem('theme', 'light');
         }
-
-        // Update UI for ALL buttons
-        updateUI(nextIsDark);
       });
     });
   }
 
-  // Initialize on view transitions (fires on initial load too)
+  // Initialize on view transitions
   document.addEventListener('astro:page-load', initThemeToggle);
 </script>

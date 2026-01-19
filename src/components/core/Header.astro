@@ -1,7 +1,15 @@
 ---
 /**
- * Header Component
- * Main navigation with language switch
+ * Header Component - PREMIUM EDITION
+ * Features:
+ * - Glassmorphism with aurora glow
+ * - Magnetic navigation links with glow trail
+ * - Animated logo with gradient shimmer
+ * - Morphing hamburger menu
+ * - Scroll-aware styling (shrink + blur intensify)
+ * - Floating particles on hover
+ * - Theme-adaptive colors
+ * - Premium CTA with pulse effect
  */
 
 import { type Lang, getLocalizedPath } from '@/i18n/config';
@@ -23,80 +31,167 @@ const homePath = `/${lang}`;
 const isHome = normalizedPath === homePath;
 const homeAnchor = (hash: string) => (isHome ? `#${hash}` : `${homePath}#${hash}`);
 
-// Navigation items
+// Navigation items with icons
 const navItems = [
-  { key: 'systems', href: homeAnchor('systems') },
-  { key: 'caseStudies', href: `/${lang}/case-studies` },
-  { key: 'perspectives', href: `/${lang}/perspectives` },
-  { key: 'contact', href: homeAnchor('contact') },
+  { key: 'systems', href: homeAnchor('systems'), icon: 'grid' },
+  { key: 'caseStudies', href: `/${lang}/case-studies`, icon: 'folder' },
+  { key: 'perspectives', href: `/${lang}/perspectives`, icon: 'lightbulb' },
+  { key: 'contact', href: homeAnchor('contact'), icon: 'mail' },
 ];
+
+// Icon SVG paths
+const iconPaths: Record<string, string> = {
+  grid: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>',
+  folder: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>',
+  lightbulb: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>',
+  mail: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
+};
 ---
 
-<header
-  class="fixed top-0 left-0 right-0 z-40 bg-background/70 backdrop-blur-md border-b border-border/40 shadow-sm"
->
-  <div class="container">
-    <nav class="flex items-center justify-between h-16 md:h-20">
+<header class="nav-header fixed top-0 left-0 right-0 z-50" data-header>
+  <!-- Aurora glow effect -->
+  <div class="nav-aurora absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="nav-aurora-1"></div>
+    <div class="nav-aurora-2"></div>
+  </div>
+
+  <!-- Glass background -->
+  <div class="nav-glass absolute inset-0"></div>
+
+  <!-- Shimmer line at bottom -->
+  <div class="nav-shimmer-line absolute bottom-0 left-0 right-0 h-px"></div>
+
+  <div class="container relative z-10">
+    <nav class="flex items-center justify-between h-16 md:h-20 nav-content" data-nav-content>
+
       <!-- Logo / Name -->
       <a
         href={`/${lang}`}
-        class="font-display font-semibold text-lg text-foreground hover:text-accent transition-colors"
+        class="nav-logo group relative flex items-center gap-3"
+        data-logo
       >
-        Angela Parra
+        <!-- Logo mark -->
+        <div class="nav-logo-mark relative w-10 h-10 rounded-xl overflow-hidden">
+          <div class="nav-logo-gradient absolute inset-0"></div>
+          <div class="nav-logo-inner absolute inset-[2px] rounded-[10px] flex items-center justify-center">
+            <span class="text-lg font-bold nav-logo-letter">A</span>
+          </div>
+          <!-- Shine effect -->
+          <div class="nav-logo-shine absolute inset-0 pointer-events-none"></div>
+        </div>
+
+        <!-- Name with shimmer -->
+        <div class="nav-logo-text relative">
+          <span class="font-display font-semibold text-lg nav-logo-name">
+            Angela Parra
+          </span>
+          <!-- Gradient overlay on hover -->
+          <span class="nav-logo-gradient-text absolute inset-0 font-display font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            Angela Parra
+          </span>
+        </div>
+
+        <!-- Floating particles on hover -->
+        <div class="nav-logo-particles absolute -inset-4 pointer-events-none">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              class="nav-particle absolute w-1 h-1 rounded-full opacity-0 group-hover:opacity-100"
+              style={`--particle-index: ${i}`}
+            />
+          ))}
+        </div>
       </a>
 
       <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center gap-6 lg:gap-8">
-        {
-          navItems.map((item) => (
+      <div class="hidden md:flex items-center gap-1 lg:gap-2">
+        <!-- Nav Links -->
+        <div class="nav-links-container relative flex items-center">
+          <!-- Active indicator (moves) -->
+          <div class="nav-active-indicator absolute h-8 rounded-lg pointer-events-none" data-nav-indicator></div>
+
+          {navItems.map((item, index) => (
             <a
               href={item.href}
-              class="header-link magnet-target text-sm font-medium text-muted hover:text-foreground transition-colors"
-              data-magnet
+              class="nav-link group relative px-4 py-2 rounded-lg"
+              data-nav-link
+              data-index={index}
             >
-              {t(lang, `nav.${item.key}`)}
-            </a>
-          ))
-        }
+              <!-- Hover glow -->
+              <div class="nav-link-glow absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-        <!-- Language Switch -->
-        <div class="flex items-center gap-2 border-l border-border pl-4">
-           <ThemeToggle lang={lang} />
-           <LangSwitch currentLang={lang} currentPath={currentPath} />
+              <!-- Content -->
+              <span class="relative flex items-center gap-2 text-sm font-medium nav-link-text">
+                <svg class="w-4 h-4 nav-link-icon opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-1 group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <Fragment set:html={iconPaths[item.icon]} />
+                </svg>
+                <span>{t(lang, `nav.${item.key}`)}</span>
+              </span>
+
+              <!-- Underline effect -->
+              <div class="nav-link-underline absolute bottom-1 left-4 right-4 h-0.5 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+            </a>
+          ))}
         </div>
+
+        <!-- Divider -->
+        <div class="nav-divider w-px h-8 mx-3"></div>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-2">
+          <ThemeToggle lang={lang} />
+          <LangSwitch currentLang={lang} currentPath={currentPath} />
+        </div>
+
+        <!-- Divider -->
+        <div class="nav-divider w-px h-8 mx-3"></div>
 
         <!-- Resume CTA -->
         <a
           href={`/${lang}/resume`}
-          class="header-cta magnet-target inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border border-accent text-accent hover:bg-accent hover:text-white transition-colors ml-2"
-          data-magnet
+          class="nav-cta group relative inline-flex items-center justify-center px-5 py-2.5 rounded-xl overflow-hidden"
+          data-cta
         >
-          {t(lang, 'nav.resume')}
+          <!-- Animated gradient background -->
+          <div class="nav-cta-bg absolute inset-0"></div>
+
+          <!-- Shimmer effect -->
+          <div class="nav-cta-shimmer absolute inset-0 pointer-events-none"></div>
+
+          <!-- Border glow -->
+          <div class="nav-cta-glow absolute -inset-[1px] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+          <!-- Content -->
+          <span class="relative flex items-center gap-2 text-sm font-semibold text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span>{t(lang, 'nav.resume')}</span>
+          </span>
+
+          <!-- Pulse rings -->
+          <div class="nav-cta-pulse absolute inset-0 rounded-xl"></div>
         </a>
       </div>
 
       <!-- Mobile Menu Button -->
-      <div class="flex items-center gap-2 md:hidden">
+      <div class="flex items-center gap-3 md:hidden">
         <ThemeToggle lang={lang} />
+
         <button
           type="button"
-          class="p-2 text-muted hover:text-foreground transition-colors"
+          class="nav-mobile-toggle group relative w-10 h-10 rounded-xl flex items-center justify-center"
           aria-label={t(lang, 'a11y.menuToggle')}
           data-menu-toggle
         >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
+          <!-- Button background -->
+          <div class="nav-toggle-bg absolute inset-0 rounded-xl"></div>
+
+          <!-- Hamburger lines (morphing) -->
+          <div class="nav-hamburger relative w-5 h-4 flex flex-col justify-between">
+            <span class="nav-hamburger-line nav-hamburger-1 w-full h-0.5 rounded-full origin-left transition-all duration-300"></span>
+            <span class="nav-hamburger-line nav-hamburger-2 w-3/4 h-0.5 rounded-full transition-all duration-300"></span>
+            <span class="nav-hamburger-line nav-hamburger-3 w-1/2 h-0.5 rounded-full origin-left transition-all duration-300"></span>
+          </div>
         </button>
       </div>
     </nav>
@@ -104,125 +199,648 @@ const navItems = [
 
   <!-- Mobile Menu -->
   <div
-    class="md:hidden hidden border-t border-border bg-background"
+    class="nav-mobile-menu md:hidden fixed inset-x-0 top-16 bottom-0 pointer-events-none opacity-0 translate-y-[-10px]"
     data-mobile-menu
   >
-    <div class="container py-4 space-y-4">
-      {
-        navItems.map((item) => (
+    <!-- Backdrop -->
+    <div class="nav-mobile-backdrop absolute inset-0"></div>
+
+    <!-- Menu Content -->
+    <div class="nav-mobile-content relative h-full overflow-y-auto">
+      <div class="container py-8 space-y-6">
+        <!-- Mobile Nav Links -->
+        {navItems.map((item, index) => (
           <a
             href={item.href}
-            class="block py-2 text-base font-medium text-muted hover:text-foreground transition-colors"
+            class="nav-mobile-link group flex items-center gap-4 py-4 border-b nav-mobile-border"
+            style={`--mobile-index: ${index}`}
           >
-            {t(lang, `nav.${item.key}`)}
+            <div class="nav-mobile-icon w-12 h-12 rounded-2xl flex items-center justify-center">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <Fragment set:html={iconPaths[item.icon]} />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <span class="text-lg font-semibold nav-mobile-text block">
+                {t(lang, `nav.${item.key}`)}
+              </span>
+            </div>
+            <svg class="w-5 h-5 nav-mobile-arrow opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
           </a>
-        ))
-      }
+        ))}
 
-      <!-- Language Switch Mobile -->
-      <div class="py-2 border-t border-border">
-         <div class="flex items-center gap-2">
-            <span class="text-sm text-muted">{t(lang, 'a11y.languageSwitch')}:</span>
-            <LangSwitch currentLang={lang} currentPath={currentPath} />
-         </div>
+        <!-- Resume CTA Mobile -->
+        <a
+          href={`/${lang}/resume`}
+          class="nav-mobile-cta flex items-center justify-center gap-3 py-4 rounded-2xl mt-8"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <span class="text-lg font-semibold">{t(lang, 'nav.resume')}</span>
+        </a>
+
+        <!-- Language Switch Mobile -->
+        <div class="pt-8 border-t nav-mobile-border">
+          <p class="text-sm nav-mobile-label mb-4">{t(lang, 'a11y.languageSwitch')}</p>
+          <LangSwitch currentLang={lang} currentPath={currentPath} />
+        </div>
       </div>
     </div>
   </div>
 </header>
 
 <style>
-  .magnet-target {
-    position: relative;
-    transition: transform 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
+  /* === HEADER BASE === */
+  .nav-header {
+    --nav-height: 4rem;
+    --nav-height-scrolled: 3.5rem;
   }
 
-  .magnet-target::after {
-    content: '';
+  @media (min-width: 768px) {
+    .nav-header {
+      --nav-height: 5rem;
+      --nav-height-scrolled: 4rem;
+    }
+  }
+
+  /* === GLASS BACKGROUND === */
+  .nav-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  :global(.dark) .nav-glass {
+    background: rgba(15, 23, 42, 0.8);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .nav-header.is-scrolled .nav-glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(30px) saturate(200%);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+  }
+
+  :global(.dark) .nav-header.is-scrolled .nav-glass {
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  /* === AURORA GLOW === */
+  .nav-aurora-1,
+  .nav-aurora-2 {
     position: absolute;
-    inset: -6px;
-    border-radius: inherit;
-    background: radial-gradient(
-      120px circle at var(--mx, 50%) var(--my, 50%),
-      rgba(63, 159, 119, 0.18),
-      transparent 65%
-    );
+    width: 300px;
+    height: 100px;
+    border-radius: 50%;
+    filter: blur(60px);
     opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-    z-index: -1;
+    transition: opacity 0.5s ease;
   }
 
-  .magnet-target:hover::after {
+  .nav-header:hover .nav-aurora-1,
+  .nav-header:hover .nav-aurora-2 {
+    opacity: 0.3;
+  }
+
+  :global(.dark) .nav-header:hover .nav-aurora-1,
+  :global(.dark) .nav-header:hover .nav-aurora-2 {
+    opacity: 0.4;
+  }
+
+  .nav-aurora-1 {
+    background: radial-gradient(ellipse, rgba(110, 231, 183, 0.6) 0%, transparent 70%);
+    top: -50px;
+    left: 10%;
+    animation: nav-aurora-drift 8s ease-in-out infinite;
+  }
+
+  .nav-aurora-2 {
+    background: radial-gradient(ellipse, rgba(147, 197, 253, 0.6) 0%, transparent 70%);
+    top: -50px;
+    right: 10%;
+    animation: nav-aurora-drift 10s ease-in-out infinite reverse;
+  }
+
+  @keyframes nav-aurora-drift {
+    0%, 100% { transform: translateX(0) scale(1); }
+    50% { transform: translateX(30px) scale(1.1); }
+  }
+
+  /* === SHIMMER LINE === */
+  .nav-shimmer-line {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(110, 231, 183, 0.3) 25%,
+      rgba(147, 197, 253, 0.3) 50%,
+      rgba(196, 181, 253, 0.3) 75%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: nav-shimmer 6s linear infinite;
+    opacity: 0.5;
+  }
+
+  :global(.dark) .nav-shimmer-line {
+    opacity: 0.8;
+  }
+
+  @keyframes nav-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* === LOGO === */
+  .nav-logo-mark {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .nav-logo:hover .nav-logo-mark {
+    transform: scale(1.05) rotate(-3deg);
+    box-shadow: 0 8px 25px -5px rgba(110, 231, 183, 0.4);
+  }
+
+  .nav-logo-gradient {
+    background: linear-gradient(135deg, #6ee7b7 0%, #3b82f6 50%, #8b5cf6 100%);
+    animation: nav-logo-rotate 4s linear infinite;
+  }
+
+  @keyframes nav-logo-rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .nav-logo-inner {
+    background: var(--color-surface);
+  }
+
+  .nav-logo-letter {
+    background: linear-gradient(135deg, #6ee7b7, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-logo-shine {
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 255, 255, 0.5) 50%,
+      transparent 60%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+
+  .nav-logo:hover .nav-logo-shine {
+    transform: translateX(100%);
+  }
+
+  .nav-logo-name {
+    color: var(--color-text);
+    transition: color 0.3s ease;
+  }
+
+  .nav-logo-gradient-text {
+    background: linear-gradient(90deg, #6ee7b7, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Logo particles */
+  .nav-particle {
+    background: linear-gradient(135deg, #6ee7b7, #3b82f6);
+    animation: nav-particle-float 2s ease-in-out infinite;
+    animation-delay: calc(var(--particle-index) * 0.15s);
+  }
+
+  @keyframes nav-particle-float {
+    0%, 100% {
+      transform: translate(
+        calc(20px * cos(var(--particle-index) * 60deg)),
+        calc(20px * sin(var(--particle-index) * 60deg))
+      ) scale(0);
+    }
+    50% {
+      transform: translate(
+        calc(30px * cos(var(--particle-index) * 60deg)),
+        calc(30px * sin(var(--particle-index) * 60deg))
+      ) scale(1);
+    }
+  }
+
+  /* === NAV LINKS === */
+  .nav-link {
+    transition: all 0.3s ease;
+  }
+
+  .nav-link-text {
+    color: var(--color-text-muted);
+    transition: color 0.3s ease;
+  }
+
+  .nav-link:hover .nav-link-text {
+    color: var(--color-text);
+  }
+
+  .nav-link-icon {
+    color: var(--color-accent);
+  }
+
+  .nav-link-glow {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(110, 231, 183, 0.1) 0%,
+      transparent 70%
+    );
+  }
+
+  :global(.dark) .nav-link-glow {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(110, 231, 183, 0.15) 0%,
+      transparent 70%
+    );
+  }
+
+  .nav-link-underline {
+    background: linear-gradient(90deg, #6ee7b7, #3b82f6);
+  }
+
+  /* Active indicator */
+  .nav-active-indicator {
+    background: rgba(110, 231, 183, 0.1);
+    border: 1px solid rgba(110, 231, 183, 0.2);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* === DIVIDER === */
+  .nav-divider {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      var(--color-border) 30%,
+      var(--color-border) 70%,
+      transparent 100%
+    );
+  }
+
+  /* === CTA BUTTON === */
+  .nav-cta-bg {
+    background: linear-gradient(135deg, #6ee7b7 0%, #3b82f6 50%, #8b5cf6 100%);
+    background-size: 200% 200%;
+    animation: nav-cta-gradient 4s ease infinite;
+  }
+
+  @keyframes nav-cta-gradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .nav-cta-shimmer {
+    background: linear-gradient(
+      110deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 60%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+    animation: nav-cta-shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes nav-cta-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .nav-cta-glow {
+    background: linear-gradient(135deg, #6ee7b7 0%, #3b82f6 50%, #8b5cf6 100%);
+    filter: blur(8px);
+  }
+
+  .nav-cta-pulse {
+    animation: nav-cta-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes nav-cta-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(110, 231, 183, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(110, 231, 183, 0);
+    }
+  }
+
+  .nav-cta {
+    box-shadow:
+      0 4px 15px -3px rgba(110, 231, 183, 0.3),
+      0 2px 6px -2px rgba(59, 130, 246, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .nav-cta:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 25px -5px rgba(110, 231, 183, 0.4),
+      0 4px 10px -4px rgba(59, 130, 246, 0.3);
+  }
+
+  /* === MOBILE TOGGLE === */
+  .nav-toggle-bg {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+  }
+
+  :global(.dark) .nav-toggle-bg {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-mobile-toggle:hover .nav-toggle-bg {
+    background: rgba(110, 231, 183, 0.1);
+    border-color: rgba(110, 231, 183, 0.3);
+  }
+
+  .nav-hamburger-line {
+    background: var(--color-text);
+  }
+
+  /* Morphing hamburger to X */
+  .nav-mobile-toggle.is-open .nav-hamburger-1 {
+    transform: rotate(45deg) translateY(6px);
+    width: 100%;
+  }
+
+  .nav-mobile-toggle.is-open .nav-hamburger-2 {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+
+  .nav-mobile-toggle.is-open .nav-hamburger-3 {
+    transform: rotate(-45deg) translateY(-6px);
+    width: 100%;
+  }
+
+  /* === MOBILE MENU === */
+  .nav-mobile-menu {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-mobile-menu.is-open {
     opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
-  .header-cta {
-    box-shadow: 0 8px 18px rgba(24, 89, 64, 0.08);
+  .nav-mobile-backdrop {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
   }
 
-  .header-cta:hover {
-    box-shadow: 0 12px 26px rgba(24, 89, 64, 0.16);
+  :global(.dark) .nav-mobile-backdrop {
+    background: rgba(15, 23, 42, 0.95);
   }
 
+  .nav-mobile-border {
+    border-color: var(--color-border);
+  }
+
+  .nav-mobile-icon {
+    background: rgba(110, 231, 183, 0.1);
+    color: var(--color-accent);
+    transition: all 0.3s ease;
+  }
+
+  .nav-mobile-link:hover .nav-mobile-icon {
+    background: rgba(110, 231, 183, 0.2);
+    transform: scale(1.05);
+  }
+
+  .nav-mobile-text {
+    color: var(--color-text);
+  }
+
+  .nav-mobile-arrow {
+    color: var(--color-accent);
+  }
+
+  .nav-mobile-cta {
+    background: linear-gradient(135deg, #6ee7b7 0%, #3b82f6 100%);
+    color: white;
+    box-shadow: 0 8px 25px -5px rgba(110, 231, 183, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .nav-mobile-cta:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 30px -5px rgba(110, 231, 183, 0.5);
+  }
+
+  .nav-mobile-label {
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Mobile link stagger animation */
+  .nav-mobile-link {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: calc(var(--mobile-index) * 0.08s);
+  }
+
+  .nav-mobile-menu.is-open .nav-mobile-link {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* === SCROLL STATE === */
+  .nav-content {
+    transition: height 0.3s ease;
+  }
+
+  .nav-header.is-scrolled .nav-content {
+    height: var(--nav-height-scrolled);
+  }
+
+  .nav-header.is-scrolled .nav-logo-mark {
+    transform: scale(0.9);
+  }
+
+  /* === REDUCED MOTION === */
   @media (prefers-reduced-motion: reduce) {
-    .magnet-target {
-      transition: color 0.2s ease, box-shadow 0.2s ease;
+    .nav-aurora-1,
+    .nav-aurora-2,
+    .nav-shimmer-line,
+    .nav-logo-gradient,
+    .nav-cta-shimmer,
+    .nav-cta-pulse,
+    .nav-particle {
+      animation: none !important;
+    }
+
+    .nav-glass,
+    .nav-logo-mark,
+    .nav-logo-shine,
+    .nav-link,
+    .nav-cta,
+    .nav-hamburger-line,
+    .nav-mobile-menu,
+    .nav-mobile-link {
+      transition: none !important;
     }
   }
 </style>
 
 <script>
-  // Mobile menu toggle
-  const menuToggle = document.querySelector('[data-menu-toggle]');
-  const mobileMenu = document.querySelector('[data-mobile-menu]');
+  function initHeader() {
+    const header = document.querySelector('[data-header]') as HTMLElement;
+    const menuToggle = document.querySelector('[data-menu-toggle]') as HTMLElement;
+    const mobileMenu = document.querySelector('[data-mobile-menu]') as HTMLElement;
+    const navLinks = document.querySelectorAll('[data-nav-link]');
+    const navIndicator = document.querySelector('[data-nav-indicator]') as HTMLElement;
 
-  menuToggle?.addEventListener('click', () => {
-    mobileMenu?.classList.toggle('hidden');
-  });
+    if (!header) return;
 
-  // Close menu when clicking on a link
-  mobileMenu?.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
-      mobileMenu?.classList.add('hidden');
-    });
-  });
+    // === SCROLL BEHAVIOR ===
+    let lastScroll = 0;
+    const scrollThreshold = 50;
 
-  function initHeaderMagnet() {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll > scrollThreshold) {
+        header.classList.add('is-scrolled');
+      } else {
+        header.classList.remove('is-scrolled');
+      }
+
+      lastScroll = currentScroll;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    // === MOBILE MENU TOGGLE ===
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.contains('is-open');
+
+        if (isOpen) {
+          mobileMenu.classList.remove('is-open');
+          menuToggle.classList.remove('is-open');
+          document.body.style.overflow = '';
+        } else {
+          mobileMenu.classList.add('is-open');
+          menuToggle.classList.add('is-open');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+
+      // Close on link click
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('is-open');
+          menuToggle.classList.remove('is-open');
+          document.body.style.overflow = '';
+        });
+      });
+    }
+
+    // === NAV LINK HOVER INDICATOR ===
+    if (navIndicator && navLinks.length > 0) {
+      const moveIndicator = (link: Element) => {
+        const rect = (link as HTMLElement).getBoundingClientRect();
+        const containerRect = link.parentElement?.getBoundingClientRect();
+        if (!containerRect) return;
+
+        navIndicator.style.width = `${rect.width}px`;
+        navIndicator.style.left = `${rect.left - containerRect.left}px`;
+        navIndicator.style.opacity = '1';
+      };
+
+      const hideIndicator = () => {
+        navIndicator.style.opacity = '0';
+      };
+
+      navLinks.forEach(link => {
+        link.addEventListener('mouseenter', () => moveIndicator(link));
+      });
+
+      const container = navLinks[0]?.parentElement;
+      container?.addEventListener('mouseleave', hideIndicator);
+    }
+
+    // === MAGNETIC EFFECT ON LINKS ===
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
-    if (prefersReducedMotion || !hasFinePointer) return;
 
-    const targets = document.querySelectorAll<HTMLElement>('.magnet-target[data-magnet]');
+    if (!prefersReducedMotion && hasFinePointer) {
+      navLinks.forEach(link => {
+        const el = link as HTMLElement;
 
-    targets.forEach((el) => {
-      el.addEventListener('mouseenter', () => {
-        el.style.transition = 'transform 0.12s ease-out';
+        el.addEventListener('mousemove', (e: MouseEvent) => {
+          const rect = el.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+
+          el.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`;
+        });
+
+        el.addEventListener('mouseleave', () => {
+          el.style.transform = 'translate(0, 0)';
+        });
       });
 
-      el.addEventListener('mousemove', (e: MouseEvent) => {
-        const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        const mx = ((e.clientX - rect.left) / rect.width) * 100;
-        const my = ((e.clientY - rect.top) / rect.height) * 100;
+      // CTA magnetic effect
+      const cta = document.querySelector('[data-cta]') as HTMLElement;
+      if (cta) {
+        cta.addEventListener('mousemove', (e: MouseEvent) => {
+          const rect = cta.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
 
-        el.style.setProperty('--mx', `${mx}%`);
-        el.style.setProperty('--my', `${my}%`);
-        el.style.transform = `translate3d(${x * 0.12}px, ${y * 0.12}px, 0)`;
-      });
+          cta.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px) translateY(-2px)`;
+        });
 
-      el.addEventListener('mouseleave', () => {
-        el.style.transition = 'transform 0.3s ease-out';
-        el.style.transform = 'translate3d(0, 0, 0)';
-      });
-    });
+        cta.addEventListener('mouseleave', () => {
+          cta.style.transform = 'translate(0, 0)';
+        });
+      }
+
+      // Logo magnetic effect
+      const logo = document.querySelector('[data-logo]') as HTMLElement;
+      if (logo) {
+        logo.addEventListener('mousemove', (e: MouseEvent) => {
+          const rect = logo.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+
+          logo.style.transform = `translate(${x * 0.05}px, ${y * 0.05}px)`;
+        });
+
+        logo.addEventListener('mouseleave', () => {
+          logo.style.transform = 'translate(0, 0)';
+        });
+      }
+    }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHeaderMagnet);
-  } else {
-    initHeaderMagnet();
-  }
+  // Initialize
+  initHeader();
+  document.addEventListener('astro:page-load', initHeader);
 </script>

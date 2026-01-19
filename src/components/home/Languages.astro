@@ -1,4 +1,16 @@
 ---
+/**
+ * Languages Section - PREMIUM EDITION
+ * Features:
+ * - Floating globe with orbital rings
+ * - Liquid morphing cards with glassmorphism
+ * - 3D tilt interaction on cards
+ * - Animated wave progress indicators
+ * - Aurora ambient background
+ * - Staggered reveal animations
+ * - Theme adaptive (light/dark)
+ */
+
 import { t } from '@/i18n';
 import type { Lang } from '@/i18n/config';
 
@@ -17,20 +29,55 @@ const { lang, items } = Astro.props;
 // Helper to get localized string
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
 
-// Level configurations with percentages and colors
-const levelConfig: Record<string, { percent: number; color: string; gradient: string }> = {
-  native: { percent: 100, color: '#6ee7b7', gradient: 'from-emerald-200 to-emerald-400' },
-  fluent: { percent: 90, color: '#93c5fd', gradient: 'from-blue-200 to-blue-400' },
-  advanced: { percent: 75, color: '#c4b5fd', gradient: 'from-violet-200 to-violet-400' },
-  working: { percent: 60, color: '#fcd34d', gradient: 'from-amber-200 to-amber-400' },
+// Level configurations with enhanced styling
+const levelConfig: Record<string, {
+  percent: number;
+  color: string;
+  colorLight: string;
+  gradient: string;
+  label: string;
+  glow: string;
+}> = {
+  native: {
+    percent: 100,
+    color: '#6ee7b7',
+    colorLight: '#059669',
+    gradient: 'from-emerald-400 via-teal-400 to-cyan-400',
+    label: 'Native',
+    glow: 'rgba(110, 231, 183, 0.4)'
+  },
+  fluent: {
+    percent: 90,
+    color: '#93c5fd',
+    colorLight: '#2563eb',
+    gradient: 'from-blue-400 via-indigo-400 to-violet-400',
+    label: 'Fluent',
+    glow: 'rgba(147, 197, 253, 0.4)'
+  },
+  advanced: {
+    percent: 75,
+    color: '#c4b5fd',
+    colorLight: '#7c3aed',
+    gradient: 'from-violet-400 via-purple-400 to-fuchsia-400',
+    label: 'Advanced',
+    glow: 'rgba(196, 181, 253, 0.4)'
+  },
+  working: {
+    percent: 60,
+    color: '#fcd34d',
+    colorLight: '#d97706',
+    gradient: 'from-amber-400 via-orange-400 to-yellow-400',
+    label: 'Working',
+    glow: 'rgba(252, 211, 77, 0.4)'
+  },
 };
 
-// Flag emojis for each language
-const flagMap: Record<string, string> = {
-  english: '🇬🇧',
-  spanish: '🇪🇸',
-  portuguese: '🇧🇷',
-  french: '🇫🇷',
+// Flag emojis with country codes
+const flagMap: Record<string, { emoji: string; code: string }> = {
+  english: { emoji: '🇬🇧', code: 'GB' },
+  spanish: { emoji: '🇪🇸', code: 'ES' },
+  portuguese: { emoji: '🇧🇷', code: 'BR' },
+  french: { emoji: '🇫🇷', code: 'FR' },
 };
 
 // Language native names
@@ -40,153 +87,260 @@ const nativeNames: Record<string, string> = {
   portuguese: 'Português',
   french: 'Français',
 };
+
+// Sound wave icon SVG
+const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>`;
 ---
 
-<section class="section relative overflow-hidden" id="languages">
-  <!-- Background decoration -->
-  <div class="absolute inset-0 pointer-events-none">
-    <div class="absolute top-20 left-10 w-72 h-72 bg-accent/5 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-20 right-10 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl"></div>
+<section class="lang-section section relative overflow-hidden" id="languages">
+  <!-- Aurora Background -->
+  <div class="lang-aurora absolute inset-0 pointer-events-none">
+    <div class="lang-aurora-1 absolute inset-0"></div>
+    <div class="lang-aurora-2 absolute inset-0"></div>
+  </div>
+
+  <!-- Floating Particles -->
+  <div class="lang-particles absolute inset-0 pointer-events-none overflow-hidden">
+    {Array.from({ length: 20 }).map((_, i) => (
+      <div
+        class="lang-particle absolute rounded-full"
+        style={`
+          width: ${4 + (i % 3) * 2}px;
+          height: ${4 + (i % 3) * 2}px;
+          left: ${5 + (i * 4.7) % 90}%;
+          top: ${10 + (i * 7.3) % 80}%;
+          animation: lang-float ${6 + (i % 4) * 2}s ease-in-out infinite;
+          animation-delay: ${(i % 6) * -1}s;
+        `}
+      />
+    ))}
+  </div>
+
+  <!-- Morphing Blob Background -->
+  <div class="lang-blob absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none">
+    <svg viewBox="0 0 200 200" class="w-full h-full">
+      <defs>
+        <linearGradient id="lang-blob-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#6ee7b7;stop-opacity:0.3"/>
+          <stop offset="50%" style="stop-color:#93c5fd;stop-opacity:0.2"/>
+          <stop offset="100%" style="stop-color:#c4b5fd;stop-opacity:0.3"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#lang-blob-grad)" class="lang-morph-path">
+        <animate
+          attributeName="d"
+          dur="15s"
+          repeatCount="indefinite"
+          values="
+            M39.9,-65.7C52.5,-59.5,63.8,-49.9,71.2,-37.8C78.6,-25.7,82.1,-11.2,80.4,2.3C78.7,15.8,71.8,28.3,63.1,39.4C54.4,50.5,43.9,60.2,31.5,66.2C19.1,72.2,4.8,74.5,-9.4,73.1C-23.6,71.7,-37.7,66.6,-49.3,58.1C-60.9,49.6,-70,37.7,-74.6,24.1C-79.2,10.5,-79.3,-4.8,-75.2,-18.6C-71.1,-32.4,-62.8,-44.7,-51.6,-51.5C-40.4,-58.3,-26.3,-59.6,-13.1,-61.7C0.1,-63.8,12.4,-66.7,24.3,-67.2C36.2,-67.7,47.7,-65.8,39.9,-65.7Z;
+            M44.5,-73.8C57.6,-66.8,68.1,-54.5,75.1,-40.5C82.1,-26.5,85.6,-10.8,83.7,3.8C81.8,18.4,74.5,31.9,65.2,43.9C55.9,55.9,44.6,66.4,31.2,72.4C17.8,78.4,2.3,79.9,-13.1,77.8C-28.5,75.7,-43.8,70,-55.8,60.1C-67.8,50.2,-76.5,36.1,-80.4,20.7C-84.3,5.3,-83.4,-11.4,-77.8,-26C-72.2,-40.6,-61.9,-53.1,-49,-61.1C-36.1,-69.1,-20.5,-72.6,-4.4,-75.9C11.7,-79.2,31.4,-82.3,44.5,-73.8Z;
+            M39.9,-65.7C52.5,-59.5,63.8,-49.9,71.2,-37.8C78.6,-25.7,82.1,-11.2,80.4,2.3C78.7,15.8,71.8,28.3,63.1,39.4C54.4,50.5,43.9,60.2,31.5,66.2C19.1,72.2,4.8,74.5,-9.4,73.1C-23.6,71.7,-37.7,66.6,-49.3,58.1C-60.9,49.6,-70,37.7,-74.6,24.1C-79.2,10.5,-79.3,-4.8,-75.2,-18.6C-71.1,-32.4,-62.8,-44.7,-51.6,-51.5C-40.4,-58.3,-26.3,-59.6,-13.1,-61.7C0.1,-63.8,12.4,-66.7,24.3,-67.2C36.2,-67.7,47.7,-65.8,39.9,-65.7Z
+          "
+          transform="translate(100, 100)"
+        />
+      </path>
+    </svg>
   </div>
 
   <div class="container relative z-10">
-    <!-- Header -->
-    <div class="text-center mb-16 reveal-element opacity-0 translate-y-4 transition-all duration-1000">
-      <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
+    <!-- Premium Header -->
+    <div class="text-center mb-16 lang-reveal">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full lang-badge backdrop-blur-xl mb-8">
+        <div class="lang-globe-container relative">
+          <span class="text-2xl lang-globe-spin">🌍</span>
+          <!-- Orbital ring -->
+          <div class="lang-orbit absolute inset-[-4px] rounded-full border border-dashed lang-orbit-border"></div>
+        </div>
+        <span class="text-sm font-medium lang-badge-text tracking-widest uppercase">
+          {t(lang, 'languages.subtitle') || 'Global Communication'}
+        </span>
+      </div>
+
+      <!-- Title with gradient -->
+      <h2 class="text-4xl md:text-5xl font-bold lang-title mb-4">
         {t(lang, 'languages.title')}
       </h2>
-      <p class="text-muted max-w-2xl mx-auto">
+
+      <p class="text-lg lang-subtitle max-w-2xl mx-auto mb-8">
         {t(lang, 'languages.subtitle') || 'Multilingual professional enabling global collaboration'}
       </p>
 
-      <!-- Decorative line -->
-      <div class="flex items-center justify-center gap-3 mt-6">
-        <div class="h-px w-16 bg-gradient-to-r from-transparent to-accent/50"></div>
-        <div class="flex gap-2">
-          {Object.values(flagMap).map(flag => (
-            <span class="text-lg opacity-60">{flag}</span>
+      <!-- Flag parade -->
+      <div class="flex items-center justify-center gap-6">
+        <div class="h-px w-20 lang-line-gradient"></div>
+        <div class="flex gap-3">
+          {items.map((item, i) => (
+            <div
+              class="lang-flag-hover text-2xl cursor-default"
+              style={`animation-delay: ${i * 0.1}s`}
+            >
+              {flagMap[item.id]?.emoji || '🌐'}
+            </div>
           ))}
         </div>
-        <div class="h-px w-16 bg-gradient-to-l from-transparent to-accent/50"></div>
+        <div class="h-px w-20 lang-line-gradient-reverse"></div>
       </div>
     </div>
 
     <!-- Language Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
       {items.map((item, index) => {
         const config = levelConfig[item.level] || levelConfig.working;
-        const flag = flagMap[item.id] || '🌐';
+        const flag = flagMap[item.id] || { emoji: '🌐', code: 'XX' };
         const nativeName = nativeNames[item.id] || item.name;
-        const circumference = 2 * Math.PI * 36; // radius = 36
+        const circumference = 2 * Math.PI * 40;
         const offset = circumference - (config.percent / 100) * circumference;
 
         return (
           <div
-            class="language-card group relative reveal-element opacity-0 translate-y-4 transition-all duration-1000"
-            style={`transition-delay: ${index * 250}ms`}
-            data-level={item.level}
-            data-percent={config.percent}
+            class="lang-card-wrapper lang-reveal"
+            style={`--card-index: ${index}; --accent: ${config.color}; --accent-light: ${config.colorLight}; --glow: ${config.glow}`}
           >
-            <!-- Card background with gradient border -->
-            <div class="absolute inset-0 rounded-2xl bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[1px]"
-                 style={`background: linear-gradient(135deg, ${config.color}40, transparent 50%, ${config.color}20)`}>
-              <div class="w-full h-full rounded-2xl bg-surface"></div>
-            </div>
+            <div class="lang-card group relative rounded-3xl overflow-hidden">
+              <!-- Holographic shimmer -->
+              <div class="lang-shimmer absolute inset-0 pointer-events-none"></div>
 
-            <!-- Card content -->
-            <div class="relative p-6 rounded-2xl bg-surface border border-border group-hover:border-transparent transition-all duration-500 group-hover:shadow-xl">
-              <div class="flex items-start gap-5">
-                <!-- Circular Progress -->
-                <div class="relative flex-shrink-0">
-                  <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 80 80">
-                    <!-- Background circle -->
-                    <circle
-                      cx="40"
-                      cy="40"
-                      r="36"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="4"
-                      class="text-border"
-                    />
-                    <!-- Progress circle -->
-                    <circle
-                      cx="40"
-                      cy="40"
-                      r="36"
-                      fill="none"
-                      stroke={config.color}
-                      stroke-width="4"
-                      stroke-linecap="round"
-                      stroke-dasharray={circumference}
-                      stroke-dashoffset={circumference}
-                      class="progress-ring transition-all duration-1000 ease-out"
-                      data-offset={offset}
-                    />
-                  </svg>
+              <!-- Glassmorphism background -->
+              <div class="absolute inset-0 lang-card-glass backdrop-blur-xl"></div>
 
-                  <!-- Flag in center -->
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <span class="text-3xl transform group-hover:scale-110 transition-transform duration-300">
-                      {flag}
-                    </span>
-                  </div>
+              <!-- Gradient border -->
+              <div class={`absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-br ${config.gradient} opacity-60 group-hover:opacity-100 transition-opacity duration-500`}>
+                <div class="absolute inset-[1px] rounded-3xl lang-card-inner"></div>
+              </div>
 
-                  <!-- Percentage badge -->
-                  <div
-                    class="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full text-xs font-bold text-white shadow-lg"
-                    style={`background: ${config.color}`}
-                  >
-                    {config.percent}%
-                  </div>
-                </div>
+              <!-- Spotlight effect -->
+              <div class="lang-spotlight absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl"></div>
 
-                <!-- Language details -->
-                <div class="flex-1 min-w-0">
-                  <!-- Language name -->
-                  <div class="flex items-baseline gap-2 mb-1">
-                    <h3 class="text-xl font-bold text-foreground group-hover:text-accent transition-colors">
-                      {item.name}
-                    </h3>
-                    <span class="text-sm text-muted italic">
-                      {nativeName !== item.name && `(${nativeName})`}
-                    </span>
-                  </div>
+              <!-- Card content -->
+              <div class="relative p-6 md:p-8 z-10">
+                <div class="flex items-start gap-6">
 
-                  <!-- Level badge -->
-                  <div class="inline-flex items-center gap-2 mb-3">
-                    <span
-                      class="px-3 py-1 rounded-full text-sm font-medium text-white"
-                      style={`background: linear-gradient(135deg, ${config.color}, ${config.color}cc)`}
-                    >
-                      {t(lang, `languages.levels.${item.level}`)}
-                    </span>
-                  </div>
-
-                  <!-- Used for -->
-                  <div class="space-y-2">
-                    <p class="text-xs font-medium text-muted uppercase tracking-wider">
-                      {t(lang, 'languages.usedFor')}
-                    </p>
-                    <p class="text-sm text-foreground/80 leading-relaxed">
-                      {getStr(item.usedFor)}
-                    </p>
-                  </div>
-
-                  <!-- Skill bar (additional visual) -->
-                  <div class="mt-4 h-1.5 bg-border rounded-full overflow-hidden">
+                  <!-- Circular Progress with Flag -->
+                  <div class="relative flex-shrink-0">
+                    <!-- Glow effect -->
                     <div
-                      class="skill-bar h-full rounded-full transition-all duration-1000 ease-out"
-                      style={`width: 0%; background: linear-gradient(90deg, ${config.color}, ${config.color}80)`}
-                      data-width={config.percent}
+                      class="absolute inset-0 rounded-full blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500"
+                      style={`background: ${config.color}`}
                     ></div>
+
+                    <!-- SVG Progress Ring -->
+                    <svg class="w-24 h-24 transform -rotate-90 relative" viewBox="0 0 88 88">
+                      <!-- Background circle -->
+                      <circle
+                        cx="44"
+                        cy="44"
+                        r="40"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        class="lang-ring-bg"
+                      />
+                      <!-- Animated progress -->
+                      <circle
+                        cx="44"
+                        cy="44"
+                        r="40"
+                        fill="none"
+                        stroke={config.color}
+                        stroke-width="4"
+                        stroke-linecap="round"
+                        stroke-dasharray={circumference}
+                        stroke-dashoffset={circumference}
+                        class="lang-progress-ring"
+                        data-offset={offset}
+                      />
+                      <!-- Decorative dots -->
+                      {[0, 90, 180, 270].map(angle => (
+                        <circle
+                          cx={44 + 40 * Math.cos((angle - 90) * Math.PI / 180)}
+                          cy={44 + 40 * Math.sin((angle - 90) * Math.PI / 180)}
+                          r="2"
+                          fill={config.color}
+                          class="opacity-40"
+                        />
+                      ))}
+                    </svg>
+
+                    <!-- Flag in center -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <div class="lang-flag-3d text-4xl" style="transform-style: preserve-3d">
+                        {flag.emoji}
+                      </div>
+                    </div>
+
+                    <!-- Percentage badge -->
+                    <div
+                      class="absolute -bottom-1 -right-1 px-2.5 py-1 rounded-full text-xs font-bold text-white shadow-lg lang-percent-badge"
+                      style={`background: linear-gradient(135deg, ${config.color}, ${config.colorLight})`}
+                    >
+                      {config.percent}%
+                    </div>
+
+                    <!-- Country code -->
+                    <div class="absolute -top-1 -left-1 px-2 py-0.5 rounded-md text-[10px] font-bold lang-country-badge">
+                      {flag.code}
+                    </div>
+                  </div>
+
+                  <!-- Language details -->
+                  <div class="flex-1 min-w-0">
+                    <!-- Language name -->
+                    <div class="flex items-baseline gap-2 mb-2">
+                      <h3 class="text-xl md:text-2xl font-bold lang-card-title group-hover:text-[var(--accent)] transition-colors duration-300">
+                        {item.name}
+                      </h3>
+                      {nativeName !== item.name && (
+                        <span class="text-sm lang-card-subtitle italic">
+                          ({nativeName})
+                        </span>
+                      )}
+                    </div>
+
+                    <!-- Level badge with icon -->
+                    <div class="inline-flex items-center gap-2 mb-4">
+                      <div
+                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold text-white shadow-md"
+                        style={`background: linear-gradient(135deg, ${config.color}, ${config.colorLight})`}
+                      >
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <Fragment set:html={soundWaveIcon} />
+                        </svg>
+                        <span>{t(lang, `languages.levels.${item.level}`) || config.label}</span>
+                      </div>
+                    </div>
+
+                    <!-- Used for description -->
+                    <div class="space-y-2">
+                      <p class="text-xs font-semibold lang-card-label uppercase tracking-wider flex items-center gap-1.5">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        {t(lang, 'languages.usedFor') || 'Used for'}
+                      </p>
+                      <p class="text-sm lang-card-text leading-relaxed">
+                        {getStr(item.usedFor)}
+                      </p>
+                    </div>
+
+                    <!-- Wave progress bar -->
+                    <div class="mt-5 relative h-2 lang-wave-track rounded-full overflow-hidden">
+                      <div
+                        class="lang-wave-bar absolute inset-y-0 left-0 rounded-full"
+                        style={`width: 0%; --bar-color: ${config.color}; --bar-color-light: ${config.colorLight}`}
+                        data-width={config.percent}
+                      >
+                        <!-- Animated wave pattern -->
+                        <div class="lang-wave-pattern absolute inset-0"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Decorative corner accent -->
+              <!-- Corner glow -->
               <div
-                class="absolute top-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+                class="absolute top-0 right-0 w-32 h-32 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
                 style={`background: radial-gradient(circle at top right, ${config.color}, transparent 70%)`}
               ></div>
             </div>
@@ -195,145 +349,608 @@ const nativeNames: Record<string, string> = {
       })}
     </div>
 
-    <!-- Bottom stats summary -->
-    <div class="mt-16 flex flex-wrap justify-center gap-8 reveal-element opacity-0 translate-y-4 transition-all duration-1000" style="transition-delay: 900ms">
-      <div class="text-center">
-        <div class="text-3xl font-bold text-accent tabular-nums"><span class="stat-counter" data-target="4">0</span></div>
-        <div class="text-sm text-muted">{lang === 'es' ? 'Idiomas' : lang === 'fr' ? 'Langues' : lang === 'pt' ? 'Idiomas' : 'Languages'}</div>
-      </div>
-      <div class="w-px h-12 bg-border"></div>
-      <div class="text-center">
-        <div class="text-3xl font-bold text-accent tabular-nums"><span class="stat-counter" data-target="3">0</span></div>
-        <div class="text-sm text-muted">{lang === 'es' ? 'Continentes' : lang === 'fr' ? 'Continents' : lang === 'pt' ? 'Continentes' : 'Continents'}</div>
-      </div>
-      <div class="w-px h-12 bg-border"></div>
-      <div class="text-center">
-        <div class="text-3xl font-bold text-accent tabular-nums"><span class="stat-counter" data-target="8">0</span>+</div>
-        <div class="text-sm text-muted">{lang === 'es' ? 'Años multilingüe' : lang === 'fr' ? 'Années multilingue' : lang === 'pt' ? 'Anos multilíngue' : 'Years multilingual'}</div>
+    <!-- Stats Banner -->
+    <div class="mt-16 lang-reveal">
+      <div class="relative max-w-3xl mx-auto">
+        <!-- Banner background -->
+        <div class="absolute inset-0 lang-stats-bg rounded-2xl"></div>
+        <div class="lang-stats-shimmer absolute inset-0 rounded-2xl pointer-events-none"></div>
+
+        <div class="relative py-8 px-6 grid grid-cols-3 gap-6 text-center">
+          <div class="lang-stat-item">
+            <div class="text-4xl md:text-5xl font-black lang-stat-value">
+              <span class="lang-counter" data-target="4">0</span>
+            </div>
+            <div class="text-sm lang-stat-label mt-1">
+              {lang === 'es' ? 'Idiomas' : lang === 'fr' ? 'Langues' : lang === 'pt' ? 'Idiomas' : 'Languages'}
+            </div>
+          </div>
+
+          <div class="lang-stat-divider"></div>
+
+          <div class="lang-stat-item">
+            <div class="text-4xl md:text-5xl font-black lang-stat-value">
+              <span class="lang-counter" data-target="3">0</span>
+            </div>
+            <div class="text-sm lang-stat-label mt-1">
+              {lang === 'es' ? 'Continentes' : lang === 'fr' ? 'Continents' : lang === 'pt' ? 'Continentes' : 'Continents'}
+            </div>
+          </div>
+
+          <div class="lang-stat-divider"></div>
+
+          <div class="lang-stat-item">
+            <div class="text-4xl md:text-5xl font-black lang-stat-value">
+              <span class="lang-counter" data-target="8">0</span>+
+            </div>
+            <div class="text-sm lang-stat-label mt-1">
+              {lang === 'es' ? 'Años' : lang === 'fr' ? 'Années' : lang === 'pt' ? 'Anos' : 'Years'}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<style>
-  .language-card {
-    perspective: 1000px;
-  }
-
-  .language-card:hover {
-    transform: translateY(-4px);
-  }
-
-  .progress-ring {
-    filter: drop-shadow(0 0 6px currentColor);
-  }
-
-  /* Floating animation for flags on hover */
-  .language-card:hover .text-3xl {
-    animation: float 2s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0) scale(1.1); }
-    50% { transform: translateY(-4px) scale(1.1); }
-  }
-
-  /* Glow effect on progress */
-  .skill-bar {
-    box-shadow: 0 0 10px currentColor;
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .language-card:hover {
-      transform: none;
-    }
-    .language-card:hover .text-3xl {
-      animation: none;
-    }
-    .progress-ring,
-    .skill-bar {
-      transition: none;
-    }
-  }
-</style>
-
 <script>
-  function animateCounter(el: HTMLElement) {
-    const target = parseInt(el.dataset.target || '0');
-    const duration = 1200; // 1.2s for a snappy but smooth feel
-    const start = performance.now();
-
-    const step = (currentTime: number) => {
-      const elapsed = currentTime - start;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Linear easing for smooth, predictable integer steps
-      const ease = progress;
-      
-      const current = Math.floor(ease * target);
-      el.textContent = current.toString();
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        el.textContent = target.toString();
-      }
-    };
-    
-    requestAnimationFrame(step);
-  }
-
   function initLanguages() {
+    // === REVEAL ANIMATIONS ===
+    // Using higher threshold and negative rootMargin for better timing
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.remove('opacity-0', 'translate-y-4');
-          entry.target.classList.add('opacity-100', 'translate-y-0');
+          entry.target.classList.add('is-visible');
 
-          // Animate progress rings
-          const progressRing = entry.target.querySelector('.progress-ring') as SVGCircleElement;
+          // Animate progress rings after card is visible
+          const progressRing = entry.target.querySelector('.lang-progress-ring') as SVGCircleElement;
           if (progressRing) {
             const offset = progressRing.dataset.offset;
             setTimeout(() => {
               progressRing.style.strokeDashoffset = offset || '0';
-            }, 300);
+            }, 500); // Increased delay
           }
 
-          // Animate skill bars
-          const skillBar = entry.target.querySelector('.skill-bar') as HTMLElement;
-          if (skillBar) {
-            const width = skillBar.dataset.width;
+          // Animate wave bars with more delay
+          const waveBar = entry.target.querySelector('.lang-wave-bar') as HTMLElement;
+          if (waveBar) {
+            const width = waveBar.dataset.width;
             setTimeout(() => {
-              skillBar.style.width = `${width}%`;
-            }, 500);
+              waveBar.style.width = `${width}%`;
+            }, 700); // Increased delay
           }
 
-          // Trigger counters
-          const counters = entry.target.querySelectorAll('.stat-counter');
-          counters.forEach(counter => {
-            // Start counter AFTER CSS fade-in is fully complete (CSS delay 900ms + 1000ms duration + buffer)
+          // Animate counters after progress animations
+          const counters = entry.target.querySelectorAll('.lang-counter');
+          counters.forEach((counter, i) => {
             setTimeout(() => {
               animateCounter(counter as HTMLElement);
-            }, 2000); 
+            }, 900 + i * 150); // Increased base delay
           });
 
           observer.unobserve(entry.target);
         }
       });
-    }, {
-      threshold: 0.2,
-      rootMargin: '50px'
+    }, { threshold: 0.45, rootMargin: '-60px 0px -60px 0px' }); // Better timing
+
+    document.querySelectorAll('.lang-reveal').forEach(el => observer.observe(el));
+
+    // === COUNTER ANIMATION ===
+    function animateCounter(el: HTMLElement) {
+      const target = parseInt(el.dataset.target || '0');
+      const duration = 1000;
+      const start = performance.now();
+
+      const step = (currentTime: number) => {
+        const elapsed = currentTime - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(easeOut * target);
+        el.textContent = current.toString();
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = target.toString();
+        }
+      };
+
+      requestAnimationFrame(step);
+    }
+
+    // === 3D CARD TILT ===
+    document.querySelectorAll('.lang-card-wrapper').forEach(wrapper => {
+      const card = wrapper.querySelector('.lang-card') as HTMLElement;
+      const spotlight = wrapper.querySelector('.lang-spotlight') as HTMLElement;
+      const shimmer = wrapper.querySelector('.lang-shimmer') as HTMLElement;
+
+      if (!card) return;
+
+      wrapper.addEventListener('mousemove', (e: Event) => {
+        const mouseEvent = e as MouseEvent;
+        const rect = wrapper.getBoundingClientRect();
+        const x = mouseEvent.clientX - rect.left;
+        const y = mouseEvent.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+
+        // Spotlight
+        if (spotlight) {
+          spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.15) 0%, transparent 60%)`;
+        }
+
+        // Shimmer
+        if (shimmer) {
+          const percent = (x / rect.width) * 100;
+          shimmer.style.background = `linear-gradient(
+            ${105 + (x / rect.width) * 30}deg,
+            transparent 0%,
+            rgba(255,255,255,0.05) ${percent - 10}%,
+            rgba(255,255,255,0.1) ${percent}%,
+            rgba(255,255,255,0.05) ${percent + 10}%,
+            transparent 100%
+          )`;
+        }
+      });
+
+      wrapper.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        if (shimmer) shimmer.style.background = 'transparent';
+      });
     });
 
-    document.querySelectorAll('#languages .reveal-element').forEach((el) => {
-      observer.observe(el);
+    // === FLAG 3D HOVER ===
+    document.querySelectorAll('.lang-flag-3d').forEach(flag => {
+      const el = flag as HTMLElement;
+
+      el.addEventListener('mousemove', (e: MouseEvent) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        el.style.transform = `rotateY(${x * 0.5}deg) rotateX(${-y * 0.5}deg) scale(1.2)`;
+      });
+
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = 'rotateY(0) rotateX(0) scale(1)';
+      });
     });
   }
 
-  // Initialize on load
+  // Initialize
   initLanguages();
-
-  // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initLanguages);
 </script>
+
+<style>
+  /* === SECTION BACKGROUND === */
+  .lang-section {
+    background: linear-gradient(180deg,
+      var(--color-bg) 0%,
+      var(--color-bg-alt) 50%,
+      var(--color-bg) 100%
+    );
+  }
+
+  /* === AURORA BACKGROUND === */
+  .lang-aurora-1,
+  .lang-aurora-2 {
+    filter: blur(100px);
+    opacity: 0.15;
+  }
+
+  :global(.dark) .lang-aurora-1,
+  :global(.dark) .lang-aurora-2 {
+    opacity: 0.25;
+  }
+
+  .lang-aurora-1 {
+    background: radial-gradient(ellipse at 30% 20%, rgba(110, 231, 183, 0.4) 0%, transparent 50%);
+    animation: lang-aurora-drift 20s ease-in-out infinite;
+  }
+
+  .lang-aurora-2 {
+    background: radial-gradient(ellipse at 70% 80%, rgba(147, 197, 253, 0.4) 0%, transparent 50%);
+    animation: lang-aurora-drift 25s ease-in-out infinite reverse;
+  }
+
+  @keyframes lang-aurora-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(5%, -5%) scale(1.1); }
+    66% { transform: translate(-5%, 5%) scale(0.95); }
+  }
+
+  /* === FLOATING PARTICLES === */
+  .lang-particle {
+    background: var(--color-accent);
+    opacity: 0.3;
+  }
+
+  :global(.dark) .lang-particle {
+    opacity: 0.5;
+  }
+
+  @keyframes lang-float {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+    50% { transform: translateY(-30px) translateX(10px); opacity: 0.6; }
+  }
+
+  /* === MORPHING BLOB === */
+  .lang-blob {
+    opacity: 0.3;
+  }
+
+  :global(.dark) .lang-blob {
+    opacity: 0.15;
+  }
+
+  /* === HEADER ELEMENTS === */
+  .lang-badge {
+    background: rgba(74, 144, 164, 0.1);
+    border: 1px solid rgba(74, 144, 164, 0.2);
+  }
+
+  :global(.dark) .lang-badge {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .lang-badge-text {
+    color: var(--color-accent);
+  }
+
+  :global(.dark) .lang-badge-text {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .lang-globe-spin {
+    animation: lang-globe-rotate 8s linear infinite;
+  }
+
+  @keyframes lang-globe-rotate {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+  }
+
+  .lang-orbit {
+    animation: lang-orbit-spin 12s linear infinite;
+  }
+
+  .lang-orbit-border {
+    border-color: var(--color-accent);
+    opacity: 0.3;
+  }
+
+  @keyframes lang-orbit-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .lang-title {
+    color: var(--color-text);
+  }
+
+  :global(.dark) .lang-title {
+    color: #ffffff;
+  }
+
+  .lang-subtitle {
+    color: var(--color-text-muted);
+  }
+
+  :global(.dark) .lang-subtitle {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .lang-line-gradient {
+    background: linear-gradient(90deg, transparent, var(--color-accent));
+    opacity: 0.5;
+  }
+
+  .lang-line-gradient-reverse {
+    background: linear-gradient(90deg, var(--color-accent), transparent);
+    opacity: 0.5;
+  }
+
+  .lang-flag-hover {
+    transition: transform 0.3s ease;
+    animation: lang-flag-bounce 2s ease-in-out infinite;
+  }
+
+  .lang-flag-hover:hover {
+    transform: scale(1.3) rotate(-10deg);
+  }
+
+  @keyframes lang-flag-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  /* === CARD STYLES === */
+  .lang-card {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+  }
+
+  .lang-card-glass {
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.7) 100%
+    );
+  }
+
+  :global(.dark) .lang-card-glass {
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+  }
+
+  .lang-card-inner {
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  :global(.dark) .lang-card-inner {
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  .lang-shimmer {
+    mix-blend-mode: overlay;
+    transition: background 0.1s ease;
+  }
+
+  .lang-card-wrapper:hover .lang-card {
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.15),
+      0 0 50px -15px var(--glow);
+  }
+
+  :global(.dark) .lang-card-wrapper:hover .lang-card {
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      0 0 50px -15px var(--glow);
+  }
+
+  /* === PROGRESS RING === */
+  .lang-ring-bg {
+    color: rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.dark) .lang-ring-bg {
+    color: rgba(255, 255, 255, 0.1);
+  }
+
+  .lang-progress-ring {
+    transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  .lang-flag-3d {
+    transition: transform 0.2s ease;
+  }
+
+  .lang-percent-badge {
+    animation: lang-badge-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes lang-badge-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .lang-country-badge {
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  /* === CARD TEXT === */
+  .lang-card-title {
+    color: var(--color-text);
+  }
+
+  :global(.dark) .lang-card-title {
+    color: #ffffff;
+  }
+
+  .lang-card-subtitle {
+    color: var(--color-text-muted);
+  }
+
+  :global(.dark) .lang-card-subtitle {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .lang-card-label {
+    color: var(--color-text-muted);
+  }
+
+  :global(.dark) .lang-card-label {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .lang-card-text {
+    color: var(--color-text);
+    opacity: 0.8;
+  }
+
+  :global(.dark) .lang-card-text {
+    color: rgba(255, 255, 255, 0.8);
+    opacity: 1;
+  }
+
+  /* === WAVE PROGRESS BAR === */
+  .lang-wave-track {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  :global(.dark) .lang-wave-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .lang-wave-bar {
+    background: linear-gradient(90deg, var(--bar-color), var(--bar-color-light));
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .lang-wave-pattern {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    animation: lang-wave-flow 1.5s linear infinite;
+  }
+
+  @keyframes lang-wave-flow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* === STATS BANNER === */
+  .lang-stats-bg {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(20px);
+  }
+
+  :global(.dark) .lang-stats-bg {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .lang-stats-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(110, 231, 183, 0.1) 25%,
+      rgba(147, 197, 253, 0.1) 50%,
+      rgba(196, 181, 253, 0.1) 75%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: lang-shimmer-flow 8s linear infinite;
+  }
+
+  @keyframes lang-shimmer-flow {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .lang-stat-value {
+    background: linear-gradient(135deg, var(--color-accent), #6ee7b7, #93c5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .lang-stat-label {
+    color: var(--color-text-muted);
+  }
+
+  :global(.dark) .lang-stat-label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .lang-stat-divider {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .lang-stats-bg > div {
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+    }
+
+    .lang-stat-divider {
+      display: block;
+      width: 1px;
+      height: 3rem;
+      background: linear-gradient(180deg, transparent, var(--color-border), transparent);
+    }
+  }
+
+  /* === REVEAL ANIMATIONS === */
+  .lang-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .lang-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .lang-card-wrapper {
+    transition-delay: calc(var(--card-index) * 150ms);
+  }
+
+  /* === STAT ITEMS STAGGER === */
+  .lang-stat-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .lang-reveal.is-visible .lang-stat-item:nth-child(1) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+  }
+
+  .lang-reveal.is-visible .lang-stat-item:nth-child(3) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.2s;
+  }
+
+  .lang-reveal.is-visible .lang-stat-item:nth-child(5) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.3s;
+  }
+
+  /* === REDUCED MOTION === */
+  @media (prefers-reduced-motion: reduce) {
+    .lang-aurora-1,
+    .lang-aurora-2,
+    .lang-particle,
+    .lang-globe-spin,
+    .lang-orbit,
+    .lang-flag-hover,
+    .lang-percent-badge,
+    .lang-wave-pattern,
+    .lang-stats-shimmer {
+      animation: none !important;
+    }
+
+    .lang-card,
+    .lang-progress-ring,
+    .lang-wave-bar,
+    .lang-reveal {
+      transition: none !important;
+    }
+
+    .lang-reveal {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .lang-blob {
+      width: 400px;
+      height: 400px;
+    }
+
+    .lang-card-wrapper:hover .lang-card {
+      transform: none !important;
+    }
+  }
+</style>

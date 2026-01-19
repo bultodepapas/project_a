@@ -307,6 +307,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
 
 <script>
   function initAwards() {
+    // Better timing: trigger when 35% visible and element is well within viewport
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -316,8 +317,8 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
         }
       });
     }, {
-      threshold: 0.1,
-      rootMargin: '50px'
+      threshold: 0.35,
+      rootMargin: '-40px 0px -40px 0px'
     });
 
     document.querySelectorAll('#awards .reveal-element').forEach((el) => {
