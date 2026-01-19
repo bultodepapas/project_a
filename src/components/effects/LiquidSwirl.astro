@@ -21,13 +21,24 @@ const { intensity = 0.8, radius = 600, color = 'rgba(255,255,255,0.25)' } = Astr
 ---
 
 <div class="liquid-swirl-wrapper" data-liquid-card>
-  {/* Spotlight effect (follows cursor) */}
+  {/* Primary spotlight layer (fast) */}
   <div 
-    class="liquid-spotlight" 
-    data-spotlight
+    class="liquid-spotlight liquid-spotlight-primary" 
+    data-spotlight-primary
     style={`
       --intensity: ${intensity};
       --radius: ${radius}px;
+      --spot-color: ${color};
+    `}
+  ></div>
+  
+  {/* Secondary spotlight layer (slow, creates depth) */}
+  <div 
+    class="liquid-spotlight liquid-spotlight-secondary" 
+    data-spotlight-secondary
+    style={`
+      --intensity: ${intensity};
+      --radius: ${radius * 1.3}px;
       --spot-color: ${color};
     `}
   ></div>
@@ -48,41 +59,83 @@ const { intensity = 0.8, radius = 600, color = 'rgba(255,255,255,0.25)' } = Astr
     position: absolute;
     inset: 0;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
     border-radius: inherit;
-    z-index: 10;
+    z-index: 50;
     
-    /* Gradiente radial que sigue el cursor - MAS INTENSO */
+    /* Gradiente radial MUY INTENSO - mucho más visible */
     background: radial-gradient(
       var(--radius, 600px) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      var(--spot-color, rgba(255,255,255,0.35)) 0%,
-      rgba(255,255,255,0.22) 15%,
-      rgba(255,255,255,0.12) 30%,
-      rgba(255,255,255,0.05) 50%,
-      transparent 70%
+      var(--spot-color) 0%,
+      color-mix(in srgb, var(--spot-color) 90%, transparent) 15%,
+      color-mix(in srgb, var(--spot-color) 65%, transparent) 35%,
+      color-mix(in srgb, var(--spot-color) 30%, transparent) 55%,
+      transparent 75%
     );
     
-    /* Efectos adicionales para "liquid feel" */
-    filter: blur(0.5px);
+    /* Light mode: screen para glow effect visible */
+    filter: blur(1px);
     mix-blend-mode: screen;
   }
 
-  /* Show on hover */
-  .liquid-swirl-wrapper:hover .liquid-spotlight {
+  /* Primary layer - fast response, sharp */
+  .liquid-spotlight-primary {
+    z-index: 51;
+    filter: blur(0px);
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  /* Secondary layer - slower, more diffuse (depth effect) */
+  .liquid-spotlight-secondary {
+    z-index: 50;
+    filter: blur(3px);
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { 
+      filter: blur(0px) brightness(1); 
+    }
+    50% { 
+      filter: blur(1px) brightness(1.15); 
+    }
+  }
+
+  /* Show on hover - MUY VISIBLE */
+  .liquid-swirl-wrapper:hover .liquid-spotlight-primary {
     opacity: 1;
   }
 
-  /* Dark mode enhancement */
+  .liquid-swirl-wrapper:hover .liquid-spotlight-secondary {
+    opacity: 0.75;
+  }
+
+  /* Dark mode - screen mode + brillo blanco adicional */
   :global(:root.dark) .liquid-spotlight {
     background: radial-gradient(
       var(--radius, 600px) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      var(--spot-color, rgba(255,255,255,0.4)) 0%,
-      rgba(255,255,255,0.28) 15%,
-      rgba(255,255,255,0.16) 30%,
-      rgba(255,255,255,0.08) 50%,
-      transparent 70%
+      color-mix(in srgb, var(--spot-color) 85%, white 15%) 0%,
+      color-mix(in srgb, var(--spot-color) 60%, white 10%) 20%,
+      color-mix(in srgb, var(--spot-color) 35%, transparent) 40%,
+      color-mix(in srgb, var(--spot-color) 12%, transparent) 60%,
+      transparent 80%
     );
+    mix-blend-mode: screen;
+  }
+
+  :global(:root.dark) .liquid-spotlight-primary {
+    animation: pulse-glow-dark 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow-dark {
+    0%, 100% { 
+      filter: blur(0px) brightness(1); 
+    }
+    50% { 
+      filter: blur(1px) brightness(1.25); 
+    }
   }
 
   /* Reduced motion */
@@ -94,28 +147,80 @@ const { intensity = 0.8, radius = 600, color = 'rgba(255,255,255,0.25)' } = Astr
 </style>
 
 <script>
-  // Initialize spotlight effect on mount
+  // Initialize spotlight effect with SMOOTH LERP and dual layers
   function initLiquidSpotlight() {
     const cards = document.querySelectorAll('[data-liquid-card]');
     
     cards.forEach(card => {
-      const spotlight = card.querySelector('[data-spotlight]') as HTMLElement;
-      if (!spotlight) return;
+      const primary = card.querySelector('[data-spotlight-primary]') as HTMLElement;
+      const secondary = card.querySelector('[data-spotlight-secondary]') as HTMLElement;
+      if (!primary || !secondary) return;
+
+      // Mouse tracking with lerp (smooth interpolation)
+      let mouseX = 50;
+      let mouseY = 50;
+      let currentX = 50;
+      let currentY = 50;
+      let currentXSlow = 50;
+      let currentYSlow = 50;
+      let rafId: number | null = null;
+
+      // Lerp function for smooth movement
+      const lerp = (start: number, end: number, factor: number) => {
+        return start + (end - start) * factor;
+      };
+
+      // Animation loop
+      const animate = () => {
+        // Fast layer (primary) - responsive
+        currentX = lerp(currentX, mouseX, 0.15);
+        currentY = lerp(currentY, mouseY, 0.15);
+        
+        // Slow layer (secondary) - creates depth
+        currentXSlow = lerp(currentXSlow, mouseX, 0.08);
+        currentYSlow = lerp(currentYSlow, mouseY, 0.08);
+
+        // Edge intensity boost (stronger near edges)
+        const edgeDistanceX = Math.min(currentX, 100 - currentX);
+        const edgeDistanceY = Math.min(currentY, 100 - currentY);
+        const edgeFactor = 1 + (1 - Math.min(edgeDistanceX, edgeDistanceY) / 50) * 0.3;
+
+        primary.style.setProperty('--mouse-x', `${currentX}%`);
+        primary.style.setProperty('--mouse-y', `${currentY}%`);
+        primary.style.setProperty('--edge-boost', String(edgeFactor));
+        
+        secondary.style.setProperty('--mouse-x', `${currentXSlow}%`);
+        secondary.style.setProperty('--mouse-y', `${currentYSlow}%`);
+
+        rafId = requestAnimationFrame(animate);
+      };
 
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        spotlight.style.setProperty('--mouse-x', `${x}%`);
-        spotlight.style.setProperty('--mouse-y', `${y}%`);
+        mouseX = ((e.clientX - rect.left) / rect.width) * 100;
+        mouseY = ((e.clientY - rect.top) / rect.height) * 100;
       });
 
       card.addEventListener('mouseenter', () => {
-        spotlight.style.opacity = '0.95';
+        primary.style.opacity = '1';
+        secondary.style.opacity = '0.6';
+        if (!rafId) animate();
       });
 
       card.addEventListener('mouseleave', () => {
-        spotlight.style.opacity = '0';
+        primary.style.opacity = '0';
+        secondary.style.opacity = '0';
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        // Reset positions
+        mouseX = 50;
+        mouseY = 50;
+        currentX = 50;
+        currentY = 50;
+        currentXSlow = 50;
+        currentYSlow = 50;
       });
     });
   }
