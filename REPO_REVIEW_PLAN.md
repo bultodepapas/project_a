@@ -131,14 +131,41 @@
 - Objectives
   - Reduce drift between content sources and languages.
   - Make validation failures explicit in CI/local workflows.
-- Steps
-  - Define a single locale source (module or JSON) and reference it from scripts and pages.
-  - Expand `validate-content.ts` to cover all locales and JSON files.
-  - Add a minimal validation step in CI or a documented pre-build checklist.
+  - Establish a single, auditable source of truth for locales and content requirements.
+- Strategy (High-level)
+  - Standardize locale metadata and make every locale consumer import from one place.
+  - Expand validation coverage to all locales and all JSON data with clear, deterministic rules.
+  - Introduce a lightweight “verification gate” that runs before build locally and in CI.
+- Detailed plan (step-by-step)
+  1) Locale source of truth
+     - Target files to align: `src/i18n/config.ts`, `astro.config.mjs`, `scripts/generate-pdf.ts`, `src/pages/[lang]/*`.
+     - Decision: create a single locale config module and have every consumer import it (no inlined locale arrays).
+     - Inventory task: list all current locale references and usage (routing, PDF generation, content validation, path helpers).
+     - Outcome: one exported locale list, one default locale, used everywhere.
+  2) Validation coverage expansion
+     - Target files to validate: all `src/i18n/*.json`, all `src/data/*.json`, and all `src/content/*`.
+     - Rules for i18n: enforce key parity across all locales (EN as canonical), report missing keys by locale, and fail on invalid JSON.
+     - Rules for data JSON: define a minimal schema per file (required keys + type checks + language keys present).
+     - Rules for content collections: re-use `src/content/config.ts` schema and verify required frontmatter fields across all MDX files.
+     - Output: single, deterministic report with errors vs warnings, and locale-specific context.
+  3) Verification gate
+     - Entry point: `npm run validate` (existing) becomes the canonical pre-build check.
+     - Required checks: structure, i18n parity, data schemas, content frontmatter, and known limits (e.g., max items).
+     - Outcome: build is blocked only on true errors; warnings are informational and tracked.
+  4) Documentation alignment
+     - Update `SPEC.md` or `V2PLAN.md` with the validation rules and “how to add a new locale” checklist.
+     - Add a short “content update workflow” section so content editors know which files to touch.
+- Files & scope (explicit)
+  - Locale sources: `src/i18n/config.ts`, `astro.config.mjs`, `scripts/generate-pdf.ts`.
+  - Validation logic: `scripts/validate-content.ts`.
+  - Content schemas: `src/content/config.ts`.
+  - Data sources: `src/data/*.json`.
+  - Translations: `src/i18n/*.json`.
 - Acceptance criteria
-  - `npm run validate` reports missing keys for all locales.
-  - Adding a new locale requires changes in only one place.
+  - `npm run validate` reports missing keys for all locales (EN, ES, FR, PT).
+  - Adding a new locale requires changes in only one source-of-truth file plus translation JSON.
   - No UI or behavior change in `npm run dev` and `npm run build`.
+  - Validation report is deterministic and stable across runs.
 - Rollback strategy
   - Keep previous validation script as a backup; revert to earlier script if false positives block builds.
 
