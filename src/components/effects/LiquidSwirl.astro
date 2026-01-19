@@ -1,270 +1,133 @@
 ---
 /**
- * LiquidSwirl Component - TRUE LIQUID EFFECT
- * 
- * Efecto de distorsión líquida real usando SVG filters
- * Con turbulencia animada y displacement map
- * 
- * Props:
- * - intensity: número 0-1, qué tan intenso es el efecto
- * - radius: radio del vórtice en px
- * - color: color base del efecto
+ * LiquidSwirl - Spotlight hover effect with smooth liquid motion
+ * Based on the proven ArticleCard spotlight implementation
  */
-
 interface Props {
   intensity?: number;
   radius?: number;
-  color?: string;
+  color: string;
 }
 
-const { intensity = 0.8, radius = 600, color = 'rgba(255,255,255,0.25)' } = Astro.props;
-const filterId = `liquid-swirl-${Math.random().toString(36).substr(2, 9)}`;
+const { intensity = 1, radius = 600, color } = Astro.props;
 ---
 
-<div class="liquid-swirl-wrapper" data-liquid-card>
-  {/* SVG Filter Definition - REAL LIQUID EFFECT */}
-  <svg width="0" height="0" style="position: absolute;">
-    <defs>
-      <filter id={filterId}>
-        {/* Turbulence for organic distortion */}
-        <feTurbulence 
-          type="fractalNoise" 
-          baseFrequency="0.012 0.015"
-          numOctaves="3"
-          seed="2"
-          result="turbulence"
-        >
-          <animate 
-            attributeName="baseFrequency" 
-            dur="20s" 
-            values="0.012 0.015; 0.015 0.018; 0.012 0.015" 
-            repeatCount="indefinite"
-          />
-        </feTurbulence>
-        
-        {/* Displacement Map for liquid warping */}
-        <feDisplacementMap 
-          in="SourceGraphic" 
-          in2="turbulence" 
-          scale="0"
-          xChannelSelector="R" 
-          yChannelSelector="G"
-          result="displace"
-        />
-        
-        {/* Glow effect */}
-        <feGaussianBlur stdDeviation="8" result="blur"/>
-        <feColorMatrix 
-          in="blur"
-          type="matrix"
-          values="1 0 0 0 0
-                  0 1 0 0 0
-                  0 0 1 0 0
-                  0 0 0 2 0"
-          result="glow"
-        />
-        
-        {/* Composite */}
-        <feComposite in="SourceGraphic" in2="glow" operator="over"/>
-      </filter>
-    </defs>
-  </svg>
-
-  {/* Glow layer with color */}
-  <div 
-    class="liquid-glow" 
-    data-liquid-glow
-    style={`
-      --intensity: ${intensity};
-      --radius: ${radius}px;
-      --spot-color: ${color};
-    `}
-  ></div>
-
-  {/* Distorted overlay with SVG filter */}
-  <div 
-    class="liquid-distortion" 
-    data-liquid-distortion
-    style={`filter: url(#${filterId}); --spot-color: ${color};`}
-  ></div>
-
-  {/* Slot para contenido (la tarjeta real) */}
+<div class="liquid-swirl-container" data-swirl-radius={radius} data-swirl-color={color}>
   <slot />
+  
+  <!-- Spotlight effect layer -->
+  <div class="liquid-spotlight" style={`--swirl-color: ${color}; --swirl-radius: ${radius}px; --swirl-intensity: ${intensity};`}></div>
 </div>
 
 <style>
-  .liquid-swirl-wrapper {
+  .liquid-swirl-container {
     position: relative;
-    display: block;
-    width: 100%;
-    height: 100%;
+    border-radius: 1rem;
   }
 
   .liquid-spotlight {
     position: absolute;
     inset: 0;
+    border-radius: 1rem;
+    pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease;
-    pointer-events: none;
-    border-radius: inherit;
-    z-index: 1;
-    
-    /* Multi-stop gradient para efecto WOW más visible */
     background: radial-gradient(
-      var(--radius, 600px) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      var(--spot-color) 0%,
-      color-mix(in srgb, var(--spot-color) 70%, transparent) 15%,
-      color-mix(in srgb, var(--spot-color) 40%, transparent) 30%,
-      color-mix(in srgb, var(--spot-color) 15%, transparent) 50%,
-      transparent 70%
+      var(--swirl-radius) circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      var(--swirl-color),
+      transparent 50%
     );
-    filter: blur(2px);
+    z-index: 5;
+    filter: blur(30px);
   }
 
-  /* Primary layer - fast response, sharp with breathing */
-  .liquid-spotlight-primary {
-    z-index: 2;
-    filter: blur(0px);
-    animation: spotlight-breathe 3s ease-in-out infinite;
-  }
-
-  @keyframes spotlight-breathe {
-    0%, 100% { 
-      filter: blur(0px) brightness(1); 
-      opacity: 1;
-    }
-    50% { 
-      filter: blur(1px) brightness(1.2); 
-      opacity: 0.95;
-    }
-  }
-
-  /* Secondary layer - slower, more diffuse (depth effect) */
-  .liquid-spotlight-secondary {
-    z-index: 1;
-    filter: blur(12px);
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-
-  /* Show on hover - MUY VISIBLE */
-  .liquid-swirl-wrapper:hover .liquid-spotlight-primary {
+  .liquid-swirl-container:hover .liquid-spotlight {
     opacity: 1;
   }
 
-  .liquid-swirl-wrapper:hover .liquid-spotlight-secondary {
-    opacity: 0.85;
-  }
-
-  /* Dark mode - más intenso y visible */
-  :global(:root.dark) .liquid-spotlight {
-    opacity: 0;
-  }
-  
-  :global(:root.dark) .liquid-swirl-wrapper:hover .liquid-spotlight-primary {
-    opacity: 1;
-  }
-  
-  :global(:root.dark) .liquid-swirl-wrapper:hover .liquid-spotlight-secondary {
-    opacity: 0.9;
-  }
-
-  /* Reduced motion */
+  /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .liquid-spotlight {
-      display: none;
+      transition: none;
     }
   }
 </style>
 
 <script>
-  // Initialize spotlight effect with SMOOTH LERP and dual layers
-  function initLiquidSpotlight() {
-    const cards = document.querySelectorAll('[data-liquid-card]');
+  function initLiquidSwirl() {
+    const containers = document.querySelectorAll('.liquid-swirl-container');
     
-    cards.forEach(card => {
-      const primary = card.querySelector('[data-spotlight-primary]') as HTMLElement;
-      const secondary = card.querySelector('[data-spotlight-secondary]') as HTMLElement;
-      if (!primary || !secondary) return;
+    containers.forEach((container) => {
+      const spotlight = container.querySelector('.liquid-spotlight') as HTMLElement;
+      if (!spotlight) return;
 
-      // Mouse tracking with lerp (smooth interpolation)
-      let mouseX = 50;
-      let mouseY = 50;
-      let currentX = 50;
-      let currentY = 50;
-      let currentXSlow = 50;
-      let currentYSlow = 50;
+      // Check for reduced motion
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) return;
+
+      // Smooth mouse tracking with lerp (linear interpolation)
+      let currentX = 0.5;
+      let currentY = 0.5;
+      let targetX = 0.5;
+      let targetY = 0.5;
       let rafId: number | null = null;
 
-      // Lerp function for smooth movement
       const lerp = (start: number, end: number, factor: number) => {
         return start + (end - start) * factor;
       };
 
-      // Animation loop
-      const animate = () => {
-        // Fast layer (primary) - responsive
-        currentX = lerp(currentX, mouseX, 0.15);
-        currentY = lerp(currentY, mouseY, 0.15);
-        
-        // Slow layer (secondary) - creates depth
-        currentXSlow = lerp(currentXSlow, mouseX, 0.08);
-        currentYSlow = lerp(currentYSlow, mouseY, 0.08);
+      const updatePosition = () => {
+        // Smooth interpolation
+        currentX = lerp(currentX, targetX, 0.15);
+        currentY = lerp(currentY, targetY, 0.15);
 
-        // Edge intensity boost (stronger near edges)
-        const edgeDistanceX = Math.min(currentX, 100 - currentX);
-        const edgeDistanceY = Math.min(currentY, 100 - currentY);
-        const edgeFactor = 1 + (1 - Math.min(edgeDistanceX, edgeDistanceY) / 50) * 0.3;
+        // Update CSS custom properties
+        spotlight.style.setProperty('--mouse-x', `${currentX * 100}%`);
+        spotlight.style.setProperty('--mouse-y', `${currentY * 100}%`);
 
-        primary.style.setProperty('--mouse-x', `${currentX}%`);
-        primary.style.setProperty('--mouse-y', `${currentY}%`);
-        primary.style.setProperty('--edge-boost', String(edgeFactor));
-        
-        secondary.style.setProperty('--mouse-x', `${currentXSlow}%`);
-        secondary.style.setProperty('--mouse-y', `${currentYSlow}%`);
-
-        rafId = requestAnimationFrame(animate);
-      };
-
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        mouseX = ((e.clientX - rect.left) / rect.width) * 100;
-        mouseY = ((e.clientY - rect.top) / rect.height) * 100;
-      });
-
-      card.addEventListener('mouseenter', () => {
-        primary.style.opacity = '1';
-        secondary.style.opacity = '0.6';
-        if (!rafId) animate();
-      });
-
-      card.addEventListener('mouseleave', () => {
-        primary.style.opacity = '0';
-        secondary.style.opacity = '0';
-        if (rafId) {
-          cancelAnimationFrame(rafId);
+        // Continue animation if position hasn't settled
+        const delta = Math.abs(currentX - targetX) + Math.abs(currentY - targetY);
+        if (delta > 0.001) {
+          rafId = requestAnimationFrame(updatePosition);
+        } else {
           rafId = null;
         }
-        // Reset positions
-        mouseX = 50;
-        mouseY = 50;
-        currentX = 50;
-        currentY = 50;
-        currentXSlow = 50;
-        currentYSlow = 50;
+      };
+
+      container.addEventListener('mousemove', (e) => {
+        const event = e as MouseEvent;
+        const rect = (container as HTMLElement).getBoundingClientRect();
+        
+        // Calculate target position (normalized 0-1)
+        targetX = (event.clientX - rect.left) / rect.width;
+        targetY = (event.clientY - rect.top) / rect.height;
+
+        // Start animation loop if not already running
+        if (rafId === null) {
+          rafId = requestAnimationFrame(updatePosition);
+        }
+      });
+
+      container.addEventListener('mouseleave', () => {
+        // Reset to center on leave
+        targetX = 0.5;
+        targetY = 0.5;
+        if (rafId === null) {
+          rafId = requestAnimationFrame(updatePosition);
+        }
       });
     });
   }
 
-  // Run on load
+  // Initialize on page load
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initLiquidSpotlight);
+      document.addEventListener('DOMContentLoaded', initLiquidSwirl);
     } else {
-      initLiquidSpotlight();
+      initLiquidSwirl();
     }
 
     // Reinitialize after view transitions
-    document.addEventListener('astro:page-load', initLiquidSpotlight);
+    document.addEventListener('astro:page-load', initLiquidSwirl);
   }
 </script>
