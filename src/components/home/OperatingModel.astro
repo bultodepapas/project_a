@@ -4,16 +4,18 @@ import type { Lang } from '@/i18n/config';
 
 interface Node {
   id: string;
-  label: { [key: string]: string } | string;
-  x: number;
-  y: number;
+  label: Record<string, string>;
+  icon: string;
   color: string;
+  description: Record<string, string>;
+  items: string[];
 }
 
 interface Edge {
   from: string;
   to: string;
   curve?: boolean;
+  label?: Record<string, string>;
 }
 
 interface Props {
@@ -27,548 +29,368 @@ interface Props {
 const { lang, model } = Astro.props;
 const { nodes, edges } = model;
 
-// Helper to get localized string
-const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
+const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang] || obj.en);
 
-// Visual hierarchy with distinct node sizes
-const primaryRadius = 56;   // Decisions - focal point
-const secondaryRadius = 44; // Processing, Outputs - important nodes
-const tertiaryRadius = 40;  // Inputs, Learning - supporting nodes
+// Icon SVG paths
+const iconPaths: Record<string, string> = {
+  database: 'M12 2C6.48 2 2 4.69 2 8v8c0 3.31 4.48 6 10 6s10-2.69 10-6V8c0-3.31-4.48-6-10-6z',
+  cog: 'M12 15a3 3 0 100-6 3 3 0 000 6z M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z',
+  chart: 'M18 20V10M12 20V4M6 20v-6',
+  target: 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 18a6 6 0 100-12 6 6 0 000 12z M12 14a2 2 0 100-4 2 2 0 000 4z'
+};
 
-function getNodeRadius(node: Node) {
-  if (node.id === 'decisions') return primaryRadius;
-  if (node.id === 'processing' || node.id === 'outputs') return secondaryRadius;
-  return tertiaryRadius;
-}
-
-// Helper to calculate point on circle circumference
-// Calculates where a line from 'from' to 'to' intersects the circle at 'to'
-function getPerimeterPoint(from: {x: number, y: number}, to: {x: number, y: number}, radius: number, offset: number = 5) {
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
-  const angle = Math.atan2(dy, dx);
-
-  return {
-    x: to.x - (radius + offset) * Math.cos(angle),
-    y: to.y - (radius + offset) * Math.sin(angle)
-  };
-}
-
-// Helper to get start point on circle perimeter (opposite direction)
-function getStartPoint(from: {x: number, y: number}, to: {x: number, y: number}, radius: number, offset: number = 5) {
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
-  const angle = Math.atan2(dy, dx);
-
-  return {
-    x: from.x + (radius + offset) * Math.cos(angle),
-    y: from.y + (radius + offset) * Math.sin(angle)
-  };
-}
-
-function getGearPath(cx: number, cy: number, innerR: number, outerR: number, teeth: number) {
-  const step = (Math.PI * 2) / (teeth * 2);
-  let d = '';
-  for (let i = 0; i < teeth * 2; i += 1) {
-    const angle = i * step;
-    const r = i % 2 === 0 ? outerR : innerR;
-    const x = cx + Math.cos(angle) * r;
-    const y = cy + Math.sin(angle) * r;
-    d += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
-  }
-  return `${d} Z`;
-}
-
-function getWaveRingPath(cx: number, cy: number, baseR: number, amp: number, waves: number) {
-  const points = 120;
-  let d = '';
-  for (let i = 0; i <= points; i += 1) {
-    const t = (i / points) * Math.PI * 2;
-    const r = baseR + Math.sin(t * waves) * amp;
-    const x = cx + Math.cos(t) * r;
-    const y = cy + Math.sin(t) * r;
-    d += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
-  }
-  return `${d} Z`;
-}
-
-// Background shooting stars configuration - Numeric coordinates for 1000x1000 canvas
-const shootingStars = [
-  { id: 's1', x: 100, y: 200, angle: 10, length: 300, speed: '8s', delay: '0s', dist: 1200 },
-  { id: 's2', x: 300, y: 600, angle: -5, length: 250, speed: '12s', delay: '4s', dist: 1000 },
-  { id: 's3', x: 700, y: 150, angle: 15, length: 200, speed: '9s', delay: '1.5s', dist: 900 },
-  { id: 's4', x: 900, y: 700, angle: -10, length: 280, speed: '15s', delay: '7s', dist: 1100 },
-  { id: 's5', x: 50, y: 800, angle: -20, length: 350, speed: '11s', delay: '2.5s', dist: 1300 },
-  { id: 's6', x: 500, y: 100, angle: 8, length: 220, speed: '10s', delay: '5s', dist: 1000 },
-];
+// Node colors for connections
+const nodeColors = nodes.map(n => n.color);
 ---
 
-<section class="section relative overflow-hidden" id="operating-model">
-  <!-- Background Animation Layer - Abstract 1000x1000 Coordinate System -->
-  <div class="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
-    <svg class="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+<section class="relative py-24 md:py-32 overflow-hidden" id="operating-model">
+  <!-- Animated Background -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-background-alt/30 to-background"></div>
+
+    <!-- Animated grid -->
+    <svg class="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="bg-star-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0" />
-          <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0.6" />
-        </linearGradient>
+        <pattern id="op-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="currentColor" stroke-width="1"/>
+        </pattern>
       </defs>
-      {shootingStars.map((star) => (
-        <g transform={`rotate(${star.angle}, ${star.x}, ${star.y})`}>
-          <rect
-            x={star.x}
-            y={star.y}
-            width={star.length}
-            height="2"
-            fill="url(#bg-star-gradient)"
-            opacity="0"
-            class="shooting-star"
-          >
-            <animate
-              attributeName="x"
-              from={star.x - star.length}
-              to={star.x + star.dist}
-              dur={star.speed}
-              begin={star.delay}
-              repeatCount="indefinite"
-            />
-            <animate
-              attributeName="opacity"
-              values="0;0.5;0"
-              keyTimes="0;0.5;1"
-              dur={star.speed}
-              begin={star.delay}
-              repeatCount="indefinite"
-            />
-          </rect>
-        </g>
-      ))}
+      <rect width="100%" height="100%" fill="url(#op-grid)" />
     </svg>
+
+    <!-- Floating orbs -->
+    <div class="op-orb-1 absolute w-[400px] h-[400px] rounded-full blur-3xl opacity-20"
+         style="background: radial-gradient(circle, #6ee7b7 0%, transparent 70%); top: 10%; left: 5%;"></div>
+    <div class="op-orb-2 absolute w-[350px] h-[350px] rounded-full blur-3xl opacity-15"
+         style="background: radial-gradient(circle, #c4b5fd 0%, transparent 70%); bottom: 10%; right: 10%;"></div>
+
+    <!-- Particles -->
+    {Array.from({ length: 20 }).map((_, i) => (
+      <div
+        class="absolute w-1 h-1 rounded-full bg-accent/30 op-particle"
+        style={`
+          left: ${10 + (i * 4) % 80}%;
+          top: ${15 + (i * 7) % 70}%;
+          animation: op-float ${6 + (i % 4)}s ease-in-out infinite;
+          animation-delay: ${(i % 3) * 1}s;
+        `}
+      />
+    ))}
   </div>
 
   <div class="container relative z-10">
-    <div class="text-center mb-12">
-      <h2 id="operating-model-title" class="text-3xl md:text-4xl font-bold text-foreground mb-3 reveal-element opacity-0 translate-y-4 transition-all">
+    <!-- Header -->
+    <div class="text-center mb-16 op-reveal">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6">
+        <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+        <span class="text-sm font-medium text-accent">
+          {lang === 'es' ? 'Flujo de Trabajo' : lang === 'fr' ? 'Flux de Travail' : lang === 'pt' ? 'Fluxo de Trabalho' : 'Workflow'}
+        </span>
+      </div>
+
+      <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-4">
         {t(lang, 'operatingModel.title')}
       </h2>
-      <p class="text-sm text-muted max-w-2xl mx-auto reveal-element opacity-0 translate-y-4 transition-all delay-75">
+      <p class="text-lg text-muted max-w-2xl mx-auto mb-2">
         {t(lang, 'operatingModel.lead')}
       </p>
-      <p id="operating-model-desc" class="text-lg text-muted max-w-2xl mx-auto reveal-element opacity-0 translate-y-4 transition-all delay-100">
+      <p class="text-muted max-w-xl mx-auto">
         {t(lang, 'operatingModel.subtitle')}
       </p>
     </div>
 
-    <!-- SVG Diagram -->
-    <div class="operating-model-card w-full max-w-5xl mx-auto aspect-[3/1] md:aspect-[10/3] border border-border rounded-xl p-6 md:p-8 reveal-element opacity-0 translate-y-8 transition-all delay-200">
-      <svg viewBox="0 0 1000 300" class="w-full h-full" role="img" aria-labelledby="operating-model-diagram-title operating-model-diagram-desc">
-        <title id="operating-model-diagram-title">{t(lang, 'operatingModel.diagramTitle')}</title>
-        <desc id="operating-model-diagram-desc">{t(lang, 'operatingModel.diagramDesc')}</desc>
-        <defs>
-          <!-- Star Trail Gradient -->
-          <linearGradient id="star-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0" />
-            <stop offset="50%" stop-color="var(--color-accent)" stop-opacity="0.5" />
-            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0" />
-          </linearGradient>
+    <!-- Flow Diagram Container -->
+    <div class="relative max-w-6xl mx-auto">
 
-          <!-- Enhanced gradient for main flow -->
-          <linearGradient id="edge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.3" />
-            <stop offset="50%" stop-color="var(--color-accent)" stop-opacity="0.7" />
-            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="1" />
-          </linearGradient>
+      <!-- Desktop: Horizontal Flow with Cards -->
+      <div class="hidden md:block">
+        <div class="operating-diagram bg-surface/50 backdrop-blur-sm rounded-3xl border border-white/10 p-8 lg:p-12 op-reveal">
 
-          <!-- Gradient for learning loop - using accent with reduced opacity for cohesion -->
-          <linearGradient id="loop-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.4" />
-            <stop offset="50%" stop-color="var(--color-accent)" stop-opacity="0.3" />
-            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0.25" />
-          </linearGradient>
+          <!-- Nodes Grid - Main Content -->
+          <div class="grid grid-cols-4 gap-6 lg:gap-8 mb-8">
+            {nodes.map((node, index) => {
+              const iconPath = iconPaths[node.icon] || iconPaths.database;
 
-          <!-- Node gradients -->
-          <linearGradient id="node-gradient-primary" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="var(--color-accent)" />
-            <stop offset="100%" stop-color="var(--color-accent-dark)" />
-          </linearGradient>
-
-          <linearGradient id="node-gradient-secondary" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="var(--color-background)" />
-            <stop offset="100%" stop-color="var(--color-surface)" />
-          </linearGradient>
-
-          <!-- Enhanced arrowheads -->
-          <marker id="arrowhead" markerWidth="14" markerHeight="12" refX="13" refY="6" orient="auto" markerUnits="strokeWidth">
-            <polygon points="0 0, 14 6, 0 12" fill="var(--color-accent)" />
-          </marker>
-          <!-- Loop arrow -->
-          <marker id="arrowhead-loop" markerWidth="14" markerHeight="12" refX="0" refY="6" orient="auto" markerUnits="strokeWidth">
-            <polygon points="0 0, 14 6, 0 12" fill="var(--color-accent)" opacity="0.55" />
-          </marker>
-
-          <!-- Glow filter for primary node -->
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-
-          <!-- Pulse halo for decisions -->
-          <filter id="pulse-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="6" result="pulseBlur"/>
-            <feMerge>
-              <feMergeNode in="pulseBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-
-          <!-- Soft halo for learning label -->
-          <filter id="label-glow">
-            <feGaussianBlur stdDeviation="1.6" result="blur"/>
-            <feMerge>
-              <feMergeNode in="blur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-
-        {(() => {
-          const inputsNode = nodes.find((node) => node.id === 'inputs');
-          if (!inputsNode) return null;
-          const baseRadius = getNodeRadius(inputsNode) + 10;
-          const orbitParticles = [
-            { rx: 8, ry: -4, dur: '5.6s', delay: '0s', opacity: 0.65, size: 2.2 },
-            { rx: 14, ry: 2, dur: '6.8s', delay: '1.2s', opacity: 0.5, size: 1.9 },
-            { rx: 4, ry: 10, dur: '7.6s', delay: '2.1s', opacity: 0.4, size: 1.6 },
-            { rx: 18, ry: 6, dur: '6.2s', delay: '0.6s', opacity: 0.55, size: 2.0 },
-            { rx: 12, ry: -8, dur: '7.1s', delay: '1.8s', opacity: 0.45, size: 1.8 }
-          ];
-
-          return (
-            <g class="input-orbit">
-              {orbitParticles.map((particle, i) => {
-                const rx = Math.max(10, baseRadius + particle.rx);
-                const ry = Math.max(10, baseRadius + particle.ry);
-                const pathId = `input-orbit-path-${i}`;
-                const d = `M ${inputsNode.x + rx} ${inputsNode.y} A ${rx} ${ry} 0 1 0 ${inputsNode.x - rx} ${inputsNode.y} A ${rx} ${ry} 0 1 0 ${inputsNode.x + rx} ${inputsNode.y}`;
-
-                return (
-                  <g>
-                    <path id={pathId} d={d} class="orbit-path" />
-                    <circle
-                      r={particle.size}
-                      class="orbit-particle"
-                      fill="var(--color-accent)"
-                      opacity={particle.opacity}
-                    >
-                      <animateMotion
-                        dur={particle.dur}
-                        repeatCount="indefinite"
-                        begin={particle.delay}
-                        calcMode="spline"
-                        keyTimes="0;0.35;0.7;1"
-                        keySplines="0.4 0 0.2 1;0.2 0 0.8 1;0.4 0 0.2 1"
-                      >
-                        <mpath href={`#${pathId}`} />
-                      </animateMotion>
-                      <animate
-                        attributeName="opacity"
-                        values={`${particle.opacity * 0.7};${particle.opacity};${particle.opacity * 0.6};${particle.opacity * 0.8}`}
-                        keyTimes="0;0.4;0.7;1"
-                        dur="2.4s"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="r"
-                        values={`${particle.size};${particle.size + 0.6};${particle.size - 0.2};${particle.size}`}
-                        keyTimes="0;0.5;0.8;1"
-                        dur="3.2s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                  </g>
-                );
-              })}
-            </g>
-          );
-        })()}
-
-        <!-- Edges with Animated Particles -->
-        {edges.map((edge, edgeIndex) => {
-          const startNode = nodes.find(n => n.id === edge.from)!;
-          const endNode = nodes.find(n => n.id === edge.to)!;
-          const startRadius = getNodeRadius(startNode);
-          const endRadius = getNodeRadius(endNode);
-          const curveOffset = edge.curve ? 12 : 8;
-          const strokeWidth = edge.curve ? 2 : 2.5;
-
-          // Calculate edge start and end points on circle perimeters
-          const start = getStartPoint(startNode, endNode, startRadius, curveOffset);
-          const end = getPerimeterPoint(startNode, endNode, endRadius, curveOffset);
-          let curveStart = start;
-          let curveEnd = end;
-          if (edge.curve) {
-            if (startNode.id === 'decisions') {
-              curveStart = {
-                x: startNode.x,
-                y: startNode.y + startRadius + curveOffset
-              };
-            }
-            if (endNode.id === 'processing') {
-              curveEnd = {
-                x: endNode.x,
-                y: endNode.y + endRadius + curveOffset + 12
-              };
-            }
-          }
-
-          // Particle configuration
-          const particleCount = 3; // 3 particles per edge
-          const particleDuration = edge.curve ? '4.4s' : '3s'; // Slower for curves
-          const particleRadius = edge.curve ? 2.4 : 3;
-
-          if (edge.curve) {
-             const dx = curveEnd.x - curveStart.x;
-             const absDx = Math.abs(dx);
-             const learningNode = nodes.find((node) => node.id === 'learning');
-             const loopTargetY = learningNode ? learningNode.y - 2 : Math.max(curveStart.y, curveEnd.y) + 80;
-             const loopY = Math.min(220, Math.max(curveStart.y + 40, loopTargetY));
-             const midX = (curveStart.x + curveEnd.x) / 2;
-             const labelCenterShift = absDx * 0.06;
-             const valleyX = midX + labelCenterShift;
-             const drop = Math.max(30, Math.min(80, (loopY - curveStart.y) * 0.6));
-             const flatHandle = Math.max(60, Math.min(150, absDx * 0.18));
-
-             const c1 = { x: curveStart.x, y: curveStart.y + drop };
-             const c2 = { x: valleyX - flatHandle, y: loopY };
-             const c3 = { x: valleyX + flatHandle, y: loopY };
-             const c4 = { x: curveEnd.x, y: curveEnd.y + drop };
-             const pathD = `M ${curveStart.x} ${curveStart.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${valleyX} ${loopY} C ${c3.x} ${c3.y} ${c4.x} ${c4.y} ${curveEnd.x} ${curveEnd.y}`;
-             const pathId = `edge-path-${edgeIndex}`;
-
-             return (
-               <g>
-                 <path
-                   id={pathId}
-                   d={pathD}
-                   class="edge-loop fill-none"
-                   stroke="url(#loop-gradient)"
-                   stroke-width={strokeWidth}
-                   stroke-dasharray="5 7"
-                   stroke-linecap="round"
-                   stroke-linejoin="round"
-                   marker-end="url(#arrowhead-loop)"
-                 />
-
-                 {/* Flow particles for curved edge - using accent color for cohesion */}
-                 {Array.from({ length: particleCount }).map((_, i) => (
-                  <circle
-                    r={particleRadius}
-                    class="flow-particle flow-particle-loop"
-                    fill="var(--color-accent)"
-                    opacity="0"
-                  >
-                    <animateMotion
-                      dur={particleDuration}
-                      repeatCount="indefinite"
-                      begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
-                    >
-                      <mpath href={`#${pathId}`} />
-                    </animateMotion>
-                    <animate
-                      attributeName="opacity"
-                      values="0;0.35;0.35;0"
-                      keyTimes="0;0.1;0.9;1"
-                      dur={particleDuration}
-                      repeatCount="indefinite"
-                      begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
-                    />
-                    <animate
-                      attributeName="r"
-                      values={`${particleRadius};${particleRadius + 0.6};${particleRadius}`}
-                      keyTimes="0;0.5;1"
-                      dur="2.8s"
-                      repeatCount="indefinite"
-                      begin={`${i * 0.4}s`}
-                    />
-                  </circle>
-                ))}
-              </g>
-            );
-          }
-
-          const pathId = `edge-path-${edgeIndex}`;
-          const pathD = `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
-
-          return (
-            <g>
-              <path
-                id={pathId}
-                d={pathD}
-                class="edge-primary fill-none"
-                stroke="url(#edge-gradient)"
-                stroke-width={strokeWidth}
-                marker-end="url(#arrowhead)"
-              />
-
-              {/* Flow particles for straight edge */}
-              {Array.from({ length: particleCount }).map((_, i) => (
-                <circle
-                  r={particleRadius}
-                  class="flow-particle"
-                  fill="var(--color-accent)"
-                  opacity="0"
+              return (
+                <div
+                  class="node-card group relative"
+                  data-node={node.id}
+                  style={`--node-color: ${node.color};`}
                 >
-                  <animateMotion
-                    dur={particleDuration}
-                    repeatCount="indefinite"
-                    begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
-                    calcMode="spline"
-                    keyPoints="0;0.25;0.75;1"
-                    keyTimes="0;0.25;0.8;1"
-                    keySplines="0.2 0 0.9 0.3;0.2 0 0.8 1;0.1 0 0.2 1"
-                  >
-                    <mpath href={`#${pathId}`} />
-                  </animateMotion>
-                  <animate
-                    attributeName="opacity"
-                    values="0;0.8;0.8;0"
-                    keyTimes="0;0.1;0.9;1"
-                    dur={particleDuration}
-                    repeatCount="indefinite"
-                    begin={`${i * (parseFloat(particleDuration) / particleCount)}s`}
-                  />
-                </circle>
-              ))}
-            </g>
-          );
-        })}
+                  <!-- Glow effect -->
+                  <div class="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500"
+                       style={`background: ${node.color}30;`}></div>
 
-        <!-- Nodes -->
-        {nodes.map((node, i) => {
-          const nodeRadius = getNodeRadius(node);
-          const isPrimary = node.id === 'decisions';
-          const isSecondary = node.id === 'processing' || node.id === 'outputs';
-          const isTertiary = node.id === 'inputs' || node.id === 'learning';
-          const isLearning = node.id === 'learning';
-          const isInputs = node.id === 'inputs';
-          const isDecisions = node.id === 'decisions';
-          const isProcessing = node.id === 'processing';
-          const isOutputs = node.id === 'outputs';
-          const gearPath = isProcessing
-            ? getGearPath(node.x, node.y, nodeRadius, nodeRadius + 8, 24)
-            : '';
+                  <!-- Card content -->
+                  <div class="relative bg-background/80 backdrop-blur-sm rounded-2xl border border-white/10 p-6 transition-all duration-500 group-hover:border-white/20 group-hover:-translate-y-2 min-h-[280px] flex flex-col">
+                    <!-- Top accent -->
+                    <div class="absolute top-0 left-4 right-4 h-0.5 rounded-full opacity-60"
+                         style={`background: ${node.color};`}></div>
 
-          // Typography hierarchy
-          const textSize = isPrimary ? 'text-base' : isSecondary ? 'text-sm' : 'text-sm';
-          const textWeight = isPrimary ? 'font-bold' : isSecondary ? 'font-semibold' : 'font-medium';
+                    <!-- Step number -->
+                    <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-lg"
+                         style={`background: ${node.color}; color: #1a1a2e;`}>
+                      {index + 1}
+                    </div>
 
-          return (
-          <g class="group node-group" style={`animation-delay: ${i * 0.5}s`}>
-            {/* Outer ring for depth (only for primary and secondary) */}
-            {(isPrimary || isSecondary) && (
-              <circle
-                cx={node.x}
-                cy={node.y}
-                r={nodeRadius + 3}
-                class={`fill-none stroke-accent/20 stroke-1${isDecisions ? ' pulse-ring' : ''}`}
-              />
-            )}
-            {/* Main node circle or gear body */}
-            {!isLearning && !isProcessing && (
-              <circle
-                cx={node.x}
-                cy={node.y}
-                r={nodeRadius}
-                class={isPrimary
-                  ? 'fill-accent stroke-accent-dark stroke-2 node-primary heartbeat-node'
-                  : isSecondary
-                    ? 'fill-surface stroke-accent stroke-2 node-secondary'
-                    : isInputs
-                      ? 'fill-accent/10 stroke-accent/40 stroke-2 node-tertiary'
-                      : 'fill-background stroke-border stroke-2 node-tertiary'
-                }
-                style={isPrimary ? 'filter: url(#glow);' : ''}
-              />
-            )}
-            {isProcessing && (
-              <g class="gear-rotate">
-                <path d={gearPath} class="gear-body" />
-                <circle
-                  cx={node.x}
-                  cy={node.y}
-                  r={nodeRadius - 6}
-                  class="gear-core"
-                />
-              </g>
-            )}
-            {isOutputs && (
-              <g>
-                {/* Outer Wave - Rotating Clockwise */}
-                <path d={getWaveRingPath(node.x, node.y, nodeRadius + 6, 2.5, 8)} class="wave-ring wave-cw" />
-                
-                {/* Inner Wave - Rotating Counter-Clockwise (creates interference pattern) */}
-                <path d={getWaveRingPath(node.x, node.y, nodeRadius + 6, 2.5, 8)} class="wave-ring wave-ccw" />
-              </g>
-            )}
+                    <!-- Icon with ring -->
+                    <div class="relative w-16 h-16 mx-auto mb-4 flex-shrink-0">
+                      <!-- Rotating ring -->
+                      <svg class="absolute inset-0 w-full h-full rotating-ring opacity-30" viewBox="0 0 64 64">
+                        <circle cx="32" cy="32" r="30" fill="none" stroke={node.color} stroke-width="1" stroke-dasharray="4 4"/>
+                      </svg>
 
-            {/* Node label with hierarchy */}
-            <text
-              x={node.x}
-              y={node.y}
-              dy={isLearning ? '-4' : '5'}
-              dx={isLearning ? '-3' : '0'}
-              text-anchor="middle"
-              class={`${textSize} ${textWeight} pointer-events-none select-none ${isPrimary ? 'fill-background' : 'fill-foreground'}${isLearning ? ' opacity-85 tracking-[0.06em] uppercase' : ''}`}
-              style={isLearning ? 'filter: url(#label-glow); font-size: 1.1em;' : ''}
-            >
-              {getStr(node.label)}
-            </text>
+                      <!-- Pulse ring on hover -->
+                      <div class="absolute inset-0 rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-500"
+                           style={`background: ${node.color}; filter: blur(8px);`}></div>
 
-            <!-- Tooltip -->
-            <title>{getStr(node.label)}</title>
-          </g>
-        )})}
-      </svg>
+                      <!-- Icon container -->
+                      <div class="absolute inset-2 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+                           style={`background: linear-gradient(135deg, ${node.color}30, ${node.color}10);`}>
+                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke={node.color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d={iconPath}/>
+                        </svg>
+                      </div>
+                    </div>
+
+                    <!-- Label -->
+                    <h3 class="text-lg font-bold text-foreground text-center mb-2 group-hover:text-accent transition-colors">
+                      {getStr(node.label)}
+                    </h3>
+
+                    <!-- Description -->
+                    <p class="text-xs text-muted text-center mb-4 opacity-80 group-hover:opacity-100 transition-opacity flex-grow">
+                      {getStr(node.description)}
+                    </p>
+
+                    <!-- Items tags -->
+                    <div class="flex flex-wrap justify-center gap-1 mt-auto">
+                      {node.items.map((item) => (
+                        <span class="px-2 py-0.5 text-xs rounded-full transition-all duration-300"
+                              style={`background: ${node.color}15; color: ${node.color};`}>
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <!-- Connection arrows between cards -->
+          <div class="flex items-center justify-center gap-4 mb-6">
+            {nodes.slice(0, -1).map((node, index) => {
+              const nextNode = nodes[index + 1];
+              return (
+                <div class="flex items-center gap-4" style={`flex: 1; max-width: 200px;`}>
+                  <div class="flex-1 h-1 rounded-full relative overflow-hidden"
+                       style={`background: linear-gradient(to right, ${node.color}40, ${nextNode.color}40);`}>
+                    <!-- Animated flow -->
+                    <div class="absolute inset-0 flow-animation"
+                         style={`background: linear-gradient(to right, transparent, ${node.color}, ${nextNode.color}, transparent); animation-delay: ${index * 0.3}s;`}></div>
+                  </div>
+                  <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke={nextNode.color} stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </div>
+              );
+            })}
+          </div>
+
+          <!-- Learning Loop Label -->
+          <div class="flex items-center justify-center gap-4 pt-4 border-t border-white/5">
+            <div class="h-px flex-1 bg-gradient-to-r from-transparent via-accent/20 to-transparent"></div>
+            <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-background/80 border border-white/10 backdrop-blur-sm">
+              <svg class="w-4 h-4 text-accent animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12a9 9 0 11-6.219-8.56"/>
+              </svg>
+              <span class="text-sm font-medium text-muted">
+                {edges.find(e => e.curve)?.label ? getStr(edges.find(e => e.curve)?.label) : 'Learning Loop'}
+              </span>
+              <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+              </svg>
+            </div>
+            <div class="h-px flex-1 bg-gradient-to-r from-transparent via-accent/20 to-transparent"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile: Vertical Flow -->
+      <div class="md:hidden">
+        <div class="space-y-6">
+          {nodes.map((node, index) => {
+            const iconPath = iconPaths[node.icon] || iconPaths.database;
+            const isLast = index === nodes.length - 1;
+
+            return (
+              <div class="relative">
+                <!-- Connector line to next card -->
+                {!isLast && (
+                  <div class="absolute left-6 top-full w-0.5 h-6 z-0"
+                       style={`background: linear-gradient(to bottom, ${node.color}, ${nodes[index + 1]?.color || node.color});`}>
+                    <!-- Arrow indicator -->
+                    <svg class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3" viewBox="0 0 12 12" fill={nodes[index + 1]?.color || node.color}>
+                      <path d="M6 12L0 6h12L6 12z"/>
+                    </svg>
+                  </div>
+                )}
+
+                <div class="mobile-node bg-surface/80 backdrop-blur-sm rounded-2xl border border-white/10 p-5 op-reveal"
+                     style={`--node-color: ${node.color};`}>
+                  <div class="flex items-start gap-4">
+                    <!-- Icon -->
+                    <div class="relative w-12 h-12 flex-shrink-0">
+                      <div class="absolute inset-0 rounded-xl flex items-center justify-center"
+                           style={`background: linear-gradient(135deg, ${node.color}30, ${node.color}10);`}>
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke={node.color} stroke-width="1.5">
+                          <path d={iconPath}/>
+                        </svg>
+                      </div>
+                      <!-- Step number badge -->
+                      <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-lg"
+                           style={`background: ${node.color}; color: #1a1a2e;`}>
+                        {index + 1}
+                      </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0">
+                      <h3 class="font-bold text-foreground mb-1">{getStr(node.label)}</h3>
+                      <p class="text-sm text-muted mb-3">{getStr(node.description)}</p>
+                      <div class="flex flex-wrap gap-1">
+                        {node.items.map((item) => (
+                          <span class="px-2 py-0.5 text-xs rounded-full"
+                                style={`background: ${node.color}20; color: ${node.color};`}>
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          <!-- Loop indicator -->
+          <div class="flex items-center justify-center gap-2 py-4 mt-4">
+            <div class="h-px flex-1 bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/80 border border-white/10">
+              <svg class="w-4 h-4 text-accent animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12a9 9 0 11-6.219-8.56"/>
+              </svg>
+              <span class="text-xs text-muted">
+                {edges.find(e => e.curve)?.label ? getStr(edges.find(e => e.curve)?.label) : 'Learning Loop'}
+              </span>
+            </div>
+            <div class="h-px flex-1 bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<script>
-  /**
-   * Operating Model Animation Controller
-   * Handles reveal animations and flow particle motion with reduced-motion support
-   */
-
-  function prefersReducedMotion(): boolean {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+<style>
+  /* Orb animations */
+  .op-orb-1 {
+    animation: op-orb-float-1 18s ease-in-out infinite;
+  }
+  .op-orb-2 {
+    animation: op-orb-float-2 22s ease-in-out infinite;
   }
 
-  function initOperatingModel() {
-    const reduced = prefersReducedMotion();
+  @keyframes op-orb-float-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(5%, 10%) scale(1.1); }
+  }
 
-    // Handle flow particle animations based on motion preference
-    if (reduced) {
-      // Disable flow particles for reduced motion
-      document.querySelectorAll('#operating-model .flow-particle, #operating-model .orbit-particle, #operating-model .shooting-star').forEach((particle) => {
-        (particle as SVGElement).style.display = 'none';
-      });
-    } else {
-      // Ensure particles are visible
-      document.querySelectorAll('#operating-model .flow-particle, #operating-model .orbit-particle, #operating-model .shooting-star').forEach((particle) => {
-        (particle as SVGElement).style.display = 'block';
-      });
+  @keyframes op-orb-float-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-5%, -8%) scale(1.05); }
+  }
+
+  /* Particle float */
+  @keyframes op-float {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+    50% { transform: translateY(-15px) translateX(8px); opacity: 0.6; }
+  }
+
+  /* Rotating ring */
+  .rotating-ring {
+    animation: rotate-ring 20s linear infinite;
+  }
+
+  @keyframes rotate-ring {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Slow spin for loop icon */
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Flow animation for connection lines */
+  .flow-animation {
+    animation: flow-move 2s ease-in-out infinite;
+  }
+
+  @keyframes flow-move {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Node card hover */
+  .node-card {
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* Reveal animations */
+  .op-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .op-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .op-orb-1, .op-orb-2, .op-particle, .rotating-ring, .animate-spin-slow, .flow-animation {
+      animation: none;
     }
 
+    .node-card:hover {
+      transform: none;
+    }
+
+    .op-reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  function initOperatingModel() {
     // Reveal animation observer
-    const observer = new IntersectionObserver((entries) => {
+    const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.remove('opacity-0', 'translate-y-4', 'translate-y-8');
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          observer.unobserve(entry.target);
+          entry.target.classList.add('is-visible');
         }
       });
     }, {
@@ -576,196 +398,18 @@ const shootingStars = [
       rootMargin: '50px'
     });
 
-    document.querySelectorAll('#operating-model .reveal-element').forEach((el) => {
-      observer.observe(el);
+    document.querySelectorAll('#operating-model .op-reveal').forEach((el) => {
+      revealObserver.observe(el);
     });
   }
 
   // Initialize on load
-  initOperatingModel();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initOperatingModel);
+  } else {
+    initOperatingModel();
+  }
 
   // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initOperatingModel);
 </script>
-
-<style>
-  /* Flow particle styles */
-  .flow-particle {
-    pointer-events: none;
-    filter: blur(0.5px);
-  }
-
-  /* Shooting star styles - no blur for visibility */
-  .shooting-star {
-    pointer-events: none;
-  }
-
-  /* Loop particles with slightly more blur for depth differentiation */
-  .flow-particle-loop {
-    filter: blur(0.9px);
-  }
-  .orbit-path {
-    fill: none;
-    stroke: transparent;
-  }
-  .orbit-particle {
-    pointer-events: none;
-    filter: blur(0.6px);
-  }
-
-  /* Node animations and interactions */
-  .node-group {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .node-primary {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .heartbeat-node {
-    transform-origin: center;
-    animation: heartbeat 1.8s infinite;
-  }
-  .pulse-ring {
-    animation: heartbeat-ring 1.8s infinite;
-    filter: url(#pulse-glow);
-  }
-  .gear-rotate {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: gear-rotate 16s linear infinite;
-  }
-  .gear-body {
-    fill: var(--color-surface);
-    fill-opacity: 0.85;
-    stroke: var(--color-accent);
-    stroke-opacity: 0.55;
-    stroke-width: 1.6;
-    stroke-linejoin: round;
-  }
-  .gear-core {
-    fill: var(--color-background);
-    fill-opacity: 0.95;
-    stroke: var(--color-accent);
-    stroke-opacity: 0.5;
-    stroke-width: 1.4;
-  }
-  .wave-rotate {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: wave-rotate 18s linear infinite;
-  }
-  .wave-ring {
-    fill: none;
-    stroke: var(--color-accent);
-    stroke-opacity: 0.45;
-    stroke-width: 1.2;
-    stroke-linejoin: round;
-    filter: drop-shadow(0 0 2px rgba(56, 140, 168, 0.35));
-  }
-  
-  :root.dark .wave-ring {
-    filter: drop-shadow(0 0 2px rgba(45, 212, 191, 0.35));
-  }
-  .wave-cw {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: wave-rotate 12s linear infinite;
-    opacity: 0.8;
-  }
-  .wave-ccw {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: wave-rotate-reverse 15s linear infinite;
-    opacity: 0.6;
-    stroke-dasharray: 4 4;
-  }
-
-  .node-secondary {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .node-tertiary {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0.9;
-  }
-
-  /* Subtle hover effects */
-  .node-group:hover .node-primary {
-    filter: url(#glow) brightness(1.1);
-  }
-
-  .node-group:hover .node-secondary {
-    stroke-width: 2.5;
-  }
-
-  .node-group:hover .node-tertiary {
-    opacity: 1;
-    stroke-width: 2.5;
-  }
-
-  /* Edge styles */
-  .edge-primary {
-    transition: stroke-width 0.3s ease;
-  }
-
-  .edge-loop {
-    transition: stroke-width 0.3s ease;
-    opacity: 0.75;
-  }
-
-  @keyframes heartbeat {
-    0% { transform: scale(1); }
-    16% { transform: scale(1.02); }
-    28% { transform: scale(1); }
-    42% { transform: scale(1.01); }
-    55% { transform: scale(1); }
-    100% { transform: scale(1); }
-  }
-
-  @keyframes heartbeat-ring {
-    0% { opacity: 0.18; transform: scale(1); }
-    16% { opacity: 0.3; transform: scale(1.03); }
-    28% { opacity: 0.16; transform: scale(1.005); }
-    42% { opacity: 0.26; transform: scale(1.02); }
-    55% { opacity: 0.16; transform: scale(1); }
-    100% { opacity: 0.18; transform: scale(1); }
-  }
-  @keyframes gear-rotate {
-    to { transform: rotate(360deg); }
-  }
-  @keyframes wave-rotate {
-    to { transform: rotate(360deg); }
-  }
-  @keyframes wave-rotate-reverse {
-    to { transform: rotate(-360deg); }
-  }
-  @keyframes wave-pulse {
-    0% { opacity: 0.55; }
-    50% { opacity: 0.25; }
-    100% { opacity: 0.55; }
-  }
-
-  /* Disable particle animations for reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .flow-particle,
-    .orbit-particle {
-      display: none !important;
-    }
-
-    .node-group,
-    .node-primary,
-    .node-secondary,
-    .node-tertiary,
-    .edge-primary,
-    .edge-loop {
-      transition: none !important;
-    }
-    .heartbeat-node,
-    .pulse-ring,
-    .gear-rotate,
-    .wave-ring {
-      animation: none !important;
-      transform: none !important;
-    }
-  }
-</style>
