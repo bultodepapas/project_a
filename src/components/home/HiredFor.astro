@@ -58,7 +58,7 @@ const iconPaths: Record<string, string> = {
 
     <!-- Floating particles -->
     <div class="particles-container absolute inset-0">
-      {Array.from({ length: 30 }).map((_, i) => (
+      {Array.from({ length: 30 }).map(() => (
         <div
           class="particle absolute w-1 h-1 rounded-full bg-accent/40"
           style={`

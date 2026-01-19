@@ -47,15 +47,6 @@ const educationItems = educationData.items;
 const languageItems = languagesData.items;
 const awards = awardsData.items;
 
-function resolveProofHref(href: string, langValue: Lang) {
-  if (href.startsWith('#')) {
-    return href;
-  }
-  if (href.startsWith('/')) {
-    return `/${langValue}${href}`;
-  }
-  return href;
-}
 ---
 
 <Page

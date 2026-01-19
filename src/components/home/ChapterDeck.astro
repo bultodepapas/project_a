@@ -58,7 +58,7 @@ const iconPaths: Record<string, string> = {
     </svg>
 
     <!-- Floating particles -->
-    {Array.from({ length: 20 }).map((_, i) => (
+    {Array.from({ length: 20 }).map(() => (
       <div
         class="absolute w-1 h-1 rounded-full bg-accent/30 system-particle"
         style={`

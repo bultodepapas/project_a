@@ -6,5 +6,7 @@
 
 import { defaultLang } from '@/i18n/config';
 
-return Astro.redirect(`/${defaultLang}`);
+const redirectTo = `/${defaultLang}`;
+void redirectTo;
+return Astro.redirect(redirectTo);
 ---

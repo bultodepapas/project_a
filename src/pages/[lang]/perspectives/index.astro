@@ -100,24 +100,21 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
 
 <script>
   import { initOnce } from '@/lib/lifecycle';
+  import { createRevealObserver } from '@/lib/ui/animations';
 
   // Simple reveal animation observer
   function initReveal() {
     const container = document.querySelector('.section');
     initOnce(container, 'perspectives-index-reveal', (root) => {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.remove('opacity-0', 'translate-y-4');
-            entry.target.classList.add('opacity-100', 'translate-y-0');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1 });
-
-      root.querySelectorAll('.reveal-element').forEach((el) => observer.observe(el));
-
-      return () => observer.disconnect();
+      return createRevealObserver(root, {
+        selector: '.reveal-element',
+        threshold: 0.1,
+        visibleClass: '',
+        onReveal: (el) => {
+          el.classList.remove('opacity-0', 'translate-y-4');
+          el.classList.add('opacity-100', 'translate-y-0');
+        },
+      });
     });
   }
 

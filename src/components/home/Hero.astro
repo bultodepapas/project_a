@@ -10,7 +10,7 @@ interface Props {
   linkedin: string;
 }
 
-const { lang, chips, location, email, linkedin } = Astro.props;
+const { lang, chips, email, linkedin } = Astro.props;
 
 // Helper to get localized string
 const getStr = (obj: any) => (typeof obj === 'string' ? obj : obj[lang]);
@@ -40,7 +40,7 @@ const headlineWords = headline.split(' ');
 
   <!-- Floating particles -->
   <div class="particles-container absolute inset-0 pointer-events-none">
-    {Array.from({ length: 50 }).map((_, i) => (
+    {Array.from({ length: 50 }).map(() => (
       <div
         class="particle"
         style={`

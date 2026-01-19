@@ -40,7 +40,28 @@ export function useFilters(root: Element, options: FilterOptions) {
     disposers.push(() => target.removeEventListener(event, handler));
   };
 
+  const setButtonState = (button: Element, isActive: boolean) => {
+    if (isActive) {
+      button.classList.remove(...inactiveClasses);
+      button.classList.add(...activeClasses);
+      button.setAttribute('aria-pressed', 'true');
+    } else {
+      button.classList.remove(...activeClasses);
+      button.classList.add(...inactiveClasses);
+      button.setAttribute('aria-pressed', 'false');
+    }
+  };
+
   let activeFilter = 'all';
+  const initialActive = buttons.find((btn) => btn.classList.contains('active'));
+  if (initialActive) {
+    activeFilter = initialActive.getAttribute('data-filter') || 'all';
+  }
+
+  buttons.forEach((btn) => {
+    const isActive = btn.getAttribute('data-filter') === activeFilter;
+    setButtonState(btn, isActive);
+  });
 
   buttons.forEach((btn) => {
     on(btn, 'click', () => {
@@ -49,13 +70,9 @@ export function useFilters(root: Element, options: FilterOptions) {
 
       root
         .querySelectorAll(`${buttonSelector}[${groupAttr}="${group}"]`)
-        .forEach((item) => {
-          item.classList.remove(...activeClasses);
-          item.classList.add(...inactiveClasses);
-        });
+        .forEach((item) => setButtonState(item, false));
 
-      btn.classList.remove(...inactiveClasses);
-      btn.classList.add(...activeClasses);
+      setButtonState(btn, true);
 
       activeFilter = filter;
       filterCards();
@@ -67,7 +84,11 @@ export function useFilters(root: Element, options: FilterOptions) {
 
     cards.forEach((card) => {
       const cardFilter = card.getAttribute(filterAttr);
-      const isVisible = activeFilter === 'all' || cardFilter === activeFilter;
+      const values = cardFilter
+        ? cardFilter.split(',').map((value) => value.trim()).filter(Boolean)
+        : [];
+      const isVisible =
+        activeFilter === 'all' || values.includes(activeFilter);
 
       if (isVisible) {
         (card as HTMLElement).style.display = displayStyle;

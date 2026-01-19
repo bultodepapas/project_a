@@ -51,7 +51,6 @@ export function generatePersonSchema(person: PersonSchema): string {
  * Generate ProfilePage Schema.org JSON-LD
  */
 export function generateProfilePageSchema(
-  url: string,
   person: PersonSchema,
   dateModified?: string
 ): string {
