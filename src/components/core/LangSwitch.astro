@@ -329,89 +329,108 @@ const otherLangs = supportedLangs.filter(lang => lang !== currentLang);
 </style>
 
 <script>
+  import { initOnce } from '@/lib/lifecycle';
+
   function initLangSwitch() {
     const switches = document.querySelectorAll('[data-lang-switch]');
 
-    switches.forEach(wrapper => {
-      const trigger = wrapper.querySelector('.lang-trigger');
-      const dropdown = wrapper.querySelector('.lang-dropdown');
-      const options = wrapper.querySelectorAll('.lang-option');
+    switches.forEach((wrapper) => {
+      initOnce(wrapper, 'lang-switch', (root) => {
+        const trigger = root.querySelector('.lang-trigger') as HTMLElement | null;
+        const dropdown = root.querySelector('.lang-dropdown') as HTMLElement | null;
+        const options = root.querySelectorAll('.lang-option');
+        const disposers: Array<() => void> = [];
 
-      if (!trigger || !dropdown) return;
+        if (!trigger || !dropdown) return;
 
-      // Toggle dropdown
-      trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = wrapper.classList.contains('is-open');
+        const on = (
+          target: EventTarget,
+          event: string,
+          handler: EventListenerOrEventListenerObject,
+          options?: AddEventListenerOptions
+        ) => {
+          target.addEventListener(event, handler, options);
+          disposers.push(() => target.removeEventListener(event, handler, options));
+        };
 
-        // Close all other dropdowns
-        document.querySelectorAll('[data-lang-switch].is-open').forEach(other => {
-          if (other !== wrapper) {
-            other.classList.remove('is-open');
-            other.querySelector('.lang-trigger')?.setAttribute('aria-expanded', 'false');
+        // Toggle dropdown
+        on(trigger, 'click', (e) => {
+          e.stopPropagation();
+          const isOpen = root.classList.contains('is-open');
+
+          document.querySelectorAll('[data-lang-switch].is-open').forEach((other) => {
+            if (other !== root) {
+              other.classList.remove('is-open');
+              other.querySelector('.lang-trigger')?.setAttribute('aria-expanded', 'false');
+            }
+          });
+
+          root.classList.toggle('is-open');
+          trigger.setAttribute('aria-expanded', String(!isOpen));
+        });
+
+        // Language selection with particle effect
+        options.forEach((option) => {
+          on(option, 'click', () => {
+            root.classList.add('is-switching');
+            setTimeout(() => {
+              root.classList.remove('is-switching');
+            }, 600);
+          });
+        });
+
+        // Close on outside click
+        on(document, 'click', (e) => {
+          if (!root.contains(e.target as Node)) {
+            root.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
           }
         });
 
-        // Toggle current
-        wrapper.classList.toggle('is-open');
-        trigger.setAttribute('aria-expanded', String(!isOpen));
-      });
-
-      // Language selection with particle effect
-      options.forEach(option => {
-        option.addEventListener('click', () => {
-          wrapper.classList.add('is-switching');
-          setTimeout(() => {
-            wrapper.classList.remove('is-switching');
-          }, 600);
-        });
-      });
-
-      // Close on outside click
-      document.addEventListener('click', (e) => {
-        if (!wrapper.contains(e.target as Node)) {
-          wrapper.classList.remove('is-open');
-          trigger.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      // Keyboard navigation
-      trigger.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          wrapper.classList.remove('is-open');
-          trigger.setAttribute('aria-expanded', 'false');
-          trigger.focus();
-        }
-        if (e.key === 'ArrowDown' && wrapper.classList.contains('is-open')) {
-          e.preventDefault();
-          (options[0] as HTMLElement)?.focus();
-        }
-      });
-
-      options.forEach((option, index) => {
-        option.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') {
-            wrapper.classList.remove('is-open');
+        // Keyboard navigation
+        on(trigger, 'keydown', (e: Event) => {
+          const keyEvent = e as KeyboardEvent;
+          if (keyEvent.key === 'Escape') {
+            root.classList.remove('is-open');
             trigger.setAttribute('aria-expanded', 'false');
             trigger.focus();
           }
-          if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            (options[index + 1] as HTMLElement)?.focus();
-          }
-          if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            if (index === 0) {
-              trigger.focus();
-            } else {
-              (options[index - 1] as HTMLElement)?.focus();
-            }
+          if (keyEvent.key === 'ArrowDown' && root.classList.contains('is-open')) {
+            keyEvent.preventDefault();
+            (options[0] as HTMLElement | undefined)?.focus();
           }
         });
+
+        options.forEach((option, index) => {
+          on(option, 'keydown', (e: Event) => {
+            const keyEvent = e as KeyboardEvent;
+            if (keyEvent.key === 'Escape') {
+              root.classList.remove('is-open');
+              trigger.setAttribute('aria-expanded', 'false');
+              trigger.focus();
+            }
+            if (keyEvent.key === 'ArrowDown') {
+              keyEvent.preventDefault();
+              (options[index + 1] as HTMLElement | undefined)?.focus();
+            }
+            if (keyEvent.key === 'ArrowUp') {
+              keyEvent.preventDefault();
+              if (index === 0) {
+                trigger.focus();
+              } else {
+                (options[index - 1] as HTMLElement | undefined)?.focus();
+              }
+            }
+          });
+        });
+
+        return () => {
+          disposers.forEach((dispose) => dispose());
+        };
       });
     });
   }
 
-  // Initialize on page load and view transitions
+  initLangSwitch();
   document.addEventListener('astro:page-load', initLangSwitch);
 </script>

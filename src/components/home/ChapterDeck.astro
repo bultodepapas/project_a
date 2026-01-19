@@ -316,56 +316,48 @@ const iconPaths: Record<string, string> = {
 
 <script>
   import { initChapterDeck } from '@/lib/motion';
+  import { initOnce } from '@/lib/lifecycle';
 
-  function setup() {
+  function initSystems() {
     const section = document.getElementById('systems');
-    if (section) {
-      initChapterDeck(section);
+    initOnce(section, 'systems', (root) => {
+      let revealObserver: IntersectionObserver | null = null;
+      let bodyObserver: IntersectionObserver | null = null;
 
-      // Initialize reveal animations for header
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+      initChapterDeck(root as HTMLElement);
+
+      revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.remove('opacity-0', 'translate-y-4');
             entry.target.classList.add('opacity-100', 'translate-y-0');
-            revealObserver.unobserve(entry.target);
+            revealObserver?.unobserve(entry.target);
           }
         });
       }, { threshold: 0.2 });
 
-      section.querySelectorAll('.reveal-header').forEach(el => {
-        revealObserver.observe(el);
+      root.querySelectorAll('.reveal-header').forEach((el) => {
+        revealObserver?.observe(el);
       });
-    }
+
+      bodyObserver = new IntersectionObserver(
+        ([entry]) => {
+          document.body.classList.toggle('section-systems', entry.isIntersecting);
+        },
+        { threshold: 0.2 }
+      );
+      bodyObserver.observe(root);
+
+      return () => {
+        revealObserver?.disconnect();
+        bodyObserver?.disconnect();
+        document.body.classList.remove('section-systems');
+      };
+    });
   }
 
-  function toggleBodyClass(isActive: boolean) {
-    document.body.classList.toggle('section-systems', isActive);
-  }
-
-  function initBodyObserver() {
-    const section = document.getElementById('systems');
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        toggleBodyClass(entry.isIntersecting);
-      },
-      { threshold: 0.2 }
-    );
-
-    observer.observe(section);
-  }
-
-  // Initialize on load
-  setup();
-  initBodyObserver();
-
-  // Re-initialize on view transitions
-  document.addEventListener('astro:page-load', () => {
-    setup();
-    initBodyObserver();
-  });
+  initSystems();
+  document.addEventListener('astro:page-load', initSystems);
 </script>
 
 <style>

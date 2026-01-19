@@ -363,26 +363,19 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
 </style>
 
 <script>
+  import { initOnce } from '@/lib/lifecycle';
+
   /**
    * ProofStrip Animation Controller - Premium Edition
    */
-
   type AnimationState = {
     rafId: number | null;
     startTime: number | null;
   };
 
-  const animations = new Map<Element, AnimationState>();
-
   // Premium easing functions
   function easeOutExpo(t: number): number {
     return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-  }
-
-  function easeOutBack(t: number): number {
-    const c1 = 1.70158;
-    const c3 = c1 + 1;
-    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
   }
 
   /**
@@ -392,7 +385,8 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
     element: Element,
     target: number,
     duration: number = 2000,
-    delay: number = 0
+    delay: number = 0,
+    animations: Map<Element, AnimationState>
   ): void {
     const state: AnimationState = { rafId: null, startTime: null };
     animations.set(element, state);
@@ -426,9 +420,6 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
     }
   }
 
-  /**
-   * Animate progress ring
-   */
   function animateProgressRing(element: SVGCircleElement, delay: number = 0): void {
     const offset = element.dataset.offset;
     setTimeout(() => {
@@ -436,114 +427,95 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
     }, delay);
   }
 
-  /**
-   * Check if user prefers reduced motion
-   */
   function prefersReducedMotion(): boolean {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
-  /**
-   * Initialize proof strip animations
-   */
   function initProofStrip() {
-    const reduced = prefersReducedMotion();
+    const section = document.getElementById('proof');
+    initOnce(section, 'proof-strip', (root) => {
+      const reduced = prefersReducedMotion();
+      const animations = new Map<Element, AnimationState>();
+      let headerObserver: IntersectionObserver | null = null;
+      let cardObserver: IntersectionObserver | null = null;
 
-    // Cleanup existing animations
-    animations.forEach((state) => {
-      if (state.rafId !== null) {
-        cancelAnimationFrame(state.rafId);
-      }
-    });
-    animations.clear();
-
-    // Header reveal
-    const headerObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.remove('opacity-0', 'translate-y-6');
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          headerObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-
-    document.querySelectorAll('#proof > .container > .reveal-element').forEach((el) => {
-      headerObserver.observe(el);
-    });
-
-    // Cards observer - triggers when card is 50% visible and well within viewport
-    // Using negative rootMargin ensures user has scrolled enough to see the animation
-    const cardObserver = new IntersectionObserver(
-      (entries) => {
+      headerObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const card = entry.target as HTMLElement;
-            const cardIndex = parseInt(card.dataset.index || '0', 10);
-            const baseDelay = cardIndex * 100; // Slightly faster stagger
-
-            // Reveal card first
-            card.classList.remove('opacity-0', 'translate-y-8');
-            card.classList.add('opacity-100', 'translate-y-0');
-
-            if (!reduced) {
-              // Animate progress ring after card is visible
-              const progressRing = card.querySelector('.progress-ring') as SVGCircleElement;
-              if (progressRing) {
-                animateProgressRing(progressRing, baseDelay + 400);
-              }
-
-              // Animate number with extra delay so it's clearly visible
-              const numberEl = card.querySelector('.proof-number');
-              if (numberEl) {
-                const target = parseInt(numberEl.getAttribute('data-target') || '0', 10);
-                // Longer delay (600ms) ensures the card is fully visible before number animates
-                animateNumber(numberEl, target, 2000, baseDelay + 600);
-              }
-            } else {
-              // Reduced motion: Show final state immediately
-              const progressRing = card.querySelector('.progress-ring') as SVGCircleElement;
-              if (progressRing) {
-                const offset = progressRing.dataset.offset;
-                progressRing.style.strokeDashoffset = offset || '0';
-              }
-
-              const numberEl = card.querySelector('.proof-number');
-              if (numberEl) {
-                const target = numberEl.getAttribute('data-target') || '0';
-                numberEl.textContent = target;
-              }
-            }
-
-            cardObserver.unobserve(entry.target);
+            entry.target.classList.remove('opacity-0', 'translate-y-6');
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            headerObserver?.unobserve(entry.target);
           }
         });
-      },
-      {
-        threshold: 0.5, // Trigger when 50% visible (was 15%)
-        rootMargin: '-80px 0px -80px 0px', // Negative margin ensures element is well within viewport
-      }
-    );
+      }, { threshold: 0.2 });
 
-    // Observe all proof cards
-    document.querySelectorAll('#proof .proof-card').forEach((el) => {
-      cardObserver.observe(el);
+      root.querySelectorAll('.reveal-element').forEach((el) => {
+        headerObserver?.observe(el);
+      });
+
+      cardObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const card = entry.target as HTMLElement;
+              const cardIndex = parseInt(card.dataset.index || '0', 10);
+              const baseDelay = cardIndex * 100;
+
+              card.classList.remove('opacity-0', 'translate-y-8');
+              card.classList.add('opacity-100', 'translate-y-0');
+
+              if (!reduced) {
+                const progressRing = card.querySelector('.progress-ring') as SVGCircleElement;
+                if (progressRing) {
+                  animateProgressRing(progressRing, baseDelay + 400);
+                }
+
+                const numberEl = card.querySelector('.proof-number');
+                if (numberEl) {
+                  const target = parseInt(numberEl.getAttribute('data-target') || '0', 10);
+                  animateNumber(numberEl, target, 2000, baseDelay + 600, animations);
+                }
+              } else {
+                const progressRing = card.querySelector('.progress-ring') as SVGCircleElement;
+                if (progressRing) {
+                  const offset = progressRing.dataset.offset;
+                  progressRing.style.strokeDashoffset = offset || '0';
+                }
+
+                const numberEl = card.querySelector('.proof-number');
+                if (numberEl) {
+                  const target = numberEl.getAttribute('data-target') || '0';
+                  numberEl.textContent = target;
+                }
+              }
+
+              cardObserver?.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          threshold: 0.5,
+          rootMargin: '-80px 0px -80px 0px',
+        }
+      );
+
+      root.querySelectorAll('.proof-card').forEach((el) => {
+        cardObserver?.observe(el);
+      });
+
+      return () => {
+        animations.forEach((state) => {
+          if (state.rafId !== null) {
+            cancelAnimationFrame(state.rafId);
+          }
+        });
+        animations.clear();
+        headerObserver?.disconnect();
+        cardObserver?.disconnect();
+      };
     });
   }
 
-  // Initialize on load
   initProofStrip();
-
-  // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initProofStrip);
-
-  // Cleanup on page unload
-  document.addEventListener('astro:before-swap', () => {
-    animations.forEach((state) => {
-      if (state.rafId !== null) {
-        cancelAnimationFrame(state.rafId);
-      }
-    });
-    animations.clear();
-  });
 </script>

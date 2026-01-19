@@ -253,6 +253,8 @@ const { lang } = Astro.props;
 </style>
 
 <script>
+  import { initOnce } from '@/lib/lifecycle';
+
   function initThemeToggle() {
     const toggleBtns = document.querySelectorAll('.theme-toggle');
     if (toggleBtns.length === 0) return;
@@ -262,47 +264,38 @@ const { lang } = Astro.props;
                    localStorage.getItem('theme') === 'dark' ||
                    (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-    // Ensure DOM matches state
     if (isDark) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
 
-    // Attach Click Listeners
-    toggleBtns.forEach(btn => {
-      // Clone to remove existing listeners
-      const newBtn = btn.cloneNode(true) as HTMLElement;
-      if (btn.parentNode) {
-        btn.parentNode.replaceChild(newBtn, btn);
-      }
-    });
+    toggleBtns.forEach((btn) => {
+      initOnce(btn, 'theme-toggle', (root) => {
+        const handler = () => {
+          const isDarkNow = document.documentElement.classList.contains('dark');
+          const nextIsDark = !isDarkNow;
 
-    // Re-select fresh buttons
-    const freshBtns = document.querySelectorAll('.theme-toggle');
-    freshBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const isDarkNow = document.documentElement.classList.contains('dark');
-        const nextIsDark = !isDarkNow;
+          root.classList.add('is-animating');
+          setTimeout(() => {
+            root.classList.remove('is-animating');
+          }, 600);
 
-        // Trigger particle animation
-        btn.classList.add('is-animating');
-        setTimeout(() => {
-          btn.classList.remove('is-animating');
-        }, 600);
+          if (nextIsDark) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+          }
+        };
 
-        // Update Theme
-        if (nextIsDark) {
-          document.documentElement.classList.add('dark');
-          localStorage.setItem('theme', 'dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-          localStorage.setItem('theme', 'light');
-        }
+        root.addEventListener('click', handler);
+        return () => root.removeEventListener('click', handler);
       });
     });
   }
 
-  // Initialize on view transitions
+  initThemeToggle();
   document.addEventListener('astro:page-load', initThemeToggle);
 </script>

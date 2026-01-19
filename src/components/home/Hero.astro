@@ -568,6 +568,8 @@ const headlineWords = headline.split(' ');
 </style>
 
 <script>
+  import { initOnce } from '@/lib/lifecycle';
+
   function animateValue(el: HTMLElement, start: number, end: number, duration: number) {
     const startTime = performance.now();
 
@@ -590,57 +592,55 @@ const headlineWords = headline.split(' ');
   }
 
   function initHero() {
-    // Animate stat counters when orb is visible
-    const statCounters = document.querySelectorAll('.stat-counter');
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Delay to match CSS animation
-          setTimeout(() => {
-            statCounters.forEach((counter, index) => {
-              const el = counter as HTMLElement;
-              const target = parseInt(el.dataset.target || '0');
-
-              setTimeout(() => {
-                animateValue(el, 0, target, 1500);
-              }, index * 200);
-            });
-          }, 1500);
-
-          observer.disconnect();
-        }
-      });
-    }, { threshold: 0.3 });
-
     const heroSection = document.getElementById('hero');
-    if (heroSection) {
-      observer.observe(heroSection);
-    }
+    initOnce(heroSection, 'hero', (root) => {
+      const statCounters = root.querySelectorAll('.stat-counter');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let observer: IntersectionObserver | null = null;
+      let handleMouseMove: ((e: MouseEvent) => void) | null = null;
 
-    // Parallax effect on mouse move for orb
-    const orbContainer = document.querySelector('.orb-container') as HTMLElement;
-    if (orbContainer && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.addEventListener('mousemove', (e) => {
-        const rect = orbContainer.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              statCounters.forEach((counter, index) => {
+                const el = counter as HTMLElement;
+                const target = parseInt(el.dataset.target || '0', 10);
+                setTimeout(() => {
+                  animateValue(el, 0, target, 1500);
+                }, index * 200);
+              });
+            }, 1500);
 
-        const moveX = (e.clientX - centerX) * 0.02;
-        const moveY = (e.clientY - centerY) * 0.02;
+            observer?.disconnect();
+          }
+        });
+      }, { threshold: 0.3 });
 
-        orbContainer.style.transform = `translate(${moveX}px, ${moveY}px)`;
-      });
-    }
+      observer.observe(root);
+
+      const orbContainer = root.querySelector('.orb-container') as HTMLElement | null;
+      if (orbContainer && !prefersReducedMotion) {
+        handleMouseMove = (e: MouseEvent) => {
+          const rect = orbContainer.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const moveX = (e.clientX - centerX) * 0.02;
+          const moveY = (e.clientY - centerY) * 0.02;
+          orbContainer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        };
+        document.addEventListener('mousemove', handleMouseMove);
+      }
+
+      return () => {
+        observer?.disconnect();
+        if (handleMouseMove) {
+          document.removeEventListener('mousemove', handleMouseMove);
+        }
+      };
+    });
   }
 
-  // Initialize
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHero);
-  } else {
-    initHero();
-  }
-
-  // Reinitialize on page transitions
+  initHero();
   document.addEventListener('astro:page-load', initHero);
 </script>

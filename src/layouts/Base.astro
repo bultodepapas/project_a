@@ -149,7 +149,11 @@ const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.n
 
     <script>
       import { cleanupMotion } from '@/lib/motion';
-      document.addEventListener('astro:before-swap', cleanupMotion);
+      import { runCleanups } from '@/lib/lifecycle';
+      document.addEventListener('astro:before-swap', () => {
+        cleanupMotion();
+        runCleanups();
+      });
     </script>
   </body>
 </html>

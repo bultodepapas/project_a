@@ -306,29 +306,34 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
 </style>
 
 <script>
-  function initAwards() {
-    // Better timing: trigger when 35% visible and element is well within viewport
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.remove('opacity-0', 'translate-y-6');
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.35,
-      rootMargin: '-40px 0px -40px 0px'
-    });
+  import { initOnce } from '@/lib/lifecycle';
 
-    document.querySelectorAll('#awards .reveal-element').forEach((el) => {
-      observer.observe(el);
+  function initAwards() {
+    const section = document.getElementById('awards');
+    initOnce(section, 'awards', (root) => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('opacity-0', 'translate-y-6');
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.35,
+        rootMargin: '-40px 0px -40px 0px'
+      });
+
+      root.querySelectorAll('.reveal-element').forEach((el) => {
+        observer.observe(el);
+      });
+
+      return () => {
+        observer.disconnect();
+      };
     });
   }
 
-  // Initialize on load
   initAwards();
-
-  // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initAwards);
 </script>

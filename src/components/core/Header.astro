@@ -707,140 +707,157 @@ const iconPaths: Record<string, string> = {
 </style>
 
 <script>
+  import { initOnce } from '@/lib/lifecycle';
+
   function initHeader() {
     const header = document.querySelector('[data-header]') as HTMLElement;
-    const menuToggle = document.querySelector('[data-menu-toggle]') as HTMLElement;
-    const mobileMenu = document.querySelector('[data-mobile-menu]') as HTMLElement;
-    const navLinks = document.querySelectorAll('[data-nav-link]');
-    const navIndicator = document.querySelector('[data-nav-indicator]') as HTMLElement;
+    initOnce(header, 'header', (root) => {
+      const menuToggle = root.querySelector('[data-menu-toggle]') as HTMLElement | null;
+      const mobileMenu = root.querySelector('[data-mobile-menu]') as HTMLElement | null;
+      const navLinks = root.querySelectorAll('[data-nav-link]');
+      const navIndicator = root.querySelector('[data-nav-indicator]') as HTMLElement | null;
+      const logo = root.querySelector('[data-logo]') as HTMLElement | null;
+      const cta = root.querySelector('[data-cta]') as HTMLElement | null;
+      const disposers: Array<() => void> = [];
 
-    if (!header) return;
+      const on = (
+        target: EventTarget,
+        event: string,
+        handler: (e: Event) => void,
+        options?: AddEventListenerOptions
+      ) => {
+        target.addEventListener(event, handler, options);
+        disposers.push(() => target.removeEventListener(event, handler, options));
+      };
 
-    // === SCROLL BEHAVIOR ===
-    let lastScroll = 0;
-    const scrollThreshold = 50;
-
-    const handleScroll = () => {
-      const currentScroll = window.scrollY;
-
-      if (currentScroll > scrollThreshold) {
-        header.classList.add('is-scrolled');
-      } else {
-        header.classList.remove('is-scrolled');
-      }
-
-      lastScroll = currentScroll;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    // === MOBILE MENU TOGGLE ===
-    if (menuToggle && mobileMenu) {
-      menuToggle.addEventListener('click', () => {
-        const isOpen = mobileMenu.classList.contains('is-open');
-
-        if (isOpen) {
-          mobileMenu.classList.remove('is-open');
-          menuToggle.classList.remove('is-open');
-          document.body.style.overflow = '';
+      // === SCROLL BEHAVIOR ===
+      const scrollThreshold = 50;
+      const handleScroll = () => {
+        const currentScroll = window.scrollY;
+        if (currentScroll > scrollThreshold) {
+          root.classList.add('is-scrolled');
         } else {
-          mobileMenu.classList.add('is-open');
-          menuToggle.classList.add('is-open');
-          document.body.style.overflow = 'hidden';
+          root.classList.remove('is-scrolled');
         }
-      });
-
-      // Close on link click
-      mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.remove('is-open');
-          menuToggle.classList.remove('is-open');
-          document.body.style.overflow = '';
-        });
-      });
-    }
-
-    // === NAV LINK HOVER INDICATOR ===
-    if (navIndicator && navLinks.length > 0) {
-      const moveIndicator = (link: Element) => {
-        const rect = (link as HTMLElement).getBoundingClientRect();
-        const containerRect = link.parentElement?.getBoundingClientRect();
-        if (!containerRect) return;
-
-        navIndicator.style.width = `${rect.width}px`;
-        navIndicator.style.left = `${rect.left - containerRect.left}px`;
-        navIndicator.style.opacity = '1';
       };
 
-      const hideIndicator = () => {
-        navIndicator.style.opacity = '0';
-      };
+      on(window, 'scroll', handleScroll, { passive: true });
+      handleScroll();
 
-      navLinks.forEach(link => {
-        link.addEventListener('mouseenter', () => moveIndicator(link));
-      });
+      // === MOBILE MENU TOGGLE ===
+      if (menuToggle && mobileMenu) {
+        const toggleMenu = () => {
+          const isOpen = mobileMenu.classList.contains('is-open');
+          if (isOpen) {
+            mobileMenu.classList.remove('is-open');
+            menuToggle.classList.remove('is-open');
+            document.body.style.overflow = '';
+          } else {
+            mobileMenu.classList.add('is-open');
+            menuToggle.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+          }
+        };
 
-      const container = navLinks[0]?.parentElement;
-      container?.addEventListener('mouseleave', hideIndicator);
-    }
+        on(menuToggle, 'click', toggleMenu);
 
-    // === MAGNETIC EFFECT ON LINKS ===
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
-
-    if (!prefersReducedMotion && hasFinePointer) {
-      navLinks.forEach(link => {
-        const el = link as HTMLElement;
-
-        el.addEventListener('mousemove', (e: MouseEvent) => {
-          const rect = el.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-
-          el.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`;
-        });
-
-        el.addEventListener('mouseleave', () => {
-          el.style.transform = 'translate(0, 0)';
-        });
-      });
-
-      // CTA magnetic effect
-      const cta = document.querySelector('[data-cta]') as HTMLElement;
-      if (cta) {
-        cta.addEventListener('mousemove', (e: MouseEvent) => {
-          const rect = cta.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-
-          cta.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px) translateY(-2px)`;
-        });
-
-        cta.addEventListener('mouseleave', () => {
-          cta.style.transform = 'translate(0, 0)';
+        mobileMenu.querySelectorAll('a').forEach((link) => {
+          const closeMenu = () => {
+            mobileMenu.classList.remove('is-open');
+            menuToggle.classList.remove('is-open');
+            document.body.style.overflow = '';
+          };
+          on(link, 'click', closeMenu);
         });
       }
 
-      // Logo magnetic effect
-      const logo = document.querySelector('[data-logo]') as HTMLElement;
-      if (logo) {
-        logo.addEventListener('mousemove', (e: MouseEvent) => {
-          const rect = logo.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
+      // === NAV LINK HOVER INDICATOR ===
+      if (navIndicator && navLinks.length > 0) {
+        const moveIndicator = (link: Element) => {
+          const rect = (link as HTMLElement).getBoundingClientRect();
+          const containerRect = link.parentElement?.getBoundingClientRect();
+          if (!containerRect) return;
 
-          logo.style.transform = `translate(${x * 0.05}px, ${y * 0.05}px)`;
+          navIndicator.style.width = `${rect.width}px`;
+          navIndicator.style.left = `${rect.left - containerRect.left}px`;
+          navIndicator.style.opacity = '1';
+        };
+
+        const hideIndicator = () => {
+          navIndicator.style.opacity = '0';
+        };
+
+        navLinks.forEach((link) => {
+          on(link, 'mouseenter', () => moveIndicator(link));
         });
 
-        logo.addEventListener('mouseleave', () => {
-          logo.style.transform = 'translate(0, 0)';
-        });
+        const container = (navLinks[0] as HTMLElement | undefined)?.parentElement;
+        if (container) {
+          on(container, 'mouseleave', hideIndicator);
+        }
       }
-    }
+
+      // === MAGNETIC EFFECT ON LINKS ===
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+      if (!prefersReducedMotion && hasFinePointer) {
+        navLinks.forEach((link) => {
+          const el = link as HTMLElement;
+          const handleMove = (e: Event) => {
+            const mouseEvent = e as MouseEvent;
+            const rect = el.getBoundingClientRect();
+            const x = mouseEvent.clientX - rect.left - rect.width / 2;
+            const y = mouseEvent.clientY - rect.top - rect.height / 2;
+            el.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`;
+          };
+          const handleLeave = () => {
+            el.style.transform = 'translate(0, 0)';
+          };
+          on(el, 'mousemove', handleMove);
+          on(el, 'mouseleave', handleLeave);
+        });
+
+        if (cta) {
+          const handleMove = (e: Event) => {
+            const mouseEvent = e as MouseEvent;
+            const rect = cta.getBoundingClientRect();
+            const x = mouseEvent.clientX - rect.left - rect.width / 2;
+            const y = mouseEvent.clientY - rect.top - rect.height / 2;
+            cta.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px) translateY(-2px)`;
+          };
+          const handleLeave = () => {
+            cta.style.transform = 'translate(0, 0)';
+          };
+          on(cta, 'mousemove', handleMove);
+          on(cta, 'mouseleave', handleLeave);
+        }
+
+        if (logo) {
+          const handleMove = (e: Event) => {
+            const mouseEvent = e as MouseEvent;
+            const rect = logo.getBoundingClientRect();
+            const x = mouseEvent.clientX - rect.left - rect.width / 2;
+            const y = mouseEvent.clientY - rect.top - rect.height / 2;
+            logo.style.transform = `translate(${x * 0.05}px, ${y * 0.05}px)`;
+          };
+          const handleLeave = () => {
+            logo.style.transform = 'translate(0, 0)';
+          };
+          on(logo, 'mousemove', handleMove);
+          on(logo, 'mouseleave', handleLeave);
+        }
+      }
+
+      return () => {
+        disposers.forEach((dispose) => dispose());
+        if (mobileMenu) mobileMenu.classList.remove('is-open');
+        if (menuToggle) menuToggle.classList.remove('is-open');
+        document.body.style.overflow = '';
+      };
+    });
   }
 
-  // Initialize
   initHeader();
   document.addEventListener('astro:page-load', initHeader);
 </script>

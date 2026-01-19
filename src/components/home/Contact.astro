@@ -151,7 +151,7 @@ const contactMethods = [
       <div class="relative p-8 rounded-3xl bg-gradient-to-br from-surface to-background border border-border overflow-hidden">
         <!-- Background pattern -->
         <div class="absolute inset-0 opacity-5">
-          <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><g fill=\"%23000\" fill-opacity=\"0.4\"><path d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/></g></g></svg>'); background-size: 30px 30px;"></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23000%22%20fill-opacity%3D%220.4%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E'); background-size: 30px 30px;"></div>
         </div>
 
         <div class="relative flex flex-col md:flex-row items-center justify-between gap-8">
@@ -254,55 +254,64 @@ const contactMethods = [
 </style>
 
 <script>
+  import { initOnce } from '@/lib/lifecycle';
+
   function initContact() {
-    // Reveal animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.remove('opacity-0', 'translate-y-6');
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.2,
-      rootMargin: '50px'
-    });
-
-    document.querySelectorAll('#contact .reveal-element').forEach((el) => {
-      observer.observe(el);
-    });
-
-    // Copy email functionality
-    const copyBtn = document.getElementById('copy-email-btn');
-    const feedback = document.getElementById('copy-feedback');
-
-    if (copyBtn && feedback) {
-      copyBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const email = copyBtn.dataset.email;
-
-        if (email) {
-          try {
-            await navigator.clipboard.writeText(email);
-            feedback.classList.remove('opacity-0');
-            feedback.classList.add('opacity-100');
-
-            setTimeout(() => {
-              feedback.classList.remove('opacity-100');
-              feedback.classList.add('opacity-0');
-            }, 2000);
-          } catch (err) {
-            console.error('Failed to copy email:', err);
+    const section = document.getElementById('contact');
+    initOnce(section, 'contact', (root) => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('opacity-0', 'translate-y-6');
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            observer.unobserve(entry.target);
           }
-        }
+        });
+      }, {
+        threshold: 0.2,
+        rootMargin: '50px'
       });
-    }
+
+      root.querySelectorAll('.reveal-element').forEach((el) => {
+        observer.observe(el);
+      });
+
+      const copyBtn = root.querySelector('#copy-email-btn') as HTMLElement | null;
+      const feedback = root.querySelector('#copy-feedback') as HTMLElement | null;
+
+      let clickHandler: ((e: Event) => void) | null = null;
+      if (copyBtn && feedback) {
+        clickHandler = async (e: Event) => {
+          e.preventDefault();
+          const email = (copyBtn as HTMLElement).dataset.email;
+
+          if (email) {
+            try {
+              await navigator.clipboard.writeText(email);
+              feedback.classList.remove('opacity-0');
+              feedback.classList.add('opacity-100');
+
+              setTimeout(() => {
+                feedback.classList.remove('opacity-100');
+                feedback.classList.add('opacity-0');
+              }, 2000);
+            } catch (err) {
+              console.error('Failed to copy email:', err);
+            }
+          }
+        };
+        copyBtn.addEventListener('click', clickHandler);
+      }
+
+      return () => {
+        observer.disconnect();
+        if (copyBtn && clickHandler) {
+          copyBtn.removeEventListener('click', clickHandler);
+        }
+      };
+    });
   }
 
-  // Initialize on load
   initContact();
-
-  // Re-initialize on view transitions
   document.addEventListener('astro:page-load', initContact);
 </script>

@@ -37,60 +37,77 @@ const { lang, categories } = Astro.props;
 </div>
 
 <script>
+  import { initOnce } from '@/lib/lifecycle';
+
   function initArticleFilters() {
-    const filterBtns = document.querySelectorAll('.article-filters .filter-btn');
-    const cards = document.querySelectorAll('.article-card');
-    const noResultsMsg = document.getElementById('no-results-message');
+    const container = document.querySelector('.article-filters');
+    initOnce(container, 'article-filters', (root) => {
+      const filterBtns = root.querySelectorAll('.filter-btn');
+      const cards = document.querySelectorAll('.article-card');
+      const noResultsMsg = document.getElementById('no-results-message');
+      const disposers: Array<() => void> = [];
 
-    let activeCategory = 'all';
+      const on = (
+        target: EventTarget,
+        event: string,
+        handler: EventListenerOrEventListenerObject,
+        options?: AddEventListenerOptions
+      ) => {
+        target.addEventListener(event, handler, options);
+        disposers.push(() => target.removeEventListener(event, handler, options));
+      };
 
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const group = btn.getAttribute('data-group');
-        const filter = btn.getAttribute('data-filter') || 'all';
+      let activeCategory = 'all';
 
-        // Update UI
-        document.querySelectorAll(`.article-filters .filter-btn[data-group="${group}"]`).forEach(b => {
-          b.classList.remove('bg-primary', 'text-white', 'border-primary');
-          b.classList.add('bg-transparent', 'text-muted', 'border-border');
+      filterBtns.forEach((btn) => {
+        on(btn, 'click', () => {
+          const group = btn.getAttribute('data-group');
+          const filter = btn.getAttribute('data-filter') || 'all';
+
+          document.querySelectorAll(`.article-filters .filter-btn[data-group="${group}"]`).forEach((b) => {
+            b.classList.remove('bg-primary', 'text-white', 'border-primary');
+            b.classList.add('bg-transparent', 'text-muted', 'border-border');
+          });
+          btn.classList.remove('bg-transparent', 'text-muted', 'border-border');
+          btn.classList.add('bg-primary', 'text-white', 'border-primary');
+
+          activeCategory = filter;
+          filterCards();
         });
-        btn.classList.remove('bg-transparent', 'text-muted', 'border-border');
-        btn.classList.add('bg-primary', 'text-white', 'border-primary');
-
-        // Apply filter
-        activeCategory = filter;
-        filterCards();
       });
-    });
 
-    function filterCards() {
-      let visibleCount = 0;
+      function filterCards() {
+        let visibleCount = 0;
 
-      cards.forEach(card => {
-        const cardCategory = card.getAttribute('data-category');
-        const isVisible = activeCategory === 'all' || cardCategory === activeCategory;
+        cards.forEach((card) => {
+          const cardCategory = card.getAttribute('data-category');
+          const isVisible = activeCategory === 'all' || cardCategory === activeCategory;
 
-        if (isVisible) {
-          (card as HTMLElement).style.display = 'flex';
-          setTimeout(() => {
-            card.classList.remove('opacity-0', 'translate-y-4');
-            card.classList.add('opacity-100', 'translate-y-0');
-          }, 50);
-          visibleCount++;
-        } else {
-          (card as HTMLElement).style.display = 'none';
-          card.classList.add('opacity-0', 'translate-y-4');
-          card.classList.remove('opacity-100', 'translate-y-0');
+          if (isVisible) {
+            (card as HTMLElement).style.display = 'flex';
+            setTimeout(() => {
+              card.classList.remove('opacity-0', 'translate-y-4');
+              card.classList.add('opacity-100', 'translate-y-0');
+            }, 50);
+            visibleCount++;
+          } else {
+            (card as HTMLElement).style.display = 'none';
+            card.classList.add('opacity-0', 'translate-y-4');
+            card.classList.remove('opacity-100', 'translate-y-0');
+          }
+        });
+
+        if (noResultsMsg) {
+          noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
         }
-      });
-
-      if (noResultsMsg) {
-        noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
       }
-    }
+
+      return () => {
+        disposers.forEach((dispose) => dispose());
+      };
+    });
   }
 
-  // Initialize
   initArticleFilters();
   document.addEventListener('astro:page-load', initArticleFilters);
 </script>
