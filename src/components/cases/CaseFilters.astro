@@ -51,9 +51,11 @@ const { lang, themes } = Astro.props;
     const container = document.querySelector('.case-filters');
     initOnce(container, 'case-filters', (root) => {
       const noResultsMsg = document.getElementById('no-results-message');
+      const cardsRoot = root.closest('.section') ?? document;
 
       return useFilters(root, {
         cardSelector: '.case-card',
+        cardsRoot,
         filterAttr: 'data-theme',
         noResultsEl: noResultsMsg,
         onShow: (card) => {

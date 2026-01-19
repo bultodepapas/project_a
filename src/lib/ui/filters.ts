@@ -1,6 +1,7 @@
 export type FilterOptions = {
   buttonSelector?: string;
   cardSelector: string;
+  cardsRoot?: ParentNode;
   filterAttr: string;
   groupAttr?: string;
   noResultsEl?: HTMLElement | null;
@@ -15,6 +16,7 @@ export function useFilters(root: Element, options: FilterOptions) {
   const {
     buttonSelector = '.filter-btn',
     cardSelector,
+    cardsRoot = document,
     filterAttr,
     groupAttr = 'data-group',
     noResultsEl,
@@ -28,7 +30,7 @@ export function useFilters(root: Element, options: FilterOptions) {
   const buttons = Array.from(root.querySelectorAll(buttonSelector));
   if (buttons.length === 0) return () => {};
 
-  const cards = Array.from(document.querySelectorAll(cardSelector));
+  const cards = Array.from(cardsRoot.querySelectorAll(cardSelector));
   const disposers: Array<() => void> = [];
 
   const on = (

@@ -1908,6 +1908,13 @@ jobs:
 
 ---
 
+### 14.2 Generacion de PDF
+
+- Requiere servidor activo: `npm run dev` o `npm run preview`.
+- Ejecutar: `npm run gen:pdf`.
+- Salida: `public/pdf/*`.
+- Validar que los PDFs tengan tamaño razonable y contenido actualizado.
+
 ## 15. Plan de Ejecución (Sprints)
 
 ### 15.1 Resumen de Sprints

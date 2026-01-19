@@ -5,27 +5,23 @@
  */
 
 import Page from '@/layouts/Page.astro';
-import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import ArticleCard from '@/components/perspectives/ArticleCard.astro';
 import ArticleFilters from '@/components/perspectives/ArticleFilters.astro';
+import { getLangOrRedirect, getLangStaticPaths } from '@/lib/i18n-routing';
 
 // Generate static paths for each language
 export function getStaticPaths() {
-  return supportedLangs.map((lang) => ({
-    params: { lang },
-  }));
+  return getLangStaticPaths();
 }
 
 const { lang } = Astro.params;
 
-// Validate language
-if (!isValidLang(lang)) {
-  return Astro.redirect('/en/perspectives');
+const { lang: typedLang, redirect } = getLangOrRedirect(lang, '/en/perspectives');
+if (redirect) {
+  return Astro.redirect(redirect);
 }
-
-const typedLang = lang as Lang;
 
 const allArticles: CollectionEntry<'articles'>[] = await getCollection('articles');
 const articles = allArticles

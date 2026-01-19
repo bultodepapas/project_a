@@ -5,7 +5,7 @@
  */
 
 import Page from '@/layouts/Page.astro';
-import { supportedLangs, type Lang, isValidLang } from '@/i18n/config';
+import { getLangOrRedirect, getLangStaticPaths } from '@/lib/i18n-routing';
 import { t } from '@/i18n';
 import ResumeHeader from '@/components/resume/ResumeHeader.astro';
 import ResumeSection from '@/components/resume/ResumeSection.astro';
@@ -19,19 +19,15 @@ import homeData from '@/data/home.json';
 
 // Generate static paths for each language
 export function getStaticPaths() {
-  return supportedLangs.map((lang) => ({
-    params: { lang },
-  }));
+  return getLangStaticPaths();
 }
 
 const { lang } = Astro.params;
 
-// Validate language
-if (!isValidLang(lang)) {
-  return Astro.redirect('/en/resume');
+const { lang: typedLang, redirect } = getLangOrRedirect(lang, '/en/resume');
+if (redirect) {
+  return Astro.redirect(redirect);
 }
-
-const typedLang = lang as Lang;
 
 const pageTitle = `${t(typedLang, 'resume.title')} | ${siteData.name}`;
 const pageDescription = t(typedLang, 'site.description');

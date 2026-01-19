@@ -44,9 +44,11 @@ const { lang, categories } = Astro.props;
     const container = document.querySelector('.article-filters');
     initOnce(container, 'article-filters', (root) => {
       const noResultsMsg = document.getElementById('no-results-message');
+      const cardsRoot = root.closest('.section') ?? document;
 
       return useFilters(root, {
         cardSelector: '.article-card',
+        cardsRoot,
         filterAttr: 'data-category',
         noResultsEl: noResultsMsg,
         onShow: (card) => {
