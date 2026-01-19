@@ -151,6 +151,7 @@
   },
   "a11y": {
     "skipToContent": "Pular para o conteúdo",
+    "toggleTheme": "Alternar tema",
     "menuToggle": "Alternar menu",
     "menuOpen": "Abrir menu",
     "menuClose": "Fechar menu",

@@ -464,6 +464,7 @@ const iconPaths: Record<string, string> = {
                 const timeoutId = window.setTimeout(() => {
                   cleanups.push(
                     animateCounter(metricEl, {
+                      start: 0,
                       target,
                       duration: 1500,
                       easing: 'easeOutExpo',

@@ -587,6 +587,7 @@ const headlineWords = headline.split(' ');
           const timeoutId = window.setTimeout(() => {
             cleanups.push(
               animateCounter(counter, {
+                start: 0,
                 target: parseInt(counter.dataset.target || '0', 10),
                 duration: 1500,
               })

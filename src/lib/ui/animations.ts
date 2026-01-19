@@ -44,6 +44,7 @@ export function createRevealObserver(root: Element, options: RevealOptions = {})
 }
 
 export type CounterOptions = {
+  start?: number;
   target?: number;
   duration?: number;
   easing?: 'easeOutCubic' | 'easeOutExpo';
@@ -57,6 +58,7 @@ const easeOutExpo = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
 
 export function animateCounter(el: HTMLElement, options: CounterOptions = {}) {
   const {
+    start,
     target = parseInt(el.dataset.target || '0', 10),
     duration = 1200,
     easing = 'easeOutCubic',
@@ -64,6 +66,17 @@ export function animateCounter(el: HTMLElement, options: CounterOptions = {}) {
     suffix = '',
     formatter,
   } = options;
+
+  const initialText = el.textContent || '';
+  const inferredStart = parseInt(initialText.replace(/[^0-9]/g, ''), 10);
+  const startValue: number = (typeof start === 'number' && Number.isFinite(start))
+    ? start
+    : (Number.isFinite(inferredStart) ? inferredStart : 0);
+
+  if (startValue === target) {
+    el.textContent = formatter ? formatter(target) : `${prefix}${target}${suffix}`;
+    return () => {};
+  }
 
   let rafId: number | null = null;
   const startTime = performance.now();
@@ -78,7 +91,7 @@ export function animateCounter(el: HTMLElement, options: CounterOptions = {}) {
     const elapsed = currentTime - startTime;
     const progress = Math.min(elapsed / duration, 1);
     const eased = easingFn(progress);
-    const current = Math.floor(target * eased);
+    const current = Math.floor(startValue + (target - startValue) * eased);
 
     el.textContent = render(current);
 

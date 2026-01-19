@@ -359,7 +359,7 @@ const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stro
         <div class="relative py-8 px-6 grid grid-cols-3 gap-6 text-center">
           <div class="lang-stat-item">
             <div class="text-4xl md:text-5xl font-black lang-stat-value">
-              <span class="lang-counter" data-target="4">0</span>
+              <span class="lang-counter" data-target="4">4</span>
             </div>
             <div class="text-sm lang-stat-label mt-1">
               {lang === 'es' ? 'Idiomas' : lang === 'fr' ? 'Langues' : lang === 'pt' ? 'Idiomas' : 'Languages'}
@@ -370,7 +370,7 @@ const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stro
 
           <div class="lang-stat-item">
             <div class="text-4xl md:text-5xl font-black lang-stat-value">
-              <span class="lang-counter" data-target="3">0</span>
+              <span class="lang-counter" data-target="3">3</span>
             </div>
             <div class="text-sm lang-stat-label mt-1">
               {lang === 'es' ? 'Continentes' : lang === 'fr' ? 'Continents' : lang === 'pt' ? 'Continentes' : 'Continents'}
@@ -381,7 +381,7 @@ const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stro
 
           <div class="lang-stat-item">
             <div class="text-4xl md:text-5xl font-black lang-stat-value">
-              <span class="lang-counter" data-target="8">0</span>+
+              <span class="lang-counter" data-target="8">8</span>+
             </div>
             <div class="text-sm lang-stat-label mt-1">
               {lang === 'es' ? 'Años' : lang === 'fr' ? 'Années' : lang === 'pt' ? 'Anos' : 'Years'}
@@ -411,8 +411,15 @@ const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stro
         selector: '.lang-reveal',
         threshold: 0.45,
         rootMargin: '-60px 0px -60px 0px',
-        visibleClass: 'is-visible',
+        visibleClass: '',
         onReveal: (el) => {
+          const counters = el.querySelectorAll('.lang-counter');
+          counters.forEach((counter) => {
+            (counter as HTMLElement).textContent = '0';
+          });
+
+          el.classList.add('is-visible');
+
           const progressRing = el.querySelector('.lang-progress-ring') as SVGCircleElement | null;
           if (progressRing) {
             cleanups.push(animateRing(progressRing, { delay: 500 }));
@@ -423,10 +430,11 @@ const soundWaveIcon = `<path stroke-linecap="round" stroke-linejoin="round" stro
             cleanups.push(animateWaveBar(waveBar, { delay: 700 }));
           }
 
-          const counters = el.querySelectorAll('.lang-counter');
           counters.forEach((counter, i) => {
             schedule(() => {
-              cleanups.push(animateCounter(counter as HTMLElement, { duration: 1000 }));
+              cleanups.push(
+                animateCounter(counter as HTMLElement, { start: 0, duration: 1000 })
+              );
             }, 900 + i * 150);
           });
         },
