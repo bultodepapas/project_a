@@ -47,7 +47,7 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
   lang={typedLang}
 >
   <!-- Cinematic Hero Section -->
-  <section class="perspectives-hero relative min-h-[45vh] md:min-h-[50vh] flex items-center justify-center overflow-hidden">
+  <section class="perspectives-hero relative pt-32 pb-16 md:pt-40 md:pb-20 overflow-hidden">
     <!-- Aurora Background -->
     <div class="aurora-bg absolute inset-0 pointer-events-none">
       <div class="aurora-orb aurora-orb-1"></div>
@@ -66,27 +66,40 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
     </div>
 
     <!-- Hero Content -->
-    <div class="container relative z-10 text-center">
-      <div class="hero-content max-w-4xl mx-auto">
+    <div class="container relative z-10">
+      <div class="hero-content max-w-5xl mx-auto text-center">
         <!-- Animated Title -->
-        <h1 class="perspectives-title text-5xl md:text-7xl lg:text-8xl font-display font-bold mb-6 overflow-hidden">
+        <h1 class="perspectives-title text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-4 overflow-hidden">
           <span class="title-word inline-block">{t(typedLang, 'perspectives.index.title')}</span>
         </h1>
 
         <!-- Typewriter Subtitle -->
-        <p class="perspectives-subtitle text-lg md:text-xl lg:text-2xl text-muted max-w-2xl mx-auto opacity-0">
+        <p class="perspectives-subtitle text-lg md:text-xl text-muted max-w-2xl mx-auto mb-12 opacity-0">
           {t(typedLang, 'perspectives.index.subtitle')}
         </p>
 
-        <!-- Scroll Indicator -->
-        <div class="scroll-indicator mt-12 opacity-0">
-          <div class="scroll-line"></div>
+        <!-- Stats Row -->
+        <div class="stats-row flex flex-wrap justify-center gap-8 md:gap-16 opacity-0">
+          <div class="stat-item text-center">
+            <span class="stat-number text-3xl md:text-4xl font-bold text-accent">{articles.length}</span>
+            <span class="stat-label block text-sm text-muted mt-1">{t(typedLang, 'perspectives.index.stats.articles')}</span>
+          </div>
+          <div class="stat-item text-center">
+            <span class="stat-number text-3xl md:text-4xl font-bold text-accent">{categories.length}</span>
+            <span class="stat-label block text-sm text-muted mt-1">{t(typedLang, 'perspectives.index.stats.topics')}</span>
+          </div>
+          <div class="stat-item text-center">
+            <span class="stat-number text-3xl md:text-4xl font-bold text-accent">
+              {Math.ceil(articles.reduce((acc, a) => acc + (a.data.readTime || 5), 0) / 60)}h
+            </span>
+            <span class="stat-label block text-sm text-muted mt-1">{t(typedLang, 'perspectives.index.stats.readTime')}</span>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Bottom Gradient Fade -->
-    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
   </section>
 
   <!-- Main Content Section -->
