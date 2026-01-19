@@ -52,14 +52,32 @@ export function initHiredForUI() {
 
       const revealCleanup = createRevealObserver(root, {
         selector: '.reveal-element',
-        threshold: 0.4,
-        rootMargin: '-50px 0px -50px 0px',
+        threshold: 0.1,
+        rootMargin: '0px 0px -80px 0px',
         visibleClass: '',
         onReveal: (el) => {
           el.classList.remove('opacity-0', 'translate-y-8', 'translate-y-12');
           el.classList.add('opacity-100', 'translate-y-0');
 
           if (el.classList.contains('hired-card')) {
+            // Initialize tilt effect after reveal to avoid transform conflicts
+            cleanups.push(
+              bindTilt(el as HTMLElement, {
+                intensity: 20,
+                scale: 1.02,
+                perspective: 1200,
+                onMove: () => {
+                  // Disable CSS transition during tilt for smooth movement
+                  (el as HTMLElement).style.transition = 'none';
+                },
+                onLeave: () => {
+                  // Re-enable transition and reset transform
+                  (el as HTMLElement).style.transition = '';
+                  (el as HTMLElement).style.transform = '';
+                },
+              })
+            );
+
             const metricEl = el.querySelector('.metric-value') as HTMLElement | null;
             if (metricEl) {
               const metric = metricEl.dataset.metric || metricEl.textContent || '';
@@ -89,19 +107,6 @@ export function initHiredForUI() {
       updateConnectionLines();
       const resizeHandler = () => updateConnectionLines();
       window.addEventListener('resize', resizeHandler);
-
-      root.querySelectorAll('.hired-card').forEach((card) => {
-        cleanups.push(
-          bindTilt(card as HTMLElement, {
-            intensity: 20,
-            scale: 1.02,
-            perspective: 1200,
-            onLeave: () => {
-              (card as HTMLElement).style.transform = '';
-            },
-          })
-        );
-      });
 
       return () => {
         revealCleanup();

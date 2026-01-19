@@ -1,14 +1,13 @@
 ---
 /**
- * Article Detail Page
- * Individual article with full content
+ * Article Detail Page - Cinematic Editorial Experience
+ * Premium reading experience with immersive effects
  */
 
 import Page from '@/layouts/Page.astro';
 import { type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
 import { getCollection, type CollectionEntry } from 'astro:content';
-import ArticleHeader from '@/components/perspectives/ArticleHeader.astro';
 
 export interface Props {
   entry: CollectionEntry<'articles'>;
@@ -44,6 +43,51 @@ const articlesForLang = allArticles
 const currentIndex = articlesForLang.findIndex((a) => a.data.articleSlug === articleData.articleSlug);
 const prevArticle = currentIndex < articlesForLang.length - 1 ? articlesForLang[currentIndex + 1] : null;
 const nextArticle = currentIndex > 0 ? articlesForLang[currentIndex - 1] : null;
+
+// Category styling
+const categoryStyles: Record<string, { gradient: string; glow: string; text: string; bg: string }> = {
+  'ai-marketing': {
+    gradient: 'from-emerald-500 via-teal-500 to-cyan-500',
+    glow: 'rgba(16, 185, 129, 0.5)',
+    text: 'text-emerald-400',
+    bg: 'bg-emerald-500/10'
+  },
+  'strategy': {
+    gradient: 'from-blue-500 via-indigo-500 to-purple-500',
+    glow: 'rgba(59, 130, 246, 0.5)',
+    text: 'text-blue-400',
+    bg: 'bg-blue-500/10'
+  },
+  'industry-trends': {
+    gradient: 'from-amber-500 via-orange-500 to-red-500',
+    glow: 'rgba(245, 158, 11, 0.5)',
+    text: 'text-amber-400',
+    bg: 'bg-amber-500/10'
+  },
+  'personal-growth': {
+    gradient: 'from-purple-500 via-pink-500 to-rose-500',
+    glow: 'rgba(168, 85, 247, 0.5)',
+    text: 'text-purple-400',
+    bg: 'bg-purple-500/10'
+  },
+};
+
+const catStyle = categoryStyles[articleData.category] || {
+  gradient: 'from-accent via-teal-500 to-cyan-500',
+  glow: 'rgba(74, 144, 164, 0.5)',
+  text: 'text-accent',
+  bg: 'bg-accent/10'
+};
+
+// Format date
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(typedLang, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
 ---
 
 <Page
@@ -52,35 +96,173 @@ const nextArticle = currentIndex > 0 ? articlesForLang[currentIndex - 1] : null;
   lang={typedLang}
   ogType="article"
 >
-  <article class="section">
-    <div class="container max-w-4xl">
-      <!-- Breadcrumb -->
-      <nav class="mb-8">
-        <a href={`/${typedLang}/perspectives`} class="text-sm text-muted hover:text-accent transition-colors">
-          &larr; {t(typedLang, 'perspectives.detail.backToIndex')}
+  <!-- Reading Progress Bar -->
+  <div class="reading-progress-container fixed top-0 left-0 right-0 z-50 h-1 bg-transparent">
+    <div class="reading-progress h-full w-0 bg-gradient-to-r {catStyle.gradient}" style={`--glow-color: ${catStyle.glow}`}></div>
+  </div>
+
+  <!-- Cinematic Hero -->
+  <section class="article-hero relative min-h-[70vh] md:min-h-[80vh] flex items-end overflow-hidden">
+    <!-- Dynamic Background based on category -->
+    <div class="hero-bg absolute inset-0">
+      <!-- Aurora Orbs -->
+      <div class="aurora-orb aurora-orb-1" style={`--glow: ${catStyle.glow}`}></div>
+      <div class="aurora-orb aurora-orb-2" style={`--glow: ${catStyle.glow}`}></div>
+      <div class="aurora-orb aurora-orb-3"></div>
+
+      <!-- Mesh Grid Pattern -->
+      <div class="mesh-pattern absolute inset-0 opacity-[0.03]"></div>
+
+      <!-- Gradient Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="particles absolute inset-0 pointer-events-none overflow-hidden">
+      {[...Array(20)].map((_, i) => (
+        <div class={`particle particle-${i + 1}`} style={`--delay: ${i * 0.5}s`}></div>
+      ))}
+    </div>
+
+    <!-- Hero Content -->
+    <div class="container relative z-10 pb-16 md:pb-24">
+      <!-- Back Navigation -->
+      <nav class="back-nav mb-8 opacity-0">
+        <a
+          href={`/${typedLang}/perspectives`}
+          class="group inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition-all duration-300"
+        >
+          <span class="back-arrow w-8 h-8 rounded-full bg-surface/50 backdrop-blur-sm border border-border/50 flex items-center justify-center transition-all duration-300 group-hover:-translate-x-1 group-hover:bg-accent group-hover:border-accent">
+            <svg class="w-4 h-4 transition-colors group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </span>
+          <span class="group-hover:text-accent transition-colors">{t(typedLang, 'perspectives.detail.backToIndex')}</span>
         </a>
       </nav>
 
-      <ArticleHeader
-        lang={typedLang}
-        title={articleData.title}
-        category={articleData.category}
-        publishDate={articleData.publishDate}
-        readTime={articleData.readTime}
-        originalUrl={articleData.originalUrl}
-      />
-
-      <!-- Article Content -->
-      <div class="prose prose-neutral dark:prose-invert max-w-none mb-12">
-        <Content />
+      <!-- Category Badge -->
+      <div class="category-wrapper mb-6 opacity-0">
+        <span class={`category-badge inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wider ${catStyle.text} ${catStyle.bg} border border-current/20 backdrop-blur-sm`}>
+          <span class="category-dot w-2 h-2 rounded-full bg-current animate-pulse"></span>
+          {t(typedLang, `perspectives.index.filters.${articleData.category}`)}
+        </span>
       </div>
 
-      <!-- Tags -->
+      <!-- Title with Split Text Animation -->
+      <h1 class="article-title text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-foreground leading-tight max-w-5xl mb-8">
+        {articleData.title.split(' ').map((word: string, i: number) => (
+          <span class="title-word inline-block overflow-hidden">
+            <span class="word-inner inline-block" style={`--word-delay: ${i * 0.05}s`}>{word}&nbsp;</span>
+          </span>
+        ))}
+      </h1>
+
+      <!-- Meta Info -->
+      <div class="meta-info flex flex-wrap items-center gap-6 text-sm text-muted opacity-0">
+        <!-- Date -->
+        <div class="meta-item flex items-center gap-2">
+          <div class="meta-icon w-10 h-10 rounded-full bg-surface/50 backdrop-blur-sm border border-border/50 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <span class="block text-xs text-muted/70 uppercase tracking-wider">{t(typedLang, 'perspectives.detail.publishedOn')}</span>
+            <span class="text-foreground font-medium">{formatDate(articleData.publishDate)}</span>
+          </div>
+        </div>
+
+        <!-- Read Time -->
+        <div class="meta-item flex items-center gap-2">
+          <div class="meta-icon w-10 h-10 rounded-full bg-surface/50 backdrop-blur-sm border border-border/50 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <span class="block text-xs text-muted/70 uppercase tracking-wider">{t(typedLang, 'perspectives.detail.readTime')}</span>
+            <span class="text-foreground font-medium">{articleData.readTime}</span>
+          </div>
+        </div>
+
+        <!-- Original Link -->
+        {articleData.originalUrl && (
+          <a
+            href={articleData.originalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="meta-item group flex items-center gap-2 hover:text-accent transition-colors"
+          >
+            <div class="meta-icon w-10 h-10 rounded-full bg-surface/50 backdrop-blur-sm border border-border/50 flex items-center justify-center transition-all duration-300 group-hover:bg-accent group-hover:border-accent">
+              <svg class="w-5 h-5 transition-colors group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </div>
+            <div>
+              <span class="block text-xs text-muted/70 uppercase tracking-wider">Source</span>
+              <span class="text-foreground font-medium group-hover:text-accent transition-colors">{t(typedLang, 'perspectives.detail.readOnMedium')}</span>
+            </div>
+          </a>
+        )}
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 opacity-0">
+      <div class="scroll-mouse w-6 h-10 rounded-full border-2 border-muted/50 flex justify-center pt-2">
+        <div class="scroll-wheel w-1 h-2 rounded-full bg-accent animate-scroll-wheel"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Article Content -->
+  <article class="article-content relative">
+    <!-- Decorative Side Elements -->
+    <div class="article-decoration hidden lg:block">
+      <div class="deco-line left-line"></div>
+      <div class="deco-line right-line"></div>
+    </div>
+
+    <div class="container max-w-4xl py-16 md:py-24">
+      <!-- Article Body with Enhanced Prose -->
+      <div class="prose-wrapper relative">
+        <!-- Table of Contents (auto-generated via JS) -->
+        <aside class="toc-sidebar hidden xl:block">
+          <div class="toc-container sticky top-24">
+            <div class="toc-header text-xs font-semibold uppercase tracking-wider text-muted mb-4">
+              Contents
+            </div>
+            <nav class="toc-nav" id="toc-nav">
+              <!-- Populated by JS -->
+            </nav>
+            <div class="toc-progress mt-4">
+              <div class="toc-progress-bar h-1 bg-border/30 rounded-full overflow-hidden">
+                <div class="toc-progress-fill h-full bg-accent rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Article Content -->
+        <div class="article-prose prose prose-lg prose-neutral dark:prose-invert max-w-none">
+          <Content />
+        </div>
+      </div>
+
+      <!-- Tags Section -->
       {articleData.tags && articleData.tags.length > 0 && (
-        <div class="mb-12 pt-8 border-t border-border">
-          <div class="flex flex-wrap gap-2">
-            {articleData.tags.map((tag: string) => (
-              <span class="px-3 py-1 text-xs font-medium rounded-full bg-background-alt text-muted border border-border">
+        <div class="tags-section mt-16 pt-8 border-t border-border/50 opacity-0">
+          <div class="tags-header text-xs font-semibold uppercase tracking-wider text-muted mb-4">
+            Topics
+          </div>
+          <div class="tags-list flex flex-wrap gap-3">
+            {articleData.tags.map((tag: string, i: number) => (
+              <span
+                class="tag-item px-4 py-2 text-sm font-medium rounded-full bg-surface border border-border/50 text-muted hover:border-accent hover:text-accent transition-all duration-300 cursor-default"
+                style={`--tag-delay: ${i * 0.05}s`}
+              >
+                <span class="tag-hash text-accent/50 mr-1">#</span>
                 {tag}
               </span>
             ))}
@@ -88,35 +270,816 @@ const nextArticle = currentIndex > 0 ? articlesForLang[currentIndex - 1] : null;
         </div>
       )}
 
-      <!-- Navigation -->
-      <nav class="flex flex-col sm:flex-row justify-between gap-4 pt-8 border-t border-border">
-        {prevArticle ? (
-          <a
-            href={`/${typedLang}/perspectives/${prevArticle.data.articleSlug}`}
-            class="group flex-1 p-4 rounded-lg border border-border hover:border-accent transition-all"
-          >
-            <span class="text-xs text-muted uppercase tracking-wider mb-1 block">Previous</span>
-            <span class="text-foreground font-medium group-hover:text-accent transition-colors line-clamp-1">
-              {prevArticle.data.title}
+      <!-- Share & Actions -->
+      <div class="actions-section mt-12 flex flex-wrap items-center justify-between gap-4 py-6 border-y border-border/50 opacity-0">
+        <div class="share-label text-sm text-muted">
+          Enjoyed this article? Share it with others.
+        </div>
+        <div class="share-buttons flex items-center gap-3">
+          <button class="share-btn group" data-share="twitter" aria-label="Share on Twitter">
+            <span class="share-icon w-10 h-10 rounded-full bg-surface border border-border/50 flex items-center justify-center transition-all duration-300 group-hover:bg-[#1DA1F2] group-hover:border-[#1DA1F2]">
+              <svg class="w-5 h-5 transition-colors group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
             </span>
-          </a>
-        ) : (
-          <div class="flex-1"></div>
-        )}
-        {nextArticle ? (
-          <a
-            href={`/${typedLang}/perspectives/${nextArticle.data.articleSlug}`}
-            class="group flex-1 p-4 rounded-lg border border-border hover:border-accent transition-all text-right"
-          >
-            <span class="text-xs text-muted uppercase tracking-wider mb-1 block">Next</span>
-            <span class="text-foreground font-medium group-hover:text-accent transition-colors line-clamp-1">
-              {nextArticle.data.title}
+          </button>
+          <button class="share-btn group" data-share="linkedin" aria-label="Share on LinkedIn">
+            <span class="share-icon w-10 h-10 rounded-full bg-surface border border-border/50 flex items-center justify-center transition-all duration-300 group-hover:bg-[#0A66C2] group-hover:border-[#0A66C2]">
+              <svg class="w-5 h-5 transition-colors group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
             </span>
-          </a>
-        ) : (
-          <div class="flex-1"></div>
-        )}
+          </button>
+          <button class="share-btn group" data-share="copy" aria-label="Copy link">
+            <span class="share-icon w-10 h-10 rounded-full bg-surface border border-border/50 flex items-center justify-center transition-all duration-300 group-hover:bg-accent group-hover:border-accent">
+              <svg class="w-5 h-5 transition-colors group-hover:text-white copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+              <svg class="w-5 h-5 transition-colors group-hover:text-white check-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Article Navigation -->
+      <nav class="article-nav mt-16 opacity-0">
+        <div class="nav-grid grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Previous Article -->
+          {prevArticle ? (
+            <a
+              href={`/${typedLang}/perspectives/${prevArticle.data.articleSlug}`}
+              class="nav-card nav-prev group relative p-6 rounded-2xl bg-surface/50 backdrop-blur-sm border border-border/50 overflow-hidden transition-all duration-500 hover:border-accent/50"
+            >
+              <div class="nav-glow absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="nav-content relative z-10">
+                <div class="nav-label flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted mb-3">
+                  <svg class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  <span>Previous</span>
+                </div>
+                <h4 class="nav-title text-lg font-semibold text-foreground group-hover:text-accent transition-colors duration-300 line-clamp-2">
+                  {prevArticle.data.title}
+                </h4>
+              </div>
+              <div class="nav-arrow absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-surface border border-border/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:bg-accent group-hover:border-accent">
+                <svg class="w-5 h-5 text-foreground group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </div>
+            </a>
+          ) : (
+            <div class="nav-placeholder"></div>
+          )}
+
+          <!-- Next Article -->
+          {nextArticle ? (
+            <a
+              href={`/${typedLang}/perspectives/${nextArticle.data.articleSlug}`}
+              class="nav-card nav-next group relative p-6 rounded-2xl bg-surface/50 backdrop-blur-sm border border-border/50 overflow-hidden transition-all duration-500 hover:border-accent/50 text-right"
+            >
+              <div class="nav-glow absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="nav-content relative z-10">
+                <div class="nav-label flex items-center justify-end gap-2 text-xs font-semibold uppercase tracking-wider text-muted mb-3">
+                  <span>Next</span>
+                  <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+                <h4 class="nav-title text-lg font-semibold text-foreground group-hover:text-accent transition-colors duration-300 line-clamp-2">
+                  {nextArticle.data.title}
+                </h4>
+              </div>
+              <div class="nav-arrow absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-surface border border-border/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:bg-accent group-hover:border-accent">
+                <svg class="w-5 h-5 text-foreground group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </a>
+          ) : (
+            <div class="nav-placeholder"></div>
+          )}
+        </div>
       </nav>
     </div>
   </article>
+
+  <!-- Back to Top Button -->
+  <button
+    class="back-to-top fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-accent text-white shadow-lg opacity-0 pointer-events-none transition-all duration-300 hover:scale-110 hover:shadow-xl"
+    aria-label="Back to top"
+  >
+    <svg class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+  </button>
 </Page>
+
+<style>
+  /* ============================================
+   * READING PROGRESS BAR
+   * ============================================ */
+  .reading-progress {
+    box-shadow: 0 0 20px var(--glow-color, rgba(74, 144, 164, 0.5));
+    transition: width 0.1s ease-out;
+  }
+
+  /* ============================================
+   * HERO BACKGROUND
+   * ============================================ */
+  .hero-bg {
+    background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-alt) 100%);
+  }
+
+  .aurora-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.3;
+    animation: aurora-drift 25s ease-in-out infinite;
+  }
+
+  .aurora-orb-1 {
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, var(--glow, rgba(74, 144, 164, 0.5)) 0%, transparent 70%);
+    top: -300px;
+    right: -200px;
+    animation-delay: 0s;
+  }
+
+  .aurora-orb-2 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--glow, rgba(74, 144, 164, 0.4)) 0%, transparent 70%);
+    bottom: 0;
+    left: -100px;
+    animation-delay: -8s;
+    animation-duration: 30s;
+  }
+
+  .aurora-orb-3 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: -15s;
+    animation-duration: 35s;
+  }
+
+  @keyframes aurora-drift {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(50px, -30px) scale(1.1);
+    }
+    66% {
+      transform: translate(-30px, 50px) scale(0.9);
+    }
+  }
+
+  /* Mesh Pattern */
+  .mesh-pattern {
+    background-image:
+      linear-gradient(rgba(74, 144, 164, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74, 144, 164, 0.1) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  :root.dark .mesh-pattern {
+    background-image:
+      linear-gradient(rgba(45, 212, 191, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45, 212, 191, 0.08) 1px, transparent 1px);
+  }
+
+  /* ============================================
+   * FLOATING PARTICLES
+   * ============================================ */
+  .particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    opacity: 0;
+    animation: particle-rise 20s ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+
+  .particle-1 { left: 5%; bottom: 10%; }
+  .particle-2 { left: 15%; bottom: 20%; }
+  .particle-3 { left: 25%; bottom: 5%; }
+  .particle-4 { left: 35%; bottom: 15%; }
+  .particle-5 { left: 45%; bottom: 25%; }
+  .particle-6 { left: 55%; bottom: 10%; }
+  .particle-7 { left: 65%; bottom: 20%; }
+  .particle-8 { left: 75%; bottom: 5%; }
+  .particle-9 { left: 85%; bottom: 15%; }
+  .particle-10 { left: 95%; bottom: 25%; }
+  .particle-11 { left: 10%; bottom: 30%; }
+  .particle-12 { left: 30%; bottom: 35%; }
+  .particle-13 { left: 50%; bottom: 30%; }
+  .particle-14 { left: 70%; bottom: 35%; }
+  .particle-15 { left: 90%; bottom: 30%; }
+  .particle-16 { left: 20%; bottom: 40%; }
+  .particle-17 { left: 40%; bottom: 45%; }
+  .particle-18 { left: 60%; bottom: 40%; }
+  .particle-19 { left: 80%; bottom: 45%; }
+  .particle-20 { left: 50%; bottom: 50%; }
+
+  @keyframes particle-rise {
+    0% {
+      opacity: 0;
+      transform: translateY(0) scale(0);
+    }
+    10% {
+      opacity: 0.6;
+      transform: translateY(-20px) scale(1);
+    }
+    90% {
+      opacity: 0.6;
+      transform: translateY(-200px) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-220px) scale(0);
+    }
+  }
+
+  /* ============================================
+   * TITLE ANIMATION
+   * ============================================ */
+  .title-word {
+    perspective: 1000px;
+  }
+
+  .word-inner {
+    transform: translateY(120%) rotateX(-40deg);
+    opacity: 0;
+    animation: word-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(0.3s + var(--word-delay, 0s));
+  }
+
+  @keyframes word-reveal {
+    to {
+      transform: translateY(0) rotateX(0);
+      opacity: 1;
+    }
+  }
+
+  /* ============================================
+   * BACK NAVIGATION
+   * ============================================ */
+  .back-nav {
+    animation: fade-slide-down 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.1s;
+  }
+
+  @keyframes fade-slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ============================================
+   * CATEGORY & META ANIMATIONS
+   * ============================================ */
+  .category-wrapper {
+    animation: fade-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.2s;
+  }
+
+  .meta-info {
+    animation: fade-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 1s;
+  }
+
+  @keyframes fade-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Category Dot Pulse */
+  .category-dot {
+    animation: dot-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes dot-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+  }
+
+  /* ============================================
+   * SCROLL INDICATOR
+   * ============================================ */
+  .scroll-cue {
+    animation: fade-in 0.6s ease forwards;
+    animation-delay: 1.5s;
+  }
+
+  @keyframes fade-in {
+    to { opacity: 0.6; }
+  }
+
+  .animate-scroll-wheel {
+    animation: scroll-wheel 1.5s ease-in-out infinite;
+  }
+
+  @keyframes scroll-wheel {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(8px); opacity: 0; }
+  }
+
+  /* ============================================
+   * ARTICLE DECORATION
+   * ============================================ */
+  .article-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .deco-line {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--color-border) 10%,
+      var(--color-border) 90%,
+      transparent
+    );
+    opacity: 0.3;
+  }
+
+  .left-line {
+    left: calc(50% - 450px);
+  }
+
+  .right-line {
+    right: calc(50% - 450px);
+  }
+
+  /* ============================================
+   * TABLE OF CONTENTS
+   * ============================================ */
+  .toc-sidebar {
+    position: absolute;
+    left: -280px;
+    top: 0;
+    width: 240px;
+    height: 100%;
+  }
+
+  .toc-container {
+    padding: 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: toc-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 1.5s;
+  }
+
+  @keyframes toc-reveal {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .toc-nav a {
+    display: block;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    border-left: 2px solid transparent;
+    padding-left: 0.75rem;
+    margin-left: -1px;
+    transition: all 0.3s ease;
+  }
+
+  .toc-nav a:hover,
+  .toc-nav a.active {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+  }
+
+  /* ============================================
+   * PROSE ENHANCEMENTS
+   * ============================================ */
+  .article-prose {
+    --tw-prose-body: var(--color-text);
+    --tw-prose-headings: var(--color-text);
+    --tw-prose-links: var(--color-accent);
+    --tw-prose-bold: var(--color-text);
+    --tw-prose-quotes: var(--color-text-muted);
+    --tw-prose-quote-borders: var(--color-accent);
+  }
+
+  .article-prose :where(h2, h3, h4) {
+    scroll-margin-top: 6rem;
+    position: relative;
+  }
+
+  .article-prose :where(h2)::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    background: linear-gradient(to bottom, var(--color-accent), transparent);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .article-prose :where(h2):hover::before {
+    opacity: 1;
+  }
+
+  .article-prose :where(p, li) {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: prose-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes prose-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .article-prose :where(blockquote) {
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+    border-radius: 0 1rem 1rem 0;
+    padding: 1.5rem 2rem;
+    border-left-width: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .article-prose :where(blockquote)::before {
+    content: '"';
+    position: absolute;
+    top: -0.5rem;
+    left: 1rem;
+    font-size: 4rem;
+    font-family: Georgia, serif;
+    color: var(--color-accent);
+    opacity: 0.2;
+  }
+
+  .article-prose :where(a) {
+    text-decoration: none;
+    background: linear-gradient(to right, var(--color-accent), var(--color-accent));
+    background-size: 0% 2px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s ease;
+  }
+
+  .article-prose :where(a):hover {
+    background-size: 100% 2px;
+  }
+
+  /* ============================================
+   * TAGS SECTION
+   * ============================================ */
+  .tags-section {
+    animation: fade-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .tag-item {
+    animation: tag-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--tag-delay, 0s);
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  @keyframes tag-pop {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* ============================================
+   * ACTIONS SECTION
+   * ============================================ */
+  .actions-section {
+    animation: fade-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .share-btn:active .share-icon {
+    transform: scale(0.9);
+  }
+
+  /* ============================================
+   * NAVIGATION CARDS
+   * ============================================ */
+  .article-nav {
+    animation: fade-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .nav-glow {
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(74, 144, 164, 0.1),
+      transparent 40%
+    );
+  }
+
+  :root.dark .nav-glow {
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(45, 212, 191, 0.08),
+      transparent 40%
+    );
+  }
+
+  /* ============================================
+   * BACK TO TOP BUTTON
+   * ============================================ */
+  .back-to-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .back-to-top {
+    box-shadow: 0 4px 20px rgba(74, 144, 164, 0.4);
+  }
+
+  :root.dark .back-to-top {
+    box-shadow: 0 4px 20px rgba(45, 212, 191, 0.3);
+  }
+
+  /* ============================================
+   * REDUCED MOTION
+   * ============================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .aurora-orb,
+    .particle,
+    .word-inner,
+    .back-nav,
+    .category-wrapper,
+    .meta-info,
+    .scroll-cue,
+    .category-dot,
+    .animate-scroll-wheel,
+    .toc-container,
+    .article-prose :where(p, li),
+    .tags-section,
+    .tag-item,
+    .actions-section,
+    .article-nav {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { initOnce, initSection } from '@/lib/lifecycle';
+
+  function initArticlePage() {
+    const container = document.querySelector('.article-hero');
+    if (!container) return;
+
+    initOnce(container, 'article-detail-cinematic', () => {
+      const cleanupFunctions: Array<() => void> = [];
+
+      // ========== Reading Progress Bar ==========
+      const progressBar = document.querySelector('.reading-progress') as HTMLElement;
+      const article = document.querySelector('.article-content');
+
+      if (progressBar && article) {
+        const updateProgress = () => {
+          const articleRect = article.getBoundingClientRect();
+          const articleTop = articleRect.top + window.scrollY;
+          const articleHeight = articleRect.height;
+          const windowHeight = window.innerHeight;
+          const scrollY = window.scrollY;
+
+          const progress = Math.min(
+            Math.max((scrollY - articleTop + windowHeight * 0.3) / articleHeight, 0),
+            1
+          );
+
+          progressBar.style.width = `${progress * 100}%`;
+
+          // Update TOC progress
+          const tocProgressFill = document.querySelector('.toc-progress-fill') as HTMLElement;
+          if (tocProgressFill) {
+            tocProgressFill.style.width = `${progress * 100}%`;
+          }
+        };
+
+        window.addEventListener('scroll', updateProgress, { passive: true });
+        cleanupFunctions.push(() => window.removeEventListener('scroll', updateProgress));
+      }
+
+      // ========== Back to Top Button ==========
+      const backToTop = document.querySelector('.back-to-top') as HTMLElement;
+
+      if (backToTop) {
+        const toggleBackToTop = () => {
+          if (window.scrollY > 500) {
+            backToTop.classList.add('visible');
+          } else {
+            backToTop.classList.remove('visible');
+          }
+        };
+
+        window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        backToTop.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        cleanupFunctions.push(() => window.removeEventListener('scroll', toggleBackToTop));
+      }
+
+      // ========== Table of Contents Generation ==========
+      const tocNav = document.getElementById('toc-nav');
+      const articleProse = document.querySelector('.article-prose');
+
+      if (tocNav && articleProse) {
+        const headings = articleProse.querySelectorAll('h2, h3');
+        const tocItems: Array<{ id: string; text: string; level: number }> = [];
+
+        headings.forEach((heading, index) => {
+          const id = heading.id || `heading-${index}`;
+          heading.id = id;
+
+          tocItems.push({
+            id,
+            text: heading.textContent || '',
+            level: heading.tagName === 'H2' ? 2 : 3
+          });
+        });
+
+        if (tocItems.length > 0) {
+          tocNav.innerHTML = tocItems.map(item => `
+            <a href="#${item.id}" class="${item.level === 3 ? 'ml-3 text-xs' : ''}" data-toc-link>
+              ${item.text}
+            </a>
+          `).join('');
+
+          // Active TOC item tracking
+          const tocLinks = tocNav.querySelectorAll('[data-toc-link]');
+
+          const updateActiveTocItem = () => {
+            let activeId = '';
+
+            headings.forEach((heading) => {
+              const rect = heading.getBoundingClientRect();
+              if (rect.top <= 150) {
+                activeId = heading.id;
+              }
+            });
+
+            tocLinks.forEach((link) => {
+              link.classList.toggle('active', link.getAttribute('href') === `#${activeId}`);
+            });
+          };
+
+          window.addEventListener('scroll', updateActiveTocItem, { passive: true });
+          cleanupFunctions.push(() => window.removeEventListener('scroll', updateActiveTocItem));
+        }
+      }
+
+      // ========== Prose Animation on Scroll ==========
+      const proseElements = document.querySelectorAll('.article-prose p, .article-prose li, .article-prose blockquote');
+
+      const proseObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).style.animationDelay = `${index * 0.05}s`;
+            entry.target.classList.add('revealed');
+            proseObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+      proseElements.forEach((el) => proseObserver.observe(el));
+      cleanupFunctions.push(() => proseObserver.disconnect());
+
+      // ========== Tags Animation Trigger ==========
+      const tagsSection = document.querySelector('.tags-section');
+      if (tagsSection) {
+        const tagsObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              tagsObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.3 });
+
+        tagsObserver.observe(tagsSection);
+        cleanupFunctions.push(() => tagsObserver.disconnect());
+      }
+
+      // ========== Actions & Nav Animation Trigger ==========
+      const actionsSection = document.querySelector('.actions-section');
+      const articleNav = document.querySelector('.article-nav');
+
+      const sectionsObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            sectionsObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      if (actionsSection) sectionsObserver.observe(actionsSection);
+      if (articleNav) sectionsObserver.observe(articleNav);
+      cleanupFunctions.push(() => sectionsObserver.disconnect());
+
+      // ========== Nav Card Mouse Tracking ==========
+      const navCards = document.querySelectorAll('.nav-card');
+
+      navCards.forEach((card) => {
+        card.addEventListener('mousemove', (e) => {
+          const event = e as MouseEvent;
+          const rect = (card as HTMLElement).getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * 100;
+          const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+          (card as HTMLElement).style.setProperty('--mouse-x', `${x}%`);
+          (card as HTMLElement).style.setProperty('--mouse-y', `${y}%`);
+        });
+      });
+
+      // ========== Share Buttons ==========
+      const shareButtons = document.querySelectorAll('.share-btn');
+      const pageUrl = encodeURIComponent(window.location.href);
+      const pageTitle = encodeURIComponent(document.title);
+
+      shareButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const shareType = btn.getAttribute('data-share');
+
+          switch (shareType) {
+            case 'twitter':
+              window.open(`https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`, '_blank', 'width=550,height=420');
+              break;
+            case 'linkedin':
+              window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`, '_blank', 'width=550,height=420');
+              break;
+            case 'copy':
+              navigator.clipboard.writeText(window.location.href).then(() => {
+                const copyIcon = btn.querySelector('.copy-icon');
+                const checkIcon = btn.querySelector('.check-icon');
+
+                if (copyIcon && checkIcon) {
+                  copyIcon.classList.add('hidden');
+                  checkIcon.classList.remove('hidden');
+
+                  setTimeout(() => {
+                    copyIcon.classList.remove('hidden');
+                    checkIcon.classList.add('hidden');
+                  }, 2000);
+                }
+              });
+              break;
+          }
+        });
+      });
+
+      // Cleanup
+      return () => {
+        cleanupFunctions.forEach((fn) => fn());
+      };
+    });
+  }
+
+  initSection('article-detail-init', initArticlePage);
+</script>
