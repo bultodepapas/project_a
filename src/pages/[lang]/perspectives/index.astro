@@ -352,48 +352,59 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
   }
 
   /* ============================================
-   * SCROLL INDICATOR
+   * STATS ROW
    * ============================================ */
-  .scroll-indicator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+  .stats-row {
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(20px);
   }
 
-  .scroll-indicator.animate {
+  .stats-row.animate {
     opacity: 1;
-    animation: fade-in 0.6s ease forwards;
-    animation-delay: 1.5s;
+    transform: translateY(0);
   }
 
-  .scroll-line {
-    width: 1px;
-    height: 60px;
-    background: linear-gradient(to bottom, var(--color-accent), transparent);
+  .stat-item {
     position: relative;
-    overflow: hidden;
+    padding: 0 1rem;
   }
 
-  .scroll-line::after {
+  .stat-item:not(:last-child)::after {
     content: '';
     position: absolute;
-    top: -100%;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
-    animation: scroll-pulse 2s ease-in-out infinite;
+    right: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--color-border), transparent);
+    opacity: 0.5;
   }
 
-  @keyframes scroll-pulse {
-    0% { top: -100%; }
-    100% { top: 100%; }
+  @media (max-width: 640px) {
+    .stat-item:not(:last-child)::after {
+      display: none;
+    }
+  }
+
+  .stat-number {
+    display: block;
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stat-label {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
   }
 
   @keyframes fade-in {
     from { opacity: 0; }
-    to { opacity: 0.6; }
+    to { opacity: 1; }
   }
 
   /* ============================================
@@ -468,11 +479,11 @@ const pageDescription = t(typedLang, 'perspectives.index.subtitle');
         subtitle?.classList.add('animate');
       }, 800);
 
-      // Animate scroll indicator
+      // Animate stats row
       setTimeout(() => {
-        const scrollIndicator = document.querySelector('.scroll-indicator');
-        scrollIndicator?.classList.add('animate');
-      }, 1200);
+        const statsRow = document.querySelector('.stats-row');
+        statsRow?.classList.add('animate');
+      }, 1100);
 
       // Reveal filters
       setTimeout(() => {

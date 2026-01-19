@@ -122,7 +122,12 @@
         "industry-trends": "Industry Trends",
         "personal-growth": "Personal Growth"
       },
-      "noResults": "No articles match the current filter."
+      "noResults": "No articles match the current filter.",
+      "stats": {
+        "articles": "Articles",
+        "topics": "Topics",
+        "readTime": "Reading"
+      }
     },
     "detail": {
       "backToIndex": "All Perspectives",
