@@ -122,7 +122,12 @@
         "industry-trends": "Tendencias",
         "personal-growth": "Crecimiento Personal"
       },
-      "noResults": "No hay articulos que coincidan con el filtro actual."
+      "noResults": "No hay articulos que coincidan con el filtro actual.",
+      "stats": {
+        "articles": "Articulos",
+        "topics": "Temas",
+        "readTime": "Lectura"
+      }
     },
     "detail": {
       "backToIndex": "Todas las Perspectivas",
