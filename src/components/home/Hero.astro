@@ -256,7 +256,7 @@ const headlineWords = headline.split(' ');
   </div>
 
   <!-- Scroll indicator -->
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hero-reveal" style="--delay: 2000ms">
+  <div class="scroll-indicator-wrapper absolute bottom-8 left-1/2 -translate-x-1/2 hero-reveal" style="--delay: 2000ms">
     <a href="#proof" class="scroll-indicator group flex flex-col items-center gap-2 text-muted hover:text-accent transition-colors">
       <span class="text-xs font-medium uppercase tracking-widest">
         {lang === 'es' ? 'Explorar' : lang === 'fr' ? 'Explorer' : lang === 'pt' ? 'Explorar' : 'Explore'}
@@ -529,6 +529,16 @@ const headlineWords = headline.split(' ');
   }
 
   /* Scroll indicator */
+  .scroll-indicator-wrapper {
+    z-index: 20;
+  }
+
+  @media (max-width: 768px) {
+    .scroll-indicator-wrapper {
+      display: none;
+    }
+  }
+
   .animate-scroll-down {
     animation: scroll-down 2s ease-in-out infinite;
   }
