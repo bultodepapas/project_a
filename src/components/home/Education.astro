@@ -127,14 +127,14 @@ const icons: Record<string, string> = {
   <div class="container relative z-10">
     <!-- Epic Header with Glitch Effect -->
     <div class="edu-header text-center mb-10 md:mb-12 edu-reveal">
-      <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full edu-badge backdrop-blur-xl mb-5">
+      <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full edu-badge backdrop-blur-xl mb-4">
         <span class="edu-globe-spin text-3xl">🎓</span>
         <span class="text-sm font-medium edu-badge-text tracking-widest uppercase">
           {t(lang, 'education.subtitle') || 'Academic Journey'}
         </span>
       </div>
 
-      <h2 class="edu-title-glitch text-4xl md:text-6xl font-black edu-title mb-4" data-text={t(lang, 'education.title')}>
+      <h2 class="edu-title-glitch text-4xl md:text-6xl font-black edu-title mb-3" data-text={t(lang, 'education.title')}>
         {t(lang, 'education.title')}
       </h2>
 
@@ -143,7 +143,7 @@ const icons: Record<string, string> = {
       </p>
 
       <!-- World Map Path -->
-      <div class="edu-world-path mt-6 flex items-center justify-center gap-4 md:gap-8">
+      <div class="edu-world-path mt-4 flex items-center justify-center gap-4 md:gap-8">
         {items.map((item, i) => (
           <Fragment>
             <div
@@ -175,7 +175,7 @@ const icons: Record<string, string> = {
     </div>
 
     <!-- 3D Flip Cards Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-7 lg:gap-8">
       {items.map((item, index) => {
         const highlights = getArr(item.highlights);
         const skills = item.skills || [];
@@ -206,9 +206,9 @@ const icons: Record<string, string> = {
                 <div class="edu-spotlight absolute inset-0 pointer-events-none opacity-0 transition-opacity rounded-3xl"></div>
 
                 <!-- Content -->
-                <div class="relative h-full p-6 md:p-8 flex flex-col z-10">
+                <div class="relative h-full p-5 md:p-7 flex flex-col z-10">
                   <!-- Top: Status & Year -->
-                  <div class="flex items-start justify-between mb-6">
+                  <div class="flex items-start justify-between mb-4">
                     {item.status === 'inProgress' ? (
                       <div class="edu-status-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full edu-status-bg backdrop-blur-xl">
                         <span class="edu-status-dot relative flex h-2.5 w-2.5">
@@ -230,7 +230,7 @@ const icons: Record<string, string> = {
                   </div>
 
                   <!-- Icon with Orbital Ring -->
-                  <div class="relative w-20 h-20 mx-auto mb-6">
+                  <div class="relative w-20 h-20 mx-auto mb-4">
                     <div class="edu-orbital absolute inset-0">
                       <div class="edu-orbit-ring absolute inset-0 rounded-full border border-dashed" style={`border-color: ${item.color}40`}></div>
                       <div class="edu-orbit-dot absolute w-2 h-2 rounded-full" style={`background: ${item.color}`}></div>
@@ -249,17 +249,17 @@ const icons: Record<string, string> = {
 
                   <!-- Degree Info -->
                   <div class="text-center flex-1 flex flex-col">
-                    <h3 class="text-xl md:text-2xl font-bold edu-card-text mb-2 leading-tight">
+                    <h3 class="text-xl md:text-2xl font-bold edu-card-text mb-1.5 leading-tight">
                       {getStr(item.degree)}
                     </h3>
 
                     {item.field && (
-                      <p class="text-sm font-medium mb-4" style={`color: ${item.color}`}>
+                      <p class="text-sm font-medium mb-3" style={`color: ${item.color}`}>
                         {getStr(item.field)}
                       </p>
                     )}
 
-                    <div class="flex items-center justify-center gap-2 edu-card-text-muted text-sm mb-4">
+                    <div class="flex items-center justify-center gap-2 edu-card-text-muted text-sm mb-3">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                       </svg>
@@ -268,7 +268,7 @@ const icons: Record<string, string> = {
 
                     <!-- Achievement Badge -->
                     {item.achievement && (
-                      <div class="edu-achievement mt-auto mb-4">
+                      <div class="edu-achievement mt-auto mb-3">
                         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full" style={`background: ${item.color}15`}>
                           <span class="text-2xl font-black" style={`color: ${item.color}`}>{item.achievement.value}</span>
                           <span class="text-xs edu-card-text-muted">{achievementLabel}</span>
@@ -313,8 +313,8 @@ const icons: Record<string, string> = {
                 </div>
 
                 <!-- Back Content -->
-                <div class="relative h-full p-6 md:p-8 flex flex-col z-10">
-                  <div class="flex items-center gap-3 mb-6">
+                <div class="relative h-full p-5 md:p-7 flex flex-col z-10">
+                  <div class="flex items-center gap-3 mb-4">
                     <div class={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.gradient} p-0.5`}>
                       <div class="w-full h-full rounded-xl edu-icon-bg flex items-center justify-center">
                         <svg class="w-5 h-5 edu-icon-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -328,12 +328,12 @@ const icons: Record<string, string> = {
                     </div>
                   </div>
 
-                  <p class="edu-card-text-secondary text-sm leading-relaxed mb-6 flex-1">
+                  <p class="edu-card-text-secondary text-sm leading-relaxed mb-4 flex-1">
                     {backContent}
                   </p>
 
                   <!-- Highlights -->
-                  <div class="space-y-3 mb-6">
+                  <div class="space-y-2 mb-4">
                     <h5 class="text-xs font-semibold edu-card-text-muted uppercase tracking-wider">Key Focus Areas</h5>
                     {highlights.map((h) => (
                       <div class="flex items-center gap-3 text-sm edu-card-text-secondary">
@@ -380,8 +380,8 @@ const icons: Record<string, string> = {
     </div>
 
     <!-- Bottom Stats Banner -->
-    <div class="edu-stats-banner mt-8 md:mt-10 edu-reveal">
-      <div class="relative py-8 px-6 rounded-3xl overflow-hidden">
+    <div class="edu-stats-banner mt-6 md:mt-8 edu-reveal">
+      <div class="relative py-6 px-6 rounded-3xl overflow-hidden">
         <!-- Holographic Background -->
         <div class="edu-banner-holo absolute inset-0"></div>
         <div class="absolute inset-0 edu-banner-bg backdrop-blur-xl"></div>

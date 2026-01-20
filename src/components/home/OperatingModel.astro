@@ -78,8 +78,8 @@ const iconPaths: Record<string, string> = {
 
   <div class="container relative z-10">
     <!-- Header -->
-    <div class="text-center mb-8 md:mb-10 op-reveal">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-3">
+    <div class="text-center mb-6 md:mb-8 op-reveal">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-2.5">
         <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
         </svg>
@@ -88,10 +88,10 @@ const iconPaths: Record<string, string> = {
         </span>
       </div>
 
-      <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-3">
+      <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-2">
         {t(lang, 'operatingModel.title')}
       </h2>
-      <p class="text-base md:text-lg text-muted max-w-2xl mx-auto mb-1">
+      <p class="text-base md:text-lg text-muted max-w-2xl mx-auto mb-0.5">
         {t(lang, 'operatingModel.lead')}
       </p>
       <p class="text-sm md:text-base text-muted max-w-xl mx-auto">
@@ -104,10 +104,10 @@ const iconPaths: Record<string, string> = {
 
       <!-- Desktop: Horizontal Flow with Cards -->
       <div class="hidden md:block">
-        <div class="operating-diagram bg-surface/50 backdrop-blur-sm rounded-3xl border border-white/10 p-8 lg:p-12 op-reveal">
+        <div class="operating-diagram bg-surface/50 backdrop-blur-sm rounded-3xl border border-white/10 p-6 lg:p-10 op-reveal">
 
           <!-- Nodes Grid - Main Content -->
-          <div class="grid grid-cols-4 gap-6 lg:gap-8 mb-8">
+          <div class="grid grid-cols-4 gap-6 lg:gap-8 mb-6">
             {nodes.map((node, index) => {
               const iconPath = iconPaths[node.icon] || iconPaths.database;
 
@@ -122,7 +122,7 @@ const iconPaths: Record<string, string> = {
                        style={`background: ${node.color}30;`}></div>
 
                   <!-- Card content -->
-                  <div class="relative bg-background/80 backdrop-blur-sm rounded-2xl border border-white/10 p-6 transition-all duration-500 group-hover:border-white/20 group-hover:-translate-y-2 min-h-[280px] flex flex-col">
+                  <div class="relative bg-background/80 backdrop-blur-sm rounded-2xl border border-white/10 p-5 transition-all duration-500 group-hover:border-white/20 group-hover:-translate-y-2 min-h-[260px] flex flex-col">
                     <!-- Top accent -->
                     <div class="absolute top-0 left-4 right-4 h-0.5 rounded-full opacity-60"
                          style={`background: ${node.color};`}></div>
@@ -134,7 +134,7 @@ const iconPaths: Record<string, string> = {
                     </div>
 
                     <!-- Icon with ring -->
-                    <div class="relative w-16 h-16 mx-auto mb-4 flex-shrink-0">
+                    <div class="relative w-16 h-16 mx-auto mb-3 flex-shrink-0">
                       <!-- Rotating ring -->
                       <svg class="absolute inset-0 w-full h-full rotating-ring opacity-30" viewBox="0 0 64 64">
                         <circle cx="32" cy="32" r="30" fill="none" stroke={node.color} stroke-width="1" stroke-dasharray="4 4"/>
@@ -154,12 +154,12 @@ const iconPaths: Record<string, string> = {
                     </div>
 
                     <!-- Label -->
-                    <h3 class="text-lg font-bold text-foreground text-center mb-2 group-hover:text-accent transition-colors">
+                    <h3 class="text-lg font-bold text-foreground text-center mb-1.5 group-hover:text-accent transition-colors">
                       {getStr(node.label)}
                     </h3>
 
                     <!-- Description -->
-                    <p class="text-xs text-muted text-center mb-4 opacity-80 group-hover:opacity-100 transition-opacity flex-grow">
+                    <p class="text-xs text-muted text-center mb-3 opacity-80 group-hover:opacity-100 transition-opacity flex-grow">
                       {getStr(node.description)}
                     </p>
 
@@ -179,7 +179,7 @@ const iconPaths: Record<string, string> = {
           </div>
 
           <!-- Connection arrows between cards -->
-          <div class="flex items-center justify-center gap-4 mb-6">
+          <div class="flex items-center justify-center gap-4 mb-4">
             {nodes.slice(0, -1).map((node, index) => {
               const nextNode = nodes[index + 1];
               return (
@@ -199,7 +199,7 @@ const iconPaths: Record<string, string> = {
           </div>
 
           <!-- Learning Loop Label -->
-          <div class="flex items-center justify-center gap-4 pt-4 border-t border-white/5">
+          <div class="flex items-center justify-center gap-4 pt-3 border-t border-white/5">
             <div class="h-px flex-1 bg-gradient-to-r from-transparent via-accent/20 to-transparent"></div>
             <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-background/80 border border-white/10 backdrop-blur-sm">
               <svg class="w-4 h-4 text-accent animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -219,7 +219,7 @@ const iconPaths: Record<string, string> = {
 
       <!-- Mobile: Vertical Flow -->
       <div class="md:hidden">
-        <div class="space-y-6">
+        <div class="space-y-5">
           {nodes.map((node, index) => {
             const iconPath = iconPaths[node.icon] || iconPaths.database;
             const isLast = index === nodes.length - 1;
@@ -257,8 +257,8 @@ const iconPaths: Record<string, string> = {
 
                     <!-- Content -->
                     <div class="flex-1 min-w-0">
-                      <h3 class="font-bold text-foreground mb-1">{getStr(node.label)}</h3>
-                      <p class="text-sm text-muted mb-3">{getStr(node.description)}</p>
+                    <h3 class="font-bold text-foreground mb-1">{getStr(node.label)}</h3>
+                    <p class="text-sm text-muted mb-2">{getStr(node.description)}</p>
                       <div class="flex flex-wrap gap-1">
                         {node.items.map((item) => (
                           <span class="px-2 py-0.5 text-xs rounded-full"
@@ -275,7 +275,7 @@ const iconPaths: Record<string, string> = {
           })}
 
           <!-- Loop indicator -->
-          <div class="flex items-center justify-center gap-2 py-4 mt-4">
+          <div class="flex items-center justify-center gap-2 py-3 mt-3">
             <div class="h-px flex-1 bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
             <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/80 border border-white/10">
               <svg class="w-4 h-4 text-accent animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

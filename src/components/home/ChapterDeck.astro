@@ -69,14 +69,14 @@ const iconPaths: Record<string, string> = {
   <div class="absolute left-0 top-0 h-full w-[35%] bg-gradient-to-r from-background via-background/60 to-transparent pointer-events-none hidden md:block z-10"></div>
 
   <!-- Pinned Container -->
-  <div class="chapter-pin-wrapper relative min-h-screen flex items-center py-16 md:py-20">
+  <div class="chapter-pin-wrapper relative min-h-screen flex items-center py-12 md:py-16">
     <div class="container relative flex flex-col justify-center">
       <div class="grid md:grid-cols-[minmax(280px,380px)_1fr] md:gap-12 lg:gap-16 items-start">
 
         <!-- Static Header - Premium Design -->
-        <div class="mb-12 md:mb-0 max-w-md relative z-20">
+        <div class="mb-8 md:mb-0 max-w-md relative z-20">
           <!-- Floating eyebrow badge -->
-          <div class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-accent/15 to-accent/5 border border-accent/25 mb-8 reveal-header opacity-0 translate-y-4 backdrop-blur-sm">
+          <div class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-accent/15 to-accent/5 border border-accent/25 mb-5 reveal-header opacity-0 translate-y-4 backdrop-blur-sm">
             <div class="relative">
               <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
@@ -93,20 +93,20 @@ const iconPaths: Record<string, string> = {
           </div>
 
           <!-- Main title with gradient text -->
-          <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-5 reveal-header opacity-0 translate-y-4 leading-[1.1]" style="transition-delay: 100ms;">
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 reveal-header opacity-0 translate-y-4 leading-[1.1]" style="transition-delay: 100ms;">
             <span class="bg-gradient-to-br from-foreground via-foreground to-muted bg-clip-text text-transparent">
               {t(lang, 'systems.title')}
             </span>
           </h2>
 
-          <p class="text-lg md:text-xl text-muted mb-10 reveal-header opacity-0 translate-y-4 leading-relaxed" style="transition-delay: 200ms;">
+          <p class="text-base md:text-lg text-muted mb-6 reveal-header opacity-0 translate-y-4 leading-relaxed" style="transition-delay: 200ms;">
             {t(lang, 'systems.subtitle')}
           </p>
 
           <!-- Premium Progress Indicator -->
           <div class="hidden md:block reveal-header opacity-0 translate-y-4" style="transition-delay: 300ms;">
             <!-- Navigation dots with labels -->
-            <div class="flex items-center gap-4 mb-5">
+            <div class="flex items-center gap-4 mb-3">
               {chapters.map((chapter, i) => (
                 <button
                   class="chapter-nav-dot group relative flex flex-col items-center gap-2 transition-all duration-500"
@@ -196,10 +196,10 @@ const iconPaths: Record<string, string> = {
                   <div class="absolute inset-0 opacity-[0.02]" style="background-image: radial-gradient(circle at 1px 1px, currentColor 1px, transparent 1px); background-size: 24px 24px;"></div>
 
                   <!-- Content container -->
-                  <div class="relative h-full flex flex-col p-6 md:p-8 lg:p-10">
+                  <div class="relative h-full flex flex-col p-5 md:p-7 lg:p-8">
 
                     <!-- Header row -->
-                    <div class="flex items-start justify-between mb-5 md:mb-6">
+                    <div class="flex items-start justify-between mb-4 md:mb-5">
                       <!-- Eyebrow and chapter number -->
                       <div class="flex items-center gap-4">
                         <span class="px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest border"
@@ -248,19 +248,19 @@ const iconPaths: Record<string, string> = {
                     </div>
 
                     <!-- Title with shine effect -->
-                    <h3 class="card-title relative text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 leading-tight overflow-hidden">
+                    <h3 class="card-title relative text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2 leading-tight overflow-hidden">
                       <span class="relative z-10">{getStr(chapter.title)}</span>
                       <!-- Shine sweep -->
                       <span class="title-shine absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"></span>
                     </h3>
 
                     <!-- Description -->
-                    <p class="text-base md:text-lg text-muted mb-6 max-w-2xl leading-relaxed">
+                    <p class="text-base md:text-lg text-muted mb-4 max-w-2xl leading-relaxed">
                       {getStr(chapter.description)}
                     </p>
 
                     <!-- Features with staggered reveal -->
-                    <div class="flex flex-wrap gap-2.5 mb-6">
+                    <div class="flex flex-wrap gap-2.5 mb-4">
                       {chapter.features.map((feature, fIndex) => (
                         <div
                           class="feature-pill flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 cursor-default"
@@ -325,7 +325,7 @@ const iconPaths: Record<string, string> = {
   </div>
 
   <!-- Mobile Fallback / Reduced Motion (Premium Accordion) -->
-  <div class="chapter-accordion hidden flex-col gap-5 container pb-12">
+  <div class="chapter-accordion hidden flex-col gap-4 container pb-8">
     {chapters.map((chapter, index) => {
       const iconPath = iconPaths[chapter.icon] || iconPaths.users;
 
@@ -345,7 +345,7 @@ const iconPaths: Record<string, string> = {
 
           <div class="relative p-6">
             <!-- Header -->
-            <div class="flex items-start justify-between mb-4">
+            <div class="flex items-start justify-between mb-3">
               <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center"
                      style={`background: ${chapter.color}20;`}>
@@ -362,10 +362,10 @@ const iconPaths: Record<string, string> = {
             </div>
 
             <!-- Content -->
-            <h3 class="text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors">
+            <h3 class="text-xl font-bold text-foreground mb-1.5 group-hover:text-accent transition-colors">
               {getStr(chapter.title)}
             </h3>
-            <p class="text-muted mb-5 text-sm leading-relaxed">
+            <p class="text-muted mb-4 text-sm leading-relaxed">
               {getStr(chapter.description)}
             </p>
 
