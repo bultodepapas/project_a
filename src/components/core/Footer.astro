@@ -20,8 +20,12 @@ const copyrightText = tWithParams(lang, 'footer.copyright', { year: String(curre
 <footer class="border-t border-border bg-background">
   <div class="container py-8 md:py-12">
     <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-      <!-- Copyright -->
-      <p class="text-sm text-muted">
+      <!-- Copyright with Easter Egg -->
+      <p 
+        id="copyright-text"
+        class="text-sm text-muted cursor-pointer select-none transition-all hover:text-foreground"
+        data-click-count="0"
+      >
         {copyrightText}
       </p>
 
@@ -46,3 +50,62 @@ const copyrightText = tWithParams(lang, 'footer.copyright', { year: String(curre
     </div>
   </div>
 </footer>
+
+<script>
+  // Easter egg: 5 clicks on copyright reveals secret page
+  const copyrightEl = document.getElementById('copyright-text');
+  
+  if (copyrightEl) {
+    let clickCount = 0;
+    let resetTimer: ReturnType<typeof setTimeout>;
+    
+    copyrightEl.addEventListener('click', () => {
+      clickCount++;
+      copyrightEl.setAttribute('data-click-count', String(clickCount));
+      
+      // Add a subtle shake animation on each click
+      copyrightEl.style.animation = 'none';
+      setTimeout(() => {
+        copyrightEl.style.animation = 'shake 0.3s ease-in-out';
+      }, 10);
+      
+      // Reset counter after 3 seconds of inactivity
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        clickCount = 0;
+        copyrightEl.setAttribute('data-click-count', '0');
+      }, 3000);
+      
+      // Navigate to secret page on 5 clicks
+      if (clickCount === 5) {
+        // Add a celebration effect before navigating
+        copyrightEl.style.transform = 'scale(1.2)';
+        copyrightEl.style.color = '#f5576c';
+        
+        setTimeout(() => {
+          window.location.href = '/secret-love';
+        }, 300);
+      }
+    });
+  }
+</script>
+
+<style>
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px) rotate(-2deg); }
+    75% { transform: translateX(4px) rotate(2deg); }
+  }
+  
+  #copyright-text[data-click-count="1"],
+  #copyright-text[data-click-count="2"],
+  #copyright-text[data-click-count="3"],
+  #copyright-text[data-click-count="4"] {
+    opacity: 0.9;
+  }
+  
+  #copyright-text[data-click-count="3"],
+  #copyright-text[data-click-count="4"] {
+    color: hsl(var(--foreground) / 0.8);
+  }
+</style>
