@@ -1,4 +1,13 @@
 ---
+/**
+ * OperatingModel - "Data Flow Laboratory"
+ * Premium interactive visualization with:
+ * - PixiJS particle field (intelligent attractors)
+ * - Canvas data stream network
+ * - LiquidSwirl + 3D Tilt cards
+ * - Morphing SVG connections
+ * - Kinetic typography
+ */
 import { t } from '@/i18n';
 import type { Lang } from '@/i18n/config';
 
@@ -42,39 +51,14 @@ const iconPaths: Record<string, string> = {
 ---
 
 <section class="operating-section relative py-24 md:py-32 overflow-hidden" id="operating-model">
-  <!-- Animated Background -->
-  <div class="absolute inset-0 pointer-events-none">
-    <div class="absolute inset-0 bg-gradient-to-b from-background via-background-alt/30 to-background"></div>
-
-    <!-- Animated grid -->
-    <svg class="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <pattern id="op-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="currentColor" stroke-width="1"/>
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#op-grid)" />
-    </svg>
-
-    <!-- Floating orbs -->
-    <div class="op-orb-1 absolute w-[400px] h-[400px] rounded-full blur-3xl opacity-20"
-         style="background: radial-gradient(circle, #6ee7b7 0%, transparent 70%); top: 10%; left: 5%;"></div>
-    <div class="op-orb-2 absolute w-[350px] h-[350px] rounded-full blur-3xl opacity-15"
-         style="background: radial-gradient(circle, #c4b5fd 0%, transparent 70%); bottom: 10%; right: 10%;"></div>
-
-    <!-- Particles -->
-    {Array.from({ length: 20 }).map((_, i) => (
-      <div
-        class="absolute w-1 h-1 rounded-full bg-accent/30 op-particle"
-        style={`
-          left: ${10 + (i * 4) % 80}%;
-          top: ${15 + (i * 7) % 70}%;
-          animation: op-float ${6 + (i % 4)}s ease-in-out infinite;
-          animation-delay: ${(i % 3) * 1}s;
-        `}
-      />
-    ))}
+  
+  <!-- LAYER 1: Lab Atmosphere (PixiJS Particle Field) -->
+  <div class="lab-atmosphere" data-atmosphere>
+    <canvas id="lab-particles" class="lab-particles-canvas"></canvas>
   </div>
+
+  <!-- LAYER 2: Data Stream Network (Canvas 2D) -->
+  <canvas id="data-stream" class="data-stream-canvas"></canvas>
 
   <div class="container relative z-10">
     <!-- Header -->
@@ -99,55 +83,124 @@ const iconPaths: Record<string, string> = {
       </p>
     </div>
 
-    <!-- Flow Diagram Container -->
+    <!-- LAYER 3: Interactive Diagram -->
     <div class="relative max-w-6xl mx-auto">
 
-      <!-- Desktop: Horizontal Flow with Cards -->
+      <!-- Desktop: Premium Horizontal Flow -->
       <div class="hidden md:block">
-        <div class="operating-diagram bg-surface/50 backdrop-blur-sm rounded-3xl border border-white/10 p-6 lg:p-10 op-reveal">
+        <div class="operating-diagram relative op-reveal">
 
-          <!-- Nodes Grid - Main Content -->
-          <div class="grid grid-cols-4 gap-6 lg:gap-8 mb-6">
+          <!-- SVG Connection Layer (Morphing paths) -->
+          <svg class="connection-layer absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              {nodes.map((node, i) => (
+                <linearGradient id={`gradient-${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style={`stop-color: ${node.color}; stop-opacity: 0.6`} />
+                  <stop offset="100%" style={`stop-color: ${nodes[i + 1]?.color || node.color}; stop-opacity: 0.6`} />
+                </linearGradient>
+              ))}
+              
+              <!-- Flow animation gradient -->
+              <linearGradient id="flow-shine">
+                <stop offset="0%" stop-color="white" stop-opacity="0"/>
+                <stop offset="50%" stop-color="white" stop-opacity="0.8"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Connection paths (will be animated with JS) -->
+            <path id="path-0-1" class="connection-path" d="M200,200 L400,200" stroke={`url(#gradient-0)`} stroke-width="2.5" fill="none" opacity="0.6"/>
+            <path id="path-1-2" class="connection-path" d="M400,200 L600,200" stroke={`url(#gradient-1)`} stroke-width="2.5" fill="none" opacity="0.6"/>
+            <path id="path-2-3" class="connection-path" d="M600,200 L800,200" stroke={`url(#gradient-2)`} stroke-width="2.5" fill="none" opacity="0.6"/>
+            
+            <!-- Feedback loop (Learning Loop) -->
+            <path id="path-feedback" class="connection-path feedback-path" 
+                  d="M850,200 Q900,100 500,80 Q100,100 150,200" 
+                  stroke={nodes[3]?.color} 
+                  stroke-width="2" 
+                  fill="none" 
+                  opacity="0.3" 
+                  stroke-dasharray="8 6"/>
+          </svg>
+
+          <!-- Nodes Grid - Premium Cards -->
+          <div class="grid grid-cols-4 gap-6 lg:gap-8 mb-6 relative z-10">
             {nodes.map((node, index) => {
               const iconPath = iconPaths[node.icon] || iconPaths.database;
 
               return (
                 <div
                   class="node-card group relative"
-                  data-node={node.id}
+                  data-node-id={index}
+                  data-node-color={node.color}
                   style={`--node-color: ${node.color};`}
                 >
-                  <!-- Glow effect -->
-                  <div class="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500"
-                       style={`background: ${node.color}30;`}></div>
+                  <!-- SVG Liquid Filter -->
+                  <svg class="liquid-filter" data-liquid-filter width="0" height="0">
+                    <defs>
+                      <filter id={`liquid-swirl-${index}`} x="-50%" y="-50%" width="200%" height="200%">
+                        <feTurbulence 
+                          type="fractalNoise"
+                          baseFrequency="0.3"
+                          numOctaves="3"
+                          seed="0"
+                          result="turbulence"/>
+                        <feDisplacementMap
+                          in="SourceGraphic"
+                          in2="turbulence"
+                          scale="0"
+                          xChannelSelector="R"
+                          yChannelSelector="G"
+                          result="displaced"/>
+                        <feGaussianBlur stdDeviation="2" in="displaced" result="blur"/>
+                        <feMerge>
+                          <feMergeNode in="displaced"/>
+                          <feMergeNode in="blur"/>
+                        </feMerge>
+                      </filter>
+                    </defs>
+                  </svg>
+
+                  <!-- Holographic edge glow -->
+                  <div class="holo-edge" style={`--holo-color: ${node.color};`}></div>
+                  
+                  <!-- Scan line effect -->
+                  <div class="scan-line" style={`--scan-color: ${node.color};`}></div>
+
+                  <!-- Outer glow (hover state) - simplified -->
+                  <div class="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-60 transition-all duration-300 node-glow"
+                       style={`background: ${node.color}20; box-shadow: 0 4px 16px -4px ${node.color};`}></div>
 
                   <!-- Card content -->
-                  <div class="relative bg-background/80 backdrop-blur-sm rounded-2xl border border-white/10 p-5 transition-all duration-500 group-hover:border-white/20 group-hover:-translate-y-2 min-h-[260px] flex flex-col">
-                    <!-- Top accent -->
-                    <div class="absolute top-0 left-4 right-4 h-0.5 rounded-full opacity-60"
+                  <div class="relative bg-background/80 backdrop-blur-sm rounded-2xl border border-white/10 p-5 transition-all duration-500 group-hover:border-white/20 min-h-[280px] flex flex-col card-content card-inner"
+                       data-card-index={index}>
+                    
+                    <!-- Top accent line -->
+                    <div class="absolute top-0 left-4 right-4 h-0.5 rounded-full opacity-60 accent-line"
                          style={`background: ${node.color};`}></div>
 
-                    <!-- Step number -->
-                    <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-lg"
-                         style={`background: ${node.color}; color: #1a1a2e;`}>
+                    <!-- Step number badge -->
+                    <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-xl step-badge border-2 border-background"
+                         style={`background: ${node.color}; color: #1a1a2e;`}
+                         data-depth="0.3">
                       {index + 1}
                     </div>
 
-                    <!-- Icon with ring -->
-                    <div class="relative w-16 h-16 mx-auto mb-3 flex-shrink-0">
+                    <!-- Icon with animated ring -->
+                    <div class="relative w-16 h-16 mx-auto mb-3 flex-shrink-0 icon-wrapper" data-depth="0.7">
                       <!-- Rotating ring -->
                       <svg class="absolute inset-0 w-full h-full rotating-ring opacity-30" viewBox="0 0 64 64">
-                        <circle cx="32" cy="32" r="30" fill="none" stroke={node.color} stroke-width="1" stroke-dasharray="4 4"/>
+                        <circle cx="32" cy="32" r="30" fill="none" stroke={node.color} stroke-width="1.5" stroke-dasharray="4 4" opacity="0.8"/>
                       </svg>
 
-                      <!-- Pulse ring on hover -->
-                      <div class="absolute inset-0 rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-500"
+                      <!-- Pulse ring -->
+                      <div class="absolute inset-0 rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-500 pulse-ring"
                            style={`background: ${node.color}; filter: blur(8px);`}></div>
 
                       <!-- Icon container -->
-                      <div class="absolute inset-2 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+                      <div class="absolute inset-2 rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 icon-bg"
                            style={`background: linear-gradient(135deg, ${node.color}30, ${node.color}10);`}>
-                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke={node.color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke={node.color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
                           <path d={iconPath}/>
                         </svg>
                       </div>
@@ -164,9 +217,9 @@ const iconPaths: Record<string, string> = {
                     </p>
 
                     <!-- Items tags -->
-                    <div class="flex flex-wrap justify-center gap-1 mt-auto">
+                    <div class="flex flex-wrap justify-center gap-1 mt-auto" data-depth="0.2">
                       {node.items.map((item) => (
-                        <span class="px-2 py-0.5 text-xs rounded-full transition-all duration-300"
+                        <span class="px-2 py-0.5 text-xs rounded-full transition-all duration-300 item-tag"
                               style={`background: ${node.color}15; color: ${node.color};`}>
                           {item}
                         </span>
@@ -178,46 +231,37 @@ const iconPaths: Record<string, string> = {
             })}
           </div>
 
-          <!-- Connection arrows between cards -->
-          <div class="flex items-center justify-center gap-4 mb-4">
-            {nodes.slice(0, -1).map((node, index) => {
-              const nextNode = nodes[index + 1];
-              return (
-                <div class="flex items-center gap-4" style={`flex: 1; max-width: 200px;`}>
-                  <div class="flex-1 h-1 rounded-full relative overflow-hidden"
-                       style={`background: linear-gradient(to right, ${node.color}40, ${nextNode.color}40);`}>
-                    <!-- Animated flow -->
-                    <div class="absolute inset-0 flow-animation"
-                         style={`background: linear-gradient(to right, transparent, ${node.color}, ${nextNode.color}, transparent); animation-delay: ${index * 0.3}s;`}></div>
-                  </div>
-                  <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke={nextNode.color} stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </div>
-              );
-            })}
-          </div>
-
-          <!-- Learning Loop Label -->
-          <div class="flex items-center justify-center gap-4 pt-3 border-t border-white/5">
+          <!-- LAYER 4: Learning Loop - Kinetic Typography -->
+          <div class="learning-loop-container flex items-center justify-center gap-4 pt-6 border-t border-white/5">
             <div class="h-px flex-1 bg-gradient-to-r from-transparent via-accent/20 to-transparent"></div>
-            <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-background/80 border border-white/10 backdrop-blur-sm">
+            
+            <div class="loop-badge relative flex items-center gap-2 px-4 py-2 rounded-full bg-background/80 border border-white/10 backdrop-blur-sm">
+              <!-- Orbital path for kinetic text (SVG hidden) -->
+              <svg class="loop-orbit-svg" width="0" height="0">
+                <defs>
+                  <path id="loop-orbit" d="M 60,30 A 30,30 0 1,1 60,30 z" />
+                </defs>
+              </svg>
+              
               <svg class="w-4 h-4 text-accent animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 12a9 9 0 11-6.219-8.56"/>
               </svg>
-              <span class="text-sm font-medium text-muted">
+              
+              <span class="text-sm font-medium text-muted learning-loop-text">
                 {edges.find(e => e.curve)?.label ? getStr(edges.find(e => e.curve)?.label) : 'Learning Loop'}
               </span>
+              
               <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
               </svg>
             </div>
+            
             <div class="h-px flex-1 bg-gradient-to-r from-transparent via-accent/20 to-transparent"></div>
           </div>
         </div>
       </div>
 
-      <!-- Mobile: Vertical Flow -->
+      <!-- Mobile: Simplified Vertical Flow -->
       <div class="md:hidden">
         <div class="space-y-5">
           {nodes.map((node, index) => {
@@ -226,11 +270,10 @@ const iconPaths: Record<string, string> = {
 
             return (
               <div class="relative">
-                <!-- Connector line to next card -->
+                <!-- Connector line -->
                 {!isLast && (
                   <div class="absolute left-6 top-full w-0.5 h-6 z-0"
                        style={`background: linear-gradient(to bottom, ${node.color}, ${nodes[index + 1]?.color || node.color});`}>
-                    <!-- Arrow indicator -->
                     <svg class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3" viewBox="0 0 12 12" fill={nodes[index + 1]?.color || node.color}>
                       <path d="M6 12L0 6h12L6 12z"/>
                     </svg>
@@ -248,7 +291,6 @@ const iconPaths: Record<string, string> = {
                           <path d={iconPath}/>
                         </svg>
                       </div>
-                      <!-- Step number badge -->
                       <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-lg"
                            style={`background: ${node.color}; color: #1a1a2e;`}>
                         {index + 1}
@@ -257,8 +299,8 @@ const iconPaths: Record<string, string> = {
 
                     <!-- Content -->
                     <div class="flex-1 min-w-0">
-                    <h3 class="font-bold text-foreground mb-1">{getStr(node.label)}</h3>
-                    <p class="text-sm text-muted mb-2">{getStr(node.description)}</p>
+                      <h3 class="font-bold text-foreground mb-1">{getStr(node.label)}</h3>
+                      <p class="text-sm text-muted mb-2">{getStr(node.description)}</p>
                       <div class="flex flex-wrap gap-1">
                         {node.items.map((item) => (
                           <span class="px-2 py-0.5 text-xs rounded-full"
@@ -274,7 +316,7 @@ const iconPaths: Record<string, string> = {
             );
           })}
 
-          <!-- Loop indicator -->
+          <!-- Learning Loop -->
           <div class="flex items-center justify-center gap-2 py-3 mt-3">
             <div class="h-px flex-1 bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
             <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/80 border border-white/10">
@@ -294,9 +336,16 @@ const iconPaths: Record<string, string> = {
 </section>
 
 <style>
+  /* ========================================
+     OPERATING MODEL - DATA FLOW LABORATORY
+     Premium Interactive Visualization
+     ======================================== */
+
   .operating-section {
     padding-top: 3.5rem;
     padding-bottom: 5rem;
+    position: relative;
+    min-height: 100vh;
   }
 
   @media (min-width: 768px) {
@@ -306,32 +355,185 @@ const iconPaths: Record<string, string> = {
     }
   }
 
-  /* Orb animations */
-  .op-orb-1 {
-    animation: op-orb-float-1 18s ease-in-out infinite;
-  }
-  .op-orb-2 {
-    animation: op-orb-float-2 22s ease-in-out infinite;
+  /* ========================================
+     LAYER 1: LAB ATMOSPHERE (PixiJS)
+     ======================================== */
+
+  .lab-atmosphere {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
   }
 
-  @keyframes op-orb-float-1 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(5%, 10%) scale(1.1); }
+  .lab-particles-canvas {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s ease-out;
   }
 
-  @keyframes op-orb-float-2 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-5%, -8%) scale(1.05); }
+  .lab-particles-canvas.active {
+    opacity: 1;
   }
 
-  /* Particle float */
-  @keyframes op-float {
-    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
-    50% { transform: translateY(-15px) translateX(8px); opacity: 0.6; }
+  /* Mobile: CSS gradient fallback */
+  @media (max-width: 768px) {
+    .lab-atmosphere {
+      background: linear-gradient(
+        135deg,
+        rgba(110, 231, 183, 0.08) 0%,
+        rgba(251, 191, 36, 0.08) 25%,
+        rgba(96, 165, 250, 0.08) 50%,
+        rgba(196, 181, 253, 0.08) 100%
+      );
+      background-size: 400% 400%;
+      animation: gradient-shift 15s ease infinite;
+    }
+
+    .lab-particles-canvas {
+      display: none;
+    }
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* ========================================
+     LAYER 2: DATA STREAM CANVAS
+     ======================================== */
+
+  .data-stream-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.8s ease-out 0.4s;
+  }
+
+  .data-stream-canvas.active {
+    opacity: 1;
+  }
+
+  /* ========================================
+     LAYER 3: CONNECTION LAYER (SVG)
+     ======================================== */
+
+  .connection-layer {
+    z-index: 5;
+  }
+
+  .connection-path {
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .connection-path:hover {
+    opacity: 0.9 !important;
+    stroke-width: 4;
+  }
+
+  .feedback-path {
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  /* ========================================
+     PREMIUM NODE CARDS
+     ======================================== */
+
+  .node-card {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .node-card:hover {
+    z-index: 20;
+    transform: translateY(-4px);
+  }
+
+  /* Holographic edge glow */
+  .holo-edge {
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: -1;
+    pointer-events: none;
+    background: conic-gradient(
+      from var(--holo-angle, 0deg) at 50% 50%,
+      transparent 0deg,
+      var(--holo-color) 80deg,
+      transparent 160deg,
+      transparent 200deg,
+      var(--holo-color) 280deg,
+      transparent 360deg
+    );
+    mix-blend-mode: color-dodge;
+    filter: blur(8px);
+  }
+
+  .node-card:hover .holo-edge {
+    opacity: 0.2;
+  }
+
+  /* Scan line effect */
+  .scan-line {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--scan-color),
+      transparent
+    );
+    opacity: 0;
+    box-shadow: 0 0 10px var(--scan-color);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .node-card:hover .scan-line {
+    animation: scan-line-move 3s ease-in-out infinite;
+    opacity: 0.5;
+  }
+
+  @keyframes scan-line-move {
+    0%, 100% { top: -3px; opacity: 0; }
+    15% { opacity: 0.5; }
+    50% { top: 50%; opacity: 0.35; }
+    85% { opacity: 0.5; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Card content with liquid filter */
+  .card-content {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Smooth transitions for inner elements */
+  .node-card h3,
+  .node-card p,
+  .item-tag {
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   /* Rotating ring */
   .rotating-ring {
+    animation: none;
+  }
+
+  .node-card:hover .rotating-ring {
     animation: rotate-ring 20s linear infinite;
   }
 
@@ -340,7 +542,88 @@ const iconPaths: Record<string, string> = {
     to { transform: rotate(360deg); }
   }
 
-  /* Slow spin for loop icon */
+  /* Icon effects */
+  .icon-wrapper {
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .node-card:hover .icon-wrapper {
+    transform: scale(1.08);
+  }
+
+  .pulse-ring {
+    animation: none;
+  }
+
+  .node-card:hover .pulse-ring {
+    animation: pulse-ring 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 0.4; }
+  }
+
+  /* Items tags */
+  .item-tag {
+    backdrop-filter: blur(4px);
+  }
+
+  .node-card:hover .item-tag {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px -2px currentColor;
+  }
+
+  /* ========================================
+     HOVER STATES - Simplified
+     ======================================== */
+
+  .node-card:hover .card-content {
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* ========================================
+     LEARNING LOOP
+     ======================================== */
+
+  .learning-loop-container {
+    position: relative;
+  }
+
+  .loop-badge {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .loop-badge::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(110, 231, 183, 0.2),
+      transparent 180deg
+    );
+    animation: rotate-glow 4s linear infinite;
+  }
+
+  @keyframes rotate-glow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .loop-orbit-svg {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  /* Kinetic text (will be animated with JS) */
+  .learning-loop-text {
+    position: relative;
+    z-index: 1;
+  }
+
   .animate-spin-slow {
     animation: spin 3s linear infinite;
   }
@@ -350,26 +633,15 @@ const iconPaths: Record<string, string> = {
     to { transform: rotate(360deg); }
   }
 
-  /* Flow animation for connection lines */
-  .flow-animation {
-    animation: flow-move 2s ease-in-out infinite;
-  }
+  /* ========================================
+     REVEAL ANIMATIONS
+     ======================================== */
 
-  @keyframes flow-move {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-
-  /* Node card hover */
-  .node-card {
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  /* Reveal animations */
   .op-reveal {
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   .op-reveal.is-visible {
@@ -377,30 +649,760 @@ const iconPaths: Record<string, string> = {
     transform: translateY(0);
   }
 
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .op-orb-1, .op-orb-2, .op-particle, .rotating-ring, .animate-spin-slow, .flow-animation {
-      animation: none;
+  /* ========================================
+     MOBILE OPTIMIZATIONS
+     ======================================== */
+
+  @media (max-width: 768px) {
+    .mobile-node {
+      transition: all 0.3s ease;
     }
 
-    .node-card:hover {
-      transform: none;
+    .mobile-node:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+
+    /* Simplified effects on mobile */
+    .holo-edge,
+    .scan-line,
+    .rotating-ring,
+    .pulse-ring {
+      display: none;
+    }
+  }
+
+  /* ========================================
+     ACCESSIBILITY & PERFORMANCE
+     ======================================== */
+
+  @media (prefers-reduced-motion: reduce) {
+    .lab-particles-canvas,
+    .data-stream-canvas,
+    .rotating-ring,
+    .pulse-ring,
+    .scan-line,
+    .animate-spin-slow {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .node-card {
+      transform: none !important;
     }
 
     .op-reveal {
       opacity: 1;
       transform: none;
     }
+
+    .gradient-shift {
+      animation: none;
+    }
+  }
+
+  /* Focus states for accessibility */
+  .node-card:focus-visible {
+    outline: 2px solid var(--node-color);
+    outline-offset: 4px;
+  }
+
+  /* Print styles */
+  @media print {
+    .lab-atmosphere,
+    .data-stream-canvas,
+    .connection-layer,
+    .holo-edge,
+    .scan-line {
+      display: none;
+    }
+
+    .node-card {
+      break-inside: avoid;
+    }
   }
 </style>
 
 <script>
+  import { Application, Container as PixiContainer, Graphics, Sprite, Texture } from 'pixi.js';
+  import VanillaTilt from 'vanilla-tilt';
   import { initOnce, initSection } from '@/lib/lifecycle';
   import { createRevealObserver } from '@/lib/ui/animations';
+  import { gsap } from 'gsap';
+
+  /* ========================================
+     DEVICE CAPABILITY DETECTION
+     ======================================== */
+
+  interface DeviceCapability {
+    tier: 'low' | 'mid' | 'high';
+    features: {
+      webgl: boolean;
+      pixiJS: boolean;
+      complexAnimations: boolean;
+      particleCount: number;
+    };
+  }
+
+  function detectCapability(): DeviceCapability {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    
+    const hasWebGL = (() => {
+      try {
+        const canvas = document.createElement('canvas');
+        return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+      } catch { return false; }
+    })();
+    
+    const memory = (navigator as any).deviceMemory || 4;
+    const cores = navigator.hardwareConcurrency || 2;
+    
+    if (!hasWebGL || memory < 2 || cores < 2 || isMobile) {
+      return {
+        tier: 'low',
+        features: {
+          webgl: false,
+          pixiJS: false,
+          complexAnimations: false,
+          particleCount: 0
+        }
+      };
+    } else if (memory < 4 || cores < 4) {
+      return {
+        tier: 'mid',
+        features: {
+          webgl: hasWebGL,
+          pixiJS: true,
+          complexAnimations: false,
+          particleCount: 300
+        }
+      };
+    } else {
+      return {
+        tier: 'high',
+        features: {
+          webgl: hasWebGL,
+          pixiJS: true,
+          complexAnimations: true,
+          particleCount: 500
+        }
+      };
+    }
+  }
+
+  /* ========================================
+     PIXI.JS PARTICLE SYSTEM
+     ======================================== */
+
+  interface Particle {
+    sprite: Sprite;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    baseX: number;
+    baseY: number;
+    mass: number;
+    currentColor: number;
+    targetColor: number;
+  }
+
+  interface NodeAttractor {
+    x: number;
+    y: number;
+    color: number;
+    strength: number;
+    radius: number;
+    active: boolean;
+  }
+
+  async function initPixiParticles(canvas: HTMLCanvasElement, nodeCards: NodeListOf<HTMLElement>, capability: DeviceCapability) {
+    if (!capability.features.pixiJS) return null;
+
+    // Get section dimensions
+    const section = canvas.closest('section');
+    if (!section) return null;
+    
+    const rect = section.getBoundingClientRect();
+    const sectionWidth = rect.width;
+    const sectionHeight = rect.height;
+
+    const app = new Application();
+    
+    await app.init({
+      canvas,
+      width: sectionWidth,
+      height: sectionHeight,
+      resolution: 1,
+      autoDensity: true,
+      backgroundColor: 0x0a0a0f,
+      backgroundAlpha: 0,
+      antialias: false,
+      powerPreference: 'high-performance'
+    });
+
+    const particleContainer = new PixiContainer();
+    app.stage.addChild(particleContainer);
+
+    // Create circle texture
+    const graphics = new Graphics();
+    graphics.circle(0, 0, 1.5);
+    graphics.fill(0xffffff);
+    const particleTexture = app.renderer.generateTexture(graphics);
+
+    // Node colors
+    const nodeColors = [0x6ee7b7, 0xfbbf24, 0x60a5fa, 0xc4b5fd];
+    
+    // Attractors setup
+    const attractors: NodeAttractor[] = Array.from(nodeCards).map((card, i) => ({
+      x: 0, y: 0,
+      color: nodeColors[i],
+      strength: 0.3,
+      radius: 180,
+      active: false
+    }));
+
+    // Update attractor positions
+    function updateAttractorPositions() {
+      const canvasRect = canvas.getBoundingClientRect();
+      nodeCards.forEach((card, i) => {
+        const rect = card.getBoundingClientRect();
+        attractors[i].x = rect.left + rect.width / 2 - canvasRect.left;
+        attractors[i].y = rect.top + rect.height / 2 - canvasRect.top;
+      });
+    }
+
+    // Create particles
+    const particles: Particle[] = [];
+    const particleCount = capability.features.particleCount;
+
+    for (let i = 0; i < particleCount; i++) {
+      const sprite = new Sprite(particleTexture);
+      const x = Math.random() * app.screen.width;
+      const y = Math.random() * app.screen.height;
+      
+      // Check theme
+      const isDark = document.documentElement.classList.contains('dark');
+      const baseColor = isDark ? 0x888888 : 0x1a1a1a;
+      const baseAlpha = isDark ? 0.3 : 0.85;
+      
+      sprite.position.set(x, y);
+      sprite.tint = baseColor;
+      sprite.alpha = Math.random() * 0.15 + baseAlpha;
+      
+      particleContainer.addChild(sprite);
+
+      particles.push({
+        sprite,
+        x, y,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: (Math.random() - 0.5) * 0.15,
+        baseX: x,
+        baseY: y,
+        mass: Math.random() * 0.2 + 0.8,
+        currentColor: baseColor,
+        targetColor: baseColor
+      });
+    }
+
+    // Animation loop
+    let frameCount = 0;
+    app.ticker.add(() => {
+      frameCount++;
+      
+      if (frameCount % 10 === 0) {
+        updateAttractorPositions();
+      }
+
+      particles.forEach(particle => {
+        let forceX = 0;
+        let forceY = 0;
+        let nearestColor = 0x888888;
+        let minDist = Infinity;
+        let hasActiveAttractor = false;
+
+        attractors.forEach(attractor => {
+          const dx = attractor.x - particle.x;
+          const dy = attractor.y - particle.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < minDist) {
+            minDist = distance;
+            nearestColor = attractor.color;
+          }
+
+          if (attractor.active && distance < attractor.radius) {
+            hasActiveAttractor = true;
+            const force = (attractor.strength / (distance * distance + 1)) * 200;
+            forceX += (dx / distance) * force;
+            forceY += (dy / distance) * force;
+          }
+        });
+
+        particle.vx = (particle.vx + forceX * particle.mass) * 0.95;
+        particle.vy = (particle.vy + forceY * particle.mass) * 0.95;
+
+        // Add brownian motion - más intenso si hay hover
+        const brownianIntensity = hasActiveAttractor ? 0.25 : 0.04;
+        particle.vx += (Math.random() - 0.5) * brownianIntensity;
+        particle.vy += (Math.random() - 0.5) * brownianIntensity;
+
+        const returnStrength = 0.015;
+        particle.vx += (particle.baseX - particle.x) * returnStrength;
+        particle.vy += (particle.baseY - particle.y) * returnStrength;
+
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        // Color interpolation solo si está cerca o hay attractor activo
+        if (minDist < 400 || hasActiveAttractor) {
+          const colorBlend = minDist < 300 ? 0.03 : 0.01;
+          particle.currentColor = lerpColor(particle.currentColor, nearestColor, colorBlend);
+        }
+
+        particle.sprite.position.set(particle.x, particle.y);
+        particle.sprite.tint = particle.currentColor;
+      });
+    });
+
+    // Node hover interactions
+    nodeCards.forEach((card, index) => {
+      card.addEventListener('mouseenter', () => {
+        attractors[index].active = true;
+        attractors[index].strength = 1.5; // Aumentado para efecto dramático
+      });
+
+      card.addEventListener('mouseleave', () => {
+        attractors[index].active = false;
+        attractors[index].strength = 0.3;
+      });
+    });
+
+    // Handle resize
+    let resizeTimeout: number;
+    function resize() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(() => {
+        const section = canvas.closest('section');
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          app.renderer.resize(rect.width, rect.height);
+          
+          // Redistribute particles
+          particles.forEach(particle => {
+            particle.baseX = Math.random() * rect.width;
+            particle.baseY = Math.random() * rect.height;
+            particle.x = particle.baseX;
+            particle.y = particle.baseY;
+          });
+          
+          updateAttractorPositions();
+        }
+      }, 250);
+    }
+
+    window.addEventListener('resize', resize);
+    updateAttractorPositions();
+
+    // Fade in
+    setTimeout(() => {
+      canvas.classList.add('active');
+    }, 300);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      app.destroy(true, { children: true, texture: true });
+    };
+  }
+
+  // Color lerp helper
+  function lerpColor(c1: number, c2: number, t: number): number {
+    const r1 = (c1 >> 16) & 0xff;
+    const g1 = (c1 >> 8) & 0xff;
+    const b1 = c1 & 0xff;
+
+    const r2 = (c2 >> 16) & 0xff;
+    const g2 = (c2 >> 8) & 0xff;
+    const b2 = c2 & 0xff;
+
+    const r = Math.round(r1 + (r2 - r1) * t);
+    const g = Math.round(g1 + (g2 - g1) * t);
+    const b = Math.round(b1 + (b2 - b1) * t);
+
+    return (r << 16) | (g << 8) | b;
+  }
+
+  /* ========================================
+     DATA STREAM CANVAS (2D)
+     ======================================== */
+
+  interface DataPacket {
+    id: string;
+    pathIndex: number;
+    progress: number;
+    speed: number;
+    color: string;
+    shape: 'circle' | 'hex' | 'square' | 'star';
+    size: number;
+  }
+
+  function initDataStream(canvas: HTMLCanvasElement, nodeCards: NodeListOf<HTMLElement>) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const section = canvas.closest('section');
+    if (!section) return null;
+    
+    const rect = section.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+
+    const packets: DataPacket[] = [];
+    const paths: { from: number; to: number; color: string }[] = [
+      { from: 0, to: 1, color: '#6ee7b7' },
+      { from: 1, to: 2, color: '#fbbf24' },
+      { from: 2, to: 3, color: '#60a5fa' },
+      { from: 3, to: 0, color: '#c4b5fd' }
+    ];
+
+    const shapes = ['circle', 'hex', 'square', 'star'] as const;
+
+    // Get node positions
+    function getNodePositions() {
+      const canvasRect = canvas.getBoundingClientRect();
+      return Array.from(nodeCards).map(card => {
+        const rect = card.getBoundingClientRect();
+        return {
+          x: rect.left + rect.width / 2 - canvasRect.left,
+          y: rect.top + rect.height / 2 - canvasRect.top
+        };
+      });
+    }
+
+    // Spawn packet
+    function spawnPacket(pathIndex: number, speedMult = 1) {
+      const path = paths[pathIndex];
+      packets.push({
+        id: Math.random().toString(36),
+        pathIndex,
+        progress: 0,
+        speed: (0.005 + Math.random() * 0.003) * speedMult,
+        color: path.color,
+        shape: shapes[path.from],
+        size: 4 + Math.random() * 2.5
+      });
+    }
+
+    // Draw shapes
+    function drawShape(x: number, y: number, shape: string, size: number, color: string) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.fillStyle = color;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = color;
+
+      switch (shape) {
+        case 'circle':
+          ctx.beginPath();
+          ctx.arc(0, 0, size, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        case 'square':
+          ctx.fillRect(-size, -size, size * 2, size * 2);
+          break;
+        case 'hex':
+        case 'star':
+          const points = shape === 'hex' ? 6 : 5;
+          ctx.beginPath();
+          for (let i = 0; i < points; i++) {
+            const angle = (i / points) * Math.PI * 2;
+            const r = shape === 'star' && i % 2 === 1 ? size * 0.5 : size;
+            const px = Math.cos(angle) * r;
+            const py = Math.sin(angle) * r;
+            i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fill();
+          break;
+      }
+
+      ctx.restore();
+    }
+
+    // Animation loop
+    let lastSpawn = Date.now();
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const nodePositions = getNodePositions();
+
+      // Update and draw packets
+      packets.forEach((packet, index) => {
+        const path = paths[packet.pathIndex];
+        const fromPos = nodePositions[path.from];
+        const toPos = nodePositions[path.to];
+
+        if (!fromPos || !toPos) return;
+
+        packet.progress += packet.speed;
+
+        if (packet.progress >= 1) {
+          packets.splice(index, 1);
+          return;
+        }
+
+        // Bezier curve
+        const t = packet.progress;
+        const controlX = (fromPos.x + toPos.x) / 2;
+        const controlY = Math.min(fromPos.y, toPos.y) - 50;
+
+        const x = Math.pow(1 - t, 2) * fromPos.x + 2 * (1 - t) * t * controlX + Math.pow(t, 2) * toPos.x;
+        const y = Math.pow(1 - t, 2) * fromPos.y + 2 * (1 - t) * t * controlY + Math.pow(t, 2) * toPos.y;
+
+        drawShape(x, y, packet.shape, packet.size, packet.color);
+      });
+
+      // Auto-spawn
+      const now = Date.now();
+      if (now - lastSpawn > 2000) {
+        const randomPath = Math.floor(Math.random() * paths.length);
+        spawnPacket(randomPath);
+        lastSpawn = now;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // Node hover burst
+    nodeCards.forEach((card, index) => {
+      card.addEventListener('mouseenter', () => {
+        paths.forEach((path, pathIndex) => {
+          if (path.from === index || path.to === index) {
+            spawnPacket(pathIndex, 1.5);
+          }
+        });
+      });
+    });
+
+    // Handle resize
+    let resizeTimeout: number;
+    function resize() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(() => {
+        const section = canvas.closest('section');
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          canvas.width = rect.width;
+          canvas.height = rect.height;
+        }
+      }, 250);
+    }
+
+    window.addEventListener('resize', resize);
+
+    setTimeout(() => {
+      canvas.classList.add('active');
+      animate();
+    }, 600);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }
+
+  /* ========================================
+     LIQUID SWIRL EFFECT
+     ======================================== */
+
+  function initLiquidSwirl(card: HTMLElement, index: number) {
+    const filter = card.querySelector('filter') as SVGFilterElement;
+    if (!filter) return;
+
+    const turbulence = filter.querySelector('feTurbulence') as SVGFETurbulenceElement;
+    const displacement = filter.querySelector('feDisplacementMap') as SVGFEDisplacementMapElement;
+    if (!turbulence || !displacement) return;
+
+    let intensity = 0;
+    let targetIntensity = 0;
+    let rafId: number;
+
+    card.addEventListener('mouseenter', () => {
+      targetIntensity = 0.25; // Reducido de 0.4 a 0.25
+    });
+
+    card.addEventListener('mouseleave', () => {
+      targetIntensity = 0;
+    });
+
+    function animate() {
+      intensity += (targetIntensity - intensity) * 0.08; // Más suave
+      
+      const scale = intensity * 3; // Reducido de 5 a 3
+      displacement.setAttribute('scale', scale.toString());
+      
+      const freq = 0.2 + intensity * 0.1; // Reducido de 0.15 a 0.1
+      turbulence.setAttribute('baseFrequency', `${freq}`);
+
+      rafId = requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }
+
+  /* ========================================
+     3D TILT (sin parallax para evitar vibración)
+     ======================================== */
+
+  function init3DTilt(card: HTMLElement) {
+    VanillaTilt.init(card, {
+      max: 15,             // Más pronunciado
+      speed: 600,          // Rápido y responsivo
+      glare: false,
+      scale: 1.04,         // Zoom más visible
+      perspective: 800,    // Perspectiva más dramática
+      gyroscope: false,
+      transition: true,
+      easing: "cubic-bezier(.23,1,.32,1)"
+    });
+    
+    // Parallax muy sutil para elementos con data-depth
+    card.addEventListener('tiltChange', ((e: CustomEvent) => {
+      const { tiltX, tiltY } = e.detail;
+      
+      card.querySelectorAll('[data-depth]').forEach((el: Element) => {
+        const htmlEl = el as HTMLElement;
+        const depth = parseFloat(htmlEl.dataset.depth || '1');
+        // Multiplicador aumentado: 1.2
+        const x = tiltY * depth * 1.2;
+        const y = -tiltX * depth * 1.2;
+        htmlEl.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      });
+    }) as EventListener);
+  }
+
+  /* ========================================
+     HOLOGRAPHIC GLOW
+     ======================================== */
+
+  function initHolographicGlow(card: HTMLElement) {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI);
+      card.style.setProperty('--holo-angle', `${angle}deg`);
+    });
+  }
+
+  /* ========================================
+     MAGNETIC REPULSION
+     ======================================== */
+
+  function initMagneticRepulsion(cards: NodeListOf<HTMLElement>) {
+    cards.forEach((card, index) => {
+      card.addEventListener('mouseenter', () => {
+        cards.forEach((otherCard, otherIndex) => {
+          if (index === otherIndex) {
+            otherCard.classList.add('magnetic-active');
+            // Card activa se levanta mucho más
+            otherCard.style.transform = 'scale(1.12)';
+            otherCard.style.transition = 'transform 0.3s cubic-bezier(.23,1,.32,1)';
+          } else {
+            const direction = otherIndex < index ? -1 : 1;
+            otherCard.classList.add('magnetic-repelled');
+            // Cards vecinas se alejan y encogen
+            otherCard.style.transform = `translateX(${direction * 15}px) scale(0.96)`;
+            otherCard.style.transition = 'transform 0.3s cubic-bezier(.23,1,.32,1)';
+          }
+        });
+      });
+
+      card.addEventListener('mouseleave', () => {
+        cards.forEach(c => {
+          c.classList.remove('magnetic-active', 'magnetic-repelled');
+          c.style.transform = '';
+        });
+      });
+    });
+  }
+
+  /* ========================================
+     SVG PATH MORPHING
+     ======================================== */
+
+  function initSVGMorphing(cards: NodeListOf<HTMLElement>) {
+    const pathElements = [
+      document.querySelector('#path-0-1'),
+      document.querySelector('#path-1-2'),
+      document.querySelector('#path-2-3')
+    ] as SVGPathElement[];
+
+    const idleStates = [
+      'M200,200 L400,200',
+      'M400,200 L600,200',
+      'M600,200 L800,200'
+    ];
+
+    const hoverStates = [
+      ['M200,200 Q300,150 400,200', 'M400,200 L600,200', 'M600,200 L800,200'],
+      ['M200,200 L400,200', 'M400,200 Q500,150 600,200', 'M600,200 L800,200'],
+      ['M200,200 L400,200', 'M400,200 L600,200', 'M600,200 Q700,150 800,200'],
+      ['M200,200 L400,200', 'M400,200 L600,200', 'M600,200 L800,200']
+    ];
+
+    cards.forEach((card, index) => {
+      card.addEventListener('mouseenter', () => {
+        pathElements.forEach((path, pathIndex) => {
+          if (!path) return;
+          gsap.to(path, {
+            duration: 0.6,
+            attr: { d: hoverStates[index][pathIndex] },
+            ease: 'power2.out'
+          });
+        });
+      });
+
+      card.addEventListener('mouseleave', () => {
+        pathElements.forEach((path, pathIndex) => {
+          if (!path) return;
+          gsap.to(path, {
+            duration: 0.6,
+            attr: { d: idleStates[pathIndex] },
+            ease: 'power2.out'
+          });
+        });
+      });
+    });
+  }
+
+  /* ========================================
+     MAIN INITIALIZATION
+     ======================================== */
 
   function initOperatingModel() {
     const section = document.getElementById('operating-model');
-    initOnce(section, 'operating-model', (root) => {
+    if (!section) return;
+
+    initOnce(section, 'operating-model', async (root) => {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        console.log('Operating Model: Reduced motion mode');
+        return () => {};
+      }
+
+      const capability = detectCapability();
+      console.log('Operating Model: Device capability', capability);
+
+      // Reveal animations
       const cleanupReveal = createRevealObserver(root, {
         selector: '.op-reveal',
         threshold: 0.1,
@@ -408,8 +1410,57 @@ const iconPaths: Record<string, string> = {
         visibleClass: 'is-visible',
       });
 
+      const nodeCards = root.querySelectorAll<HTMLElement>('.node-card');
+      
+      // Layer 1: PixiJS Particles
+      let cleanupPixi: (() => void) | null = null;
+      if (capability.features.pixiJS) {
+        const pixiCanvas = root.querySelector<HTMLCanvasElement>('#lab-particles');
+        if (pixiCanvas) {
+          cleanupPixi = await initPixiParticles(pixiCanvas, nodeCards, capability);
+        }
+      }
+
+      // Layer 2: Data Stream
+      let cleanupDataStream: (() => void) | null = null;
+      if (capability.tier !== 'low') {
+        const dataCanvas = root.querySelector<HTMLCanvasElement>('#data-stream');
+        if (dataCanvas) {
+          cleanupDataStream = initDataStream(dataCanvas, nodeCards);
+        }
+      }
+
+      // Layer 3: Premium Cards
+      const cleanupEffects: Array<(() => void) | undefined> = [];
+      
+      // Holographic glow (muy liviano)
+      if (capability.tier !== 'low') {
+        nodeCards.forEach(card => {
+          initHolographicGlow(card);
+        });
+        
+        initSVGMorphing(nodeCards);
+      }
+
+      // 3D Tilt - solo en high tier con parámetros muy suaves
+      if (capability.tier === 'high') {
+        nodeCards.forEach(card => {
+          init3DTilt(card);
+        });
+        
+        // Magnetic repulsion muy sutil
+        initMagneticRepulsion(nodeCards);
+      }
+
+      // Cleanup
       return () => {
         cleanupReveal();
+        if (cleanupPixi) cleanupPixi();
+        if (cleanupDataStream) cleanupDataStream();
+        
+        cleanupEffects.forEach(cleanup => {
+          if (cleanup) cleanup();
+        });
       };
     });
   }
