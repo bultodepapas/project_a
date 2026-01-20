@@ -6,7 +6,7 @@ Este documento recopila los efectos implementados, así como un catálogo de tec
 
 ## 1. Apéndice E: Artilugios y Efectos Implementados
 
-Resumen de los efectos visuales y funcionales actualmente activos en el proyecto.
+Resumen de los efectos visuales  y funcionales actualmente activos en el proyecto.
 
 | Categoría | Efecto / Artilugio | Ubicación Principal | Implementación Técnica |
 | :--- | :--- | :--- | :--- |
