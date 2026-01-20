@@ -1,0 +1,196 @@
+---
+/**
+ * InteractiveSection - Enhanced section with hover effects
+ */
+interface Props {
+  title: string;
+  icon?: string;
+  variant?: 'default' | 'highlight' | 'boxed';
+  theme?: string;
+}
+
+const { title, icon, variant = 'default', theme } = Astro.props;
+
+const themeColors: Record<string, string> = {
+  audience: '#6ee7b7',
+  benchmark: '#60a5fa',
+  narrative: '#f472b6',
+  capacity: '#fbbf24'
+};
+
+const color = theme ? themeColors[theme] : '#6ee7b7';
+
+const variants = {
+  default: '',
+  highlight: 'section-highlight',
+  boxed: 'section-boxed',
+};
+
+const icons: Record<string, string> = {
+  problem: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
+  approach: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
+  system: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4',
+  data: 'M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z',
+  outputs: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+  impact: 'M13 10V3L4 14h7v7l9-11h-7z',
+  adoption: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
+  governance: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+  tools: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z'
+};
+
+const iconPath = icon ? icons[icon] : null;
+---
+
+<section 
+  class={`interactive-section ${variants[variant]}`}
+  style={`--section-color: ${color};`}
+>
+  <div class="section-header">
+    {iconPath && (
+      <div class="section-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d={iconPath} />
+        </svg>
+      </div>
+    )}
+    <h2 class="section-title">{title}</h2>
+  </div>
+  
+  <div class="section-content">
+    <slot />
+  </div>
+
+  <div class="section-accent"></div>
+</section>
+
+<style>
+  .interactive-section {
+    position: relative;
+    margin-bottom: 32px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: section-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.1s;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--section-color);
+    color: var(--color-background);
+    border-radius: 10px;
+    flex-shrink: 0;
+    opacity: 0.9;
+  }
+
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-foreground);
+    margin: 0;
+  }
+
+  .section-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .section-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--section-color);
+    border-radius: 2px;
+    transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Highlight variant */
+  .section-highlight {
+    padding: 28px;
+    background: linear-gradient(135deg, var(--section-color)05 0%, transparent 100%);
+    border: 1px solid var(--section-color)30;
+    border-radius: 16px;
+  }
+
+  .section-highlight .section-accent {
+    display: none;
+  }
+
+  /* Boxed variant */
+  .section-boxed {
+    padding: 28px;
+    background: var(--color-background-alt);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .section-boxed:hover {
+    border-color: var(--section-color);
+    box-shadow: 0 8px 30px -8px var(--section-color);
+  }
+
+  .section-boxed .section-accent {
+    display: none;
+  }
+
+  /* Hover effect for default variant */
+  .interactive-section:hover .section-accent {
+    height: 100%;
+  }
+
+  @keyframes section-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .interactive-section {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  function initSections() {
+    const sections = document.querySelectorAll('.interactive-section');
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSections);
+    } else {
+      initSections();
+    }
+    document.addEventListener('astro:page-load', initSections);
+  }
+</script>

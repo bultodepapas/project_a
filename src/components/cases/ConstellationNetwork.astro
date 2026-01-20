@@ -108,7 +108,17 @@ const { density = 50, connectionDistance = 150 } = Astro.props;
     // Get theme color
     function getThemeColor(): string {
       const isDark = document.documentElement.classList.contains('dark');
-      return isDark ? 'rgba(110, 231, 183, 0.4)' : 'rgba(59, 130, 246, 0.4)';
+      return isDark ? 'rgba(110, 231, 183, 0.4)' : 'rgba(59, 130, 246, 0.6)';
+    }
+
+    function getLineWidth(): number {
+      const isDark = document.documentElement.classList.contains('dark');
+      return isDark ? 0.5 : 1;
+    }
+
+    function getParticleSize(): number {
+      const isDark = document.documentElement.classList.contains('dark');
+      return isDark ? 1.5 : 2;
     }
 
     // Mouse parallax effect
@@ -158,9 +168,13 @@ const { density = 50, connectionDistance = 150 } = Astro.props;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < connectionDistance) {
-            const opacity = (1 - distance / connectionDistance) * 0.3;
-            ctx.strokeStyle = themeColor.replace('0.4', String(opacity));
-            ctx.lineWidth = 0.5;
+            const isDark = document.documentElement.classList.contains('dark');
+            const baseOpacity = isDark ? 0.3 : 0.5;
+            const opacity = (1 - distance / connectionDistance) * baseOpacity;
+            const colorValue = themeColor.match(/\d\.\d+/);
+            const currentOpacity = colorValue ? colorValue[0] : '0.4';
+            ctx.strokeStyle = themeColor.replace(currentOpacity, String(opacity));
+            ctx.lineWidth = getLineWidth();
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(other.x, other.y);
@@ -171,7 +185,7 @@ const { density = 50, connectionDistance = 150 } = Astro.props;
         // Draw particle
         ctx.fillStyle = themeColor;
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, 1.5, 0, Math.PI * 2);
+        ctx.arc(particle.x, particle.y, getParticleSize(), 0, Math.PI * 2);
         ctx.fill();
       });
 

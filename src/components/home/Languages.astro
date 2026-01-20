@@ -378,8 +378,8 @@ const connections = [
                 </svg>
               </div>
               <div class="text-3xl md:text-4xl font-black lang-stat-value">
-                <span class="sr-only">8</span>
-                <span class="lang-counter" aria-hidden="true" data-target="8">0</span>+
+                <span class="sr-only">8+</span>
+                <span class="lang-counter" aria-hidden="true" data-target="8">0</span>
               </div>
               <div class="text-sm lang-stat-label mt-1">
                 {lang === 'es' ? 'Años' : lang === 'fr' ? 'Années' : lang === 'pt' ? 'Anos' : 'Years'}
@@ -905,20 +905,30 @@ const connections = [
 
     // Counter animation function
     function animateCounter(element: Element, target: number) {
-      let current = 0;
       const duration = 1500;
-      const steps = 30;
-      const increment = target / steps;
-      const stepDuration = duration / steps;
+      const startTime = performance.now();
+      const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+      
+      // Extract suffix from current text
+      const initialText = element.textContent || '0';
+      const suffix = initialText.replace(/\d+/g, '');
 
-      const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-          current = target;
-          clearInterval(timer);
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutCubic(progress);
+        const current = Math.round(target * eased);
+
+        element.textContent = current + suffix;
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          element.textContent = target + suffix;
         }
-        element.textContent = Math.floor(current).toString();
-      }, stepDuration);
+      };
+
+      requestAnimationFrame(animate);
     }
 
     // Magnetic glow effect on cards

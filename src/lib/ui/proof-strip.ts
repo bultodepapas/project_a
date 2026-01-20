@@ -37,13 +37,11 @@ export function initProofStripUI() {
               progressRing.style.strokeDashoffset = progressRing.dataset.offset || '0';
             }
             if (numberEl) {
-              numberEl.textContent = numberEl.dataset.target || '0';
+              const target = numberEl.dataset.target || '0';
+              const suffix = numberEl.dataset.suffix || '';
+              numberEl.textContent = target + suffix;
             }
             return;
-          }
-
-          if (numberEl) {
-            numberEl.textContent = '0';
           }
 
           card.classList.remove('opacity-0', 'translate-y-8');
@@ -54,12 +52,15 @@ export function initProofStripUI() {
           }
           if (numberEl) {
             const timeoutId = window.setTimeout(() => {
+              const target = parseInt(numberEl.dataset.target || '0', 10);
+              const suffix = numberEl.dataset.suffix || '';
               cleanups.push(
                 animateCounter(numberEl, {
                   start: 0,
-                  target: parseInt(numberEl.dataset.target || '0', 10),
+                  target: target,
                   duration: 2000,
-                  easing: 'easeOutExpo',
+                  easing: 'easeOutCubic',
+                  suffix: suffix,
                 })
               );
             }, baseDelay + 600);

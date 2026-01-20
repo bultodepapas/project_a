@@ -1,16 +1,18 @@
 ---
 /**
- * Case Study Detail Page
- * Individual case study with full details
+ * Case Study Detail Page - PREMIUM EDITION
+ * Immersive case study experience with cinematic effects
  */
 
 import Page from '@/layouts/Page.astro';
 import { type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
 import { getCollection, type CollectionEntry } from 'astro:content';
-import CaseHeader from '@/components/cases/CaseHeader.astro';
-import CaseSection from '@/components/cases/CaseSection.astro';
-import CaseNav from '@/components/cases/CaseNav.astro';
+import CaseDetailHero from '@/components/cases/CaseDetailHero.astro';
+import CaseMetricsGrid from '@/components/cases/CaseMetricsGrid.astro';
+import InteractiveSection from '@/components/cases/InteractiveSection.astro';
+import DataSourcesViz from '@/components/cases/DataSourcesViz.astro';
+import EnhancedCaseNav from '@/components/cases/EnhancedCaseNav.astro';
 
 export interface Props {
   entry: CollectionEntry<'cases'>;
@@ -59,119 +61,276 @@ const nextCase = nextCaseEntry ? { slug: nextCaseEntry.data.caseSlug, title: nex
   lang={typedLang}
   ogType="article"
 >
-  <article class="section">
-    <div class="container max-w-4xl">
-      <!-- Breadcrumb -->
-      <nav class="mb-8">
-        <a href={`/${typedLang}/case-studies`} class="text-sm text-muted hover:text-accent transition-colors">
-          &larr; {t(typedLang, 'cases.detail.backToIndex')}
-        </a>
-      </nav>
+  <article class="case-detail-page">
+    <!-- Hero Section -->
+    <CaseDetailHero 
+      title={caseData.title}
+      theme={caseData.theme}
+      role={caseData.role}
+      org={caseData.org}
+      timeframe={caseData.timeframe}
+      regions={caseData.regions}
+      lang={typedLang}
+    />
 
-      <CaseHeader 
-        title={caseData.title}
-        theme={caseData.theme}
-        role={caseData.role}
-        org={caseData.org}
-        timeframe={caseData.timeframe}
-        regions={caseData.regions}
-      />
+    <!-- Main Content -->
+    <div class="case-content">
+      <div class="container max-w-4xl">
+        <!-- Problem Statement -->
+        <InteractiveSection 
+          title={t(typedLang, 'cases.detail.problem')} 
+          icon="problem"
+          variant="boxed"
+          theme={caseData.theme}
+        >
+          <p class="text-muted leading-relaxed text-base">{caseData.problem}</p>
+        </InteractiveSection>
 
-      <!-- Problem -->
-      <CaseSection title={t(typedLang, 'cases.detail.problem')} variant="boxed">
-        <p class="text-muted leading-relaxed">{caseData.problem}</p>
-      </CaseSection>
+        <!-- Approach -->
+        <InteractiveSection 
+          title={t(typedLang, 'cases.detail.approach')} 
+          icon="approach"
+          theme={caseData.theme}
+        >
+          <ul class="enhanced-list">
+            {caseData.approach.map((item: string) => (
+              <li class="list-item">
+                <div class="item-marker"></div>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </InteractiveSection>
 
-      <!-- Approach -->
-      <CaseSection title={t(typedLang, 'cases.detail.approach')}>
-        <ul class="space-y-2">
-          {caseData.approach.map((item: string) => (
-            <li class="flex gap-3 text-muted">
-              <span class="text-accent">+</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </CaseSection>
+        <!-- System Design -->
+        <InteractiveSection 
+          title={t(typedLang, 'cases.detail.systemDesign')} 
+          icon="system"
+          theme={caseData.theme}
+        >
+          <ul class="enhanced-list">
+            {caseData.systemDesign.map((item: string) => (
+              <li class="list-item">
+                <div class="item-marker"></div>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </InteractiveSection>
 
-      <!-- System Design -->
-      <CaseSection title={t(typedLang, 'cases.detail.systemDesign')}>
-        <ul class="space-y-2">
-          {caseData.systemDesign.map((item: string) => (
-            <li class="flex gap-3 text-muted">
-              <span class="text-accent">+</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </CaseSection>
+        <!-- Data Sources Visualization -->
+        <InteractiveSection 
+          title={t(typedLang, 'cases.detail.dataSources')} 
+          icon="data"
+          theme={caseData.theme}
+        >
+          <DataSourcesViz sources={caseData.dataSources} theme={caseData.theme} />
+        </InteractiveSection>
 
-      <!-- Data Sources -->
-      <CaseSection title={t(typedLang, 'cases.detail.dataSources')}>
-        <div class="flex flex-wrap gap-2">
-          {caseData.dataSources.map((source: string) => (
-            <span class="px-3 py-1 text-sm rounded-full bg-background-alt text-muted border border-border">
-              {source}
-            </span>
-          ))}
-        </div>
-      </CaseSection>
+        <!-- Outputs -->
+        <InteractiveSection 
+          title={t(typedLang, 'cases.detail.outputs')} 
+          icon="outputs"
+          theme={caseData.theme}
+        >
+          <ul class="enhanced-list">
+            {caseData.outputs.map((item: string) => (
+              <li class="list-item">
+                <div class="item-marker"></div>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </InteractiveSection>
 
-      <!-- Outputs -->
-      <CaseSection title={t(typedLang, 'cases.detail.outputs')}>
-        <ul class="space-y-2">
-          {caseData.outputs.map((item: string) => (
-            <li class="flex gap-3 text-muted">
-              <span class="text-accent">+</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </CaseSection>
+        <!-- Decision Impact - Highlighted -->
+        <InteractiveSection 
+          title={t(typedLang, 'cases.detail.decisionImpact')} 
+          icon="impact"
+          variant="highlight"
+          theme={caseData.theme}
+        >
+          <CaseMetricsGrid impacts={caseData.decisionImpact} theme={caseData.theme} />
+        </InteractiveSection>
 
-      <!-- Decision Impact (Highlighted) -->
-      <CaseSection title={t(typedLang, 'cases.detail.decisionImpact')} variant="highlight">
-        <ul class="space-y-3">
-          {caseData.decisionImpact.map((item: string) => (
-            <li class="flex gap-3 text-foreground">
-              <span class="text-accent font-bold">&rarr;</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </CaseSection>
+        <!-- Adoption -->
+        <InteractiveSection 
+          title={t(typedLang, 'cases.detail.adoption')} 
+          icon="adoption"
+          theme={caseData.theme}
+        >
+          <p class="text-muted leading-relaxed text-base">{caseData.adoption}</p>
+        </InteractiveSection>
 
-      <!-- Adoption -->
-      <CaseSection title={t(typedLang, 'cases.detail.adoption')}>
-        <p class="text-muted leading-relaxed">{caseData.adoption}</p>
-      </CaseSection>
+        <!-- Governance -->
+        <InteractiveSection 
+          title={t(typedLang, 'cases.detail.governance')} 
+          icon="governance"
+          theme={caseData.theme}
+        >
+          <p class="text-muted leading-relaxed text-base">{caseData.governance}</p>
+        </InteractiveSection>
 
-      <!-- Governance -->
-      <CaseSection title={t(typedLang, 'cases.detail.governance')}>
-        <p class="text-muted leading-relaxed">{caseData.governance}</p>
-      </CaseSection>
+        <!-- Tools -->
+        <InteractiveSection 
+          title={t(typedLang, 'cases.detail.tools')} 
+          icon="tools"
+          theme={caseData.theme}
+        >
+          <div class="tools-grid">
+            {caseData.tools.map((tool: string, i: number) => (
+              <div class="tool-chip" style={`animation-delay: ${i * 50}ms;`}>
+                <div class="chip-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1v6m0 6v6"/>
+                  </svg>
+                </div>
+                <span>{tool}</span>
+              </div>
+            ))}
+          </div>
+        </InteractiveSection>
 
-      <!-- Tools -->
-      <CaseSection title={t(typedLang, 'cases.detail.tools')}>
-        <div class="flex flex-wrap gap-2">
-          {caseData.tools.map((tool: string) => (
-            <span class="px-3 py-1 text-sm rounded-full bg-primary/5 text-primary">
-              {tool}
-            </span>
-          ))}
-        </div>
-      </CaseSection>
+        <!-- MDX Content (if any) -->
+        {Content && (
+          <div class="mdx-content prose prose-neutral dark:prose-invert max-w-none">
+            <Content />
+          </div>
+        )}
 
-      <!-- MDX Content -->
-      <div class="mb-12 prose prose-neutral dark:prose-invert max-w-none">
-        <Content />
+        <!-- Navigation -->
+        <EnhancedCaseNav 
+          lang={typedLang}
+          prevCase={prevCase}
+          nextCase={nextCase}
+          theme={caseData.theme}
+        />
       </div>
-
-      <CaseNav 
-        lang={typedLang}
-        prevCase={prevCase}
-        nextCase={nextCase}
-      />
     </div>
   </article>
 </Page>
+
+<style>
+  .case-detail-page {
+    position: relative;
+    min-height: 100vh;
+  }
+
+  .case-content {
+    position: relative;
+    z-index: 10;
+    padding-bottom: 80px;
+  }
+
+  /* Enhanced list styles */
+  .enhanced-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-muted);
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: item-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(var(--item-index, 0) * 60ms);
+  }
+
+  .list-item:nth-child(1) { --item-index: 0; }
+  .list-item:nth-child(2) { --item-index: 1; }
+  .list-item:nth-child(3) { --item-index: 2; }
+  .list-item:nth-child(4) { --item-index: 3; }
+  .list-item:nth-child(5) { --item-index: 4; }
+  .list-item:nth-child(6) { --item-index: 5; }
+  .list-item:nth-child(7) { --item-index: 6; }
+  .list-item:nth-child(8) { --item-index: 7; }
+
+  .item-marker {
+    width: 6px;
+    height: 6px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Tools grid */
+  .tools-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .tool-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--color-accent);
+    color: var(--color-background);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: chip-pop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    transition: transform 0.2s ease;
+  }
+
+  .tool-chip:hover {
+    transform: scale(1.05);
+  }
+
+  .chip-icon {
+    display: flex;
+    align-items: center;
+    opacity: 0.9;
+  }
+
+  /* MDX content */
+  .mdx-content {
+    margin-top: 48px;
+    padding-top: 48px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Animations */
+  @keyframes item-slide-in {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes chip-pop {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .list-item,
+    .tool-chip {
+      animation: none !important;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .case-content {
+      padding-bottom: 60px;
+    }
+  }
+</style>

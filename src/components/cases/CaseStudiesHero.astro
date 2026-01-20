@@ -85,11 +85,11 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
 <style>
   .case-hero {
     position: relative;
-    min-height: 70vh;
+    min-height: 60vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 80px 0 60px;
+    padding: 60px 0 20px;
     overflow: hidden;
   }
 
@@ -118,7 +118,7 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
     height: 300px;
     top: 10%;
     left: 5%;
-    background: radial-gradient(circle, rgba(110, 231, 183, 0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(110, 231, 183, 0.3) 0%, transparent 70%);
     animation-delay: 0.3s;
   }
 
@@ -127,7 +127,7 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
     height: 250px;
     top: 50%;
     right: 10%;
-    background: radial-gradient(circle, rgba(96, 165, 250, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.25) 0%, transparent 70%);
     animation-delay: 0.6s;
   }
 
@@ -136,8 +136,21 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
     height: 200px;
     bottom: 10%;
     left: 50%;
-    background: radial-gradient(circle, rgba(244, 114, 182, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(244, 114, 182, 0.2) 0%, transparent 70%);
     animation-delay: 0.9s;
+  }
+
+  /* Dark mode adjustments */
+  :root.dark .hero-orb-1 {
+    background: radial-gradient(circle, rgba(110, 231, 183, 0.2) 0%, transparent 70%);
+  }
+
+  :root.dark .hero-orb-2 {
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.15) 0%, transparent 70%);
+  }
+
+  :root.dark .hero-orb-3 {
+    background: radial-gradient(circle, rgba(244, 114, 182, 0.12) 0%, transparent 70%);
   }
 
   /* Content */
@@ -153,7 +166,7 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
     align-items: center;
     justify-content: center;
     gap: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     opacity: 0;
     animation: fade-slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
   }
@@ -178,7 +191,7 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
     font-weight: 900;
     line-height: 1.1;
     color: var(--color-foreground);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -203,7 +216,7 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
     line-height: 1.6;
     color: var(--color-muted);
     max-width: 600px;
-    margin: 0 auto 32px;
+    margin: 0 auto 24px;
     opacity: 0;
     animation: fade-slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
   }
@@ -213,8 +226,8 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 32px;
-    margin-bottom: 40px;
+    gap: 24px;
+    margin-bottom: 24px;
     flex-wrap: wrap;
   }
 
@@ -223,20 +236,20 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 6px;
     opacity: 0;
     animation: fade-in 0.8s ease-out 1.5s forwards;
   }
 
   .scroll-line {
     width: 1px;
-    height: 40px;
+    height: 24px;
     background: linear-gradient(180deg, transparent, var(--color-accent), transparent);
     animation: line-pulse 2s ease-in-out infinite;
   }
 
   .scroll-text {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -246,6 +259,8 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
   .scroll-arrow {
     color: var(--color-accent);
     animation: arrow-bounce 2s ease-in-out infinite;
+    width: 16px;
+    height: 16px;
   }
 
   /* Animations */
@@ -314,17 +329,17 @@ const { lang, totalCases, totalRegions, themes } = Astro.props;
 
   @media (max-width: 768px) {
     .case-hero {
-      min-height: 70vh;
-      padding: 100px 0 60px;
+      min-height: 60vh;
+      padding: 80px 0 40px;
     }
 
     .hero-stats {
-      gap: 24px;
+      gap: 20px;
     }
 
     .hero-description {
       font-size: 16px;
-      margin-bottom: 36px;
+      margin-bottom: 20px;
     }
   }
 </style>

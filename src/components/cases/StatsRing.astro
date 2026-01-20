@@ -41,7 +41,7 @@ const { value, label, suffix = '', color = '#6ee7b7', delay = 0 } = Astro.props;
   </svg>
   
   <div class="ring-content">
-    <div class="ring-value" data-target={value} data-suffix={suffix}>0{suffix}</div>
+    <div class="ring-value" data-target={value} data-suffix={suffix}>0</div>
     <div class="ring-label">{label}</div>
   </div>
 </div>
@@ -49,8 +49,8 @@ const { value, label, suffix = '', color = '#6ee7b7', delay = 0 } = Astro.props;
 <style>
   .stats-ring {
     position: relative;
-    width: 140px;
-    height: 140px;
+    width: 110px;
+    height: 110px;
     opacity: 0;
     transform: scale(0.8);
     animation: ring-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -85,7 +85,7 @@ const { value, label, suffix = '', color = '#6ee7b7', delay = 0 } = Astro.props;
   }
 
   .ring-value {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--color-foreground);
     line-height: 1;
@@ -93,7 +93,7 @@ const { value, label, suffix = '', color = '#6ee7b7', delay = 0 } = Astro.props;
   }
 
   .ring-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -157,21 +157,27 @@ const { value, label, suffix = '', color = '#6ee7b7', delay = 0 } = Astro.props;
             if (valueEl) {
               const target = parseInt(valueEl.dataset.target || '0');
               const suffix = valueEl.dataset.suffix || '';
-              let current = 0;
               const duration = 1500;
-              const increment = target / (duration / 16);
+              const startTime = performance.now();
               
-              const animate = () => {
-                current += increment;
-                if (current < target) {
-                  valueEl.textContent = Math.floor(current) + suffix;
+              const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+              
+              const animate = (currentTime: number) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = easeOutCubic(progress);
+                const current = Math.round(target * eased);
+                
+                valueEl.textContent = current + suffix;
+                
+                if (progress < 1) {
                   requestAnimationFrame(animate);
                 } else {
                   valueEl.textContent = target + suffix;
                 }
               };
               
-              animate();
+              requestAnimationFrame(animate);
             }
             
             observer.unobserve(entry.target);

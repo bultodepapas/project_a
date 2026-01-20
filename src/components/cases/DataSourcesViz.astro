@@ -1,0 +1,164 @@
+---
+/**
+ * DataSourcesViz - Visual representation of data sources
+ */
+interface Props {
+  sources: string[];
+  theme: string;
+}
+
+const { sources, theme } = Astro.props;
+
+const themeColors: Record<string, string> = {
+  audience: '#6ee7b7',
+  benchmark: '#60a5fa',
+  narrative: '#f472b6',
+  capacity: '#fbbf24'
+};
+
+const color = themeColors[theme] || themeColors.audience;
+---
+
+<div class="data-sources-viz" style={`--viz-color: ${color};`}>
+  <div class="sources-grid">
+    {sources.map((source: string, i: number) => (
+      <div class="source-node" style={`animation-delay: ${i * 80}ms;`}>
+        <div class="node-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <div class="node-label">{source}</div>
+        <div class="node-pulse"></div>
+      </div>
+    ))}
+  </div>
+  
+  <!-- Connection lines (decorative) -->
+  <svg class="connections-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style={`stop-color: ${color}; stop-opacity: 0`} />
+        <stop offset="50%" style={`stop-color: ${color}; stop-opacity: 0.3`} />
+        <stop offset="100%" style={`stop-color: ${color}; stop-opacity: 0`} />
+      </linearGradient>
+    </defs>
+  </svg>
+</div>
+
+<style>
+  .data-sources-viz {
+    position: relative;
+    margin: 24px 0;
+  }
+
+  .sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .source-node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 16px;
+    background: var(--color-background-alt);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: node-pop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .source-node:hover {
+    transform: scale(1.05);
+    border-color: var(--viz-color);
+    box-shadow: 0 8px 24px -8px var(--viz-color);
+  }
+
+  .source-node:hover .node-pulse {
+    opacity: 0.3;
+  }
+
+  .node-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--viz-color);
+    color: var(--color-background);
+    border-radius: 10px;
+    opacity: 0.9;
+  }
+
+  .node-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-foreground);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .node-pulse {
+    position: absolute;
+    inset: -100px;
+    background: radial-gradient(circle at center, var(--viz-color) 0%, transparent 60%);
+    opacity: 0;
+    filter: blur(40px);
+    transition: opacity 0.4s ease;
+  }
+
+  .connections-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes node-pop {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .source-node {
+      animation: none;
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sources-grid {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .source-node {
+      padding: 16px 12px;
+    }
+
+    .node-icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    .node-label {
+      font-size: 12px;
+    }
+  }
+</style>
