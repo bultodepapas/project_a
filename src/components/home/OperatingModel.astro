@@ -805,6 +805,8 @@ const iconPaths: Record<string, string> = {
     mass: number;
     currentColor: number;
     targetColor: number;
+    targetAlpha: number;
+    appearDelay: number;
   }
 
   interface NodeAttractor {
@@ -844,11 +846,14 @@ const iconPaths: Record<string, string> = {
     const particleContainer = new PixiContainer();
     app.stage.addChild(particleContainer);
 
-    // Create circle texture
-    const graphics = new Graphics();
-    graphics.circle(0, 0, 1.5);
-    graphics.fill(0xffffff);
-    const particleTexture = app.renderer.generateTexture(graphics);
+    // Create circle textures with different sizes
+    const particleTextures: Texture[] = [];
+    [1, 1.5, 2, 2.5, 3].forEach(size => {
+      const graphics = new Graphics();
+      graphics.circle(0, 0, size);
+      graphics.fill(0xffffff);
+      particleTextures.push(app.renderer.generateTexture(graphics));
+    });
 
     // Node colors
     const nodeColors = [0x6ee7b7, 0xfbbf24, 0x60a5fa, 0xc4b5fd];
@@ -877,18 +882,40 @@ const iconPaths: Record<string, string> = {
     const particleCount = capability.features.particleCount;
 
     for (let i = 0; i < particleCount; i++) {
-      const sprite = new Sprite(particleTexture);
+      // Tamaño aleatorio
+      const sizeIndex = Math.floor(Math.random() * particleTextures.length);
+      const sprite = new Sprite(particleTextures[sizeIndex]);
       const x = Math.random() * app.screen.width;
       const y = Math.random() * app.screen.height;
       
       // Check theme
       const isDark = document.documentElement.classList.contains('dark');
-      const baseColor = isDark ? 0x888888 : 0x1a1a1a;
-      const baseAlpha = isDark ? 0.3 : 0.85;
+      
+      // En tema claro: colores vibrantes mezclados con negro
+      let baseColor: number;
+      let baseAlpha: number;
+      
+      if (isDark) {
+        baseColor = 0x888888;
+        baseAlpha = 0.3;
+      } else {
+        // 40% particulas negras, 60% con colores de nodos
+        if (Math.random() < 0.4) {
+          baseColor = 0x000000; // Negro puro
+          baseAlpha = 1.0; // Totalmente opacas
+        } else {
+          // Color aleatorio de los nodos
+          baseColor = nodeColors[Math.floor(Math.random() * nodeColors.length)];
+          baseAlpha = 0.95; // Muy opacas
+        }
+      }
       
       sprite.position.set(x, y);
       sprite.tint = baseColor;
-      sprite.alpha = Math.random() * 0.15 + baseAlpha;
+      sprite.alpha = 0; // Empezar invisible
+      
+      const targetAlpha = Math.random() * 0.05 + baseAlpha;
+      const appearDelay = i * 5; // Delay progresivo: 5 frames entre cada partícula
       
       particleContainer.addChild(sprite);
 
@@ -901,7 +928,9 @@ const iconPaths: Record<string, string> = {
         baseY: y,
         mass: Math.random() * 0.2 + 0.8,
         currentColor: baseColor,
-        targetColor: baseColor
+        targetColor: baseColor,
+        targetAlpha,
+        appearDelay
       });
     }
 
@@ -915,6 +944,16 @@ const iconPaths: Record<string, string> = {
       }
 
       particles.forEach(particle => {
+        // Fade-in progresivo
+        if (particle.appearDelay > 0) {
+          particle.appearDelay--;
+        } else if (particle.sprite.alpha < particle.targetAlpha) {
+          particle.sprite.alpha += 0.01; // Fade in más lento
+          if (particle.sprite.alpha > particle.targetAlpha) {
+            particle.sprite.alpha = particle.targetAlpha;
+          }
+        }
+
         let forceX = 0;
         let forceY = 0;
         let nearestColor = 0x888888;
@@ -931,23 +970,25 @@ const iconPaths: Record<string, string> = {
             nearestColor = attractor.color;
           }
 
-          if (attractor.active && distance < attractor.radius) {
+          // Atraer TODAS las partículas si el attractor está activo (sin límite de radio)
+          if (attractor.active) {
             hasActiveAttractor = true;
-            const force = (attractor.strength / (distance * distance + 1)) * 200;
+            // Decay suave: partículas lejanas se mueven lento, cercanas rápido
+            const force = attractor.strength / (distance * 0.3 + 1) * 150;
             forceX += (dx / distance) * force;
             forceY += (dy / distance) * force;
           }
         });
 
-        particle.vx = (particle.vx + forceX * particle.mass) * 0.95;
-        particle.vy = (particle.vy + forceY * particle.mass) * 0.95;
+        particle.vx = (particle.vx + forceX * particle.mass) * 0.4;
+        particle.vy = (particle.vy + forceY * particle.mass) * 0.4;
 
         // Add brownian motion - más intenso si hay hover
         const brownianIntensity = hasActiveAttractor ? 0.25 : 0.04;
         particle.vx += (Math.random() - 0.5) * brownianIntensity;
         particle.vy += (Math.random() - 0.5) * brownianIntensity;
 
-        const returnStrength = 0.015;
+        const returnStrength = 0.008;
         particle.vx += (particle.baseX - particle.x) * returnStrength;
         particle.vy += (particle.baseY - particle.y) * returnStrength;
 
@@ -969,7 +1010,7 @@ const iconPaths: Record<string, string> = {
     nodeCards.forEach((card, index) => {
       card.addEventListener('mouseenter', () => {
         attractors[index].active = true;
-        attractors[index].strength = 1.5; // Aumentado para efecto dramático
+        attractors[index].strength = 2.0; // Aumentado para atracción global
       });
 
       card.addEventListener('mouseleave', () => {
