@@ -41,7 +41,7 @@ const iconPaths: Record<string, string> = {
 
 ---
 
-<section class="relative py-24 md:py-32 overflow-hidden" id="operating-model">
+<section class="operating-section relative py-24 md:py-32 overflow-hidden" id="operating-model">
   <!-- Animated Background -->
   <div class="absolute inset-0 pointer-events-none">
     <div class="absolute inset-0 bg-gradient-to-b from-background via-background-alt/30 to-background"></div>
@@ -78,8 +78,8 @@ const iconPaths: Record<string, string> = {
 
   <div class="container relative z-10">
     <!-- Header -->
-    <div class="text-center mb-16 op-reveal">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6">
+    <div class="text-center mb-8 md:mb-10 op-reveal">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-3">
         <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
         </svg>
@@ -88,13 +88,13 @@ const iconPaths: Record<string, string> = {
         </span>
       </div>
 
-      <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-4">
+      <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-3">
         {t(lang, 'operatingModel.title')}
       </h2>
-      <p class="text-lg text-muted max-w-2xl mx-auto mb-2">
+      <p class="text-base md:text-lg text-muted max-w-2xl mx-auto mb-1">
         {t(lang, 'operatingModel.lead')}
       </p>
-      <p class="text-muted max-w-xl mx-auto">
+      <p class="text-sm md:text-base text-muted max-w-xl mx-auto">
         {t(lang, 'operatingModel.subtitle')}
       </p>
     </div>
@@ -294,6 +294,18 @@ const iconPaths: Record<string, string> = {
 </section>
 
 <style>
+  .operating-section {
+    padding-top: 3.5rem;
+    padding-bottom: 5rem;
+  }
+
+  @media (min-width: 768px) {
+    .operating-section {
+      padding-top: 4.75rem;
+      padding-bottom: 5.5rem;
+    }
+  }
+
   /* Orb animations */
   .op-orb-1 {
     animation: op-orb-float-1 18s ease-in-out infinite;

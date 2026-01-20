@@ -32,7 +32,7 @@ function resolveHref(href: string) {
 const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
 ---
 
-<section class="section relative overflow-hidden py-24" id="proof">
+<section class="section proof-section relative overflow-hidden py-24" id="proof">
   <!-- Animated background -->
   <div class="absolute inset-0 pointer-events-none">
     <!-- Gradient mesh -->
@@ -56,18 +56,18 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
 
   <div class="container relative z-10">
     <!-- Header -->
-    <div class="text-center mb-16 reveal-element opacity-0 translate-y-6 transition-all duration-1000">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium mb-6">
+    <div class="text-center mb-10 md:mb-12 reveal-element opacity-0 translate-y-6 transition-all duration-1000">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium mb-4">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         {t(lang, 'proof.title')}
       </div>
 
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
         {lang === 'es' ? 'Resultados que Hablan' : lang === 'fr' ? 'Des Résultats qui Parlent' : lang === 'pt' ? 'Resultados que Falam' : 'Results that Speak'}
       </h2>
-      <p class="text-lg text-muted max-w-2xl mx-auto">
+      <p class="text-base md:text-lg text-muted max-w-2xl mx-auto">
         {lang === 'es' ? 'Métricas reales de impacto en programas internacionales de clima y sostenibilidad' :
          lang === 'fr' ? 'Métriques réelles d\'impact dans les programmes internationaux de climat et durabilité' :
          lang === 'pt' ? 'Métricas reais de impacto em programas internacionais de clima e sustentabilidade' :
@@ -111,13 +111,13 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
               ></div>
 
               {/* Card content */}
-              <div class="relative p-6 rounded-2xl bg-surface/80 backdrop-blur-sm border border-border group-hover:border-transparent transition-all duration-500 h-full overflow-hidden">
+              <div class="relative p-6 rounded-3xl bg-surface/95 backdrop-blur-sm border border-border/60 group-hover:border-transparent transition-all duration-500 h-full overflow-hidden">
                 {/* Gradient border on hover */}
                 <div
-                  class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[1px]"
+                  class="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[1px]"
                   style={`background: linear-gradient(135deg, ${color}60, transparent 50%, ${color}30)`}
                 >
-                  <div class="w-full h-full rounded-2xl bg-surface"></div>
+                  <div class="w-full h-full rounded-3xl bg-surface"></div>
                 </div>
 
                 {/* Content wrapper */}
@@ -262,7 +262,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
     </div>
 
     <!-- Bottom summary -->
-    <div class="mt-16 flex flex-wrap justify-center gap-8 reveal-element opacity-0 translate-y-6 transition-all duration-1000" style="--delay: 900ms">
+    <div class="mt-10 md:mt-12 flex flex-wrap justify-center gap-8 reveal-element opacity-0 translate-y-6 transition-all duration-1000" style="--delay: 900ms">
       <div class="flex items-center gap-4 px-6 py-4 rounded-2xl bg-surface/60 backdrop-blur-sm border border-border">
         <div class="flex -space-x-2">
           {defaultColors.slice(0, 3).map((color) => (
@@ -290,6 +290,18 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
 </section>
 
 <style>
+  .proof-section {
+    padding-top: 4.5rem;
+    padding-bottom: 5rem;
+  }
+
+  @media (min-width: 768px) {
+    .proof-section {
+      padding-top: 5.5rem;
+      padding-bottom: 6rem;
+    }
+  }
+
   /* Floating orbs animation */
   .proof-orb {
     animation: proof-float 12s ease-in-out infinite;
@@ -305,6 +317,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d', '#f9a8d4'];
   /* Card reveal animation */
   .proof-card {
     animation-delay: var(--delay, 0ms);
+    border-radius: 24px;
   }
 
   /* Card hover effects */

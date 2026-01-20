@@ -47,9 +47,9 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
 
   <div class="container relative z-10">
     <!-- Header with trophy icon -->
-    <div class="text-center mb-20 reveal-element opacity-0 translate-y-6 transition-all duration-1000">
+    <div class="text-center mb-12 md:mb-14 reveal-element opacity-0 translate-y-6 transition-all duration-1000">
       <!-- Trophy icon animated -->
-      <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-amber-200/30 to-amber-400/20 mb-6 trophy-container">
+      <div class="inline-flex items-center justify-center w-16 h-16 md:w-18 md:h-18 rounded-3xl bg-gradient-to-br from-amber-200/30 to-amber-400/20 mb-4 trophy-container">
         <svg class="w-10 h-10 text-amber-500 trophy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
         </svg>
@@ -58,7 +58,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
       <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-4">
         {t(lang, 'awards.title')}
       </h2>
-      <p class="text-lg text-muted max-w-2xl mx-auto">
+      <p class="text-base md:text-lg text-muted max-w-2xl mx-auto">
         {lang === 'es' ? 'Reconocimientos por contribuciones al campo de datos e impacto' :
          lang === 'fr' ? 'Reconnaissances pour contributions au domaine des données et de l\'impact' :
          lang === 'pt' ? 'Reconhecimentos por contribuições ao campo de dados e impacto' :
@@ -66,7 +66,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
       </p>
 
       <!-- Decorative line with stars -->
-      <div class="flex items-center justify-center gap-4 mt-8">
+      <div class="flex items-center justify-center gap-3 mt-6">
         <div class="h-px w-20 bg-gradient-to-r from-transparent to-amber-400/50"></div>
         <div class="flex gap-1">
           <span class="text-amber-400 animate-pulse" style="animation-delay: 0s">★</span>
@@ -95,7 +95,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
             ></div>
 
             <!-- Card content -->
-            <div class="relative p-8 rounded-3xl bg-surface border border-border group-hover:border-transparent transition-all duration-500 overflow-hidden h-full">
+            <div class="relative p-7 md:p-8 rounded-3xl bg-surface border border-border group-hover:border-transparent transition-all duration-500 overflow-hidden h-full">
               <!-- Background decoration -->
               <div
                 class="absolute top-0 right-0 w-64 h-64 opacity-5 group-hover:opacity-10 transition-opacity duration-500"
@@ -103,7 +103,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
               ></div>
 
               <!-- Year badge with ribbon effect -->
-              <div class="relative mb-6">
+              <div class="relative mb-5">
                 <div
                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white shadow-lg"
                   style={`background: linear-gradient(135deg, ${color}, ${color}cc)`}
@@ -121,7 +121,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
               </div>
 
               <!-- Icon with animated ring -->
-              <div class="relative w-20 h-20 mb-6">
+              <div class="relative w-16 h-16 md:w-20 md:h-20 mb-5">
                 <!-- Rotating ring -->
                 <div
                   class="absolute inset-0 rounded-2xl rotating-ring opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -157,12 +157,12 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
               </h3>
 
               <!-- Organization -->
-              <p class="text-base font-medium mb-4" style={`color: ${color}`}>
+              <p class="text-base font-medium mb-3" style={`color: ${color}`}>
                 {getStr(award.org)}
               </p>
 
               <!-- Description -->
-              <p class="text-muted leading-relaxed mb-6">
+              <p class="text-muted leading-relaxed mb-5">
                 {getStr(award.description)}
               </p>
 
@@ -195,7 +195,7 @@ const defaultColors = ['#6ee7b7', '#93c5fd', '#c4b5fd', '#fcd34d'];
     </div>
 
     <!-- Bottom quote/callout -->
-    <div class="mt-16 text-center reveal-element opacity-0 translate-y-6 transition-all duration-1000" style="transition-delay: 600ms">
+    <div class="mt-10 md:mt-12 text-center reveal-element opacity-0 translate-y-6 transition-all duration-1000" style="transition-delay: 600ms">
       <div class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-surface to-background border border-border">
         <div class="flex -space-x-1">
           <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-200 to-emerald-400 flex items-center justify-center text-xs font-bold text-emerald-800">E</div>

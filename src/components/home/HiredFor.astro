@@ -32,7 +32,7 @@ const iconPaths: Record<string, string> = {
 };
 ---
 
-<section class="relative py-24 md:py-32 overflow-hidden" id="hired-for">
+<section class="hired-section relative py-24 md:py-32 overflow-hidden" id="hired-for">
   <!-- Animated background layers -->
   <div class="absolute inset-0 pointer-events-none">
     <!-- Gradient mesh background -->
@@ -74,9 +74,9 @@ const iconPaths: Record<string, string> = {
 
   <div class="container relative z-10">
     <!-- Premium Header -->
-    <div class="text-center mb-20 reveal-element opacity-0 translate-y-8">
+    <div class="text-center mb-8 md:mb-10 reveal-element opacity-0 translate-y-8">
       <!-- Eyebrow badge -->
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-3">
         <span class="relative flex h-2 w-2">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
@@ -87,14 +87,14 @@ const iconPaths: Record<string, string> = {
       </div>
 
       <!-- Main title with gradient -->
-      <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3">
         <span class="bg-gradient-to-r from-foreground via-foreground to-muted bg-clip-text">
           {t(lang, 'hiredFor.title')}
         </span>
       </h2>
 
       <!-- Subtitle -->
-      <p class="text-lg md:text-xl text-muted max-w-3xl mx-auto">
+      <p class="text-base md:text-lg text-muted max-w-3xl mx-auto">
         {lang === 'es' ? 'Sistemas probados que transforman datos en decisiones estratégicas' :
          lang === 'fr' ? 'Systèmes éprouvés qui transforment les données en décisions stratégiques' :
          lang === 'pt' ? 'Sistemas comprovados que transformam dados em decisões estratégicas' :
@@ -102,7 +102,7 @@ const iconPaths: Record<string, string> = {
       </p>
 
       <!-- Decorative line -->
-      <div class="mt-8 flex items-center justify-center gap-2">
+      <div class="mt-4 flex items-center justify-center gap-2">
         <div class="h-px w-16 bg-gradient-to-r from-transparent to-accent/50"></div>
         <div class="w-2 h-2 rotate-45 bg-accent/50"></div>
         <div class="h-px w-16 bg-gradient-to-l from-transparent to-accent/50"></div>
@@ -264,7 +264,7 @@ const iconPaths: Record<string, string> = {
     </div>
 
     <!-- Bottom CTA section -->
-    <div class="mt-20 text-center reveal-element opacity-0 translate-y-8" style="transition-delay: 800ms;">
+    <div class="mt-12 md:mt-14 text-center reveal-element opacity-0 translate-y-8" style="transition-delay: 800ms;">
       <div class="inline-flex flex-col sm:flex-row items-center gap-4">
         <a href={`/${lang}/case-studies`}
            class="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-accent to-accent/80 text-background font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 hover:scale-105">
@@ -296,6 +296,18 @@ const iconPaths: Record<string, string> = {
 </section>
 
 <style>
+  .hired-section {
+    padding-top: 3.75rem;
+    padding-bottom: 5rem;
+  }
+
+  @media (min-width: 768px) {
+    .hired-section {
+      padding-top: 5rem;
+      padding-bottom: 5.5rem;
+    }
+  }
+
   /* Orb animations */
   .orb-1 {
     animation: orb-float-1 20s ease-in-out infinite;

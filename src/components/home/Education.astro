@@ -126,24 +126,24 @@ const icons: Record<string, string> = {
 
   <div class="container relative z-10">
     <!-- Epic Header with Glitch Effect -->
-    <div class="edu-header text-center mb-16 edu-reveal">
-      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full edu-badge backdrop-blur-xl mb-8">
+    <div class="edu-header text-center mb-10 md:mb-12 edu-reveal">
+      <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full edu-badge backdrop-blur-xl mb-5">
         <span class="edu-globe-spin text-3xl">🎓</span>
         <span class="text-sm font-medium edu-badge-text tracking-widest uppercase">
           {t(lang, 'education.subtitle') || 'Academic Journey'}
         </span>
       </div>
 
-      <h2 class="edu-title-glitch text-4xl md:text-6xl font-black edu-title mb-6" data-text={t(lang, 'education.title')}>
+      <h2 class="edu-title-glitch text-4xl md:text-6xl font-black edu-title mb-4" data-text={t(lang, 'education.title')}>
         {t(lang, 'education.title')}
       </h2>
 
-      <p class="edu-subtitle text-lg md:text-xl edu-subtitle-text max-w-2xl mx-auto">
+      <p class="edu-subtitle text-base md:text-lg edu-subtitle-text max-w-2xl mx-auto">
         Three countries. Three degrees. One global perspective.
       </p>
 
       <!-- World Map Path -->
-      <div class="edu-world-path mt-10 flex items-center justify-center gap-4 md:gap-8">
+      <div class="edu-world-path mt-6 flex items-center justify-center gap-4 md:gap-8">
         {items.map((item, i) => (
           <Fragment>
             <div
@@ -380,7 +380,7 @@ const icons: Record<string, string> = {
     </div>
 
     <!-- Bottom Stats Banner -->
-    <div class="edu-stats-banner mt-12 edu-reveal">
+    <div class="edu-stats-banner mt-8 md:mt-10 edu-reveal">
       <div class="relative py-8 px-6 rounded-3xl overflow-hidden">
         <!-- Holographic Background -->
         <div class="edu-banner-holo absolute inset-0"></div>
@@ -407,6 +407,18 @@ const icons: Record<string, string> = {
 
 
 <style>
+  .edu-section {
+    padding-top: 3.25rem;
+    padding-bottom: 5rem;
+  }
+
+  @media (min-width: 768px) {
+    .edu-section {
+      padding-top: 4.5rem;
+      padding-bottom: 5.5rem;
+    }
+  }
+
   /* === SECTION BACKGROUND - THEME ADAPTIVE === */
   .edu-section {
     background: linear-gradient(180deg,

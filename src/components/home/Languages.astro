@@ -116,7 +116,7 @@ const connections = [
 
   <div class="container relative z-10">
     <!-- Header with Central Visualizer -->
-    <div class="text-center mb-16 lang-reveal">
+    <div class="text-center mb-16 lang-reveal relative z-10">
       <!-- Audio Visualizer Badge -->
       <div class="inline-flex flex-col items-center gap-4 mb-8">
         <!-- Main Frequency Visualizer -->
@@ -152,29 +152,30 @@ const connections = [
       </p>
     </div>
 
-    <!-- Connection Lines SVG (behind cards) -->
-    <div class="lang-connections-container absolute inset-0 pointer-events-none z-0">
-      <svg class="lang-connections-svg w-full h-full" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="connection-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#6ee7b7;stop-opacity:0.6"/>
-            <stop offset="50%" style="stop-color:#93c5fd;stop-opacity:0.8"/>
-            <stop offset="100%" style="stop-color:#c4b5fd;stop-opacity:0.6"/>
-          </linearGradient>
-          <filter id="glow-filter">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        <!-- Connection paths will be drawn by JS -->
-      </svg>
-    </div>
+    <div class="relative max-w-5xl mx-auto">
+      <!-- Connection Lines SVG (behind cards) -->
+      <div class="lang-connections-container absolute inset-0 pointer-events-none z-0">
+        <svg class="lang-connections-svg w-full h-full" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="connection-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#6ee7b7;stop-opacity:0.6"/>
+              <stop offset="50%" style="stop-color:#93c5fd;stop-opacity:0.8"/>
+              <stop offset="100%" style="stop-color:#c4b5fd;stop-opacity:0.6"/>
+            </linearGradient>
+            <filter id="glow-filter">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- Connection paths will be drawn by JS -->
+        </svg>
+      </div>
 
-    <!-- Language Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto relative z-10" id="lang-cards-grid">
+      <!-- Language Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10" id="lang-cards-grid">
       {items.map((item, index) => {
         const config = levelConfig[item.level] || levelConfig.working;
         const flag = flagMap[item.id] || { emoji: '🌐', greeting: 'Hello', phonetic: '' };
@@ -323,6 +324,7 @@ const connections = [
           </div>
         );
       })}
+      </div>
     </div>
 
     <!-- Stats with Equalizer Style -->
@@ -409,12 +411,22 @@ const connections = [
     opacity: 0.25;
   }
 
+  :global(:root:not(.dark)) .lang-ripple-container {
+    opacity: 0.35;
+  }
+
   .lang-ripple {
     position: absolute;
     border-radius: 50%;
     border: 1px solid var(--color-accent);
     opacity: 0;
     animation: lang-ripple-expand 4s ease-out infinite;
+  }
+
+  :global(:root:not(.dark)) .lang-ripple {
+    border-width: 2px;
+    border-color: rgba(37, 99, 235, 0.55);
+    box-shadow: 0 0 70px rgba(37, 99, 235, 0.2);
   }
 
   .lang-ripple-1 { animation-delay: 0s; }
@@ -796,7 +808,8 @@ const connections = [
   }
 
   /* === CONNECTIONS (drawn by JS) === */
-  .lang-connection-line {
+  :global(.lang-connection-line) {
+    stroke: #93c5fd;
     stroke: url(#connection-gradient);
     stroke-width: 2;
     fill: none;
@@ -806,7 +819,7 @@ const connections = [
     animation: lang-connection-flow 2s linear infinite;
   }
 
-  .lang-connection-line.is-visible {
+  :global(.lang-connection-line.is-visible) {
     opacity: 0.4;
   }
 
@@ -977,6 +990,7 @@ const connections = [
 
           path.setAttribute('d', d);
           path.setAttribute('class', 'lang-connection-line');
+          path.setAttribute('fill', 'none');
           svg.appendChild(path);
 
           // Animate visibility
