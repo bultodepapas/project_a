@@ -1,0 +1,501 @@
+---
+/**
+ * CaseFiltersAdvanced - Magnetic filter buttons with smooth transitions
+ */
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+import MagneticButton from './MagneticButton.astro';
+
+interface Props {
+  lang: Lang;
+  themes: string[];
+  regions: string[];
+}
+
+const { lang, themes } = Astro.props;
+---
+
+<div class="case-filters-advanced">
+  <!-- Active filters display -->
+  <div class="active-filters" id="active-filters-display">
+    <!-- Will be populated dynamically -->
+  </div>
+
+  <!-- Filter groups -->
+  <div class="filter-sections">
+    <!-- Theme filters -->
+    <div class="filter-section">
+      <div class="filter-section-header">
+        <div class="filter-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <span class="filter-label">{t(lang, 'cases.index.filters.theme')}</span>
+      </div>
+      
+      <div class="filter-buttons" id="theme-filters">
+        <MagneticButton
+          class="filter-button"
+          active={true}
+          data-filter="all"
+          data-group="theme"
+        >
+          <span>{t(lang, 'cases.index.filters.all')}</span>
+          <span class="filter-count" data-count="all">-</span>
+        </MagneticButton>
+        
+        {themes.map((theme) => (
+          <MagneticButton
+            class="filter-button"
+            data-filter={theme}
+            data-group="theme"
+          >
+            <div class="theme-indicator" data-theme={theme}></div>
+            <span>{theme}</span>
+            <span class="filter-count" data-count={theme}>-</span>
+          </MagneticButton>
+        ))}
+      </div>
+    </div>
+
+    <!-- Sort options -->
+    <div class="filter-section sort-section">
+      <div class="filter-section-header">
+        <div class="filter-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M7 12h10M11 18h2"/>
+          </svg>
+        </div>
+        <span class="filter-label">Sort</span>
+      </div>
+      
+      <div class="filter-buttons">
+        <MagneticButton
+          class="filter-button sort-button"
+          active={true}
+          data-sort="featured"
+        >
+          <span>Featured First</span>
+        </MagneticButton>
+        
+        <MagneticButton
+          class="filter-button sort-button"
+          data-sort="recent"
+        >
+          <span>Most Recent</span>
+        </MagneticButton>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results info -->
+  <div class="results-info">
+    <div class="results-count">
+      <span class="count-number" id="visible-count">-</span>
+      <span class="count-label">cases visible</span>
+    </div>
+    
+    <button class="reset-button" id="reset-filters" style="display: none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+        <path d="M21 3v5h-5"/>
+        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+        <path d="M3 21v-5h5"/>
+      </svg>
+      <span>Reset Filters</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .case-filters-advanced {
+    margin-bottom: 32px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: filters-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  }
+
+  /* Active filters display */
+  .active-filters {
+    min-height: 40px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .active-filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--color-accent);
+    color: var(--color-background);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: chip-pop-in 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  }
+
+  .chip-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .chip-remove:hover {
+    transform: scale(1.2);
+  }
+
+  /* Filter sections */
+  .filter-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filter-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .filter-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--color-background-alt);
+    color: var(--color-accent);
+  }
+
+  .filter-label {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-muted);
+  }
+
+  /* Filter buttons */
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .filter-button {
+    /* Styles inherited from MagneticButton */
+  }
+
+  .filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: var(--color-background-alt);
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.6;
+  }
+
+  .filter-button.active .filter-count {
+    background: rgba(0, 0, 0, 0.2);
+    opacity: 1;
+  }
+
+  /* Theme indicator */
+  .theme-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: indicator-pulse 2s ease-in-out infinite;
+  }
+
+  .theme-indicator[data-theme="audience"] {
+    background: #6ee7b7;
+  }
+
+  .theme-indicator[data-theme="benchmark"] {
+    background: #60a5fa;
+  }
+
+  .theme-indicator[data-theme="narrative"] {
+    background: #f472b6;
+  }
+
+  .theme-indicator[data-theme="capacity"] {
+    background: #fbbf24;
+  }
+
+  /* Results info */
+  .results-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .results-count {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .count-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .count-label {
+    font-size: 14px;
+    color: var(--color-muted);
+  }
+
+  .reset-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .reset-button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  /* Animations */
+  @keyframes filters-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes chip-pop-in {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes indicator-pulse {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 0 0 currentColor;
+    }
+    50% {
+      opacity: 0.8;
+      box-shadow: 0 0 0 4px transparent;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .case-filters-advanced,
+    .active-filter-chip,
+    .theme-indicator {
+      animation: none !important;
+    }
+
+    .case-filters-advanced {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .filter-sections {
+      gap: 24px;
+    }
+
+    .results-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+  }
+</style>
+
+<script>
+  import { initOnce } from '@/lib/lifecycle';
+
+  function initAdvancedFilters() {
+    const filterButtons = document.querySelectorAll('.filter-button[data-filter]') as NodeListOf<HTMLElement>;
+    const sortButtons = document.querySelectorAll('.sort-button[data-sort]') as NodeListOf<HTMLElement>;
+    const cards = document.querySelectorAll('.case-card-premium') as NodeListOf<HTMLElement>;
+    const visibleCountEl = document.getElementById('visible-count');
+    const resetButton = document.getElementById('reset-filters');
+
+    let activeTheme = 'all';
+    let activeSort = 'featured';
+
+    // Update counts
+    function updateCounts() {
+      const countEls = document.querySelectorAll('.filter-count[data-count]') as NodeListOf<HTMLElement>;
+      
+      countEls.forEach((countEl) => {
+        const filterValue = countEl.dataset.count;
+        if (!filterValue) return;
+
+        if (filterValue === 'all') {
+          countEl.textContent = String(cards.length);
+        } else {
+          const count = Array.from(cards).filter((card) => 
+            card.dataset.theme === filterValue
+          ).length;
+          countEl.textContent = String(count);
+        }
+      });
+    }
+
+    // Filter and sort cards
+    function filterCards() {
+      let visibleCards: HTMLElement[] = [];
+
+      cards.forEach((card) => {
+        const cardTheme = card.dataset.theme;
+        const matches = activeTheme === 'all' || cardTheme === activeTheme;
+
+        if (matches) {
+          card.style.display = '';
+          visibleCards.push(card);
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Sort visible cards
+      if (activeSort === 'featured') {
+        // Featured first is already the default order
+      } else if (activeSort === 'recent') {
+        // Could implement date-based sorting here
+      }
+
+      // Update visible count
+      if (visibleCountEl) {
+        visibleCountEl.textContent = String(visibleCards.length);
+      }
+
+      // Show/hide reset button
+      if (resetButton) {
+        resetButton.style.display = activeTheme !== 'all' ? 'flex' : 'none';
+      }
+
+      // Dispatch event for atmosphere changes
+      document.dispatchEvent(new CustomEvent('case-filter-change', {
+        detail: { theme: activeTheme, count: visibleCards.length }
+      }));
+
+      // Show no results message if needed
+      const noResultsMsg = document.getElementById('no-results-message');
+      if (noResultsMsg) {
+        noResultsMsg.style.display = visibleCards.length === 0 ? 'block' : 'none';
+      }
+    }
+
+    // Handle filter click
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter || 'all';
+        const group = button.dataset.group;
+
+        if (group === 'theme') {
+          // Remove active from all theme buttons
+          filterButtons.forEach((btn) => {
+            if (btn.dataset.group === 'theme') {
+              btn.classList.remove('active');
+            }
+          });
+
+          // Add active to clicked button
+          button.classList.add('active');
+          activeTheme = filter;
+        }
+
+        filterCards();
+      });
+    });
+
+    // Handle sort click
+    sortButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const sort = button.dataset.sort || 'featured';
+
+        // Remove active from all sort buttons
+        sortButtons.forEach((btn) => btn.classList.remove('active'));
+
+        // Add active to clicked button
+        button.classList.add('active');
+        activeSort = sort;
+
+        filterCards();
+      });
+    });
+
+    // Reset filters
+    if (resetButton) {
+      resetButton.addEventListener('click', () => {
+        activeTheme = 'all';
+        activeSort = 'featured';
+
+        // Reset all buttons
+        filterButtons.forEach((btn) => {
+          btn.classList.remove('active');
+          if (btn.dataset.filter === 'all') {
+            btn.classList.add('active');
+          }
+        });
+
+        sortButtons.forEach((btn) => {
+          btn.classList.remove('active');
+          if (btn.dataset.sort === 'featured') {
+            btn.classList.add('active');
+          }
+        });
+
+        filterCards();
+      });
+    }
+
+    // Initialize
+    updateCounts();
+    filterCards();
+  }
+
+  initOnce(document.body, 'advanced-filters', initAdvancedFilters);
+</script>

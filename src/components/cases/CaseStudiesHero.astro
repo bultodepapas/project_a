@@ -1,0 +1,330 @@
+---
+/**
+ * CaseStudiesHero - Epic hero section with constellation and stats
+ */
+import { t } from '@/i18n';
+import type { Lang } from '@/i18n/config';
+import StatsRing from './StatsRing.astro';
+
+interface Props {
+  lang: Lang;
+  totalCases: number;
+  totalRegions: number;
+  themes: string[];
+}
+
+const { lang, totalCases, totalRegions, themes } = Astro.props;
+---
+
+<section class="case-hero">
+  <div class="hero-container container">
+    <!-- Floating orbs indicator (decorative) -->
+    <div class="hero-orbs">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+    </div>
+
+    <!-- Main content -->
+    <div class="hero-content">
+      <!-- Subtitle -->
+      <div class="hero-subtitle">
+        <div class="subtitle-line"></div>
+        <span>{t(lang, 'cases.index.subtitle')}</span>
+        <div class="subtitle-line"></div>
+      </div>
+
+      <!-- Title with split animation -->
+      <h1 class="hero-title">
+        <span class="title-word" style="--word-delay: 0s">{t(lang, 'cases.index.title').split(' ')[0]}</span>
+        {t(lang, 'cases.index.title').split(' ').slice(1).map((word: string, i: number) => (
+          <span class="title-word" style={`--word-delay: ${(i + 1) * 0.1}s`}>{word}</span>
+        ))}
+      </h1>
+
+      <!-- Description -->
+      <p class="hero-description">
+        Strategic intelligence gallery showcasing data-driven marketing frameworks,
+        audience systems, and performance optimization across global markets.
+      </p>
+
+      <!-- Stats rings -->
+      <div class="hero-stats">
+        <StatsRing 
+          value={totalCases} 
+          label="Case Studies" 
+          color="#6ee7b7"
+          delay={200}
+        />
+        <StatsRing 
+          value={totalRegions} 
+          label="Regions" 
+          color="#60a5fa"
+          delay={400}
+        />
+        <StatsRing 
+          value={themes.length} 
+          label="Frameworks" 
+          color="#f472b6"
+          delay={600}
+        />
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="scroll-indicator">
+        <div class="scroll-line"></div>
+        <span class="scroll-text">Explore</span>
+        <svg class="scroll-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M19 12l-7 7-7-7"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .case-hero {
+    position: relative;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0 60px;
+    overflow: hidden;
+  }
+
+  .hero-container {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Decorative orbs */
+  .hero-orbs {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0;
+    animation: orb-fade-in 1.2s ease-out forwards;
+  }
+
+  .hero-orb-1 {
+    width: 300px;
+    height: 300px;
+    top: 10%;
+    left: 5%;
+    background: radial-gradient(circle, rgba(110, 231, 183, 0.2) 0%, transparent 70%);
+    animation-delay: 0.3s;
+  }
+
+  .hero-orb-2 {
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    right: 10%;
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.15) 0%, transparent 70%);
+    animation-delay: 0.6s;
+  }
+
+  .hero-orb-3 {
+    width: 200px;
+    height: 200px;
+    bottom: 10%;
+    left: 50%;
+    background: radial-gradient(circle, rgba(244, 114, 182, 0.12) 0%, transparent 70%);
+    animation-delay: 0.9s;
+  }
+
+  /* Content */
+  .hero-content {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Subtitle */
+  .hero-subtitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fade-slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  }
+
+  .subtitle-line {
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  }
+
+  .hero-subtitle span {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-accent);
+  }
+
+  /* Title */
+  .hero-title {
+    font-size: clamp(36px, 7vw, 64px);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--color-foreground);
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.3em;
+  }
+
+  .title-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: word-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(0.4s + var(--word-delay, 0s));
+    background: linear-gradient(135deg, var(--color-foreground) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Description */
+  .hero-description {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-muted);
+    max-width: 600px;
+    margin: 0 auto 32px;
+    opacity: 0;
+    animation: fade-slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+  }
+
+  /* Stats */
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fade-in 0.8s ease-out 1.5s forwards;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, transparent, var(--color-accent), transparent);
+    animation: line-pulse 2s ease-in-out infinite;
+  }
+
+  .scroll-text {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+  }
+
+  .scroll-arrow {
+    color: var(--color-accent);
+    animation: arrow-bounce 2s ease-in-out infinite;
+  }
+
+  /* Animations */
+  @keyframes orb-fade-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-slide-up {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes word-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes line-pulse {
+    0%, 100% {
+      opacity: 0.5;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleY(1.2);
+    }
+  }
+
+  @keyframes arrow-bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(8px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-orb,
+    .hero-subtitle,
+    .title-word,
+    .hero-description,
+    .scroll-indicator {
+      animation: none !important;
+      opacity: 1;
+      transform: none;
+    }
+
+    .scroll-line,
+    .scroll-arrow {
+      animation: none !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .case-hero {
+      min-height: 70vh;
+      padding: 100px 0 60px;
+    }
+
+    .hero-stats {
+      gap: 24px;
+    }
+
+    .hero-description {
+      font-size: 16px;
+      margin-bottom: 36px;
+    }
+  }
+</style>

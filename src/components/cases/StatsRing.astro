@@ -1,0 +1,195 @@
+---
+/**
+ * StatsRing - Animated counter with progress ring
+ */
+interface Props {
+  value: number;
+  label: string;
+  suffix?: string;
+  color?: string;
+  delay?: number;
+}
+
+const { value, label, suffix = '', color = '#6ee7b7', delay = 0 } = Astro.props;
+---
+
+<div class="stats-ring" style={`--ring-color: ${color}; animation-delay: ${delay}ms`}>
+  <svg class="ring-svg" viewBox="0 0 100 100">
+    <!-- Background circle -->
+    <circle
+      class="ring-bg"
+      cx="50"
+      cy="50"
+      r="45"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      opacity="0.1"
+    />
+    <!-- Progress circle -->
+    <circle
+      class="ring-progress"
+      cx="50"
+      cy="50"
+      r="45"
+      fill="none"
+      stroke="var(--ring-color)"
+      stroke-width="2"
+      stroke-linecap="round"
+      pathLength="100"
+    />
+  </svg>
+  
+  <div class="ring-content">
+    <div class="ring-value" data-target={value} data-suffix={suffix}>0{suffix}</div>
+    <div class="ring-label">{label}</div>
+  </div>
+</div>
+
+<style>
+  .stats-ring {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: ring-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .ring-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .ring-bg {
+    color: var(--color-muted);
+  }
+
+  .ring-progress {
+    stroke-dasharray: 0 100;
+    transition: stroke-dasharray 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: drop-shadow(0 0 8px var(--ring-color));
+  }
+
+  .ring-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .ring-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-foreground);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ring-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-muted);
+    text-align: center;
+  }
+
+  .stats-ring.active .ring-progress {
+    stroke-dasharray: 100 100;
+  }
+
+  @keyframes ring-reveal {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stats-ring {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    
+    .ring-progress {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .stats-ring {
+      width: 110px;
+      height: 110px;
+    }
+
+    .ring-value {
+      font-size: 24px;
+    }
+
+    .ring-label {
+      font-size: 10px;
+    }
+  }
+</style>
+
+<script>
+  function initStatsRings() {
+    const rings = document.querySelectorAll('.stats-ring');
+    if (!rings.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const ring = entry.target as HTMLElement;
+            ring.classList.add('active');
+            
+            // Animate counter
+            const valueEl = ring.querySelector('.ring-value') as HTMLElement;
+            if (valueEl) {
+              const target = parseInt(valueEl.dataset.target || '0');
+              const suffix = valueEl.dataset.suffix || '';
+              let current = 0;
+              const duration = 1500;
+              const increment = target / (duration / 16);
+              
+              const animate = () => {
+                current += increment;
+                if (current < target) {
+                  valueEl.textContent = Math.floor(current) + suffix;
+                  requestAnimationFrame(animate);
+                } else {
+                  valueEl.textContent = target + suffix;
+                }
+              };
+              
+              animate();
+            }
+            
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    rings.forEach((ring) => observer.observe(ring));
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initStatsRings);
+    } else {
+      initStatsRings();
+    }
+    document.addEventListener('astro:page-load', initStatsRings);
+  }
+</script>

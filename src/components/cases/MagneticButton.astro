@@ -1,0 +1,147 @@
+---
+/**
+ * MagneticButton - Button with magnetic cursor attraction
+ */
+interface Props {
+  class?: string;
+  active?: boolean;
+  [key: string]: any;
+}
+
+const { class: className = '', active = false, ...rest } = Astro.props;
+---
+
+<button 
+  class={`magnetic-button ${active ? 'active' : ''} ${className}`}
+  data-magnetic="true"
+  {...rest}
+>
+  <span class="magnetic-button-content">
+    <slot />
+  </span>
+  <div class="magnetic-button-glow"></div>
+</button>
+
+<style>
+  .magnetic-button {
+    position: relative;
+    padding: 12px 24px;
+    border-radius: 24px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-muted);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+    overflow: hidden;
+  }
+
+  .magnetic-button-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .magnetic-button-glow {
+    position: absolute;
+    inset: -2px;
+    border-radius: 24px;
+    background: var(--color-accent);
+    opacity: 0;
+    filter: blur(12px);
+    transition: opacity 0.3s ease;
+    z-index: 0;
+  }
+
+  /* Active state */
+  .magnetic-button.active {
+    background: var(--color-accent);
+    color: var(--color-background);
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 20px -4px var(--color-accent);
+  }
+
+  .magnetic-button.active .magnetic-button-glow {
+    opacity: 0.4;
+  }
+
+  /* Hover state */
+  .magnetic-button:hover:not(.active) {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .magnetic-button:hover .magnetic-button-glow {
+    opacity: 0.15;
+  }
+
+  /* Focus state */
+  .magnetic-button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .magnetic-button {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function initMagneticButtons() {
+    const buttons = document.querySelectorAll('[data-magnetic="true"]');
+    if (!buttons.length) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    buttons.forEach((button) => {
+      const el = button as HTMLElement;
+      let rafId: number | null = null;
+
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        // Magnetic strength
+        const strength = 0.3;
+        const targetX = x * strength;
+        const targetY = y * strength;
+
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+        }
+
+        rafId = requestAnimationFrame(() => {
+          el.style.transform = `translate(${targetX}px, ${targetY}px)`;
+        });
+      };
+
+      const handleMouseLeave = () => {
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        el.style.transform = 'translate(0, 0)';
+      };
+
+      el.addEventListener('mousemove', handleMouseMove);
+      el.addEventListener('mouseleave', handleMouseLeave);
+    });
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMagneticButtons);
+    } else {
+      initMagneticButtons();
+    }
+    document.addEventListener('astro:page-load', initMagneticButtons);
+  }
+</script>

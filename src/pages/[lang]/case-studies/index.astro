@@ -1,14 +1,16 @@
 ---
 /**
- * Case Studies Index
- * Filterable list of all case studies
+ * Case Studies Index - PREMIUM EDITION
+ * Epic showcase of strategic intelligence with cinematic effects
  */
 
 import Page from '@/layouts/Page.astro';
 import { t } from '@/i18n';
 import { getCollection, type CollectionEntry } from 'astro:content';
-import CaseCard from '@/components/cases/CaseCard.astro';
-import CaseFilters from '@/components/cases/CaseFilters.astro';
+import CaseStudiesHero from '@/components/cases/CaseStudiesHero.astro';
+import CaseStudiesAtmosphere from '@/components/cases/CaseStudiesAtmosphere.astro';
+import CaseFiltersAdvanced from '@/components/cases/CaseFiltersAdvanced.astro';
+import CaseCardPremium from '@/components/cases/CaseCardPremium.astro';
 import { getLangOrRedirect, getLangStaticPaths } from '@/lib/i18n-routing';
 
 // Generate static paths for each language
@@ -37,6 +39,9 @@ const cases = allCases
 const themes = [...new Set(cases.map((c: CollectionEntry<'cases'>) => c.data.theme))].sort();
 const regions = [...new Set(cases.flatMap((c: CollectionEntry<'cases'>) => c.data.regions))].sort();
 
+// Calculate stats
+const totalRegions = regions.length;
+
 const pageTitle = t(typedLang, 'cases.index.title');
 const pageDescription = t(typedLang, 'cases.index.subtitle');
 ---
@@ -46,74 +51,116 @@ const pageDescription = t(typedLang, 'cases.index.subtitle');
   description={pageDescription}
   lang={typedLang}
 >
-  <div class="section min-h-screen">
+  <!-- Atmospheric background -->
+  <CaseStudiesAtmosphere />
+
+  <!-- Hero section -->
+  <CaseStudiesHero 
+    lang={typedLang} 
+    totalCases={cases.length}
+    totalRegions={totalRegions}
+    themes={themes}
+  />
+
+  <!-- Main content section -->
+  <div class="cases-showcase-section section relative">
     <div class="container">
-      <!-- Header -->
-      <header class="mb-12 animate-fade-in-up">
-        <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          {t(typedLang, 'cases.index.title')}
-        </h1>
-        <p class="text-lg text-muted max-w-2xl">
-          {t(typedLang, 'cases.index.subtitle')}
-        </p>
-      </header>
+      <!-- Advanced Filters -->
+      <CaseFiltersAdvanced 
+        lang={typedLang} 
+        themes={themes} 
+        regions={regions} 
+      />
 
-      <!-- Filters -->
-      <div class="animate-fade-in-up" style="animation-delay: 100ms">
-        <CaseFilters 
-          lang={typedLang} 
-          themes={themes} 
-          regions={regions} 
-        />
-      </div>
-
-      <!-- Case Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]">
+      <!-- Case Grid with Premium Cards -->
+      <div class="cases-grid">
         {cases.map((caseEntry: CollectionEntry<'cases'>, index: number) => (
-          <div class="h-full animate-fade-in-up" style={`animation-delay: ${(index * 100) + 200}ms`}>
-            <CaseCard 
-              lang={typedLang} 
-              caseEntry={caseEntry} 
-            />
-          </div>
+          <CaseCardPremium 
+            lang={typedLang} 
+            caseEntry={caseEntry}
+            index={index}
+          />
         ))}
       </div>
 
       <!-- No Results Message -->
-      <div id="no-results-message" class="hidden py-12 text-center text-muted">
-        <p class="text-lg">{t(typedLang, 'cases.index.noResults')}</p>
-        <button 
-          class="mt-4 text-accent hover:underline filter-btn" 
-          data-filter="all" 
-          data-group="theme"
-          onclick="document.querySelector('.filter-btn[data-filter=\'all\']').click()"
-        >
-          {t(typedLang, 'cases.index.filters.all')}
-        </button>
+      <div id="no-results-message" class="no-results-message">
+        <div class="no-results-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 12h8M12 8v8"/>
+          </svg>
+        </div>
+        <h3 class="no-results-title">No cases match your filters</h3>
+        <p class="no-results-text">Try adjusting your filters or reset to see all cases</p>
       </div>
     </div>
   </div>
 </Page>
 
-<script>
-  import { initOnce, initSection } from '@/lib/lifecycle';
-  import { createRevealObserver } from '@/lib/ui/animations';
-
-  // Simple reveal animation observer
-  function initReveal() {
-    const container = document.querySelector('.section');
-    initOnce(container, 'cases-index-reveal', (root) => {
-      return createRevealObserver(root, {
-        selector: '.reveal-element',
-        threshold: 0.1,
-        visibleClass: '',
-        onReveal: (el) => {
-          el.classList.remove('opacity-0', 'translate-y-4');
-          el.classList.add('opacity-100', 'translate-y-0');
-        },
-      });
-    });
+<style>
+  .cases-showcase-section {
+    position: relative;
+    z-index: 10;
+    padding: 40px 0 80px;
   }
-  
-  initSection('cases-index-reveal-init', initReveal);
-</script>
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+    min-height: 400px;
+  }
+
+  /* No results message */
+  .no-results-message {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+  }
+
+  .no-results-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    color: var(--color-muted);
+    opacity: 0.5;
+  }
+
+  .no-results-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-foreground);
+    margin-bottom: 12px;
+  }
+
+  .no-results-text {
+    font-size: 16px;
+    color: var(--color-muted);
+    max-width: 400px;
+  }
+
+  @media (max-width: 1200px) {
+    .cases-grid {
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cases-showcase-section {
+      padding: 60px 0 80px;
+    }
+
+    .cases-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+</style>

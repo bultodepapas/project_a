@@ -1,0 +1,197 @@
+---
+/**
+ * FloatingOrbs - Atmospheric mesh gradient orbs
+ * Dynamic color shifting based on active theme
+ */
+interface Props {
+  themes?: string[];
+}
+
+const { themes = ['audience', 'benchmark', 'narrative', 'capacity'] } = Astro.props;
+---
+
+<div class="floating-orbs-container">
+  <div class="orb orb-1" data-theme="audience"></div>
+  <div class="orb orb-2" data-theme="benchmark"></div>
+  <div class="orb orb-3" data-theme="narrative"></div>
+  <div class="orb orb-4" data-theme="capacity"></div>
+</div>
+
+<style>
+  .floating-orbs-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0;
+    will-change: transform, opacity;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Orb 1 - Top Left */
+  .orb-1 {
+    width: 600px;
+    height: 600px;
+    top: -200px;
+    left: -200px;
+    background: radial-gradient(circle, rgba(110, 231, 183, 0.15) 0%, transparent 70%);
+    animation: orb-float-1 25s ease-in-out infinite;
+  }
+
+  /* Orb 2 - Top Right */
+  .orb-2 {
+    width: 500px;
+    height: 500px;
+    top: -100px;
+    right: -150px;
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.12) 0%, transparent 70%);
+    animation: orb-float-2 30s ease-in-out infinite;
+    animation-delay: -8s;
+  }
+
+  /* Orb 3 - Bottom Left */
+  .orb-3 {
+    width: 550px;
+    height: 550px;
+    bottom: -150px;
+    left: 10%;
+    background: radial-gradient(circle, rgba(244, 114, 182, 0.1) 0%, transparent 70%);
+    animation: orb-float-3 35s ease-in-out infinite;
+    animation-delay: -15s;
+  }
+
+  /* Orb 4 - Bottom Right */
+  .orb-4 {
+    width: 650px;
+    height: 650px;
+    bottom: -200px;
+    right: -100px;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, transparent 70%);
+    animation: orb-float-4 28s ease-in-out infinite;
+    animation-delay: -20s;
+  }
+
+  /* Orb animations */
+  @keyframes orb-float-1 {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    25% {
+      transform: translate(30px, 50px) scale(1.1);
+    }
+    50% {
+      transform: translate(-20px, 80px) scale(0.95);
+    }
+    75% {
+      transform: translate(40px, 30px) scale(1.05);
+    }
+  }
+
+  @keyframes orb-float-2 {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(-40px, 60px) scale(1.08);
+    }
+    66% {
+      transform: translate(20px, -30px) scale(0.92);
+    }
+  }
+
+  @keyframes orb-float-3 {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    40% {
+      transform: translate(60px, -40px) scale(1.15);
+    }
+    80% {
+      transform: translate(-30px, 20px) scale(0.9);
+    }
+  }
+
+  @keyframes orb-float-4 {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    30% {
+      transform: translate(-50px, -50px) scale(0.95);
+    }
+    60% {
+      transform: translate(30px, 40px) scale(1.1);
+    }
+  }
+
+  /* Show orbs with fade in */
+  .orbs-visible .orb {
+    opacity: 1;
+  }
+
+  /* Theme color transitions */
+  .orb[data-active="true"] {
+    opacity: 0.2 !important;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .orb {
+      filter: blur(60px);
+    }
+    
+    .orb-1, .orb-2, .orb-3, .orb-4 {
+      width: 400px;
+      height: 400px;
+    }
+  }
+</style>
+
+<script>
+  function initOrbs() {
+    const container = document.querySelector('.floating-orbs-container');
+    if (!container) return;
+
+    // Fade in orbs on page load
+    setTimeout(() => {
+      container.classList.add('orbs-visible');
+    }, 400);
+
+    // Listen for filter changes to update orb prominence
+    document.addEventListener('case-filter-change', ((e: CustomEvent) => {
+      const activeTheme = e.detail.theme;
+      const orbs = container.querySelectorAll('.orb');
+      
+      orbs.forEach((orb) => {
+        if (activeTheme === 'all' || !activeTheme) {
+          orb.removeAttribute('data-active');
+        } else if (orb.getAttribute('data-theme') === activeTheme) {
+          orb.setAttribute('data-active', 'true');
+        } else {
+          orb.removeAttribute('data-active');
+        }
+      });
+    }) as EventListener);
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initOrbs);
+    } else {
+      initOrbs();
+    }
+    document.addEventListener('astro:page-load', initOrbs);
+  }
+</script>
