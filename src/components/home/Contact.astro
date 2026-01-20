@@ -56,31 +56,33 @@ const contactMethods = [
 ];
 ---
 
-<section class="section relative overflow-hidden" id="contact">
+<section class="section contact-section relative overflow-hidden" id="contact">
 
   <div class="container relative z-10">
     <!-- Header with Glitch Effect -->
-    <div class="text-center mb-20 reveal-element opacity-0 translate-y-6 transition-all duration-1000">
-      <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-violet-500/10 backdrop-blur-sm border border-emerald-500/20 text-sm font-medium mb-8">
-        <span class="relative flex h-3 w-3">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 shadow-lg shadow-emerald-400/50"></span>
-        </span>
-        <span class="bg-gradient-to-r from-emerald-400 via-blue-400 to-violet-400 bg-clip-text text-transparent font-semibold">
-          {lang === 'es' ? 'Disponible para nuevos proyectos' : lang === 'fr' ? 'Disponible pour nouveaux projets' : lang === 'pt' ? 'Disponível para novos projetos' : 'Available for new projects'}
-        </span>
+    <div class="contact-header text-center mb-12 md:mb-16 reveal-element opacity-0 translate-y-6 transition-all duration-1000">
+      <div class="contact-header-inner">
+        <h2 class="glitch-text contact-title text-5xl md:text-7xl font-bold text-foreground mb-4 relative inline-block" data-text={t(lang, 'contact.title')}>
+          {t(lang, 'contact.title')}
+        </h2>
+        <div class="contact-kicker inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-violet-500/10 backdrop-blur-sm border border-emerald-500/20 text-sm font-medium mb-4">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 shadow-lg shadow-emerald-400/50"></span>
+          </span>
+          <span class="bg-gradient-to-r from-emerald-400 via-blue-400 to-violet-400 bg-clip-text text-transparent font-semibold">
+            {lang === 'es' ? 'Disponible para nuevos proyectos' : lang === 'fr' ? 'Disponible pour nouveaux projets' : lang === 'pt' ? 'Disponível para novos projetos' : 'Available for new projects'}
+          </span>
+        </div>
+        <div class="contact-title-rule" aria-hidden="true"></div>
+        <p class="contact-subtitle text-lg md:text-xl text-muted max-w-2xl mx-auto leading-relaxed">
+          {t(lang, 'contact.subtitle')}
+        </p>
       </div>
-
-      <h2 class="glitch-text text-5xl md:text-7xl font-bold text-foreground mb-6 relative inline-block" data-text={t(lang, 'contact.title')}>
-        {t(lang, 'contact.title')}
-      </h2>
-      <p class="text-xl text-muted max-w-2xl mx-auto leading-relaxed">
-        {t(lang, 'contact.subtitle')}
-      </p>
     </div>
 
     <!-- Contact Cards with 3D Flip & Particle Effects -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12 md:mb-16">
       {contactMethods.map((method, index) => (
         <div 
           class={`contact-card-scene ${index === 1 ? 'reverse-flip' : ''} reveal-element opacity-0 translate-y-6 transition-all duration-1000`}
@@ -188,7 +190,7 @@ const contactMethods = [
     </div>
 
     <!-- Location Info with Constellation Network -->
-    <div class="relative max-w-5xl mx-auto mb-16 reveal-element opacity-0 translate-y-6 transition-all duration-1000" style="transition-delay: 600ms">
+    <div class="relative max-w-5xl mx-auto mb-10 md:mb-12 reveal-element opacity-0 translate-y-6 transition-all duration-1000" style="transition-delay: 600ms">
       <!-- Constellation Canvas -->
       <canvas id="constellation-canvas" class="absolute inset-0 pointer-events-none rounded-3xl" style="width: 100%; height: 100%;"></canvas>
 
@@ -271,6 +273,78 @@ const contactMethods = [
 </section>
 
 <style>
+  .contact-header {
+    position: relative;
+  }
+
+  .contact-header-inner {
+    position: relative;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 2.25rem;
+    border-radius: 32px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 252, 0.78));
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 24px 60px -48px rgba(15, 23, 42, 0.45);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .contact-header-inner::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 420px;
+    height: 420px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.08), transparent 70%);
+    pointer-events: none;
+  }
+
+  .contact-kicker {
+    justify-content: center;
+    letter-spacing: 0.02em;
+    box-shadow: 0 12px 30px -24px rgba(16, 185, 129, 0.5);
+  }
+
+  .contact-title {
+    display: block;
+  }
+
+  .contact-title-rule {
+    width: 120px;
+    height: 4px;
+    margin: 0.5rem auto 1.25rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.9), rgba(59, 130, 246, 0.9), rgba(139, 92, 246, 0.9));
+  }
+
+  .contact-subtitle {
+    max-width: 720px;
+  }
+
+  @media (max-width: 768px) {
+    .contact-header-inner {
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  .contact-section {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .contact-section {
+      padding-top: 5.5rem;
+      padding-bottom: 5.5rem;
+    }
+  }
 
 
   /* ========== GLITCH TEXT EFFECT ========== */
@@ -338,7 +412,7 @@ const contactMethods = [
   }
 
   .contact-card-scene:hover .contact-card-3d {
-    transform: rotateX(180deg);
+    transform: rotateY(180deg);
   }
 
   .contact-card-scene.reverse-flip:hover .contact-card-3d {
@@ -350,11 +424,14 @@ const contactMethods = [
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
     border-radius: 1.5rem;
     overflow: hidden;
   }
 
   .contact-card-front {
+    transform: rotateY(0deg);
     background: hsl(var(--surface));
     border: 1px solid hsl(var(--border) / 0.5);
     box-shadow: 
@@ -370,7 +447,7 @@ const contactMethods = [
   }
 
   .contact-card-back {
-    transform: rotateX(180deg);
+    transform: rotateY(180deg);
     box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.5);
   }
 
