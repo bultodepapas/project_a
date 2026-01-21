@@ -766,10 +766,12 @@ const icons: Record<string, string> = {
 
   .transform-style-3d {
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
   }
 
   .backface-hidden {
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .rotate-y-180 {
@@ -778,11 +780,15 @@ const icons: Record<string, string> = {
 
   .edu-card {
     transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
   }
 
   .edu-card-front,
   .edu-card-back {
     transition: box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
   }
 
   .edu-card-wrapper:hover .edu-card-front {
