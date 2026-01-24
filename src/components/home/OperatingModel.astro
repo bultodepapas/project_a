@@ -724,11 +724,48 @@ const iconPaths: Record<string, string> = {
 </style>
 
 <script>
-  import { Application, Container as PixiContainer, Graphics, Sprite, Texture } from 'pixi.js';
-  import VanillaTilt from 'vanilla-tilt';
   import { initOnce, initSection } from '@/lib/lifecycle';
   import { createRevealObserver } from '@/lib/ui/animations';
-  import { gsap } from 'gsap';
+
+  type PixiModule = typeof import('pixi.js');
+  type PixiSprite = import('pixi.js').Sprite;
+  type PixiTexture = import('pixi.js').Texture;
+
+  let pixi: PixiModule | null = null;
+  let gsap: typeof import('gsap').gsap | null = null;
+  let VanillaTilt: typeof import('vanilla-tilt').default | null = null;
+
+  async function loadDeps(options: { pixi?: boolean; gsap?: boolean; tilt?: boolean }) {
+    const tasks: Array<Promise<void>> = [];
+
+    if (options.gsap && !gsap) {
+      tasks.push(
+        import('gsap').then((mod) => {
+          gsap = mod.gsap;
+        })
+      );
+    }
+
+    if (options.tilt && !VanillaTilt) {
+      tasks.push(
+        import('vanilla-tilt').then((mod) => {
+          VanillaTilt = mod.default;
+        })
+      );
+    }
+
+    if (options.pixi && !pixi) {
+      tasks.push(
+        import('pixi.js').then((mod) => {
+          pixi = mod;
+        })
+      );
+    }
+
+    if (tasks.length) {
+      await Promise.all(tasks);
+    }
+  }
 
   /* ========================================
      DEVICE CAPABILITY DETECTION
@@ -795,7 +832,7 @@ const iconPaths: Record<string, string> = {
      ======================================== */
 
   interface Particle {
-    sprite: Sprite;
+    sprite: PixiSprite;
     x: number;
     y: number;
     vx: number;
@@ -829,7 +866,9 @@ const iconPaths: Record<string, string> = {
     const sectionWidth = rect.width;
     const sectionHeight = rect.height;
 
-    const app = new Application();
+    if (!pixi) return null;
+
+    const app = new pixi.Application();
     
     await app.init({
       canvas,
@@ -843,13 +882,13 @@ const iconPaths: Record<string, string> = {
       powerPreference: 'high-performance'
     });
 
-    const particleContainer = new PixiContainer();
+    const particleContainer = new pixi.Container();
     app.stage.addChild(particleContainer);
 
     // Create circle textures with different sizes
-    const particleTextures: Texture[] = [];
+    const particleTextures: PixiTexture[] = [];
     [1, 1.5, 2, 2.5, 3].forEach(size => {
-      const graphics = new Graphics();
+      const graphics = new pixi.Graphics();
       graphics.circle(0, 0, size);
       graphics.fill(0xffffff);
       particleTextures.push(app.renderer.generateTexture(graphics));
@@ -884,7 +923,7 @@ const iconPaths: Record<string, string> = {
     for (let i = 0; i < particleCount; i++) {
       // Tamaño aleatorio
       const sizeIndex = Math.floor(Math.random() * particleTextures.length);
-      const sprite = new Sprite(particleTextures[sizeIndex]);
+      const sprite = new pixi.Sprite(particleTextures[sizeIndex]);
       const x = Math.random() * app.screen.width;
       const y = Math.random() * app.screen.height;
       
@@ -1301,6 +1340,7 @@ const iconPaths: Record<string, string> = {
      ======================================== */
 
   function init3DTilt(card: HTMLElement) {
+    if (!VanillaTilt) return;
     VanillaTilt.init(card, {
       max: 15,             // Más pronunciado
       speed: 600,          // Rápido y responsivo
@@ -1381,6 +1421,7 @@ const iconPaths: Record<string, string> = {
      ======================================== */
 
   function initSVGMorphing(cards: NodeListOf<HTMLElement>) {
+    if (!gsap) return;
     const pathElements = [
       document.querySelector('#path-0-1'),
       document.querySelector('#path-1-2'),
@@ -1433,77 +1474,100 @@ const iconPaths: Record<string, string> = {
     const section = document.getElementById('operating-model');
     if (!section) return;
 
-    initOnce(section, 'operating-model', async (root) => {
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReducedMotion) {
-        console.log('Operating Model: Reduced motion mode');
-        return () => {};
-      }
+    const startInit = () => {
+      initOnce(section, 'operating-model', async (root) => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+          console.log('Operating Model: Reduced motion mode');
+          return () => {};
+        }
 
-      const capability = detectCapability();
-      console.log('Operating Model: Device capability', capability);
+        const capability = detectCapability();
+        console.log('Operating Model: Device capability', capability);
 
-      // Reveal animations
-      const cleanupReveal = createRevealObserver(root, {
-        selector: '.op-reveal',
-        threshold: 0.1,
-        rootMargin: '50px',
-        visibleClass: 'is-visible',
+        await loadDeps({
+          pixi: capability.features.pixiJS,
+          gsap: capability.tier !== 'low',
+          tilt: capability.tier === 'high',
+        });
+
+        // Reveal animations
+        const cleanupReveal = createRevealObserver(root, {
+          selector: '.op-reveal',
+          threshold: 0.1,
+          rootMargin: '50px',
+          visibleClass: 'is-visible',
+        });
+
+        const nodeCards = root.querySelectorAll<HTMLElement>('.node-card');
+        
+        // Layer 1: PixiJS Particles
+        let cleanupPixi: (() => void) | null = null;
+        if (capability.features.pixiJS) {
+          const pixiCanvas = root.querySelector<HTMLCanvasElement>('#lab-particles');
+          if (pixiCanvas) {
+            cleanupPixi = await initPixiParticles(pixiCanvas, nodeCards, capability);
+          }
+        }
+
+        // Layer 2: Data Stream
+        let cleanupDataStream: (() => void) | null = null;
+        if (capability.tier !== 'low') {
+          const dataCanvas = root.querySelector<HTMLCanvasElement>('#data-stream');
+          if (dataCanvas) {
+            cleanupDataStream = initDataStream(dataCanvas, nodeCards);
+          }
+        }
+
+        // Layer 3: Premium Cards
+        const cleanupEffects: Array<(() => void) | undefined> = [];
+        
+        // Holographic glow (muy liviano)
+        if (capability.tier !== 'low') {
+          nodeCards.forEach(card => {
+            initHolographicGlow(card);
+          });
+          
+          initSVGMorphing(nodeCards);
+        }
+
+        // 3D Tilt - solo en high tier con parámetros muy suaves
+        if (capability.tier === 'high') {
+          nodeCards.forEach(card => {
+            init3DTilt(card);
+          });
+          
+          // Magnetic repulsion muy sutil
+          initMagneticRepulsion(nodeCards);
+        }
+
+        // Cleanup
+        return () => {
+          cleanupReveal();
+          if (cleanupPixi) cleanupPixi();
+          if (cleanupDataStream) cleanupDataStream();
+          
+          cleanupEffects.forEach(cleanup => {
+            if (cleanup) cleanup();
+          });
+        };
       });
+    };
 
-      const nodeCards = root.querySelectorAll<HTMLElement>('.node-card');
-      
-      // Layer 1: PixiJS Particles
-      let cleanupPixi: (() => void) | null = null;
-      if (capability.features.pixiJS) {
-        const pixiCanvas = root.querySelector<HTMLCanvasElement>('#lab-particles');
-        if (pixiCanvas) {
-          cleanupPixi = await initPixiParticles(pixiCanvas, nodeCards, capability);
-        }
-      }
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          observer.disconnect();
+          startInit();
+        },
+        { rootMargin: '200px 0px' }
+      );
+      observer.observe(section);
+      return;
+    }
 
-      // Layer 2: Data Stream
-      let cleanupDataStream: (() => void) | null = null;
-      if (capability.tier !== 'low') {
-        const dataCanvas = root.querySelector<HTMLCanvasElement>('#data-stream');
-        if (dataCanvas) {
-          cleanupDataStream = initDataStream(dataCanvas, nodeCards);
-        }
-      }
-
-      // Layer 3: Premium Cards
-      const cleanupEffects: Array<(() => void) | undefined> = [];
-      
-      // Holographic glow (muy liviano)
-      if (capability.tier !== 'low') {
-        nodeCards.forEach(card => {
-          initHolographicGlow(card);
-        });
-        
-        initSVGMorphing(nodeCards);
-      }
-
-      // 3D Tilt - solo en high tier con parámetros muy suaves
-      if (capability.tier === 'high') {
-        nodeCards.forEach(card => {
-          init3DTilt(card);
-        });
-        
-        // Magnetic repulsion muy sutil
-        initMagneticRepulsion(nodeCards);
-      }
-
-      // Cleanup
-      return () => {
-        cleanupReveal();
-        if (cleanupPixi) cleanupPixi();
-        if (cleanupDataStream) cleanupDataStream();
-        
-        cleanupEffects.forEach(cleanup => {
-          if (cleanup) cleanup();
-        });
-      };
-    });
+    startInit();
   }
 
   initSection('operating-model-init', initOperatingModel);
