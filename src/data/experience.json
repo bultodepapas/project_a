@@ -43,6 +43,48 @@
       "skills": ["BigQuery", "Power BI", "Brandwatch"]
     },
     {
+      "id": "ihealth-volunteer",
+      "org": "iHealth and Wellness Foundation",
+      "title": {
+        "en": "Digital Marketing Volunteer",
+        "es": "Voluntaria de Marketing Digital",
+        "fr": "Benevole en Marketing Digital",
+        "pt": "Voluntaria de Marketing Digital"
+      },
+      "period": "Jul 2025 - Nov 2025",
+      "startYear": 2025,
+      "endYear": 2025,
+      "location": "Remote, United States",
+      "icon": "megaphone",
+      "color": "#f472b6",
+      "gradient": "from-rose-400 to-pink-500",
+      "metric": { "value": "5 mo", "label": { "en": "Outreach", "es": "Alcance", "fr": "Portee", "pt": "Alcance" } },
+      "bullets": {
+        "en": [
+          "Supported digital outreach for nutrition and preventive health campaigns",
+          "Created social posts, blog content, and newsletter drafts for broad audiences",
+          "Contributed audience research to guide content resonance across channels"
+        ],
+        "es": [
+          "Apoyo el alcance digital para campanas de nutricion y salud preventiva",
+          "Creo publicaciones, contenido de blog y borradores de newsletter para audiencias amplias",
+          "Aporto investigacion de audiencia para guiar la resonancia del contenido por canal"
+        ],
+        "fr": [
+          "Soutien a la diffusion digitale pour des campagnes de nutrition et de sante preventive",
+          "Creation de publications, contenus de blog et brouillons de newsletters pour un large public",
+          "Contribution a la recherche d'audience pour guider la resonance du contenu par canal"
+        ],
+        "pt": [
+          "Apoiou o alcance digital de campanhas de nutricao e saude preventiva",
+          "Criou posts, conteudo de blog e rascunhos de newsletter para publico amplo",
+          "Contribuiu com pesquisa de audiencia para orientar a ressonancia por canal"
+        ]
+      },
+      "tags": ["Health", "Nonprofit", "Content"],
+      "skills": ["Content Writing", "Social Media", "Email"]
+    },
+    {
       "id": "fidelizador",
       "org": "Fidelizador",
       "title": {
@@ -86,41 +128,87 @@
     },
     {
       "id": "eadbox",
-      "org": "Eadbox",
+      "org": "EADBOX e-learning platform",
       "title": {
-        "en": "Digital Education and Marketing Specialist",
-        "es": "Digital Education and Marketing Specialist",
-        "fr": "Spécialiste Éducation Numérique et Marketing",
-        "pt": "Especialista em Educação Digital e Marketing"
+        "en": "Customer Success Manager",
+        "es": "Customer Success Manager",
+        "fr": "Customer Success Manager",
+        "pt": "Customer Success Manager"
       },
-      "period": "2017 - 2018",
-      "startYear": 2017,
-      "endYear": 2018,
-      "location": "Sao Paulo, Brazil",
+      "period": "Jan 2018 - Jan 2019",
+      "startYear": 2018,
+      "endYear": 2019,
+      "location": "Curitiba, Brazil",
       "icon": "academic",
       "color": "#c4b5fd",
       "gradient": "from-violet-400 to-purple-500",
-      "metric": { "value": "50K+", "label": { "en": "Learners", "es": "Estudiantes", "fr": "Apprenants", "pt": "Alunos" } },
+      "metric": { "value": "12 mo", "label": { "en": "Lifecycle", "es": "Ciclo", "fr": "Cycle", "pt": "Ciclo" } },
       "bullets": {
         "en": [
-          "Supported digital learning programmes",
-          "Data analysis on learner participation"
+          "Managed full customer lifecycle from onboarding to retention",
+          "Led onboarding sessions and tailored training for platform adoption",
+          "Produced success reports and shared insights with Product and Sales"
         ],
         "es": [
-          "Apoyó programas de aprendizaje digital",
-          "Análisis de datos sobre participación de estudiantes"
+          "Gestiono el ciclo completo del cliente desde onboarding hasta retencion",
+          "Lidero sesiones de onboarding y capacitacion para adopcion de la plataforma",
+          "Genero reportes de customer success y compartio insights con Producto y Ventas"
         ],
         "fr": [
-          "Soutien aux programmes d'apprentissage numérique",
-          "Analyse de données sur la participation des apprenants"
+          "Gestion du cycle client de l'onboarding a la retention",
+          "Animation des sessions d'onboarding et formation adaptee a l'adoption",
+          "Production de rapports de succes client et partage d'insights avec Produit et Ventes"
         ],
         "pt": [
-          "Suporte a programas de aprendizado digital",
-          "Análise de dados sobre participação de alunos"
+          "Gerenciou o ciclo completo do cliente do onboarding a retencao",
+          "Conduziu onboarding e treinamentos para adocao da plataforma",
+          "Produziu relatorios de sucesso e compartilhou insights com Produto e Vendas"
         ]
       },
-      "tags": ["Education", "Data"],
-      "skills": ["LMS", "SQL", "Tableau"]
+      "tags": ["Customer Success", "E-learning", "Retention"],
+      "skills": ["Onboarding", "Client Training", "Reporting"]
+    },
+    {
+      "id": "real-estate-intern",
+      "org": "Real Estate Area Casa",
+      "title": {
+        "en": "Digital Marketing Intern",
+        "es": "Interna de Marketing Digital",
+        "fr": "Stagiaire en Marketing Digital",
+        "pt": "Estagiaria de Marketing Digital"
+      },
+      "period": "Jan 2017 - Jun 2017",
+      "startYear": 2017,
+      "endYear": 2017,
+      "location": "Barcelona, Spain",
+      "icon": "megaphone",
+      "color": "#fbbf24",
+      "gradient": "from-amber-400 to-orange-500",
+      "metric": { "value": "6 mo", "label": { "en": "Internship", "es": "Pasantia", "fr": "Stage", "pt": "Estagio" } },
+      "bullets": {
+        "en": [
+          "Supported planning and execution of digital marketing initiatives",
+          "Conducted competitive and audience research for content strategy",
+          "Collaborated on SEO updates and listing optimization across channels"
+        ],
+        "es": [
+          "Apoyo la planificacion y ejecucion de iniciativas de marketing digital",
+          "Realizo investigacion competitiva y de audiencias para la estrategia de contenido",
+          "Colaboro en SEO y optimizacion de listados en multiples canales"
+        ],
+        "fr": [
+          "Soutien a la planification et a l'execution d'initiatives de marketing digital",
+          "Recherche concurrentielle et d'audience pour la strategie de contenu",
+          "Collaboration sur le SEO et l'optimisation des annonces sur plusieurs canaux"
+        ],
+        "pt": [
+          "Apoiou o planejamento e a execucao de iniciativas de marketing digital",
+          "Realizou pesquisa competitiva e de audiencia para estrategia de conteudo",
+          "Colaborou com SEO e otimizacao de anuncios em multiplos canais"
+        ]
+      },
+      "tags": ["Marketing", "Real Estate", "SEO"],
+      "skills": ["Facebook", "Instagram", "Google My Business"]
     }
   ]
 }
