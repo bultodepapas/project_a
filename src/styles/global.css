@@ -293,20 +293,62 @@
     margin: 10mm;
   }
 
+  :root,
+  :root.dark {
+    color-scheme: light;
+    --color-bg: #ffffff;
+    --color-bg-alt: #f5f5f5;
+    --color-surface: #ffffff;
+    --color-text: #111111;
+    --color-text-muted: #2b2b2b;
+    --color-muted: #2b2b2b;
+    --color-border: #d4d4d4;
+    --color-border-strong: #bdbdbd;
+    --color-primary: #1a1a2e;
+    --color-primary-light: #2d2d44;
+    --color-accent: #4a90a4;
+    --color-accent-light: #6ab0c4;
+  }
+
   body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     background: white;
+    color: var(--color-text);
   }
 
   /* Hide UI elements */
   nav,
   footer,
-  header,
   .no-print,
+  .skip-to-content,
+  .nav-header,
   [data-menu-toggle],
   [data-mobile-menu] {
     display: none !important;
+  }
+
+  body::before {
+    display: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .reveal-element,
+  .stagger-children > *,
+  .animate-fade-in-up,
+  .animate-reveal-text,
+  .animate-flow,
+  .animate-pulse-node,
+  .edge-loop {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 
   /* Reset layout for print */
@@ -319,6 +361,12 @@
   /* Remove link artifacts */
   a[href]:after {
     content: none !important;
+  }
+
+  a,
+  a:visited {
+    color: var(--color-text);
+    text-decoration: none !important;
   }
 }
 
