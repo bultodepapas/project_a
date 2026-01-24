@@ -125,13 +125,101 @@ Based on code review (no changes made yet):
 - Script execution on page load for multiple sections.
 - Potential duplicate scripts (inline component scripts plus `initUI` modules).
 
-## 7) Data Gaps and Next Steps
-Pending phases:
-1) RUM in Vercel (Speed Insights/Web Analytics) to confirm real-user LCP/INP/CLS by route and device.
-2) Bundle analysis: map JS chunks for home vs other routes (`dist/_astro`).
-3) Performance traces: confirm long tasks and background animations in home.
+## 7) After Changes (Local, LHCI)
+Changes applied before this run:
+- Lazy `initUI` module loading by DOM presence.
+- Operating Model: dynamic deps + viewport gate.
+- Chapter Deck: viewport gate + dynamic `initChapterDeck`.
 
-## 8) Repo State Notes
+All scores are Lighthouse mobile, single run.
+
+### /en/
+- Performance: 0.89
+- Accessibility: 1.00
+- Best Practices: 1.00
+- SEO: 1.00
+- FCP: 2.6 s
+- LCP: 2.7 s
+- TBT: 220 ms
+- CLS: 0
+- Speed Index: 2.6 s
+- TTI: 2.9 s
+
+### /en/resume/
+- Performance: 0.97
+- Accessibility: 1.00
+- Best Practices: 1.00
+- SEO: 1.00
+- FCP: 2.0 s
+- LCP: 2.1 s
+- TBT: 0 ms
+- CLS: 0.028
+- Speed Index: 2.0 s
+- TTI: 2.1 s
+
+### /en/case-studies/
+- Performance: 0.96
+- Accessibility: 0.98
+- Best Practices: 1.00
+- SEO: 1.00
+- FCP: 2.2 s
+- LCP: 2.3 s
+- TBT: 0 ms
+- CLS: 0.022
+- Speed Index: 2.2 s
+- TTI: 2.3 s
+
+## 8) After Changes (Vercel Production, Lighthouse CLI)
+All scores are Lighthouse mobile, single run.
+
+### https://www.angelaparra.me/en/
+- Performance: 0.71
+- Accessibility: 1.00
+- Best Practices: 1.00
+- SEO: 1.00
+- FCP: 2.0 s
+- LCP: 2.1 s
+- TBT: 1,320 ms
+- CLS: 0
+- Speed Index: 3.9 s
+- TTI: 3.6 s
+
+### https://www.angelaparra.me/en/resume
+- Performance: 0.99
+- Accessibility: 1.00
+- Best Practices: 1.00
+- SEO: 1.00
+- FCP: 1.7 s
+- LCP: 1.8 s
+- TBT: 30 ms
+- CLS: 0.028
+- Speed Index: 1.8 s
+- TTI: 1.8 s
+
+### https://www.angelaparra.me/en/case-studies
+- Performance: 0.96
+- Accessibility: 0.98
+- Best Practices: 1.00
+- SEO: 1.00
+- FCP: 1.8 s
+- LCP: 1.9 s
+- TBT: 130 ms
+- CLS: 0.022
+- Speed Index: 3.0 s
+- TTI: 2.1 s
+
+## 9) Delta Summary (Before vs After)
+- Home (local): perf 0.50 -> 0.89, LCP 3.8 s -> 2.7 s, TBT 1,140 ms -> 220 ms.
+- Home (Vercel): perf 0.60 -> 0.71, LCP 3.0 s -> 2.1 s, Speed Index 32.7 s -> 3.9 s.
+- Resume and Case Studies: small improvements, already strong.
+
+## 10) Data Gaps and Next Steps
+Pending phases:
+1) Bundle analysis: map JS chunks for home vs other routes (`dist/_astro`).
+2) Performance traces: confirm long tasks and background animations in home.
+3) Continue optimizations (Education + Contact viewport gating and pause on hidden).
+
+## 11) Repo State Notes
 Untracked artifacts from measurement:
 - `.lighthouseci/`
 - `.tmp/`
