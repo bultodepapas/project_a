@@ -131,6 +131,7 @@ export const siteConfig = {
   url: 'https://www.angelaparra.me',
   email: 'angelae.parras@gmail.com',
   linkedin: 'https://www.linkedin.com/in/angela-parra-sanchez-89548165',
+  medium: 'https://medium.com/@angelaparras',
   jobTitle: 'Data & Impact Assessment Specialist',
   knowsAbout: [
     'Impact Assessment',
