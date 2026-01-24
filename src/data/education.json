@@ -24,12 +24,12 @@
       "gradient": "from-emerald-400 via-teal-500 to-cyan-500",
       "accentHue": 160,
       "highlights": {
-        "en": ["Advanced Analytics", "Machine Learning", "Business Intelligence"],
-        "es": ["Analítica Avanzada", "Machine Learning", "Inteligencia de Negocios"],
-        "fr": ["Analytique Avancée", "Machine Learning", "Business Intelligence"],
-        "pt": ["Análise Avançada", "Machine Learning", "Business Intelligence"]
+        "en": ["Data-Driven Decision Making", "Predictive Analytics", "Strategic Problem Solving", "Consulting & Impact"],
+        "es": ["Toma de Decisiones Basada en Datos", "Analítica Predictiva", "Resolución Estratégica de Problemas", "Consultoría e Impacto"],
+        "fr": ["Prise de Décision Data-Driven", "Analytique Prédictive", "Résolution Stratégique de Problèmes", "Conseil et Impact"],
+        "pt": ["Tomada de Decisao Orientada por Dados", "Analitica Preditiva", "Resolucao Estrategica de Problemas", "Consultoria e Impacto"]
       },
-      "skills": ["Python", "R", "SQL", "TensorFlow", "Power BI"],
+      "skills": ["Data-Driven Decision Making", "Predictive Analytics", "Strategic Problem Solving", "Consulting & Impact", "Python", "R", "SQL", "TensorFlow", "Power BI"],
       "achievement": {
         "value": "100%",
         "label": { "en": "Complete", "es": "Completado", "fr": "Complété", "pt": "Completo" }
@@ -64,12 +64,12 @@
       "gradient": "from-blue-400 via-indigo-500 to-violet-500",
       "accentHue": 220,
       "highlights": {
-        "en": ["Cross-cultural Management", "Global Strategy", "International Marketing"],
-        "es": ["Gestión Intercultural", "Estrategia Global", "Marketing Internacional"],
-        "fr": ["Gestion Interculturelle", "Stratégie Globale", "Marketing International"],
-        "pt": ["Gestão Intercultural", "Estratégia Global", "Marketing Internacional"]
+        "en": ["Strategic Leadership", "Cross-Cultural Communication", "Global Management", "Project Execution"],
+        "es": ["Liderazgo Estratégico", "Comunicación Intercultural", "Gestión Global", "Ejecución de Proyectos"],
+        "fr": ["Leadership Stratégique", "Communication Interculturelle", "Gestion Globale", "Execution de Projets"],
+        "pt": ["Lideranca Estrategica", "Comunicacao Intercultural", "Gestao Global", "Execucao de Projetos"]
       },
-      "skills": ["Strategy", "Leadership", "Negotiation", "Market Analysis"],
+      "skills": ["Strategic Leadership", "Cross-Cultural Communication", "Global Management", "Project Execution", "Negotiation", "Market Analysis"],
       "achievement": {
         "value": "AACSB",
         "label": { "en": "Accredited", "es": "Acreditado", "fr": "Accrédité", "pt": "Acreditado" }
@@ -104,12 +104,12 @@
       "gradient": "from-yellow-400 via-orange-500 to-red-500",
       "accentHue": 45,
       "highlights": {
-        "en": ["International Trade", "Economics", "Business Development"],
-        "es": ["Comercio Internacional", "Economía", "Desarrollo Empresarial"],
-        "fr": ["Commerce International", "Économie", "Développement Commercial"],
-        "pt": ["Comércio Internacional", "Economia", "Desenvolvimento Empresarial"]
+        "en": ["Global Strategic Thinking", "International Business & Policy Analysis", "Cross-Cultural Leadership", "Contextual Communication & Negotiation"],
+        "es": ["Pensamiento Estratégico Global", "Negocios Internacionales y Análisis de Políticas", "Liderazgo Intercultural", "Comunicación y Negociación Contextual"],
+        "fr": ["Pensée Stratégique Globale", "Business International et Analyse de Politiques", "Leadership Interculturel", "Communication et Négociation Contextuelles"],
+        "pt": ["Pensamento Estrategico Global", "Negocios Internacionais e Analise de Politicas", "Lideranca Intercultural", "Comunicacao e Negociacao Contextual"]
       },
-      "skills": ["Finance", "Economics", "Trade", "Business Dev"],
+      "skills": ["Global Strategic Thinking", "International Business & Policy Analysis", "Cross-Cultural Leadership", "Contextual Communication & Negotiation", "Finance", "Economics", "Trade", "Business Dev"],
       "achievement": {
         "value": "Top 10%",
         "label": { "en": "of Class", "es": "de la Clase", "fr": "de la Promo", "pt": "da Turma" }

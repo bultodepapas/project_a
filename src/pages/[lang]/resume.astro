@@ -51,6 +51,7 @@ const getCaseTitle = (slug: string) => {
   const card = homeData.systems.cards.find((c) => c.slug === slug);
   return card ? card.title[typedLang] : slug;
 };
+const getArr = (obj: any) => (Array.isArray(obj) ? obj : obj?.[typedLang] || obj?.en || []);
 ---
 
 <Page
@@ -151,6 +152,16 @@ const getCaseTitle = (slug: string) => {
                 {item.status === 'inProgress' ? t(typedLang, 'education.inProgress') : item.year}
                 {item.status === 'inProgress' ? ` - ${item.year}` : ''}
               </span>
+              {item.highlights && getArr(item.highlights).length > 0 && (
+                <ul class="w-full mt-3 space-y-1 text-sm text-muted">
+                  {getArr(item.highlights).slice(0, 4).map((highlight) => (
+                    <li class="flex items-start gap-2">
+                      <span class="text-muted mt-1.5 w-1 h-1 rounded-full bg-muted flex-shrink-0"></span>
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           ))}
         </div>
