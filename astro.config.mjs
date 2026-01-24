@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import { defaultLocale, supportedLocales } from './config/locales.mjs';
 
 export default defineConfig({
-  site: 'https://angelaparra.com',
+  site: 'https://www.angelaparra.me',
   integrations: [
     mdx(),
     sitemap({

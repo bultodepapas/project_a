@@ -128,7 +128,7 @@ export function generateBreadcrumbSchema(
  */
 export const siteConfig = {
   name: 'Angela Parra Sanchez',
-  url: 'https://angelaparra.com',
+  url: 'https://www.angelaparra.me',
   email: 'angelae.parras@gmail.com',
   linkedin: 'https://www.linkedin.com/in/angela-parra-sanchez-89548165',
   jobTitle: 'Data & Impact Assessment Specialist',
