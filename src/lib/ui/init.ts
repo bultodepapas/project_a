@@ -1,29 +1,26 @@
-import { initHeaderUI } from './header';
-import { initLangSwitchUI } from './lang-switch';
-import { initThemeToggleUI } from './theme-toggle';
-import { initCaseFiltersUI } from './case-filters';
-import { initArticleFiltersUI } from './article-filters';
-import { initContactUI } from './contact';
-import { initHeroUI } from './hero';
-import { initLanguagesUI } from './languages';
-import { initTimelineUI } from './timeline';
-import { initProofStripUI } from './proof-strip';
-import { initAwardsUI } from './awards';
-import { initEducationUI } from './education';
-import { initHiredForUI } from './hired-for';
-
 export function initUI() {
-  initHeaderUI();
-  initLangSwitchUI();
-  initThemeToggleUI();
-  initCaseFiltersUI();
-  initArticleFiltersUI();
-  initContactUI();
-  initHeroUI();
-  initLanguagesUI();
-  initTimelineUI();
-  initProofStripUI();
-  initAwardsUI();
-  initEducationUI();
-  initHiredForUI();
+  const loadIfPresent = <T extends Record<string, () => void>>(
+    selector: string,
+    loader: () => Promise<T>,
+    initKey: keyof T
+  ) => {
+    if (!document.querySelector(selector)) return;
+    void loader().then((mod) => {
+      mod[initKey]();
+    });
+  };
+
+  loadIfPresent('[data-header]', () => import('./header'), 'initHeaderUI');
+  loadIfPresent('[data-lang-switch]', () => import('./lang-switch'), 'initLangSwitchUI');
+  loadIfPresent('.theme-toggle', () => import('./theme-toggle'), 'initThemeToggleUI');
+  loadIfPresent('.case-filters', () => import('./case-filters'), 'initCaseFiltersUI');
+  loadIfPresent('.article-filters', () => import('./article-filters'), 'initArticleFiltersUI');
+  loadIfPresent('#contact', () => import('./contact'), 'initContactUI');
+  loadIfPresent('#hero', () => import('./hero'), 'initHeroUI');
+  loadIfPresent('#languages', () => import('./languages'), 'initLanguagesUI');
+  loadIfPresent('#timeline', () => import('./timeline'), 'initTimelineUI');
+  loadIfPresent('#proof', () => import('./proof-strip'), 'initProofStripUI');
+  loadIfPresent('#awards', () => import('./awards'), 'initAwardsUI');
+  loadIfPresent('#education', () => import('./education'), 'initEducationUI');
+  loadIfPresent('#hired-for', () => import('./hired-for'), 'initHiredForUI');
 }
