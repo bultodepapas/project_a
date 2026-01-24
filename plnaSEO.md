@@ -1,4 +1,4 @@
-PLAN SEO - Angela Parra Sanchez (Global, Perfil Profesional) v2
+PLAN SEO - Angela Parra Sanchez (Global, Perfil Profesional) v2 
 
 Resumen de finalidad y contenido (entendido del sitio)
 - Finalidad: pagina personal para conseguir trabajo senior y posicionar a Angela como especialista en datos, evaluacion de impacto, M&E, inteligencia de audiencias y programas de clima/sostenibilidad.
@@ -144,7 +144,7 @@ Criterios de exito (para empleo)
 - CTR > 3% en consultas de marca/rol.
 - Incremento de sesiones a Resume y Contact desde organico.
 - Aumento de contactos por email/LinkedIn desde trafico organico.
-
+ c
 Proximos pasos
 1) Confirmar politica final de noindex (PDF y cualquier pagina secundaria).
 2) Validar keywords por idioma (puedo ajustar a tus roles objetivo exactos).
