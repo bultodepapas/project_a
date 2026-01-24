@@ -17,6 +17,7 @@ import skillsData from '@/data/skills.json';
 import languagesData from '@/data/languages.json';
 import awardsData from '@/data/awards.json';
 import homeData from '@/data/home.json';
+import achievementsData from '@/data/achievements.json';
 
 // Generate static paths for each language
 export function getStaticPaths() {
@@ -43,6 +44,7 @@ const educationItems = educationData.items;
 const capabilities = skillsData.capabilities;
 const languageItems = languagesData.items;
 const awards = awardsData.items;
+const achievements = achievementsData.items;
 
 // Helper to get case title
 const getCaseTitle = (slug: string) => {
@@ -106,6 +108,25 @@ const getCaseTitle = (slug: string) => {
               </div>
               <ul class="space-y-2 text-sm text-muted">
                 {role.bullets[typedLang].map((bullet) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-muted mt-1.5 w-1 h-1 rounded-full bg-muted flex-shrink-0"></span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </ResumeSection>
+
+      <!-- Achievements -->
+      <ResumeSection title={t(typedLang, 'resume.achievements')}>
+        <div class="space-y-6">
+          {achievements.map((achievement) => (
+            <div class="rounded-lg border border-border p-5 bg-background-alt/30">
+              <h3 class="font-semibold text-foreground mb-2">{achievement.title[typedLang]}</h3>
+              <ul class="space-y-2 text-sm text-muted">
+                {achievement.bullets[typedLang].map((bullet) => (
                   <li class="flex items-start gap-2">
                     <span class="text-muted mt-1.5 w-1 h-1 rounded-full bg-muted flex-shrink-0"></span>
                     <span>{bullet}</span>

@@ -54,7 +54,13 @@ const caseSchema = generateArticleSchema({
   image: caseImage,
 });
 
-const caseOrder = ['audience-framework', 'benchmark-system', 'narrative-tracking'];
+const caseOrder = [
+  'audience-framework',
+  'benchmark-system',
+  'narrative-tracking',
+  'customer-success-operating-model',
+  'growth-marketing-operating-system',
+];
 const allCases = await getCollection('cases');
 const casesForLang = caseOrder
   .map((caseSlug) =>

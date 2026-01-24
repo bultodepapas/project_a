@@ -100,27 +100,27 @@
       "icon": "megaphone",
       "color": "#93c5fd",
       "gradient": "from-blue-400 to-indigo-500",
-      "metric": { "value": "0→1", "label": { "en": "Dept Built", "es": "Depto Creado", "fr": "Dept Créé", "pt": "Dept Criado" } },
+      "metric": { "value": "0→1", "label": { "en": "Dept Built", "es": "Depto Creado", "fr": "Dept Cree", "pt": "Dept Criado" } },
       "bullets": {
         "en": [
-          "Established Marketing Department from scratch",
-          "Designed monitoring tools for campaign outcomes",
-          "Coordinated multidisciplinary team"
+          "Built the marketing function during a high-growth period",
+          "Introduced planning frameworks and performance monitoring, improving productivity by 50%",
+          "Led webinar-led demand generation with 15+ webinars and about 10% conversion"
         ],
         "es": [
-          "Estableció el Departamento de Marketing desde cero",
-          "Diseñó herramientas de monitoreo para resultados de campañas",
-          "Coordinó equipo multidisciplinario"
+          "Construyo la funcion de marketing en un periodo de alto crecimiento",
+          "Introdujo frameworks de planificacion y monitoreo de performance, mejorando productividad 50%",
+          "Lidero la generacion de demanda con webinars: 15+ y ~10% de conversion"
         ],
         "fr": [
-          "Création du département Marketing à partir de zéro",
-          "Conception d'outils de suivi pour les résultats de campagne",
-          "Coordination d'équipe multidisciplinaire"
+          "Structure la fonction marketing en periode de forte croissance",
+          "Introduit des frameworks de planification et monitoring, +50% de productivite",
+          "Dirige la generation de demande via webinars: 15+ et ~10% de conversion"
         ],
         "pt": [
-          "Estabelecimento do Departamento de Marketing do zero",
-          "Design de ferramentas de monitoramento para resultados de campanhas",
-          "Coordenação de equipe multidisciplinar"
+          "Construiu a funcao de marketing em periodo de alto crescimento",
+          "Introduziu frameworks de planejamento e monitoramento de performance, +50% de produtividade",
+          "Liderou geracao de demanda via webinars: 15+ e ~10% de conversao"
         ]
       },
       "tags": ["Marketing", "Operations"],
@@ -142,27 +142,27 @@
       "icon": "academic",
       "color": "#c4b5fd",
       "gradient": "from-violet-400 to-purple-500",
-      "metric": { "value": "12 mo", "label": { "en": "Lifecycle", "es": "Ciclo", "fr": "Cycle", "pt": "Ciclo" } },
+      "metric": { "value": "90%", "label": { "en": "CSAT", "es": "CSAT", "fr": "CSAT", "pt": "CSAT" } },
       "bullets": {
         "en": [
-          "Managed full customer lifecycle from onboarding to retention",
-          "Led onboarding sessions and tailored training for platform adoption",
-          "Produced success reports and shared insights with Product and Sales"
+          "Built the Customer Success operating model with onboarding playbooks and lifecycle workflows",
+          "Managed 30+ VIP accounts and delivered 90% CSAT",
+          "Standardized onboarding and enablement to improve adoption"
         ],
         "es": [
-          "Gestiono el ciclo completo del cliente desde onboarding hasta retencion",
-          "Lidero sesiones de onboarding y capacitacion para adopcion de la plataforma",
-          "Genero reportes de customer success y compartio insights con Producto y Ventas"
+          "Construyo el modelo operativo de Customer Success con playbooks de onboarding y workflows del ciclo de vida",
+          "Gestiono 30+ cuentas VIP y logro 90% de CSAT",
+          "Estandarizo onboarding y enablement para mejorar la adopcion"
         ],
         "fr": [
-          "Gestion du cycle client de l'onboarding a la retention",
-          "Animation des sessions d'onboarding et formation adaptee a l'adoption",
-          "Production de rapports de succes client et partage d'insights avec Produit et Ventes"
+          "Construit le modele operatoire Customer Success avec playbooks d'onboarding et workflows du cycle de vie",
+          "Gere 30+ comptes VIP et atteint 90% de CSAT",
+          "Standardise onboarding et enablement pour accelerer l'adoption"
         ],
         "pt": [
-          "Gerenciou o ciclo completo do cliente do onboarding a retencao",
-          "Conduziu onboarding e treinamentos para adocao da plataforma",
-          "Produziu relatorios de sucesso e compartilhou insights com Produto e Vendas"
+          "Construiu o modelo operacional de Customer Success com playbooks de onboarding e workflows do ciclo de vida",
+          "Gerenciou 30+ contas VIP e atingiu 90% de CSAT",
+          "Padronizou onboarding e enablement para melhorar a adocao"
         ]
       },
       "tags": ["Customer Success", "E-learning", "Retention"],

@@ -1,0 +1,128 @@
+{
+  "items": [
+    {
+      "id": "cs-function",
+      "title": {
+        "en": "Built and scaled Customer Success function (SaaS)",
+        "es": "Construyo y escalo la funcion de Customer Success (SaaS)",
+        "fr": "Construit et fait evoluer la fonction Customer Success (SaaS)",
+        "pt": "Construiu e escalou a funcao de Customer Success (SaaS)"
+      },
+      "bullets": {
+        "en": [
+          "Designed the Customer Success operating model: team structure, onboarding playbooks, and lifecycle workflows.",
+          "Managed 30+ VIP customers and delivered 90% customer satisfaction.",
+          "Strengthened retention through tailored support and proactive success tracking."
+        ],
+        "es": [
+          "Diseno e implemento el modelo operativo de Customer Success: estructura de equipo, playbooks de onboarding y workflows del ciclo de vida.",
+          "Gestiono 30+ clientes VIP y logro 90% de satisfaccion.",
+          "Fortalecio retencion con soporte a medida y seguimiento proactivo."
+        ],
+        "fr": [
+          "Concu et mis en place le modele operatoire CS: structure d'equipe, playbooks d'onboarding et workflows du cycle de vie.",
+          "Gere 30+ clients VIP et atteint 90% de satisfaction.",
+          "Renforce la retention via support sur mesure et suivi proactif."
+        ],
+        "pt": [
+          "Desenhou e implementou o modelo operacional de CS: estrutura de equipe, playbooks de onboarding e workflows do ciclo de vida.",
+          "Gerenciou 30+ clientes VIP e atingiu 90% de satisfacao.",
+          "Fortaleceu retencao com suporte sob medida e acompanhamento proativo."
+        ]
+      }
+    },
+    {
+      "id": "onboarding-quality",
+      "title": {
+        "en": "Optimized onboarding, service quality, and client experience",
+        "es": "Optimizo onboarding, calidad de servicio y experiencia del cliente",
+        "fr": "Optimise l'onboarding, la qualite de service et l'experience client",
+        "pt": "Otimizou onboarding, qualidade de servico e experiencia do cliente"
+      },
+      "bullets": {
+        "en": [
+          "Standardized onboarding and enablement framework across client interactions.",
+          "Reached 90% positive customer feedback on onboarding quality.",
+          "Improved operational efficiency by clarifying roles and service processes."
+        ],
+        "es": [
+          "Estandarizo un framework de onboarding y enablement en interacciones con clientes.",
+          "Alcanzo 90% de feedback positivo en onboarding.",
+          "Mejoro eficiencia operativa al clarificar roles y procesos de servicio."
+        ],
+        "fr": [
+          "Standardise un framework d'onboarding et d'enablement pour les interactions client.",
+          "Atteint 90% de feedback positif sur l'onboarding.",
+          "Ameliore l'efficacite operationnelle en clarifiant roles et processus."
+        ],
+        "pt": [
+          "Padronizou framework de onboarding e enablement nas interacoes com clientes.",
+          "Alcancou 90% de feedback positivo no onboarding.",
+          "Melhorou eficiencia operacional ao clarificar papeis e processos de servico."
+        ]
+      }
+    },
+    {
+      "id": "demand-gen",
+      "title": {
+        "en": "Drove demand generation through strategic digital initiatives",
+        "es": "Impulso generacion de demanda con iniciativas digitales",
+        "fr": "Genere la demande via initiatives digitales",
+        "pt": "Impulsionou geracao de demanda com iniciativas digitais"
+      },
+      "bullets": {
+        "en": [
+          "Executed a webinar-led growth strategy with 15+ webinars and about 10% conversion.",
+          "Used performance insights to refine messaging, formats, and targeting.",
+          "Contributed to lead acquisition and pipeline growth during market disruption."
+        ],
+        "es": [
+          "Ejecuto una estrategia de crecimiento con webinars: 15+ webinars y ~10% de conversion.",
+          "Uso insights de performance para refinar mensajes, formatos y targeting.",
+          "Contribuyo a adquisicion de leads y crecimiento del pipeline en un mercado disruptivo."
+        ],
+        "fr": [
+          "Mene une strategie de croissance par webinars: 15+ webinars et environ 10% de conversion.",
+          "Utilise les insights de performance pour affiner messages, formats et ciblage.",
+          "Contribue a l'acquisition de leads et a la croissance du pipeline en periode de disruption."
+        ],
+        "pt": [
+          "Executou estrategia de crescimento com webinars: 15+ webinars e cerca de 10% de conversao.",
+          "Usou insights de performance para refinar mensagens, formatos e segmentacao.",
+          "Contribuiu para aquisicao de leads e crescimento do pipeline em periodo de disrupcao."
+        ]
+      }
+    },
+    {
+      "id": "marketing-performance",
+      "title": {
+        "en": "Strengthened marketing strategy and organizational performance",
+        "es": "Fortalecio estrategia de marketing y desempeno organizacional",
+        "fr": "Renforce la strategie marketing et la performance organisationnelle",
+        "pt": "Fortaleceu estrategia de marketing e desempenho organizacional"
+      },
+      "bullets": {
+        "en": [
+          "Built and structured the marketing function during a high-growth period.",
+          "Introduced planning frameworks and performance monitoring.",
+          "Improved team productivity by 50% through focused execution."
+        ],
+        "es": [
+          "Construyo y estructuro la funcion de marketing en un periodo de alto crecimiento.",
+          "Introdujo frameworks de planificacion y monitoreo de performance.",
+          "Mejoro la productividad del equipo en 50% con ejecucion mas enfocada."
+        ],
+        "fr": [
+          "Structure la fonction marketing en periode de forte croissance.",
+          "Introduit des frameworks de planification et de monitoring.",
+          "Augmente la productivite de l'equipe de 50% via une execution plus focus."
+        ],
+        "pt": [
+          "Construiu e estruturou a funcao de marketing em periodo de alto crescimento.",
+          "Introduziu frameworks de planejamento e monitoramento de performance.",
+          "Aumentou a produtividade da equipe em 50% com execucao mais focada."
+        ]
+      }
+    }
+  ]
+}
