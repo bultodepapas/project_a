@@ -5,6 +5,7 @@ const cases = defineCollection({
   schema: z.object({
     title: z.string(),
     caseSlug: z.string(),
+    ogImage: z.string().optional(),
     lang: z.enum(['en', 'es', 'fr', 'pt']),
     theme: z.enum(['audience', 'benchmark', 'narrative', 'capacity']),
     role: z.string(),
@@ -49,6 +50,7 @@ const articles = defineCollection({
   schema: z.object({
     title: z.string(),
     articleSlug: z.string(),
+    ogImage: z.string().optional(),
     lang: z.enum(['en', 'es', 'fr', 'pt']),
     publishDate: z.string(),
     category: z.enum(['ai-marketing', 'strategy', 'industry-trends', 'personal-growth']),

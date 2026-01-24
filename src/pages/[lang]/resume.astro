@@ -9,6 +9,7 @@ import { getLangOrRedirect, getLangStaticPaths } from '@/lib/i18n-routing';
 import { t } from '@/i18n';
 import ResumeHeader from '@/components/resume/ResumeHeader.astro';
 import ResumeSection from '@/components/resume/ResumeSection.astro';
+import { generateProfilePageSchema, siteConfig } from '@/lib/seo';
 import siteData from '@/data/site.json';
 import experienceData from '@/data/experience.json';
 import educationData from '@/data/education.json';
@@ -29,8 +30,13 @@ if (redirect) {
   return Astro.redirect(redirect);
 }
 
-const pageTitle = `${t(typedLang, 'resume.title')} | ${siteData.name}`;
+const pageTitle = t(typedLang, 'resume.title');
 const pageDescription = t(typedLang, 'site.description');
+const profileSchema = generateProfilePageSchema({
+  name: siteConfig.name,
+  jobTitle: siteConfig.jobTitle,
+  url: siteConfig.url,
+});
 
 const roles = experienceData.roles;
 const educationItems = educationData.items;
@@ -50,6 +56,7 @@ const getCaseTitle = (slug: string) => {
   description={pageDescription}
   lang={typedLang}
   ogType="profile"
+  schema={profileSchema}
 >
   <div class="section">
     <div class="container max-w-4xl">

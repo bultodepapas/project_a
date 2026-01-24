@@ -17,9 +17,12 @@ export interface Props {
   lang?: Lang;
   canonicalUrl?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   ogType?: 'website' | 'article' | 'profile';
   noIndex?: boolean;
   schema?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
   /** Add padding-top for fixed header */
   withHeaderOffset?: boolean;
 }
@@ -30,9 +33,12 @@ const {
   lang = defaultLang,
   canonicalUrl,
   ogImage,
+  ogImageAlt,
   ogType,
   noIndex,
   schema,
+  publishedTime,
+  modifiedTime,
   withHeaderOffset = true,
 } = Astro.props;
 
@@ -48,7 +54,10 @@ const defaultSchema = generatePersonSchema({
   knowsAbout: siteConfig.knowsAbout,
 });
 
-const resolvedSchema = schema || defaultSchema;
+const parsedSchema = schema ? JSON.parse(schema) : null;
+const resolvedSchema = schema
+  ? JSON.stringify([JSON.parse(defaultSchema)].concat(Array.isArray(parsedSchema) ? parsedSchema : [parsedSchema]))
+  : defaultSchema;
 ---
 
 <Base
@@ -57,9 +66,12 @@ const resolvedSchema = schema || defaultSchema;
   lang={lang}
   canonicalUrl={canonicalUrl}
   ogImage={ogImage}
+  ogImageAlt={ogImageAlt}
   ogType={ogType}
   noIndex={noIndex}
   schema={resolvedSchema}
+  publishedTime={publishedTime}
+  modifiedTime={modifiedTime}
 >
   <slot name="head" slot="head" />
 

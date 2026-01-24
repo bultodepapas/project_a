@@ -8,6 +8,7 @@ import Page from '@/layouts/Page.astro';
 import { type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { generateArticleSchema, siteConfig } from '@/lib/seo';
 import CaseDetailHero from '@/components/cases/CaseDetailHero.astro';
 import CaseMetricsGrid from '@/components/cases/CaseMetricsGrid.astro';
 import InteractiveSection from '@/components/cases/InteractiveSection.astro';
@@ -36,6 +37,22 @@ if (!isValidLang(lang!) || !slug) {
 const typedLang = lang as Lang;
 const caseData = entry.data;
 const { Content } = await entry.render();
+const caseUrl = `${siteConfig.url}/${typedLang}/case-studies/${caseData.caseSlug}`;
+const caseImage = caseData.ogImage
+  ? caseData.ogImage.startsWith('http')
+    ? caseData.ogImage
+    : `${siteConfig.url}${caseData.ogImage}`
+  : undefined;
+const caseSchema = generateArticleSchema({
+  headline: caseData.title,
+  description: caseData.problem,
+  url: caseUrl,
+  author: {
+    name: siteConfig.name,
+    url: siteConfig.url,
+  },
+  image: caseImage,
+});
 
 const caseOrder = ['audience-framework', 'benchmark-system', 'narrative-tracking'];
 const allCases = await getCollection('cases');
@@ -56,10 +73,13 @@ const nextCase = nextCaseEntry ? { slug: nextCaseEntry.data.caseSlug, title: nex
 ---
 
 <Page
-  title={`${caseData.title} | Angela Parra Sanchez`}
+  title={caseData.title}
   description={caseData.problem.slice(0, 160)}
   lang={typedLang}
   ogType="article"
+  ogImage={caseData.ogImage}
+  ogImageAlt={caseData.title}
+  schema={caseSchema}
 >
   <article class="case-detail-page">
     <!-- Hero Section -->

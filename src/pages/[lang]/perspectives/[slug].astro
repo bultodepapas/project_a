@@ -8,6 +8,7 @@ import Page from '@/layouts/Page.astro';
 import { type Lang, isValidLang } from '@/i18n/config';
 import { t } from '@/i18n';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { generateArticleSchema, siteConfig } from '@/lib/seo';
 
 export interface Props {
   entry: CollectionEntry<'articles'>;
@@ -31,6 +32,23 @@ if (!isValidLang(lang!) || !slug) {
 const typedLang = lang as Lang;
 const articleData = entry.data;
 const { Content } = await entry.render();
+const articleUrl = `${siteConfig.url}/${typedLang}/perspectives/${articleData.articleSlug}`;
+const articleImage = articleData.ogImage
+  ? articleData.ogImage.startsWith('http')
+    ? articleData.ogImage
+    : `${siteConfig.url}${articleData.ogImage}`
+  : undefined;
+const articleSchema = generateArticleSchema({
+  headline: articleData.title,
+  description: articleData.excerpt,
+  url: articleUrl,
+  datePublished: articleData.publishDate,
+  author: {
+    name: siteConfig.name,
+    url: siteConfig.url,
+  },
+  image: articleImage,
+});
 
 // Get all articles for navigation
 const allArticles = await getCollection('articles');
@@ -91,10 +109,14 @@ const formatDate = (dateStr: string) => {
 ---
 
 <Page
-  title={`${articleData.title} | Angela Parra Sanchez`}
+  title={articleData.title}
   description={articleData.excerpt}
   lang={typedLang}
   ogType="article"
+  ogImage={articleData.ogImage}
+  ogImageAlt={articleData.title}
+  schema={articleSchema}
+  publishedTime={articleData.publishDate}
 >
   <!-- Reading Progress Bar -->
   <div class="reading-progress-container fixed top-0 left-0 right-0 z-50 h-1 bg-transparent">
