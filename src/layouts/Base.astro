@@ -130,11 +130,10 @@ const gaEnabled = Boolean(gaId && import.meta.env.PROD);
       gaEnabled && (
         <>
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
-          <script is:inline>
+          <script is:inline define:vars={{ gaId }}>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            const gaId = {JSON.stringify(gaId)};
             gtag('config', gaId, { send_page_view: false });
           </script>
         </>
