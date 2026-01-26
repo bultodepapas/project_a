@@ -55,6 +55,9 @@ const localeMap: Record<Lang, string> = {
 
 // Full title with site name
 const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+
+const gaId = import.meta.env.PUBLIC_GA_ID;
+const gaEnabled = Boolean(gaId && import.meta.env.PROD);
 ---
 
 <!doctype html>
@@ -122,6 +125,22 @@ const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.n
     <!-- View Transitions -->
     <ClientRouter />
 
+    <!-- Google Analytics (GA4) -->
+    {
+      gaEnabled && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+          <script is:inline>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            const gaId = {JSON.stringify(gaId)};
+            gtag('config', gaId, { send_page_view: false });
+          </script>
+        </>
+      )
+    }
+
     <!-- Theme Initialization Script (Prevent FOUC) -->
     <script is:inline>
       const theme = (() => {
@@ -169,6 +188,21 @@ const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.n
         cleanupMotion();
         runCleanups();
       });
+
+      const gaId = import.meta.env.PUBLIC_GA_ID;
+      const gaEnabled = Boolean(gaId && import.meta.env.PROD);
+      const trackPageView = () => {
+        if (!gaEnabled || typeof window.gtag !== 'function') return;
+        window.gtag('event', 'page_view', {
+          page_location: window.location.href,
+          page_path: window.location.pathname + window.location.search,
+          page_title: document.title,
+        });
+      };
+
+      document.addEventListener('astro:page-load', trackPageView);
+      document.addEventListener('astro:after-swap', trackPageView);
+
       initUI();
     </script>
   </body>
