@@ -200,7 +200,6 @@ const gaEnabled = Boolean(gaId && import.meta.env.PROD);
       };
 
       document.addEventListener('astro:page-load', trackPageView);
-      document.addEventListener('astro:after-swap', trackPageView);
 
       initUI();
     </script>
